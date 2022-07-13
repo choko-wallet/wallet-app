@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   SearchIcon, PlusCircleIcon, UserGroupIcon, HeartIcon,
-  PaperAirplaneIcon, MenuIcon, TranslateIcon, ChevronDownIcon
+  PaperAirplaneIcon, MenuIcon, TranslateIcon, ChevronDownIcon, UserIcon
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
 // import { signIn, signOut, useSession } from "next-auth/react";
@@ -26,8 +26,27 @@ function Header() {
         </div>
         {/* border border-black 看框 */}
         <div className="flex items-center text-gray-500 ">
-          <TranslateIcon className="h-5 cursor-pointer " />
-          <ChevronDownIcon className="h-5 cursor-pointer " />
+          {/* <TranslateIcon className="h-5 cursor-pointer " />
+          <ChevronDownIcon className="h-5 cursor-pointer " /> */}
+
+          <div class="dropdown">
+            <label tabindex="0" class="btn m-1"><TranslateIcon className="h-5 cursor-pointer " />
+              <ChevronDownIcon className="h-5 cursor-pointer " /></label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>English</a></li>
+              <li><a>中文</a></li>
+            </ul>
+          </div>
+
+          <div class="dropdown">
+            <label tabindex="0" class="btn m-1"><UserIcon className="h-5 cursor-pointer " />
+              111111......1111
+              <ChevronDownIcon className="h-5 cursor-pointer " /></label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Settings</a></li>
+              <li onClick={() => router.push('/')} ><a>Log Out</a></li>
+            </ul>
+          </div>
 
         </div>
 

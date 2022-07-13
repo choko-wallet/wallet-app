@@ -11,9 +11,9 @@ function Banner() {
       />
       <div className="absolute flex flex-col items-center justify-center w-full text-center top-1/4">
         <p className="text-2xl font-bold ">Choko Wallet</p>
-        <p className="text-sm sm:text-lg ">Securely store your tokens and assets with Choko Wallet.</p>
-        <button className="px-10 py-4 my-3 mt-10 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 " >Create account</button>
-        <button className="px-10 py-4 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 " >Import account</button>
+        <p className="py-6 text-sm sm:text-lg ">Securely store your tokens and assets with Choko Wallet.</p>
+        <button className="px-10 py-4 my-3 mt-10 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 " >Create account</button>
+        <button className="px-10 py-4 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 " >Import account</button>
       </div>
     </div>
   )
