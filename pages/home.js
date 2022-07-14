@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import btc from '../images/btc.png'
 import { useRouter } from "next/router";
 
-function Profile() {
+function Home() {
   return (
     <div>
       <Header />
@@ -104,11 +104,17 @@ function Profile() {
           </div>
         </div>
 
+
       </div>
+
+
+
+
+
 
       <Footer />
     </div>
   )
 }
 
-export default Profile
+export default Home

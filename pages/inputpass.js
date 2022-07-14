@@ -8,20 +8,25 @@ import {
 } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTheme } from 'next-themes'
+
 
 function InputPass() {
   const router = useRouter();
   const [input, setInput] = useState('');
+  const { theme, setTheme } = useTheme();
+
   return (
     <div>
       <Header />
       <main>
         <div className="relative h-[400px] sm:h-[450px] lg:h-[500px] xl:h-[600px] 2xl:h-[700px] ">
-          <Image
-            src={bg}
-            layout="fill"
-            objectFit="contain"
-          />
+          {theme === 'light' ?
+            <Image
+              src={bg}
+              layout="fill"
+              objectFit="contain"
+            /> : null}
           <div className="absolute flex flex-col items-center justify-center w-full text-center top-5">
             <p className="text-2xl font-bold ">Verify Phrase</p>
             <p className="max-w-3xl py-6 text-sm font-bold">Enter the following word from your recovery phrase to complete the setup process.</p>
@@ -45,12 +50,10 @@ function InputPass() {
               />
 
             </div>
-            {/* 
-            className={`button mt-2 ${!session && "from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed"}`}>
-            {!session ? "Sign in to Checkout" : "Proceed to Checkout"} */}
 
 
-            <button disabled={!input} onClick={() => router.push('/profile')}
+
+            <button disabled={!input} onClick={() => router.push('/home')}
               className={`px-10 py-3 my-3 font-bold rounded-full w-60 bg-gray-300 ${input && "text-purple-800 transition duration-150 !bg-white shadow-md hover:shadow-xl active:scale-90"}`}
             >
               Verify & Complete

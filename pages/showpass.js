@@ -8,11 +8,15 @@ import {
 } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTheme } from 'next-themes'
+
 
 function ShowPass() {
   const router = useRouter();
   const [seeds, setSeeds] = useState('');
   const [copied, setCopied] = useState(false);
+  const { theme, setTheme } = useTheme();
+
   useEffect(() => {
     setSeeds('token token token token token token token token token token token token');
   }, [])
@@ -22,11 +26,12 @@ function ShowPass() {
       <Header />
       <main>
         <div className="relative h-[400px] sm:h-[450px] lg:h-[500px] xl:h-[600px] 2xl:h-[700px] ">
-          <Image
-            src={bg}
-            layout="fill"
-            objectFit="contain"
-          />
+          {theme === 'light' ?
+            <Image
+              src={bg}
+              layout="fill"
+              objectFit="contain"
+            /> : null}
           <div className="absolute flex flex-col items-center justify-center w-full text-center top-5">
             <p className="text-2xl font-bold ">Your Secure Passphrase</p>
             <p className="max-w-3xl py-6 text-sm font-bold">Write down the following words in order and keep them somewhere safe. Anyone with access to it will also have access to your account! You’ll be asked to verify your passphrase next.</p>
@@ -56,16 +61,16 @@ function ShowPass() {
                     <DuplicateIcon className="h-5 px-3 cursor-pointer" />Copy</p>
                 </CopyToClipboard>
 
-                <p className="flex items-center justify-center cursor-pointer w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md">
+                <p className="flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer">
                   <RefreshIcon className="h-5 px-3 cursor-pointer " />Generate New</p>
-                {copied ? <span className="h-2 text-blue-500 text-xs " >Copied</span> : <div className="h-2 "></div>}
+                {copied ? <span className="h-2 text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
               </div>
 
 
 
             </div>
             <button onClick={() => router.push('/inputpass')} className="px-10 py-3 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 " >Continue</button>
-            <button onClick={() => router.push('/')} className="px-10 py-3  font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 "  >Cancel</button>
+            <button onClick={() => router.push('/')} className="px-10 py-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 "  >Cancel</button>
           </div>
         </div >
       </main >
