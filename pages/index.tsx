@@ -1,4 +1,6 @@
 import type { NextPage } from 'next'
+import React, { useState, useEffect } from 'react'
+
 import Head from 'next/head'
 import Image from 'next/image'
 import Header from '../components/Header'
@@ -9,7 +11,17 @@ import { useTheme } from 'next-themes'
 
 const Home: NextPage = () => {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  useEffect(() => {
+    setMounted(true)
+  }, []);
+
+  if (!mounted) {
+    return null
+  }
+
+
   console.log(theme)
 
   return (

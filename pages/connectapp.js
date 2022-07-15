@@ -14,14 +14,24 @@ import { useTheme } from 'next-themes'
 
 function ConnectApp() {
   const router = useRouter();
-  const [seeds, setSeeds] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
   const [copied, setCopied] = useState(false);
   const [showpass, setShowpass] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  useEffect(() => {
+    setAccountNumber('222222222222222222222');
+  }, [])
 
   useEffect(() => {
-    setSeeds('222222222222222222222');
+    setMounted(true)
   }, [])
+
+  if (!mounted) {
+    return null
+  }
+
+
   return (
     <div>
       <Header />
@@ -62,7 +72,7 @@ function ConnectApp() {
                 <div class="card-actions justify-end">
                   <div className="grid grid-cols-2 py-4" >
 
-                    <CopyToClipboard text={seeds}
+                    <CopyToClipboard text={accountNumber}
                       onCopy={() => setCopied(true)}>
                       <p className="flex items-center justify-center w-24 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer">
                         <DuplicateIcon className="h-5 px-3 cursor-pointer" /></p>

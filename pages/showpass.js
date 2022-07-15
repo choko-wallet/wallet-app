@@ -15,11 +15,20 @@ function ShowPass() {
   const router = useRouter();
   const [seeds, setSeeds] = useState('');
   const [copied, setCopied] = useState(false);
-  const { theme, setTheme } = useTheme();
-
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
   useEffect(() => {
     setSeeds('token token token token token token token token token token token token');
   }, [])
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
+
 
   return (
     <div>

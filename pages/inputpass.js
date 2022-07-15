@@ -14,7 +14,15 @@ import { useTheme } from 'next-themes'
 function InputPass() {
   const router = useRouter();
   const [input, setInput] = useState('');
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <div>

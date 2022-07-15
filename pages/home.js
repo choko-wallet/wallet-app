@@ -1,11 +1,23 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+
 import Image from 'next/image'
 import Header from '../components/Header'
 import Footer from '../components/Footer';
 import btc from '../images/btc.png'
 import { useRouter } from "next/router";
+import { useTheme } from 'next-themes'
+
 
 function Home() {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
   return (
     <div>
       <Header />
