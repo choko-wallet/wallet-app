@@ -70,8 +70,8 @@ function ShowPass() {
                     <DuplicateIcon className="h-5 px-3 cursor-pointer" />Copy</p>
                 </CopyToClipboard>
 
-                <p className="flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer">
-                  <RefreshIcon className="h-5 px-3 cursor-pointer " />Generate New</p>
+                <p className="flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer group">
+                  <RefreshIcon className="h-5 px-3 duration-300 cursor-pointer group-active:rotate-180 transtion east-out" />Generate New</p>
                 {copied ? <span className="h-2 text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
               </div>
 

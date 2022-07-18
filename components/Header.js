@@ -1,27 +1,34 @@
 import React, { useState, useEffect } from 'react'
-
 import {
-  BadgeCheckIcon,
-  CollectionIcon,
   HomeIcon, CogIcon,
   LightningBoltIcon, BellIcon,
   SearchIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon, SunIcon, MoonIcon,
   PaperAirplaneIcon, MenuIcon, TranslateIcon, ChevronDownIcon, UserIcon, HeartIcon,
   CreditCardIcon, CurrencyDollarIcon
 } from "@heroicons/react/outline";
-// import { HomeIcon } from "@heroicons/react/solid";
-// import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-// import { useRecoilState } from "recoil";
-// import { modalState } from "../atoms/modalAtom";
 import Image from 'next/image'
 import icon from '../images/icon.png'
 import { useTheme } from 'next-themes'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addToBasket, removeFromBasket, setOrigin, selectItems, selectTotal, selectOrigin
+} from "../redux/basketSlice"
+import { store } from '../redux/store';
 
 
 function Header() {
+
+  // const items = useSelector(selectItems);
+  // const total = useSelector(selectTotal);
+  // const origin = useSelector(selectOrigin);
+  // console.log('origin')
+  // console.log(items)
+  // console.log(total)
+  // console.log(origin)
+
   const router = useRouter();
   const [accountNumber, setAccountNumber] = useState('');
   const [copied, setCopied] = useState(false);
@@ -57,13 +64,13 @@ function Header() {
 
             <BellIcon className="hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125" />
             <CogIcon className="hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125" />
-
+            {/* <div>{origin}{items.length}{total}</div> */}
 
           </div>
         </div>
 
 
-
+        {/* 下拉框需要调整对齐 可用items-start或justify-start */}
         <div className="flex items-center text-gray-500 ">
 
           {theme === 'light' ?

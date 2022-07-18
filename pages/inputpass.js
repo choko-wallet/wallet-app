@@ -61,8 +61,12 @@ function InputPass() {
 
 
 
-            <button disabled={!input} onClick={() => router.push('/home')}
+            {/* <button disabled={!input} onClick={() => router.push('/home')}
               className={`px-10 py-3 my-3 font-bold rounded-full w-60 bg-gray-300 ${input && "text-purple-800 transition duration-150 !bg-white shadow-md hover:shadow-xl active:scale-90"}`}
+            > */}
+            {/* 两种都行 disabled更好 */}
+            <button disabled={!input} onClick={() => router.push('/home')}
+              className="px-10 py-3 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 disabled:bg-gray-300 disabled:active:scale-100 disabled:text-gray-800 disabled:shadow-none"
             >
               Verify & Complete
             </button>
