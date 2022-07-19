@@ -13,8 +13,8 @@ import { useTheme } from 'next-themes'
 
 function ImportAccount() {
   const router = useRouter();
-  const [input, setInput] = useState('');
-  const [mounted, setMounted] = useState(false)
+  const [input, setInput] = useState<string>('');
+  const [mounted, setMounted] = useState<boolean>(false)
   const { theme, setTheme } = useTheme()
   useEffect(() => {
     setMounted(true)

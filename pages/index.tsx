@@ -11,7 +11,7 @@ import { useTheme } from 'next-themes'
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
   useEffect(() => {
     setMounted(true)

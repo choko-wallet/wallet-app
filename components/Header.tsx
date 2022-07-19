@@ -30,11 +30,11 @@ function Header() {
   // console.log(origin)
 
   const router = useRouter();
-  const [accountNumber, setAccountNumber] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [showpass, setShowpass] = useState(false);
-  const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const [accountNumber, setAccountNumber] = useState<string>('');
+  const [copied, setCopied] = useState<boolean>(false);
+  const [showpass, setShowpass] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
+  const { theme, setTheme } = useTheme();
 
   // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
@@ -78,27 +78,27 @@ function Header() {
             : <MoonIcon onClick={() => setTheme('light')} className="hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125" />
           }
 
-          <div class="dropdown dropdown-hover">
-            <label tabindex="0" class="btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none">
+          <div className="dropdown dropdown-hover">
+            <label className="btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none">
               <TranslateIcon className="h-5 cursor-pointer " />
               <ChevronDownIcon className="h-5 cursor-pointer " />
             </label>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+            <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
               <li><a>English</a></li>
               <li><a>中文</a></li>
             </ul>
           </div>
 
-          <div class="dropdown dropdown-hover dropdown-end">
-            <label tabindex="0" class="btn m-1 border-transparent hover:border-transparent bg-gray-200 hover:bg-gray-200  text-gray-900 !outline-none">
+          <div className="dropdown dropdown-hover dropdown-end">
+            <label className="btn m-1 border-transparent hover:border-transparent bg-gray-200 hover:bg-gray-200  text-gray-900 !outline-none">
               <UserIcon className="h-5 mr-2 cursor-pointer " />
               2222......2222
               <ChevronDownIcon className="h-5 ml-2 cursor-pointer" />
             </label>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-80 ">
+            <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-80 ">
 
-              <div class="card w-70 bg-blue-200 text-neutral-content ">
-                <div class="card-body items-center text-center">
+              <div className="card w-70 bg-blue-200 text-neutral-content ">
+                <div className="card-body items-center text-center">
                   <div className="flex items-center justify-center h-10 text-gray-600">
                     222222
                     {!showpass ?
@@ -110,7 +110,7 @@ function Header() {
                       :
                       <span>222222222</span>}
                     2222</div>
-                  <div class="card-actions justify-end">
+                  <div className="card-actions justify-end">
                     <div className="grid grid-cols-2 py-4" >
 
                       <CopyToClipboard text={accountNumber}
@@ -139,17 +139,16 @@ function Header() {
               <li onClick={() => router.push('/changepassword')}><a>Change Password</a></li>
               <li onClick={() => router.push('/showpassphrase')}><a>Show Passphrase</a></li>
 
-              <label for="my-modal" class="btn modal-button">Remove Account</label>
+              <label htmlFor="my-modal" className="btn modal-button">Remove Account</label>
 
-
-              <input type="checkbox" id="my-modal" class="modal-toggle " />
-              <div class="modal">
-                <div class="modal-box">
-                  <h3 class="font-bold text-lg">Remove Account</h3>
-                  <p class="py-4">Remove Account</p>
-                  <div class="modal-action">
-                    <label onClick={() => router.push('/')} for="my-modal" class="btn">Remove</label>
-                    <label for="my-modal" class="btn">Cancel</label>
+              <input type="checkbox" id="my-modal" className="modal-toggle " />
+              <div className="modal">
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">Remove Account</h3>
+                  <p className="py-4">Remove Account</p>
+                  <div className="modal-action">
+                    <label onClick={() => router.push('/')} htmlFor="my-modal" className="btn">Remove</label>
+                    <label htmlFor="my-modal" className="btn">Cancel</label>
                   </div>
                 </div>
               </div>

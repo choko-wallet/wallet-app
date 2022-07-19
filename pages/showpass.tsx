@@ -13,9 +13,9 @@ import { useTheme } from 'next-themes'
 
 function ShowPass() {
   const router = useRouter();
-  const [seeds, setSeeds] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [mounted, setMounted] = useState(false)
+  const [seeds, setSeeds] = useState<string>('');
+  const [copied, setCopied] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false)
   const { theme, setTheme } = useTheme()
   useEffect(() => {
     setSeeds('token token token token token token token token token token token token');

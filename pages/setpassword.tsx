@@ -14,7 +14,7 @@ import { useTheme } from 'next-themes'
 
 function SetPassword() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState<boolean>(false)
   const { theme, setTheme } = useTheme()
   useEffect(() => {
     setMounted(true)
@@ -38,10 +38,10 @@ function SetPassword() {
           <div className="absolute flex flex-col items-center justify-center w-full text-center top-16 space-y-4">
             <p className="text-2xl font-bold ">Set Password</p>
 
-            <input type="text" placeholder="Type here" class="input input-bordered input-info w-full max-w-xs" />
+            <input type="text" placeholder="Type here" className="input input-bordered input-info w-full max-w-xs" />
             <p className="text-sm  ">Input Your Password Again</p>
 
-            <input type="text" placeholder="Type here" class="input input-bordered input-info w-full max-w-xs" />
+            <input type="text" placeholder="Type here" className="input input-bordered input-info w-full max-w-xs" />
 
 
             <button onClick={() => router.push('/home')} className="px-10 py-4 my-3 mt-10 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md bg-gradient-to-r from-yellow-100 to-blue-200 w-60 hover:shadow-xl active:scale-90 " >Set password</button>

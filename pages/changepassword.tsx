@@ -14,8 +14,8 @@ import { useTheme } from 'next-themes'
 
 function ChangePassword() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState<boolean>(false);
+  const { theme, setTheme } = useTheme();
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -39,12 +39,12 @@ function ChangePassword() {
             <p className="text-2xl font-bold ">Change Password</p>
             <p className="text-sm  ">Old Password</p>
 
-            <input type="text" placeholder="Type here" class="input input-bordered input-info w-full max-w-xs" />
+            <input type="text" placeholder="Type here" className="input input-bordered input-info w-full max-w-xs" />
             <p className="text-sm  ">New Password</p>
 
-            <input type="text" placeholder="Type here" class="input input-bordered input-info w-full max-w-xs" />
+            <input type="text" placeholder="Type here" className="input input-bordered input-info w-full max-w-xs" />
 
-            <input type="text" placeholder="Type here" class="input input-bordered input-info w-full max-w-xs" />
+            <input type="text" placeholder="Type here" className="input input-bordered input-info w-full max-w-xs" />
 
 
             <button onClick={() => router.push('/home')} className="px-10 py-4 my-3 mt-10 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md bg-gradient-to-r from-yellow-100 to-blue-200 w-60 hover:shadow-xl active:scale-90 " >Change Password</button>

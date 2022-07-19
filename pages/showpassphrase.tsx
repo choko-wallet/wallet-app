@@ -14,13 +14,13 @@ import { useTheme } from 'next-themes'
 
 function ShowPassphrase() {
   const router = useRouter();
-  const [seeds, setSeeds] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [input, setInput] = useState('');
-  const [show, setShow] = useState(false);
+  const [seeds, setSeeds] = useState<string>('');
+  const [copied, setCopied] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
+  const [show, setShow] = useState<boolean>(false);
 
 
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
   useEffect(() => {
     setSeeds('token token token token token token token token token token token token');
@@ -53,7 +53,7 @@ function ShowPassphrase() {
             <p className="text-sm  ">Please Input Your Password</p>
 
             <input value={input}
-              onChange={(e) => setInput(e.target.value)} type="text" placeholder="Type here" class="input input-bordered input-info w-full max-w-xs" />
+              onChange={(e) => setInput(e.target.value)} type="text" placeholder="Type here" className="input input-bordered input-info w-full max-w-xs" />
 
             {/* <button onClick={() => router.push('/home')} className="px-10 py-4 my-3 mt-10 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md bg-gradient-to-r from-yellow-100 to-blue-200 w-60 hover:shadow-xl active:scale-90 " >Change Password</button> */}
             {/* <button onClick={() => router.push('/home')} className="px-10 py-4 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md bg-gradient-to-r from-sky-100 to-pink-200 w-60 hover:shadow-xl active:scale-90 "  >Cancel</button> */}

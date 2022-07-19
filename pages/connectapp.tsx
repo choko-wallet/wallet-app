@@ -14,10 +14,10 @@ import { useTheme } from 'next-themes'
 
 function ConnectApp() {
   const router = useRouter();
-  const [accountNumber, setAccountNumber] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [showpass, setShowpass] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [accountNumber, setAccountNumber] = useState<string>('');
+  const [copied, setCopied] = useState<boolean>(false);
+  const [showpass, setShowpass] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
   useEffect(() => {
     setAccountNumber('222222222222222222222');
@@ -47,17 +47,17 @@ function ConnectApp() {
             <p className="text-2xl font-bold ">Connect App</p>
             <p className="py-6 text-sm sm:text-lg ">An application is requesting limited access to your Choko Wallet account.</p>
 
-            <div class="badge badge-info gap-2 h-12 w-40">
+            <div className="badge badge-info gap-2 h-12 w-40">
               <LocationMarkerIcon className="h-8 text-gray" />
               Google
             </div>
-            <div class="h-10 w-10 pt-5">
+            <div className="h-10 w-10 pt-5">
               <ChevronDoubleDownIcon className="h-8 text-gray-600" />
             </div>
 
-            <div class="card mt-10 w-96 bg-blue-200 text-neutral-content">
-              <div class="card-body items-center text-center">
-                <h2 class="card-title text-gray-600">Your Account</h2>
+            <div className="card mt-10 w-96 bg-blue-200 text-neutral-content">
+              <div className="card-body items-center text-center">
+                <h2 className="card-title text-gray-600">Your Account</h2>
                 <p className="flex items-center justify-center h-10 text-gray-600">
                   222222
                   {!showpass ?
@@ -69,7 +69,7 @@ function ConnectApp() {
                     :
                     <span>222222222</span>}
                   2222</p>
-                <div class="card-actions justify-end">
+                <div className="card-actions justify-end">
                   <div className="grid grid-cols-2 py-4" >
 
                     <CopyToClipboard text={accountNumber}
