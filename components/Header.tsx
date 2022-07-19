@@ -12,22 +12,9 @@ import icon from '../images/icon.png'
 import { useTheme } from 'next-themes'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { useSelector, useDispatch } from "react-redux";
-import {
-  addToBasket, removeFromBasket, setOrigin, selectItems, selectTotal, selectOrigin
-} from "../redux/basketSlice"
-import { store } from '../redux/store';
-
 
 function Header() {
 
-  // const items = useSelector(selectItems);
-  // const total = useSelector(selectTotal);
-  // const origin = useSelector(selectOrigin);
-  // console.log('origin')
-  // console.log(items)
-  // console.log(total)
-  // console.log(origin)
 
   const router = useRouter();
   const [accountNumber, setAccountNumber] = useState<string>('');
