@@ -375,7 +375,7 @@
   dependencies:
     "@babel/runtime" "^7.18.9"
 
-"@polkadot/wasm-crypto-asmjs@6.3.1":
+"@polkadot/wasm-crypto-asmjs@^6.3.1", "@polkadot/wasm-crypto-asmjs@6.3.1":
   "integrity" "sha512-zbombRfA5v/mUWQQhgg2YwaxhRmxRIrvskw65x+lruax3b6xPBFDs7yplopiJU3r8h2pTgQvX/DUksvqz2TCRQ=="
   "resolved" "https://registry.npmjs.org/@polkadot/wasm-crypto-asmjs/-/wasm-crypto-asmjs-6.3.1.tgz"
   "version" "6.3.1"
