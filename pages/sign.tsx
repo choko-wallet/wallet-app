@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { Keyring } from '@polkadot/keyring';
+import { WasmCryptoInstance } from '../typings'
 import { waitReady } from '@polkadot/wasm-crypto';
+
 import { parse } from 'query-string'
 import { sendTx } from '@skyekiwi/util'
 import { useRouter } from "next/router";
