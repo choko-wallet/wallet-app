@@ -11,12 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTheme } from 'next-themes'
 import {
   mnemonicGenerate,
-  mnemonicToMiniSecret,
   mnemonicValidate,
-  naclBoxPairFromSecret, naclDecrypt,
-  naclEncrypt,
-  randomAsU8a, createKeyMulti,
-  sortAddresses, cryptoWaitReady, decodeAddress, signatureVerify
 } from '@polkadot/util-crypto'
 
 interface Props {
