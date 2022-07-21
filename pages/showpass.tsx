@@ -9,17 +9,50 @@ import {
 import { useRouter } from "next/router";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTheme } from 'next-themes'
+import {
+  mnemonicGenerate,
+  mnemonicToMiniSecret,
+  mnemonicValidate,
+  naclBoxPairFromSecret, naclDecrypt,
+  naclEncrypt,
+  randomAsU8a, createKeyMulti,
+  sortAddresses, cryptoWaitReady, decodeAddress, signatureVerify
+} from '@polkadot/util-crypto'
+
+interface Props {
+  m12Seeds: string
+}
 
 
-function ShowPass() {
+function ShowPass({ m12Seeds }: Props) {
   const router = useRouter();
-  const [seeds, setSeeds] = useState<string>('');
+  const [seeds, setSeeds] = useState<Array<string>>(m12Seeds.split(" "));
+  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>(m12Seeds);
   const [copied, setCopied] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false)
-  const { theme, setTheme } = useTheme()
-  useEffect(() => {
-    setSeeds('token token token token token token token token token token token token');
-  }, [])
+  const [mounted, setMounted] = useState<boolean>(false);
+  const { theme, setTheme } = useTheme();
+
+  console.log("m12Seeds")
+  console.log(m12Seeds)
+  // const m12SeedsArray = m12Seeds.split(" ");
+  // console.log(m12SeedsArray)
+  console.log(seeds)
+
+  // setSeeds()
+
+
+  const refresh12Seeds = () => {
+    const n12Seeds = mnemonicGenerate();
+    console.log(`Generated mnemonic: ${n12Seeds}`);
+
+    const isValidMnemonic = mnemonicValidate(n12Seeds);
+    if (isValidMnemonic) {
+      setSeeds(n12Seeds.split(" "))
+      setSeedsStringForCopy(n12Seeds)
+    }
+  }
+
+
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -47,30 +80,30 @@ function ShowPass() {
 
             <div className="border border-blue-400 rounded-lg ">
               <div className="grid grid-cols-4 ">
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">1. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">2. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">3. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">4. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">5. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">6. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">7. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">8. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">9. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">10. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">11. token</p>
-                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">12. token</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">1. {seeds[0]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">2. {seeds[1]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">3. {seeds[2]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">4. {seeds[3]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">5. {seeds[4]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">6. {seeds[5]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">7. {seeds[6]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">8. {seeds[7]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">9. {seeds[8]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">10. {seeds[9]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">11. {seeds[10]}</p>
+                <p className="w-24 p-1 m-1 text-sm text-purple-800 bg-blue-200 rounded-md">12. {seeds[11]}</p>
 
 
               </div>
               <div className="grid grid-cols-2 py-4" >
 
-                <CopyToClipboard text={seeds}
+                <CopyToClipboard text={seedsStringForCopy}
                   onCopy={() => setCopied(true)}>
                   <p className="flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer">
                     <DuplicateIcon className="h-5 px-3 cursor-pointer" />Copy</p>
                 </CopyToClipboard>
 
-                <p className="flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer group">
+                <p onClick={refresh12Seeds} className="flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer group">
                   <RefreshIcon className="h-5 px-3 duration-300 cursor-pointer group-active:rotate-180 transtion east-out" />Generate New</p>
                 {copied ? <span className="h-2 text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
               </div>
@@ -89,4 +122,22 @@ function ShowPass() {
   )
 }
 
-export default ShowPass
+export default ShowPass;
+
+
+export async function getServerSideProps() {
+
+  const m12Seeds = mnemonicGenerate();
+  console.log(`Generated mnemonic: ${m12Seeds}`);
+
+  const isValidMnemonic = mnemonicValidate(m12Seeds);
+  if (isValidMnemonic) {
+    return {
+      props: {
+        m12Seeds,
+      },
+    };
+  }
+};
+
+
