@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app'
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from "next/router";
 import { ThemeProvider } from 'next-themes';
-import { store } from '../redux/store';
+import { store } from '../features/redux/store';
 import { Provider } from 'react-redux';
 
 const progress = new ProgressBar({

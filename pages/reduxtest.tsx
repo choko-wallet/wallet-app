@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Header from '../components/Header'
-import { store } from '../redux/store';
+import { store } from '../features/redux/store';
 import { useSelector, useDispatch } from "react-redux"
+
 import {
-  addToBasket, addToBasketString, removeFromBasket, selectItems, selectTotal,
-} from "../redux/basketSlice2"
+  addToBasket, 
+  addToBasketString, 
+  removeFromBasket
+} from "../features/slices/basketSlice";
+
 import {
-  increment, decrement, incrementByAmount, selectCount
-} from "../redux/counterSlice"
+  increment, 
+  decrement, 
+  incrementByAmount
+} from "../features/slices/counterSlice";
+
+import { 
+  selectCount,
+  selectItems,
+  selectTotal
+} from '../features/redux/selectors';
 
 function ReduxTest() {
   const dispatch = useDispatch();
@@ -20,17 +32,6 @@ function ReduxTest() {
   console.log(items);
   console.log('id total: ' + total);
   console.log('count: ' + count);
-
-
-  // useEffect(() => {
-  //   if (!origin) return;  //挂上if 如果没拿到变量或不符合条件 直接跳出
-
-  //   console.log('useEffect')
-
-  // }, [origin])
-
-  // 连接api或区块链 先异步交互 拿到数据再dispatch
-
 
   const addItemTobasket1 = () => {
     const product = {
@@ -74,8 +75,6 @@ function ReduxTest() {
     console.log(store.getState())
   };
 
-  // increment, decrement, incrementByAmount,
-
   const increment1 = () => {
     dispatch(increment());
     console.log(store.getState())
@@ -91,21 +90,6 @@ function ReduxTest() {
     console.log(store.getState())
   };
 
-  // const setOriginArr = () => {
-  //   dispatch(setOrigin(['Thailand', 'Bangkok']));
-  //   console.log(store.getState())
-  // };
-  // const setOriginStr = () => {
-  //   dispatch(setOrigin('Thai'));
-  //   console.log(store.getState())
-  // };
-  // const setOriginNull = () => {
-  //   dispatch(setOrigin(null));
-  //   console.log(store.getState())
-  // };
-
-
-
   return (
     <div>
       <Header />
@@ -117,17 +101,7 @@ function ReduxTest() {
         <button onClick={addToBasketString666} className="bg-blue-200">addToBasketString666</button>
         <button onClick={increment1} className="bg-blue-200">increment1</button>
         <button onClick={decrement1} className="bg-blue-200">decrement1</button>
-
         <button onClick={incrementByAmount1} className="bg-blue-200">incrementByAmount1</button>
-
-
-        {/* increment1  decrement1   incrementByAmount1*/}
-        {/* <button onClick={setOriginObj} className="bg-blue-200">setOriginObj</button>
-        <button onClick={setOriginArr} className="bg-blue-200">setOriginArr</button>
-        <button onClick={setOriginStr} className="bg-blue-200">setOriginStr</button>
-        <button onClick={setOriginNull} className="bg-blue-200">setOriginNull</button> */}
-
-
       </div>
     </div>
 
