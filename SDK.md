@@ -119,31 +119,103 @@ export interface DappDescriptor {
 }
 ```
 
-@WaleltRequest
+@WalletRequests
 ```js
 export interface WalletRequestDescriptor {
     authorizationLevel: 'mandetory' | 'optional';
-    
+    origin: DappDescriptor;
+
     isRemoteRequest: boolean;    
-    isLocalRequest: boolean;
 
-
-
-
-
-
+    encodedRemotePayload?: Uint8Array;
+}
+export interface WalletRequest {
+    descriptor: WalletRequestDescriptor;
+    name: string;
 }
 
-export enum WalletRequest {
-    
-    // remote request
-    RequestAddress,
+const UserInfoRequests: WalletRequest[] = [
+    // get user address
+    {
+        descriptor: {
+            authorizationLevel: 'mandetory',
+            origin: {
+                displayName: 'Choko Wallet',
+                infoName: 'choko-wallet',
+                activeNetwork: allNetworks['skyekiwi'],
+            } as DappDescriptor,
+            isRemoteRequest: true
+        },
 
-    RequestTotalTokenBalance,
-    RequestTransferableTokenBalance,
-    RequestLockedTokenBalance,
+        name: 'getUserAddress'
+    },
+
+    // get user account balance
+    // this request is local: as long as we have the user address, we can fetch the result locally
+    {
+        descriptor: {
+            authorizationLevel: 'mandetory',
+            origin: {
+                displayName: 'Choko Wallet',
+                infoName: 'choko-wallet',
+                activeNetwork: allNetworks['skyekiwi'],
+            } as DappDescriptor,
+            isRemoteRequest: false
+        },
+
+        name: 'getUserAccountBalance'
+    }
+    
+    // get user locked balance
+    // this request is local: as long as we have the user address, we can fetch the result locally
+    {
+        descriptor: {
+            authorizationLevel: 'mandetory',
+            origin: {
+                displayName: 'Choko Wallet',
+                infoName: 'choko-wallet',
+                activeNetwork: allNetworks['skyekiwi'],
+            } as DappDescriptor,
+            isRemoteRequest: false
+        },
+
+        name: 'getUserLockedBalance'
+    },
+]
+```
+
+@UserAccount
+```js
+export interface UserAccountBase {
+    
+    // mandetory fields
+    address: string;
+    publicKey: Uint8Array; // len == 32 for curve25519 family | len == 33 for secp256k1
+    keyType: 'sr25519' | 'ed25519' | 'secp256k1';
+
+    localKeyEncryptionStrategy: 'password-v0' | 'webauthn',
+
+    // security fields
+    hasEncryptedPrivateKeyExported: boolean; 
+    // whether the user had exported the private key to email
+    // set to be true when 
+    //      1. the account is imported from unencrypted private key link
+    //      2. the account has click the link to export private key via link to email
+
+    version: Version,
+}
+
+export interface UserAccount extends UserAccountBase {
+     // derived fields
+    balance?: AccountBalance;
+    connectedDapps?: DappDescriptor[];
+    // ....
+
+    version: Version,
 }
 ```
+
+
 ### Methods
 
 connectWallet (
