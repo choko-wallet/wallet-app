@@ -8,6 +8,7 @@ HexString
 Version
 Color 
 Image
+Hash
 ```
 
 @Network Endpoints 
@@ -85,6 +86,14 @@ const tx: Transaction = {
     version: 0x0
 }
 
+export interface TransactionOutcome {
+    isSuccessful: boolean;
+
+    transactionHash: Hash;
+
+    version: Version;
+}
+
 // const padToFourBytes -> 
     // convert a number 293847 to [0x00, 0xD7, 0x7B, o004] in little endian
 
@@ -132,6 +141,7 @@ export interface WalletRequestDescriptor {
 export interface WalletRequest {
     descriptor: WalletRequestDescriptor;
     name: string;
+    id: UUID;
 }
 
 const UserInfoRequests: WalletRequest[] = [
@@ -147,7 +157,7 @@ const UserInfoRequests: WalletRequest[] = [
             isRemoteRequest: true
         },
 
-        name: 'getUserAddress'
+        name: 'getUserAccount'
     },
 
     // get user account balance
@@ -184,6 +194,52 @@ const UserInfoRequests: WalletRequest[] = [
 ]
 ```
 
+
+@WalletResponses
+```js
+
+export interface WalletResponseDescriptor {   
+    isUserConfirmed: boolean;
+    isSuccessful: boolean;
+
+    error?: string;
+    payload?: Uint8Array;
+}
+
+export interface WalletResponses{
+    descriptor: WalletResponseDescriptor;
+    name: string;
+
+    id: UUID;
+}
+```
+
+@default wallet requests payload spec
+
+```js
+// Remote Request
+getUserAccount:
+    Request: none
+    Response: encode( UserAccountBase )
+
+sendTransaction: 
+    Request: encode( Transaction )
+    Response: encode( TransactionOutcome )
+
+requestSignature: 
+    Request: message: Uint8Array
+    Response: encode( Signature )
+
+requestDecryption:
+    // the wallet will do an re-encryption of the message to allow 
+    // the user's ephemeralReceiverPublicKey to decrypt it
+    Request: encode(CipherText)
+    Response: encode(CipherText)
+
+// Local Request
+getUserAccountBalance
+```
+
 @UserAccount
 ```js
 export interface UserAccountBase {
@@ -205,6 +261,12 @@ export interface UserAccountBase {
     version: Version,
 }
 
+export interface UnlockedUserAccount extends UserAccountBase {
+    privateKey: Uint8Array;
+
+    defaultDerivationPath: '/0/0/0/0'; // a constant
+}
+
 export interface UserAccount extends UserAccountBase {
      // derived fields
     balance?: AccountBalance;
@@ -215,10 +277,19 @@ export interface UserAccount extends UserAccountBase {
 }
 ```
 
+@CipherText
+```js
+export interface CipherText {
+    cipherText: Uint8Array;
+    curve: 'x25519' | 'ed25519' | 'secp256k1' | 'sr25519';
 
-### Methods
+    ephemeralReceiverPublicKey: Uint8Array; // len = 32; use x25519 only
+    version: Version;
+}
 
-connectWallet (
-    dappDescriptor: DappDescriptor,
-    requestPayload: WalletRequest,
-) -> 
+const serialized: Uint8Array ->
+    padToFourBytes( cipherText.length ) +
+    cipherText +
+    encode(curve) // 0, 1, 2, 3 => 0 = x25519
+    ephemeralReceiverPublicKey // always 32 bytes
+```
