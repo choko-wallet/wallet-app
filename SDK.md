@@ -242,8 +242,15 @@ getUserAccountBalance
 
 @UserAccount
 ```js
-export interface UserAccountBase {
+export interface UserAccount {
     
+    privateKey?: Uint8Array;
+    defaultDerivationPath: const string;
+    isLocked: boolean;
+
+    lock(): void; // remove privateKey if any
+    unlock(privateKey: Uint8Array): void; // set privateKey
+
     // mandetory fields
     address: string;
     publicKey: Uint8Array; // len == 32 for curve25519 family | len == 33 for secp256k1
@@ -261,13 +268,7 @@ export interface UserAccountBase {
     version: Version,
 }
 
-export interface UnlockedUserAccount extends UserAccountBase {
-    privateKey: Uint8Array;
-
-    defaultDerivationPath: '/0/0/0/0'; // a constant
-}
-
-export interface UserAccount extends UserAccountBase {
+export interface UserAccountInfo extends UserAccount {
      // derived fields
     balance?: AccountBalance;
     connectedDapps?: DappDescriptor[];
@@ -275,6 +276,17 @@ export interface UserAccount extends UserAccountBase {
 
     version: Version,
 }
+
+export interface LockedPrivateKey {
+    encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
+    keyType: 'sr25519' | 'ed25519' | 'secp256k1';
+
+    localKeyEncryptionStrategy: 'password-v0' | 'webauthn';
+    hasEncryptedPrivateKeyExported: boolean;
+}
+
+type Seed = string[] // 12 seed
+
 ```
 
 @CipherText
