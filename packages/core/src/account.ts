@@ -2,11 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import Keyring from '@polkadot/keyring';
-import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { cryptoWaitReady, mnemonicToMiniSecret, mnemonicValidate } from '@polkadot/util-crypto';
+
+import { SymmetricEncryption } from '@skyekiwi/crypto';
 
 import { CURRENT_VERSION, KeypairType, Version } from './types';
 import * as Util from './util';
 import { DappDescriptor } from '.';
+
+export interface AccountCreationOption {
+  keyType: KeypairType;
+  localKeyEncryptionStrategy: number;
+  hasEncryptedPrivateKeyExported: boolean;
+}
 
 export class UserAccount {
   // CORE FIELDS
@@ -98,13 +106,97 @@ export class UserAccount {
     return kr.sign(message);
   }
 
-  // public async decryptMessage(
-  //     message: Uint8Array,
-  //     publicKey: Uint8Array,
-  //     keyType: KeypairType
-  // ): Promise<Uint8Array> {
+  public static seedToUserAccount (seed: string, option: AccountCreationOption): UserAccount {
+    if (!mnemonicValidate(seed)) {
+      throw new Error('invalid seed - UserAccount.seedToUserAccount');
+    }
 
-  // }
+    const privateKey = mnemonicToMiniSecret(seed);
+
+    if (privateKey.length !== 32) {
+      // sanity check
+      throw new Error('invalid private key length - UserAccount.seedToUserAccount');
+    }
+
+    const userAccount = new UserAccount({
+      hasEncryptedPrivateKeyExported: option.hasEncryptedPrivateKeyExported,
+
+      keyType: Util.mapKeypairTypeToNumber(option.keyType),
+
+      localKeyEncryptionStrategy: option.localKeyEncryptionStrategy
+    });
+
+    userAccount.unlock(privateKey, option.keyType);
+
+    return userAccount;
+  }
+
+  public static lockUserAccount (userAccount: UserAccount, passwordHash: Uint8Array): LockedPrivateKey {
+    if (userAccount.isLocked) {
+      throw new Error('account has been locked locked - UserAccount.lockUserAccount');
+    }
+
+    if (passwordHash.length !== 32) {
+      throw new Error('invalid password hash length - UserAccount.lockUserAccount');
+    }
+
+    const encryptedPrivateKey = SymmetricEncryption.encrypt(passwordHash, userAccount.privateKey);
+
+    // original key size + encryption overhead + nonce
+    if (encryptedPrivateKey.length !== 32 + 16 + 24) {
+      throw new Error('invalid encrypted private key length - UserAccount.lockUserAccount');
+    }
+
+    userAccount.lock();
+
+    return {
+      encryptedPrivateKey: encryptedPrivateKey,
+
+      hasEncryptedPrivateKeyExported: userAccount.hasEncryptedPrivateKeyExported,
+
+      keyType: userAccount.keyType,
+
+      localKeyEncryptionStrategy: 0
+    };
+  }
+
+  public static unlockUserAccount (lockedPrivateKey: LockedPrivateKey, passwordHash: Uint8Array): UserAccount {
+    if (lockedPrivateKey.encryptedPrivateKey.length !== 32 + 16 + 24) {
+      throw new Error('invalid encrypted private key length - UserAccount.unlockUserAccount');
+    }
+
+    if (passwordHash.length !== 32) {
+      throw new Error('invalid password hash length - UserAccount.unlockUserAccount');
+    }
+
+    const privateKey = SymmetricEncryption.decrypt(passwordHash, lockedPrivateKey.encryptedPrivateKey);
+
+    if (privateKey.length !== 32) {
+      throw new Error('invalid private key length - UserAccount.unlockUserAccount');
+    }
+
+    const userAccount = new UserAccount({
+      hasEncryptedPrivateKeyExported: lockedPrivateKey.hasEncryptedPrivateKeyExported,
+
+      keyType: lockedPrivateKey.keyType,
+
+      localKeyEncryptionStrategy: lockedPrivateKey.localKeyEncryptionStrategy
+    });
+
+    userAccount.unlock(privateKey, Util.mapKeyTypeToKeypairType(lockedPrivateKey.keyType));
+
+    return userAccount;
+  }
+
+  //   public async signAndSendTransaction()
+
+  //   public async decryptMessage(
+  //       message: Uint8Array,
+  //       publicKey: Uint8Array,
+  //       keyType: KeypairType
+  //   ): Promise<Uint8Array> {
+
+//   }
 }
 
 export interface AccountBalance {
@@ -123,8 +215,8 @@ export interface UserAccountInfo extends UserAccount {
 
 export interface LockedPrivateKey {
   encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
-  keyType: 'sr25519' | 'ed25519' | 'secp256k1';
+  keyType: number; // 'sr25519' | 'ed25519' | 'secp256k1';
 
-  localKeyEncryptionStrategy: 'password-v0' | 'webauthn';
+  localKeyEncryptionStrategy: number; // 'password-v0' | 'webauthn';
   hasEncryptedPrivateKeyExported: boolean;
 }

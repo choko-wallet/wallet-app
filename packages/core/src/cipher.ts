@@ -5,7 +5,7 @@ import { Version } from './types';
 
 export class Cipher {
   cipherText: Uint8Array;
-  curve: 'x25519' | 'ed25519' | 'secp256k1' | 'sr25519';
+  curve: number; // 'x25519' | 'ed25519' | 'secp256k1' | 'sr25519';
 
   version: Version;
 
