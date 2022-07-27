@@ -1,5 +1,5 @@
 // Copyright 2021-2022 @choko-wallet/base authors & contributors
-// SPDX-License-Identifier: Apache-2.0 & MIT
+// SPDX-License-Identifier: Apache-2.0
 
 const base = require('@skyekiwi/dev/config/eslint.cjs');
 
@@ -13,7 +13,8 @@ module.exports = {
     '**/build/*',
     '**/coverage/*',
     '**/node_modules/*',
-    '**/examples/*'
+    '**/examples/*',
+    'next-env.d.ts',
   ],
   parserOptions: {
     ...base.parserOptions,
@@ -26,7 +27,7 @@ module.exports = {
 
     'header/header': [2, 'line', [
       { pattern: ' Copyright \\d{4}(-\\d{4})? @choko-wallet/?' },
-      ' SPDX-License-Identifier: Apache-2.0 & MIT'
+      ' SPDX-License-Identifier: Apache-2.0'
       ], 2],
     // this seems very broken atm, false positives
     '@typescript-eslint/unbound-method': 'off',

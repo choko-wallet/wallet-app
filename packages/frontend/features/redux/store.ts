@@ -1,11 +1,11 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
-// SPDX-License-Identifier: Apache-2.0 & MIT
+// SPDX-License-Identifier: Apache-2.0
 
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Store } from '@reduxjs/toolkit';
 
 import { rootReducer } from './reducers';
 
-export const store = configureStore({
+export const store: Store = configureStore({
   reducer: rootReducer
 });
 

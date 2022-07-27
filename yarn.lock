@@ -1487,6 +1487,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@choko-wallet/sdk@workspace:packages/sdk":
+  version: 0.0.0-use.local
+  resolution: "@choko-wallet/sdk@workspace:packages/sdk"
+  languageName: unknown
+  linkType: soft
+
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"

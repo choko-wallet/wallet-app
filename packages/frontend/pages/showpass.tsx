@@ -1,5 +1,5 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
-// SPDX-License-Identifier: Apache-2.0 & MIT
+// SPDX-License-Identifier: Apache-2.0
 
 import { DuplicateIcon, RefreshIcon } from '@heroicons/react/outline';
 import { mnemonicGenerate,
