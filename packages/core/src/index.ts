@@ -4,10 +4,11 @@
 import { ILockedPrivateKey, IUserAccount, IUserAccountInfo, LockedPrivateKey, UserAccount } from './account';
 import { Cipher } from './cipher';
 import { IDappDescriptor } from './dapp';
-import { INetwork } from './network';
+import { INetwork, KnownNetworks, Network } from './network';
 import { Transaction, TransactionOutcome } from './transaction';
-import { WalletRequest, WalletRequestDescriptor } from './walletRequest';
-import { WalletResponse, WalletResponseDescriptor } from './walletResponse';
+import { 
+  IRequestError, IPayload, IRequestHandlerDescriptor, RequestHandlers, RequestHandler, IRequest, IResponse,
+ } from './requestHandler';
 
 export {
   ILockedPrivateKey, LockedPrivateKey, IUserAccount, UserAccount, IUserAccountInfo,
@@ -16,11 +17,9 @@ export {
 
   IDappDescriptor,
 
-  INetwork,
+  INetwork, KnownNetworks, Network,
 
   Transaction, TransactionOutcome,
 
-  WalletRequestDescriptor, WalletRequest,
-
-  WalletResponseDescriptor, WalletResponse
+  IRequestError, IPayload, IRequestHandlerDescriptor, RequestHandlers, RequestHandler, IRequest, IResponse,
 };

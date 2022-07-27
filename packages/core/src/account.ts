@@ -59,6 +59,8 @@ export interface IUserAccount {
 
   // VERSION FIELD
   version: Version;
+
+  serialize(): Uint8Array;
 }
 
 export class UserAccount implements IUserAccount {

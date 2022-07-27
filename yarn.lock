@@ -1465,6 +1465,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@choko-wallet/core@workspace:packages/core"
   dependencies:
+    "@choko-wallet/known-networks": "workspace:packages/known-networks"
     "@polkadot/util-crypto": ^10.1.1
     "@skyekiwi/crypto": ^0.8.3
     "@skyekiwi/util": ^0.8.3
@@ -1500,6 +1501,15 @@ __metadata:
 "@choko-wallet/known-networks@workspace:packages/known-networks":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/known-networks@workspace:packages/known-networks"
+  dependencies:
+    "@choko-wallet/core": 0.1.0
+    "@skyekiwi/util": ^0.8.3
+  languageName: unknown
+  linkType: soft
+
+"@choko-wallet/request-handler@workspace:packages/request-handler":
+  version: 0.0.0-use.local
+  resolution: "@choko-wallet/request-handler@workspace:packages/request-handler"
   dependencies:
     "@choko-wallet/core": 0.1.0
     "@skyekiwi/util": ^0.8.3

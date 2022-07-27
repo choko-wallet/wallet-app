@@ -4,6 +4,7 @@
 import type { HexString } from '@choko-wallet/core/types';
 
 import { INetwork } from '@choko-wallet/core';
+import { hexToU8a } from '@skyekiwi/util';
 
 export class SkyeKiwiNetwork implements INetwork {
   providers: Record<string, string>;
@@ -28,6 +29,11 @@ export class SkyeKiwiNetwork implements INetwork {
       SkyeKiwi: 'wss://staging.rpc.skye.kiwi'
     };
   }
+
+    public serialize (): Uint8Array {
+        //return Util.xxHash(this.info);
+        return hexToU8a(SkyeKiwiNetworkHash);
+    }
 }
 
-export const SkyeKiwiNetworkHash: HexString = '0x847e7b7fa160d85f'; // xxHash('skyekiwi');
+export const SkyeKiwiNetworkHash: HexString = '847e7b7fa160d85f'; // xxHash('skyekiwi');

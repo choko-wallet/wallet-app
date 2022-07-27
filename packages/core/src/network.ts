@@ -1,9 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/core authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Color, Image } from './types';
+import type { Color, HexString, Image } from './types';
+
+import { knownNetworks } from '@choko-wallet/known-networks';
 
 import * as Util from './util';
+import { u8aToHex } from '@skyekiwi/util';
 
 export interface INetwork {
   providers: Record<string, string>;
@@ -19,6 +22,8 @@ export interface INetwork {
   summary?: string;
   color?: Color;
   logo?: Image;
+
+  serialize(): Uint8Array;
 }
 
 export class Network implements INetwork {
@@ -54,4 +59,15 @@ export class Network implements INetwork {
   public serialize (): Uint8Array {
     return Util.xxHash(this.info);
   }
+
+  public static deserialize (data: Uint8Array): INetwork {
+    const hash = u8aToHex(data);
+    if (hash in knownNetworks) {
+      return knownNetworks[hash];
+    } else {
+      throw new Error(`Unknown network: ${hash}`);
+    }
+  }
 }
+
+export declare type KnownNetworks = Record<HexString, INetwork>;
