@@ -1,38 +1,35 @@
 {
+  "repository": "https://github.com/skyekiwi/choko-wallet-next",
+  "author": "Choko Wallet <contact@choko.app>",
+  "license": "Apache-2",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+  "workspaces": [
+    "packages/*"
+  ],
+  "resolutions": {
+    "typescript": "^4.3.5"
   },
-  "dependencies": {
-    "@badrap/bar-of-progress": "^0.2.1",
-    "@heroicons/react": "^1.0.6",
-    "@polkadot/api": "^8.13.1",
-    "@polkadot/util-crypto": "^10.1.1",
-    "@polkadot/wasm-crypto": "^6.3.1",
-    "@polkadot/wasm-crypto-asmjs": "^6.3.1",
-    "@reduxjs/toolkit": "^1.8.3",
-    "@skyekiwi/util": "^0.7.6",
-    "@types/react-copy-to-clipboard": "^5.0.3",
-    "@types/react-redux": "^7.1.24",
-    "@types/redux": "^3.6.0",
-    "daisyui": "^2.19.0",
-    "next": "latest",
-    "next-themes": "^0.2.0",
-    "query-string": "^7.1.1",
-    "react": "18.1.0",
-    "react-copy-to-clipboard": "^5.1.0",
-    "react-dom": "18.1.0",
-    "react-redux": "^8.0.2"
+  "scripts": {
+    "build": "skyekiwi-dev-build-ts",
+    
+    "build:release": "skyekiwi-ci-ghact-build",
+    "lint": "skyekiwi-dev-run-lint",
+    "clean": "skyekiwi-dev-clean-build",
+    "postinstall": "skyekiwi-dev-yarn-only",
+    "test": "skyekiwi-dev-run-test --coverage --runInBand",
+    
+    "dev:next": "cd ./packages/frontend && yarn dev",
+    "build:next": "cd ./packages/frontend && yarn build"
   },
   "devDependencies": {
-    "@types/node": "17.0.35",
-    "@types/react": "18.0.9",
-    "@types/react-dom": "18.0.5",
-    "autoprefixer": "^10.4.7",
-    "postcss": "^8.4.14",
-    "tailwindcss": "^3.1.2",
-    "typescript": "4.7.2"
-  }
+    "@babel/core": "^7.15.0",
+    "@skyekiwi/dev": "^0.3.1",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.11.11",
+    "dotenv": "^10.0.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "version": "0.8.3",
+  "packageManager": "yarn@3.0.1"
 }
