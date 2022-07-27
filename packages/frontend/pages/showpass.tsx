@@ -1,8 +1,10 @@
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0 & MIT
+
 import { DuplicateIcon, RefreshIcon } from '@heroicons/react/outline';
 import { mnemonicGenerate,
   mnemonicValidate } from '@polkadot/util-crypto';
+import { waitReady } from '@polkadot/wasm-crypto';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -118,6 +120,7 @@ function ShowPass ({ m12Seeds }: Props): JSX.Element {
 export default ShowPass;
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  await waitReady();
   const m12Seeds = mnemonicGenerate();
 
   console.log(`Generated mnemonic: ${m12Seeds}`);
@@ -130,5 +133,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         m12Seeds
       }
     };
+  } else {
+    return null;
   }
 };

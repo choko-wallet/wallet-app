@@ -1,5 +1,5 @@
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0 & MIT
 
 import { ChevronDoubleDownIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon, LocationMarkerIcon } from '@heroicons/react/outline';
 import Image from 'next/image';

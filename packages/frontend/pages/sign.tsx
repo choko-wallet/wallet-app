@@ -1,5 +1,5 @@
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0 & MIT
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
@@ -16,42 +16,38 @@ function Sign (): JSX.Element {
   const callback = router.query.callback as string;
   const network = router.query.network as string;
 
-  console.log(tx);
-
-  const apiFun1 = async (tx: string, callback: string, network: string) => {
-    if (!tx) return;
-    if (!callback) return;
-    if (network !== 'polkadot') return;
-
-    await waitReady();
-
-    const keyring = new Keyring({ type: 'sr25519' });
-    const key = keyring
-      .addFromUri('KEY');
-
-    const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
-    const api = await ApiPromise.create({ provider: provider });
-
-    const rawTx = tx;
-    const tx1 = api.tx(rawTx);// 这个位置改成tx1
-
-    console.log('callback');
-    console.log(callback);// http://localhost:3000
-
-    alert('Submitting transaction...');
-    console.log('first');
-    await sendTx(tx1, key);// 报错了 账户金额不足 但是程序是对的 //这个位置改成tx1
-    console.log('second');
-    router.push(callback)
-      .then(() => console.log('this will succeed'))// 为了去掉lint报错
-      .catch(() => 'catch');// 为了去掉lint报错
-  };
-
   useEffect(() => {
+    const apiFun1 = async (tx: string, callback: string, network: string) => {
+      if (!tx) return;
+      if (!callback) return;
+      if (network !== 'polkadot') return;
+
+      await waitReady();
+
+      const keyring = new Keyring({ type: 'sr25519' });
+      const key = keyring
+        .addFromUri('KEY');
+
+      const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
+      const api = await ApiPromise.create({ provider: provider });
+
+      const rawTx = tx;
+      const tx1 = api.tx(rawTx);
+
+      console.log('callback');
+      console.log(callback);// http://localhost:3000
+
+      alert('Submitting transaction...');
+      console.log('first');
+      await sendTx(tx1, key);
+      console.log('second');
+      await router.push(callback);
+    };
+
     apiFun1(tx, callback, network)
-      .then(() => console.log('this will succeed'))// 为了去掉lint报错
-      .catch(() => 'catch');// 为了去掉lint报错
-  }, [tx, callback, network]);
+      .then(() => console.log('this will succeed'))
+      .catch(() => 'catch');
+  }, [tx, callback, network, router]);
 
   return (
     <div>Sign</div>
