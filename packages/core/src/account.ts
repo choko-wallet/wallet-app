@@ -20,7 +20,7 @@ export class UserAccount {
   // CORE FIELDS
   privateKey?: Uint8Array;
 
-  keyType: number;
+  keyType: KeypairType;
   localKeyEncryptionStrategy: number; // 1='password-v0' | 2='webauthn';
   hasEncryptedPrivateKeyExported: boolean;
   // whether the user had exported the private key to email
@@ -37,17 +37,17 @@ export class UserAccount {
   version: Version;
 
   constructor (config: {
-    keyType: number,
+    keyType: KeypairType,
     localKeyEncryptionStrategy: number,
     hasEncryptedPrivateKeyExported: boolean,
   }) {
     const { hasEncryptedPrivateKeyExported, keyType, localKeyEncryptionStrategy } = config;
 
-    if (keyType <= 0 || keyType > 4) {
+    if (!keyType) {
       throw new Error('unkonwn key type - UserAccount.constructor');
     }
 
-    if (localKeyEncryptionStrategy <= 0 || localKeyEncryptionStrategy > 2) {
+    if (localKeyEncryptionStrategy < 0 || localKeyEncryptionStrategy > 2) {
       throw new Error('unkonwn local key encryption strategy - UserAccount.constructor');
     }
 
@@ -63,14 +63,9 @@ export class UserAccount {
     this.isLocked = true;
   }
 
-  // privateKey needs to be consistent with `this.keyType`
-  public unlock (privateKey: Uint8Array, keyType?: KeypairType): void {
+  public unlock (privateKey: Uint8Array): void {
     if (privateKey.length !== 32) {
       throw new Error('invalid private key length - UserAccount.unlock');
-    }
-
-    if (keyType) {
-      this.keyType = Util.mapKeypairTypeToNumber(keyType);
     }
 
     this.privateKey = privateKey;
@@ -85,7 +80,7 @@ export class UserAccount {
     await cryptoWaitReady();
 
     const kr = (new Keyring({
-      type: Util.mapKeyTypeToKeypairType(this.keyType)
+      type: this.keyType
     })).addFromSeed(this.privateKey);
 
     this.address = kr.address;
@@ -100,7 +95,7 @@ export class UserAccount {
     await cryptoWaitReady();
 
     const kr = (new Keyring({
-      type: Util.mapKeyTypeToKeypairType(this.keyType)
+      type: this.keyType
     })).addFromSeed(this.privateKey);
 
     return kr.sign(message);
@@ -121,7 +116,7 @@ export class UserAccount {
     const userAccount = new UserAccount({
       hasEncryptedPrivateKeyExported: option.hasEncryptedPrivateKeyExported,
 
-      keyType: Util.mapKeypairTypeToNumber(option.keyType),
+      keyType: option.keyType,
 
       localKeyEncryptionStrategy: option.localKeyEncryptionStrategy
     });
@@ -188,6 +183,8 @@ export class UserAccount {
     return userAccount;
   }
 
+  // Account Serde & Account Index 
+
   //   public async signAndSendTransaction()
 
   //   public async decryptMessage(
@@ -215,7 +212,7 @@ export interface UserAccountInfo extends UserAccount {
 
 export interface LockedPrivateKey {
   encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
-  keyType: number; // 'sr25519' | 'ed25519' | 'secp256k1';
+  keyType: KeypairType; // 'sr25519' | 'ed25519' | 'secp256k1';
 
   localKeyEncryptionStrategy: number; // 'password-v0' | 'webauthn';
   hasEncryptedPrivateKeyExported: boolean;
