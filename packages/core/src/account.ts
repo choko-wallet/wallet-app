@@ -127,8 +127,8 @@ export class UserAccount {
     return userAccount;
   }
 
-  public static lockUserAccount (userAccount: UserAccount, passwordHash: Uint8Array): LockedPrivateKey {
-    if (userAccount.isLocked) {
+  public lockUserAccount (passwordHash: Uint8Array): LockedPrivateKey {
+    if (this.isLocked) {
       throw new Error('account has been locked locked - UserAccount.lockUserAccount');
     }
 
@@ -136,24 +136,24 @@ export class UserAccount {
       throw new Error('invalid password hash length - UserAccount.lockUserAccount');
     }
 
-    const encryptedPrivateKey = SymmetricEncryption.encrypt(passwordHash, userAccount.privateKey);
+    const encryptedPrivateKey = SymmetricEncryption.encrypt(passwordHash, this.privateKey);
 
     // original key size + encryption overhead + nonce
     if (encryptedPrivateKey.length !== 32 + 16 + 24) {
       throw new Error('invalid encrypted private key length - UserAccount.lockUserAccount');
     }
 
-    userAccount.lock();
+    this.lock();
 
-    return {
+    return new LockedPrivateKey({
       encryptedPrivateKey: encryptedPrivateKey,
 
-      hasEncryptedPrivateKeyExported: userAccount.hasEncryptedPrivateKeyExported,
+      hasEncryptedPrivateKeyExported: this.hasEncryptedPrivateKeyExported,
 
-      keyType: userAccount.keyType,
+      keyType: this.keyType,
 
       localKeyEncryptionStrategy: 0
-    };
+    });
   }
 
   public static unlockUserAccount (lockedPrivateKey: LockedPrivateKey, passwordHash: Uint8Array): UserAccount {
@@ -236,6 +236,91 @@ export class UserAccount {
   }
 }
 
+export class LockedPrivateKey {
+  encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
+
+  keyType: KeypairType; // 'sr25519' | 'ed25519' | 'secp256k1';
+  localKeyEncryptionStrategy: number; // 'password-v0' | 'webauthn';
+  hasEncryptedPrivateKeyExported: boolean;
+
+  version: Version;
+
+  constructor (config: {
+    encryptedPrivateKey: Uint8Array,
+    keyType: KeypairType,
+    localKeyEncryptionStrategy: number,
+    hasEncryptedPrivateKeyExported: boolean,
+    version?: Version
+  }) {
+    const { encryptedPrivateKey, hasEncryptedPrivateKeyExported, keyType, localKeyEncryptionStrategy } = config;
+
+    if (encryptedPrivateKey.length !== 32 + 16 + 24) {
+      throw new Error('invalid encrypted private key length - LockedPrivateKey.constructor');
+    }
+
+    if (!keyType) {
+      throw new Error('invalid key type - LockedPrivateKey.constructor');
+    }
+
+    if (localKeyEncryptionStrategy !== 0 && localKeyEncryptionStrategy !== 1) {
+      throw new Error('invalid local key encryption strategy - LockedPrivateKey.constructor');
+    }
+
+    this.encryptedPrivateKey = encryptedPrivateKey;
+    this.keyType = keyType;
+    this.localKeyEncryptionStrategy = localKeyEncryptionStrategy;
+    this.hasEncryptedPrivateKeyExported = hasEncryptedPrivateKeyExported;
+    this.version = config.version ? config.version : CURRENT_VERSION;
+  }
+
+  public serialize (): Uint8Array {
+    if (!this.encryptedPrivateKey) {
+      throw new Error('invalid key - LockedPrivateKey.serialize');
+    }
+
+    const res = new Uint8Array(
+      32 + 16 + 24 + // encryptedPrivateKey len
+        1 + // keyType
+        1 + // localKeyEncryptionStrategy
+        1 + // hasEncryptedPrivateKeyExported
+        1 // version
+    );
+
+    res.set(this.encryptedPrivateKey, 0);
+    res.set([Util.keypairTypeStringToNumber(this.keyType)], 72);
+    res.set([this.localKeyEncryptionStrategy], 73);
+    res.set([this.hasEncryptedPrivateKeyExported ? 1 : 0], 74);
+    res.set([this.version], 75);
+
+    return res;
+  }
+
+  public static deserialize (data: Uint8Array): LockedPrivateKey {
+    if (data.length !== 76) {
+      throw new Error('invalid data length - LockedPrivateKey.deserialize');
+    }
+
+    const encryptedPrivateKey = data.slice(0, 32 + 16 + 24);
+    const keyType = Util.keypairTypeNumberToString(data[72]);
+    const localKeyEncryptionStrategy = data[73];
+    const hasEncryptedPrivateKeyExported = data[74] === 1;
+    const version = data[75];
+
+    const lockedPrivateKey = new LockedPrivateKey({
+      encryptedPrivateKey: encryptedPrivateKey,
+
+      hasEncryptedPrivateKeyExported: hasEncryptedPrivateKeyExported,
+
+      keyType: keyType,
+
+      localKeyEncryptionStrategy: localKeyEncryptionStrategy,
+
+      version: version
+    });
+
+    return lockedPrivateKey;
+  }
+}
 export interface AccountBalance {
   freeBalance: string;
   lockedBalance: string;
@@ -248,12 +333,4 @@ export interface UserAccountInfo extends UserAccount {
   // ....
 
   version: Version,
-}
-
-export interface LockedPrivateKey {
-  encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
-  keyType: KeypairType; // 'sr25519' | 'ed25519' | 'secp256k1';
-
-  localKeyEncryptionStrategy: number; // 'password-v0' | 'webauthn';
-  hasEncryptedPrivateKeyExported: boolean;
 }

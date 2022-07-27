@@ -5,7 +5,7 @@ import { mnemonicToMiniSecret } from '@polkadot/util-crypto';
 
 import { u8aToHex } from '@skyekiwi/util';
 
-import { UserAccount } from '.';
+import { LockedPrivateKey, UserAccount } from '.';
 
 const SEED = 'leg satisfy enlist dizzy rib owner security live solution panther monitor replace';
 
@@ -79,5 +79,25 @@ describe('UserAccount - @choko-wallet/core/account', function () {
     expect(userAccount2.isLocked).toEqual(false);
     expect(userAccount2.address).toEqual('5Deo86WWHTk26vXXywvocQXu3uE6dLcdj22ZF1jBNYhP2UJn');
     expect(userAccount2.publicKey).toEqual(userAccount.publicKey);
+  });
+
+  it('LockedPrivateKey - serde', () => {
+    const userAccount = UserAccount.seedToUserAccount(SEED, {
+      hasEncryptedPrivateKeyExported: false,
+      keyType: 'sr25519', // sr25519
+      localKeyEncryptionStrategy: 0 // password-v0
+    });
+
+    const lockedPrivateKey = userAccount.lockUserAccount(new Uint8Array(32));
+
+    const data = lockedPrivateKey.serialize();
+
+    const lockedPrivateKey2 = LockedPrivateKey.deserialize(data);
+
+    expect(lockedPrivateKey2.encryptedPrivateKey).toEqual(lockedPrivateKey.encryptedPrivateKey);
+    expect(lockedPrivateKey2.keyType).toEqual(lockedPrivateKey.keyType);
+    expect(lockedPrivateKey2.localKeyEncryptionStrategy).toEqual(lockedPrivateKey.localKeyEncryptionStrategy);
+    expect(lockedPrivateKey2.hasEncryptedPrivateKeyExported).toEqual(lockedPrivateKey.hasEncryptedPrivateKeyExported);
+    expect(lockedPrivateKey2.version).toEqual(lockedPrivateKey.version);
   });
 });
