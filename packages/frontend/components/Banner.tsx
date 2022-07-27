@@ -1,11 +1,12 @@
 // [object Object]
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: Apache-2.0 & MIT
 
 import Image from 'next/image';
+import React from 'react';
 
 import bg from '../images/bg.jpg';
 
-function Banner () {
+function Banner (): JSX.Element {
   return (
     <div className='relative h-[400px] sm:h-[450px] lg:h-[500px] xl:h-[600px] 2xl:h-[700px] '>
       <Image

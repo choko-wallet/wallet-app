@@ -1,21 +1,20 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/fronten authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ChevronDoubleDownIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon, LocationMarkerIcon, RefreshIcon } from '@heroicons/react/outline';
+import { LocationMarkerIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
 
-function ConnectApp () {
-  const router = useRouter();
+function ConnectApp (): JSX.Element {
+  // const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -41,13 +40,13 @@ function ConnectApp () {
             <p className='text-2xl font-bold '>Trusted App</p>
             {/* <p className="py-6 text-sm sm:text-lg ">An application is requesting limited access to your Choko Wallet account.</p> */}
 
-            <div className='badge badge-info gap-2 h-16 w-60 justify-between px-8 mt-5'>
+            <div className='justify-between h-16 gap-2 px-8 mt-5 badge badge-info w-60'>
               <div className='flex items-center justify-center' >
                 <LocationMarkerIcon className='h-8 text-gray' />
                 <p>Google</p>
               </div>
               <button className='btn btn-circle btn-outline'>
-                <svg className='h-6 w-6'
+                <svg className='w-6 h-6'
                   fill='none'
                   stroke='currentColor'
                   viewBox='0 0 24 24'

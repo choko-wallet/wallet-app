@@ -16,7 +16,7 @@ import bg from '../images/bg.jpg';
 const Home: NextPage = () => {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);

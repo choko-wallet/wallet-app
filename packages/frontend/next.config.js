@@ -4,17 +4,16 @@
 /** @type {import('next').NextConfig} */
 
 module.exports = {
-  reactStrictMode: true,
-
   distDir: 'build',
+  eslint: {
+    // TODO: remove this
+    ignoreDuringBuilds: true
+  },
+  reactStrictMode: true,
 
   typescript: {
     // TODO: remove this
-    ignoreBuildErrors: true,
-  },
+    ignoreBuildErrors: true
+  }
 
-  eslint: {
-    // TODO: remove this
-    ignoreDuringBuilds: true,
-  },
 };

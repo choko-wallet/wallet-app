@@ -12,13 +12,10 @@
   "scripts": {
     "build:ts": "skyekiwi-dev-build-ts",
     "build:release": "skyekiwi-ci-ghact-build",
-
     "lint": "skyekiwi-dev-run-lint",
     "clean": "skyekiwi-dev-clean-build",
     "postinstall": "skyekiwi-dev-yarn-only",
-    
     "test": "skyekiwi-dev-run-test --coverage --runInBand",
-
     "dev": "cd ./packages/frontend && yarn dev",
     "build": "cd ./packages/frontend && yarn build"
   },

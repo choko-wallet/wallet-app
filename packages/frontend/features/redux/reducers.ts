@@ -7,8 +7,9 @@ import basketSlice from '../slices/basketSlice';
 import counterSlice from '../slices/counterSlice';
 
 export const rootReducer = combineReducers({
-  counter: counterSlice,
-  basket: basketSlice
+  basket: basketSlice,
+  counter: counterSlice
+
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

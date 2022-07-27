@@ -22,8 +22,9 @@ const initialState: ItemsSliceState = {
 };
 
 export const basketSlice = createSlice({
-  name: 'basket',
   initialState,
+  name: 'basket',
+
   reducers: {
     addToBasket: (state, action: PayloadAction<Item>) => {
       state.items = [...state.items, action.payload];
@@ -31,13 +32,14 @@ export const basketSlice = createSlice({
     addToBasketString: (state, action: PayloadAction<string>) => {
       state.items = [...state.items,
         {
-          id: 666,
           account: action.payload,
-          pro: true,
           city: {
-            country: 'Thailand',
-            city: 'Bangkok'
-          }
+            city: 'Bangkok',
+            country: 'Thailand'
+          },
+          id: 666,
+          pro: true
+
         }];
     },
 

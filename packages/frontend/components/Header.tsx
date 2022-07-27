@@ -3,9 +3,8 @@
 
 import { BellIcon,
   ChevronDownIcon, CogIcon,
-  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon, HeartIcon,
-  HomeIcon, LightningBoltIcon, MenuIcon, MoonIcon,
-  PaperAirplaneIcon, SearchIcon, SunIcon, TranslateIcon, UserIcon } from '@heroicons/react/outline';
+  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
+  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -14,7 +13,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import icon from '../images/icon.png';
 
-function Header () {
+function Header (): JSX.Element {
   const router = useRouter();
   const [accountNumber, setAccountNumber] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
@@ -24,6 +23,7 @@ function Header () {
 
   // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
+    setAccountNumber('222222222222222222222');
     setMounted(true);
   }, []);
 
@@ -72,7 +72,7 @@ function Header () {
               <TranslateIcon className='h-5 cursor-pointer ' />
               <ChevronDownIcon className='h-5 cursor-pointer ' />
             </label>
-            <ul className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52'>
+            <ul className='p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52'>
               <li><a>English</a></li>
               <li><a>中文</a></li>
             </ul>
@@ -84,10 +84,10 @@ function Header () {
               2222......2222
               <ChevronDownIcon className='h-5 ml-2 cursor-pointer' />
             </label>
-            <ul className='dropdown-content menu p-2 shadow bg-base-100 rounded-box w-80 '>
+            <ul className='p-2 shadow dropdown-content menu bg-base-100 rounded-box w-80 '>
 
-              <div className='card w-70 bg-blue-200 text-neutral-content '>
-                <div className='card-body items-center text-center'>
+              <div className='bg-blue-200 card w-70 text-neutral-content '>
+                <div className='items-center text-center card-body'>
                   <div className='flex items-center justify-center h-10 text-gray-600'>
                     222222
                     {!showpass
@@ -98,7 +98,7 @@ function Header () {
                       </>
                       : <span>222222222</span>}
                     2222</div>
-                  <div className='card-actions justify-end'>
+                  <div className='justify-end card-actions'>
                     <div className='grid grid-cols-2 py-4' >
 
                       <CopyToClipboard onCopy={() => setCopied(true)}
@@ -137,7 +137,7 @@ function Header () {
                 type='checkbox' />
               <div className='modal'>
                 <div className='modal-box'>
-                  <h3 className='font-bold text-lg'>Remove Account</h3>
+                  <h3 className='text-lg font-bold'>Remove Account</h3>
                   <p className='py-4'>Remove Account</p>
                   <div className='modal-action'>
                     <label className='btn'

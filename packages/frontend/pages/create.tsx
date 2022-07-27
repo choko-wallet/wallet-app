@@ -10,10 +10,10 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
 
-function Create () {
+function Create (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);

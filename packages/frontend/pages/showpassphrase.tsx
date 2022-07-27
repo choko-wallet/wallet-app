@@ -1,7 +1,7 @@
 // [object Object]
 // SPDX-License-Identifier: Apache-2.0
 
-import { ChevronDoubleDownIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon, LocationMarkerIcon, RefreshIcon } from '@heroicons/react/outline';
+import { DuplicateIcon, RefreshIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -12,7 +12,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
 
-function ShowPassphrase () {
+function ShowPassphrase (): JSX.Element {
   const router = useRouter();
   const [seeds, setSeeds] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
@@ -20,7 +20,7 @@ function ShowPassphrase () {
   const [show, setShow] = useState<boolean>(false);
 
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setSeeds('token token token token token token token token token token token token');
@@ -46,11 +46,11 @@ function ShowPassphrase () {
               src={bg}
             />
             : null}
-          <div className='absolute flex flex-col items-center justify-center w-full text-center top-16 space-y-4'>
+          <div className='absolute flex flex-col items-center justify-center w-full space-y-4 text-center top-16'>
             <p className='text-2xl font-bold '>Show Passphrase</p>
-            <p className='text-sm  '>Please Input Your Password</p>
+            <p className='text-sm '>Please Input Your Password</p>
 
-            <input className='input input-bordered input-info w-full max-w-xs'
+            <input className='w-full max-w-xs input input-bordered input-info'
               onChange={(e) => setInput(e.target.value)}
               placeholder='Type here'
               type='text'

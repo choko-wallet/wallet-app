@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-function Footer () {
+function Footer (): JSX.Element {
   return (
     <div className='grid grid-cols-1 px-10 py-10 bg-gray-100 md:grid-cols-3 md:px-16'>
       <div className='p-2 space-y-4 text-xs text-gray-800 border-t'>

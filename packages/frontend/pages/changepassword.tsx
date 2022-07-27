@@ -1,21 +1,19 @@
 // [object Object]
 // SPDX-License-Identifier: Apache-2.0
 
-import { ChevronDoubleDownIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon, LocationMarkerIcon, RefreshIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
 
-function ChangePassword () {
+function ChangePassword (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -37,20 +35,20 @@ function ChangePassword () {
               src={bg}
             />
             : null}
-          <div className='absolute flex flex-col items-center justify-center w-full text-center top-16 space-y-4'>
+          <div className='absolute flex flex-col items-center justify-center w-full space-y-4 text-center top-16'>
             <p className='text-2xl font-bold '>Change Password</p>
-            <p className='text-sm  '>Old Password</p>
+            <p className='text-sm '>Old Password</p>
 
-            <input className='input input-bordered input-info w-full max-w-xs'
+            <input className='w-full max-w-xs input input-bordered input-info'
               placeholder='Type here'
               type='text' />
-            <p className='text-sm  '>New Password</p>
+            <p className='text-sm '>New Password</p>
 
-            <input className='input input-bordered input-info w-full max-w-xs'
+            <input className='w-full max-w-xs input input-bordered input-info'
               placeholder='Type here'
               type='text' />
 
-            <input className='input input-bordered input-info w-full max-w-xs'
+            <input className='w-full max-w-xs input input-bordered input-info'
               placeholder='Type here'
               type='text' />
 

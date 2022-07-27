@@ -1470,12 +1470,9 @@ __metadata:
     "@polkadot/api": ^8.13.1
     "@polkadot/util-crypto": ^10.1.1
     "@polkadot/wasm-crypto": ^6.3.1
-    "@polkadot/wasm-crypto-asmjs": ^6.3.1
     "@reduxjs/toolkit": ^1.8.3
     "@skyekiwi/util": ^0.7.6
-    "@types/react": 18.0.9
     "@types/react-copy-to-clipboard": ^5.0.3
-    "@types/react-dom": 18.0.5
     autoprefixer: ^10.4.7
     daisyui: ^2.19.0
     next: latest
@@ -2465,7 +2462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/wasm-crypto-asmjs@npm:6.3.1, @polkadot/wasm-crypto-asmjs@npm:^6.3.1":
+"@polkadot/wasm-crypto-asmjs@npm:6.3.1":
   version: 6.3.1
   resolution: "@polkadot/wasm-crypto-asmjs@npm:6.3.1"
   dependencies:
@@ -3180,15 +3177,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.5":
-  version: 18.0.5
-  resolution: "@types/react-dom@npm:18.0.5"
-  dependencies:
-    "@types/react": "*"
-  checksum: cd48b81950f499b52a3f0c08261f00046f9b7c96699fa249c9664e257e820daf6ecac815cd1028cebc9d105094adc39d047d1efd79214394b8b2d515574c0787
-  languageName: node
-  linkType: hard
-
 "@types/react@npm:*":
   version: 18.0.15
   resolution: "@types/react@npm:18.0.15"
@@ -3197,17 +3185,6 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: e22cc388d1c145aa184787e44dc28db4789976c704cd5db475c170bb76a560eb81def5f346cfe750949bb3d43ad88822b8cbb9f19b1286e3795892a8263e7715
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:18.0.9":
-  version: 18.0.9
-  resolution: "@types/react@npm:18.0.9"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 162364dad716d9017ee34aabf2ea37499709ebbdef70392ae1b39225985971e1a46f121efb9c5c7da92144ee1d96d4525df806a7c1c03a5db7fd31dd034ddc7a
   languageName: node
   linkType: hard
 

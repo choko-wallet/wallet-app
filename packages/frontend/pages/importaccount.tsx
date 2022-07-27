@@ -1,22 +1,20 @@
 // [object Object]
 // SPDX-License-Identifier: Apache-2.0
 
-import { DuplicateIcon, RefreshIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
 
-function ImportAccount () {
+function ImportAccount (): JSX.Element {
   const router = useRouter();
   const [input, setInput] = useState<string>('');
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);

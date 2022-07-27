@@ -3,9 +3,19 @@
 
 import type { RootState } from '../redux/store';
 
+interface Item {
+  id: number;
+  account: string;
+  pro: boolean;
+  city: {
+    country: string,
+    city: string
+  }
+}
+
 // count selectors
-export const selectCount = (state: RootState) => state.counter.value;
+export const selectCount = (state: RootState): number => state.counter.value;
 
 // basket selectors
-export const selectItems = (state: RootState) => state.basket.items;
-export const selectTotal = (state: RootState) => state.basket.items.reduce((total, item) => total + item.id, 0);
+export const selectItems = (state: RootState): Item[] => state.basket.items;
+export const selectTotal = (state: RootState): number => state.basket.items.reduce((total, item) => total + item.id, 0);

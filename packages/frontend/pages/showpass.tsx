@@ -1,9 +1,9 @@
 // [object Object]
 // SPDX-License-Identifier: Apache-2.0
-
 import { DuplicateIcon, RefreshIcon } from '@heroicons/react/outline';
 import { mnemonicGenerate,
   mnemonicValidate } from '@polkadot/util-crypto';
+import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -18,13 +18,13 @@ interface Props {
   m12Seeds: string
 }
 
-function ShowPass ({ m12Seeds }: Props) {
+function ShowPass ({ m12Seeds }: Props): JSX.Element {
   const router = useRouter();
   const [seeds, setSeeds] = useState<Array<string>>(m12Seeds.split(' '));
   const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>(m12Seeds);
   const [copied, setCopied] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   console.log('m12Seeds');
   console.log(m12Seeds);
@@ -117,7 +117,7 @@ function ShowPass ({ m12Seeds }: Props) {
 
 export default ShowPass;
 
-export async function getServerSideProps () {
+export const getServerSideProps: GetServerSideProps = async () => {
   const m12Seeds = mnemonicGenerate();
 
   console.log(`Generated mnemonic: ${m12Seeds}`);
@@ -131,4 +131,4 @@ export async function getServerSideProps () {
       }
     };
   }
-}
+};

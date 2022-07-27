@@ -16,7 +16,7 @@ import { decrement,
   increment,
   incrementByAmount } from '../features/slices/counterSlice';
 
-function ReduxTest () {
+function ReduxTest (): JSX.Element {
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
@@ -24,18 +24,18 @@ function ReduxTest () {
 
   console.log(store.getState());
   console.log(items);
-  console.log('id total: ' + total);
-  console.log('count: ' + count);
+  console.log(total);
+  console.log(count);
 
   const addItemTobasket1 = () => {
     const product = {
-      id: 1,
       account: '1111111111',
-      pro: true,
       city: {
-        country: 'Thailand',
-        city: 'bangkok'
-      }
+        city: 'bangkok',
+        country: 'Thailand'
+      },
+      id: 1,
+      pro: true
     };
 
     dispatch(addToBasket(product));
@@ -44,13 +44,16 @@ function ReduxTest () {
 
   const addItemTobasket2 = () => {
     const product = {
-      id: 2,
       account: '2222222222',
-      pro: true,
       city: {
-        country: 'Thailand',
-        city: 'bangkok'
-      }
+        city: 'bangkok',
+        country: 'Thailand'
+
+      },
+      id: 2,
+
+      pro: true
+
     };
 
     dispatch(addToBasket(product));

@@ -2,17 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
+// import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import btc from '../images/btc.png';
 
-function Home () {
+function Home (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
-  const { setTheme, theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -45,14 +43,14 @@ function Home () {
           <div className='stat'>
             <div className='stat-title'>Accont Id</div>
             <div className='stat-title'>111111......1111</div>
-            <button className='btn btn-sm w-16'>copy</button>
+            <button className='w-16 btn btn-sm'>copy</button>
             {/* <div class="stat-actions">
               <button class="btn btn-sm">copy</button>
             </div> */}
           </div>
         </div>
 
-        <div className='stats stats-horizontal shadow'>
+        <div className='shadow stats stats-horizontal'>
           <div className='relative stat'>
             <Image
               layout='fill'
@@ -74,7 +72,7 @@ function Home () {
           </div>
         </div>
 
-        <div className='stats stats-horizontal shadow'>
+        <div className='shadow stats stats-horizontal'>
           <div className='relative stat'>
             <Image
               layout='fill'
@@ -96,7 +94,7 @@ function Home () {
           </div>
         </div>
 
-        <div className='stats stats-horizontal shadow'>
+        <div className='shadow stats stats-horizontal'>
           <div className='relative stat'>
             <Image
               layout='fill'
