@@ -1461,7 +1461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/core@workspace:packages/core":
+"@choko-wallet/core@0.1.0, @choko-wallet/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/core@workspace:packages/core"
   dependencies:
@@ -1494,6 +1494,15 @@ __metadata:
     react-dom: 18.1.0
     react-redux: ^8.0.2
     tailwindcss: ^3.1.2
+  languageName: unknown
+  linkType: soft
+
+"@choko-wallet/known-networks@workspace:packages/known-networks":
+  version: 0.0.0-use.local
+  resolution: "@choko-wallet/known-networks@workspace:packages/known-networks"
+  dependencies:
+    "@choko-wallet/core": 0.1.0
+    "@skyekiwi/util": ^0.8.3
   languageName: unknown
   linkType: soft
 
