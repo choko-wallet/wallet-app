@@ -8,7 +8,7 @@ import { SymmetricEncryption } from '@skyekiwi/crypto';
 
 import { CURRENT_VERSION, KeypairType, Version } from './types';
 import * as Util from './util';
-import { DappDescriptor } from '.';
+import { IDappDescriptor } from '.';
 
 export interface AccountCreationOption {
   keyType: KeypairType;
@@ -16,7 +16,31 @@ export interface AccountCreationOption {
   hasEncryptedPrivateKeyExported: boolean;
 }
 
-export class UserAccount {
+export interface ILockedPrivateKey {
+  encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
+
+  keyType: KeypairType; // 'sr25519' | 'ed25519' | 'secp256k1';
+  localKeyEncryptionStrategy: number; // 'password-v0' | 'webauthn';
+  hasEncryptedPrivateKeyExported: boolean;
+
+  version: Version;
+}
+
+export interface AccountBalance {
+  freeBalance: string;
+  lockedBalance: string;
+}
+
+export interface IUserAccountInfo extends IUserAccount {
+  // derived fields
+  balance?: AccountBalance;
+  connectedDapps?: IDappDescriptor[];
+  // ....
+
+  version: Version,
+}
+
+export interface IUserAccount {
   // CORE FIELDS
   privateKey?: Uint8Array;
 
@@ -34,6 +58,20 @@ export class UserAccount {
   publicKey: Uint8Array; // len == 32 for curve25519 family | len == 33 for secp256k1
 
   // VERSION FIELD
+  version: Version;
+}
+
+export class UserAccount implements IUserAccount {
+  privateKey?: Uint8Array;
+
+  keyType: KeypairType;
+  localKeyEncryptionStrategy: number; // 1='password-v0' | 2='webauthn';
+  hasEncryptedPrivateKeyExported: boolean;
+
+  isLocked: boolean;
+  address: string;
+  publicKey: Uint8Array; // len == 32 for curve25519 family | len == 33 for secp256k1
+
   version: Version;
 
   constructor (config: {
@@ -236,7 +274,7 @@ export class UserAccount {
   }
 }
 
-export class LockedPrivateKey {
+export class LockedPrivateKey implements ILockedPrivateKey {
   encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
 
   keyType: KeypairType; // 'sr25519' | 'ed25519' | 'secp256k1';
@@ -320,17 +358,4 @@ export class LockedPrivateKey {
 
     return lockedPrivateKey;
   }
-}
-export interface AccountBalance {
-  freeBalance: string;
-  lockedBalance: string;
-}
-
-export interface UserAccountInfo extends UserAccount {
-  // derived fields
-  balance?: AccountBalance;
-  connectedDapps?: DappDescriptor[];
-  // ....
-
-  version: Version,
 }

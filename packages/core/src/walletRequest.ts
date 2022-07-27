@@ -1,13 +1,13 @@
 // Copyright 2021-2022 @choko-wallet/core authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { DappDescriptor } from '.';
+import { IDappDescriptor } from '.';
 
 type UUID = string;
 
 export class WalletRequestDescriptor {
   authorizationLevel: 'mandetory' | 'optional';
-  origin: DappDescriptor;
+  origin: IDappDescriptor;
 
   isRemoteRequest: boolean;
 

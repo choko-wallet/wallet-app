@@ -3,15 +3,15 @@
 
 import type { Version } from './types';
 
-import { Network } from '.';
+import { INetwork } from '.';
 
-export interface DappDescriptor {
+export interface IDappDescriptor {
   displayName: string;
   infoName: string;
 
-  activeNetwork: Network;
-  defaultNetwork?: Network; // or encoded network?
-  avaliableNetworks?: Network[]; // or encoded networks?
+  activeNetwork: INetwork;
+  defaultNetwork?: INetwork; // or encoded network?
+  avaliableNetworks?: INetwork[]; // or encoded networks?
 
-  version: Version,
+  version: Version;
 }

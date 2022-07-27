@@ -3,10 +3,10 @@
 
 import type { Hash, Version } from './types';
 
-import { Network } from '.';
+import { INetwork } from '.';
 
 export interface Transaction {
-  network: Network;
+  network: INetwork;
   encoded: Uint8Array;
   version: Version;
 }

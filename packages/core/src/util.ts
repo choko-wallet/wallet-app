@@ -1,6 +1,8 @@
 // Copyright 2021-2022 @choko-wallet/core authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { xxhashAsU8a } from '@polkadot/util-crypto';
+
 import { KeypairType } from './types';
 
 export const keypairTypeNumberToString = (keyType: number): KeypairType => {
@@ -46,4 +48,8 @@ export const keypairTypeToCurveType = (keyType: KeypairType): string => {
     default:
       throw new Error('unknown key type - Util.mapKeypairTypeToEncryptionCurve');
   }
+};
+
+export const xxHash = (data: string | Uint8Array): Uint8Array => {
+  return xxhashAsU8a(data);
 };
