@@ -40,6 +40,7 @@ export class UserAccount {
     keyType: KeypairType,
     localKeyEncryptionStrategy: number,
     hasEncryptedPrivateKeyExported: boolean,
+    version?: Version,
   }) {
     const { hasEncryptedPrivateKeyExported, keyType, localKeyEncryptionStrategy } = config;
 
@@ -121,7 +122,7 @@ export class UserAccount {
       localKeyEncryptionStrategy: option.localKeyEncryptionStrategy
     });
 
-    userAccount.unlock(privateKey, option.keyType);
+    userAccount.unlock(privateKey);
 
     return userAccount;
   }
@@ -178,22 +179,61 @@ export class UserAccount {
       localKeyEncryptionStrategy: lockedPrivateKey.localKeyEncryptionStrategy
     });
 
-    userAccount.unlock(privateKey, Util.mapKeyTypeToKeypairType(lockedPrivateKey.keyType));
+    userAccount.unlock(privateKey);
 
     return userAccount;
   }
 
-  // Account Serde & Account Index 
+  // Account Serde & Account Index
 
-  //   public async signAndSendTransaction()
+  // account serialize does not include private key info
+  public serialize (): Uint8Array {
+    if (!this.address || !this.publicKey) {
+      throw new Error('account is not initialized - UserAccount.serialize');
+    }
 
-  //   public async decryptMessage(
-  //       message: Uint8Array,
-  //       publicKey: Uint8Array,
-  //       keyType: KeypairType
-  //   ): Promise<Uint8Array> {
+    const res = new Uint8Array(
+      32 + // publicKey len
+        1 + // keyType
+        1 + // localKeyEncryptionStrategy
+        1 + // hasEncryptedPrivateKeyExported
+        1 // version
+    );
 
-//   }
+    res.set(this.publicKey, 0);
+    res.set([Util.keypairTypeStringToNumber(this.keyType)], 32);
+    res.set([this.localKeyEncryptionStrategy], 33);
+    res.set([this.hasEncryptedPrivateKeyExported ? 1 : 0], 34);
+    res.set([this.version], 35);
+
+    return res;
+  }
+
+  public static deserialize (data: Uint8Array): UserAccount {
+    if (data.length !== 36) {
+      throw new Error('invalid data length - UserAccount.deserialize');
+    }
+
+    const publicKey = data.slice(0, 32);
+    const keyType = Util.keypairTypeNumberToString(data[32]);
+    const localKeyEncryptionStrategy = data[33];
+    const hasEncryptedPrivateKeyExported = data[34] === 1;
+    const version = data[35];
+
+    const userAccount = new UserAccount({
+      hasEncryptedPrivateKeyExported: hasEncryptedPrivateKeyExported,
+
+      keyType: keyType,
+
+      localKeyEncryptionStrategy: localKeyEncryptionStrategy,
+
+      version: version
+    });
+
+    userAccount.publicKey = publicKey;
+
+    return userAccount;
+  }
 }
 
 export interface AccountBalance {

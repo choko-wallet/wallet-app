@@ -1467,6 +1467,7 @@ __metadata:
   dependencies:
     "@polkadot/util-crypto": ^10.1.1
     "@skyekiwi/crypto": ^0.8.3
+    "@skyekiwi/util": ^0.8.3
   languageName: unknown
   linkType: soft
 
@@ -3337,7 +3338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@skyekiwi/util@npm:0.8.3":
+"@skyekiwi/util@npm:0.8.3, @skyekiwi/util@npm:^0.8.3":
   version: 0.8.3
   resolution: "@skyekiwi/util@npm:0.8.3"
   dependencies:

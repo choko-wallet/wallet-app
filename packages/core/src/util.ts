@@ -3,7 +3,7 @@
 
 import { KeypairType } from './types';
 
-export const mapKeyTypeToKeypairType = (keyType: number): KeypairType => {
+export const keypairTypeNumberToString = (keyType: number): KeypairType => {
   switch (keyType) {
     case 0:
       return 'sr25519';
@@ -18,7 +18,7 @@ export const mapKeyTypeToKeypairType = (keyType: number): KeypairType => {
   }
 };
 
-export const mapKeypairTypeToNumber = (keyType: KeypairType): number => {
+export const keypairTypeStringToNumber = (keyType: KeypairType): number => {
   switch (keyType) {
     case 'sr25519':
       return 0;
@@ -33,7 +33,7 @@ export const mapKeypairTypeToNumber = (keyType: KeypairType): number => {
   }
 };
 
-export const mapKeypairTypeToEncryptionCurve = (keyType: KeypairType): string => {
+export const keypairTypeToCurveType = (keyType: KeypairType): string => {
   switch (keyType) {
     case 'sr25519':
       return 'sr25519';
