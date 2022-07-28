@@ -11,10 +11,10 @@ import { selectCount,
 import { store } from '../features/redux/store';
 import { addToBasket,
   addToBasketString,
-  removeFromBasket } from '../features/slices/basketSlice';
+  removeFromBasket } from '../features/slices/test/basketSlice';
 import { decrement,
   increment,
-  incrementByAmount } from '../features/slices/counterSlice';
+  incrementByAmount } from '../features/slices/test/counterSlice';
 
 function ReduxTest (): JSX.Element {
   const dispatch = useDispatch();
