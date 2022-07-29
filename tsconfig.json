@@ -8,16 +8,8 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@choko-wallet/core": [ "packages/core/src" ],
-      "@choko-wallet/core/*": [ "packages/core/src/*" ],
       "@choko-wallet/frontend": [ "packages/frontend/" ],
       "@choko-wallet/frontend/*": [ "packages/frontend/*" ],
-      "@choko-wallet/known-networks": [ "packages/known-networks/src" ],
-      "@choko-wallet/known-networks/*": [ "packages/known-networks/src/*" ],
-      "@choko-wallet/request-handler": [ "packages/request-handler/src" ],
-      "@choko-wallet/request-handler/*": [ "packages/request-handler/src/*" ],
-      "@choko-wallet/sdk": [ "packages/sdk/src" ],
-      "@choko-wallet/sdk/*": [ "packages/sdk/src/*" ],
     },
     "skipLibCheck": true,
     "typeRoots": [

@@ -1,9 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { UserAccount } from '@choko-wallet/core';
 import { mnemonicToMiniSecret } from '@polkadot/util-crypto';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { UserAccount } from '@choko-wallet/core';
 
 interface UserSliceItem {
   userAccount: UserAccount;

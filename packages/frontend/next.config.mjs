@@ -9,40 +9,5 @@ export default {
     // TODO: remove this
     ignoreDuringBuilds: true
   },
-  reactStrictMode: true,
-
-  webpack: (config, options) => {
-    config.module.rules.push({
-      test: /\.(ts)x?$/, // Just `tsx?` file only
-      use: [
-        {
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true,
-            experimentalWatchApi: true,
-            // onlyCompileBundledFiles: true
-          }
-        }
-      ]
-    });
-
-    // config.module.rules.push({
-    //   test: /\.m?js$/,
-    //   include: /(core|known-networks)/i,
-    //   use: {
-    //     loader: 'babel-loader',
-    //     options: {
-    //       presets: [
-    //         '@babel/preset-env',
-    //       ],
-    //       plugins: [
-    //         "@babel/plugin-proposal-private-methods",
-    //         "@babel/plugin-proposal-class-properties",
-    //         '@babel/plugin-proposal-object-rest-spread',
-    //       ]
-    //     }
-    //   }
-    // });
-    return config;
-  }
+  reactStrictMode: true
 };

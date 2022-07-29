@@ -4,10 +4,9 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
 import { waitReady } from '@polkadot/wasm-crypto';
+import { sendTx } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-
-import { sendTx } from '@skyekiwi/util';
 
 // localhost:3000/sign?callback=http%3A%2F%2Flocalhost%3A3000&tx=0x94040500000ec62bcc320bbfb7fb77fe4b8cdfd871d6d8114e0542f8037e5e6d9b1b724b6604&network=polkadot
 function Sign (): JSX.Element {

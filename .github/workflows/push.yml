@@ -2,13 +2,13 @@ name: Push Master
 on:
   push:
     branches:
-      - master
+      - master 
 jobs:
   master:
     if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
     strategy:
       matrix:
-        step: ['build:release']
+        step: ['lint', 'test', 'build']
     name: ${{ matrix.step }}
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +20,6 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         GH_PAT: ${{ secrets.GH_PAT }}
         GH_RELEASE_GITHUB_API_TOKEN: ${{ secrets.GH_PAT }}
-        NPM_TOKEN: ${{ secrets.CHOKO_NPM}}
         SEED_PHRASE: ${{ secrets.SEED_PHRASE }}
       run: |
         yarn install --immutable | grep -v 'YN0013'
