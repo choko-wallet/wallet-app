@@ -18,5 +18,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/skyekiwi/choko-wallet-nexet "
+  },
+  "dependencies": {
+    "@choko-wallet/core": "workspace:packages/core"
   }
 }

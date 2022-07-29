@@ -1465,7 +1465,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@choko-wallet/core@workspace:packages/core"
   dependencies:
-    "@choko-wallet/known-networks": "workspace:packages/known-networks"
+    "@choko-wallet/known-networks": 0.1.0
     "@polkadot/util-crypto": ^10.1.1
     "@skyekiwi/crypto": ^0.8.3
     "@skyekiwi/util": ^0.8.3
@@ -1477,6 +1477,7 @@ __metadata:
   resolution: "@choko-wallet/frontend@workspace:packages/frontend"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
+    "@choko-wallet/core": "workspace:packages/core"
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
     "@polkadot/util-crypto": ^10.1.1
@@ -1498,7 +1499,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/known-networks@workspace:packages/known-networks":
+"@choko-wallet/known-networks@0.1.0, @choko-wallet/known-networks@workspace:packages/known-networks":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/known-networks@workspace:packages/known-networks"
   dependencies:
@@ -1519,6 +1520,8 @@ __metadata:
 "@choko-wallet/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/sdk@workspace:packages/sdk"
+  dependencies:
+    "@choko-wallet/core": "workspace:packages/core"
   languageName: unknown
   linkType: soft
 
