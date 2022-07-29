@@ -5,13 +5,13 @@ import type { Hash, Version } from './types';
 
 import { INetwork } from '.';
 
-export interface Transaction {
+export interface ITransaction {
   network: INetwork;
   encoded: Uint8Array;
   version: Version;
 }
 
-export interface TransactionOutcome {
+export interface ITransactionOutcome {
   isSuccessful: boolean;
 
   transactionHash: Hash;

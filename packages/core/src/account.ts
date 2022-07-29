@@ -4,8 +4,7 @@
 import Keyring from '@polkadot/keyring';
 import { cryptoWaitReady, mnemonicToMiniSecret, mnemonicValidate } from '@polkadot/util-crypto';
 
-import { SymmetricEncryption } from '@skyekiwi/crypto';
-
+// import { SymmetricEncryption } from '@skyekiwi/crypto';
 import { CURRENT_VERSION, KeypairType, Version } from './types';
 import * as Util from './util';
 import { IDappDescriptor } from '.';

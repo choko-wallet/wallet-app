@@ -1,6 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import { UserAccount } from '@choko-wallet/core';
 import { mnemonicToMiniSecret } from '@polkadot/util-crypto';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserSliceItem {
   userAccount: UserAccount;
@@ -17,8 +20,8 @@ const initialState: UserSliceItem = {
   }),
   m12Seeds: undefined,
   privateKey: undefined,
-  serializedUserAccount: undefined,
-}
+  serializedUserAccount: undefined
+};
 
 export const userSlice = createSlice({
   initialState,
@@ -43,8 +46,9 @@ export const userSlice = createSlice({
     lockUserAccount: (state, action: PayloadAction<Uint8Array>) => {
       const userAccount = state.userAccount;
       const lockedPrivateKey = userAccount.lockUserAccount(action.payload);
+
       state.serializedUserAccount = lockedPrivateKey.serialize();
-    },
+    }
   }
 });
 

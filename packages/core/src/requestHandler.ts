@@ -1,8 +1,8 @@
 // Copyright 2021-2022 @choko-wallet/core authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { IDappDescriptor, IUserAccount } from '.';
 import { HexString, Version } from './types';
+import { IDappDescriptor, IUserAccount } from '.';
 
 export declare type RequestHandler = (r: IRequest) => IResponse;
 export declare type RequestHandlers = Record<HexString, IRequestHandlerDescriptor>;
@@ -61,5 +61,5 @@ export interface IPayload {
 }
 
 export interface IRequestError {
-  reason: Uint8Array; 
+  reason: Uint8Array;
 }

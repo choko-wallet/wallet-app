@@ -5,8 +5,9 @@ import type { Color, HexString, Image } from './types';
 
 import { knownNetworks } from '@choko-wallet/known-networks';
 
-import * as Util from './util';
 import { u8aToHex } from '@skyekiwi/util';
+
+import * as Util from './util';
 
 export interface INetwork {
   providers: Record<string, string>;
@@ -62,6 +63,7 @@ export class Network implements INetwork {
 
   public static deserialize (data: Uint8Array): INetwork {
     const hash = u8aToHex(data);
+
     if (hash in knownNetworks) {
       return knownNetworks[hash];
     } else {
