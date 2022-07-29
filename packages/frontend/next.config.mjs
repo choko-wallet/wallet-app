@@ -15,35 +15,34 @@ export default {
     config.module.rules.push({
       test: /\.(ts)x?$/, // Just `tsx?` file only
       use: [
-        // options.defaultLoaders.babel, I don't think it's necessary to have this loader too
         {
           loader: 'ts-loader',
           options: {
             transpileOnly: true,
             experimentalWatchApi: true,
-            onlyCompileBundledFiles: true
+            // onlyCompileBundledFiles: true
           }
         }
       ]
     });
 
-    config.module.rules.push({
-      test: /\.m?js$/,
-      include: /(core|known-networks)/i,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            '@babel/preset-env',
-          ],
-          plugins: [
-            "@babel/plugin-proposal-private-methods",
-            "@babel/plugin-proposal-class-properties",
-            '@babel/plugin-proposal-object-rest-spread',
-          ]
-        }
-      }
-    });
+    // config.module.rules.push({
+    //   test: /\.m?js$/,
+    //   include: /(core|known-networks)/i,
+    //   use: {
+    //     loader: 'babel-loader',
+    //     options: {
+    //       presets: [
+    //         '@babel/preset-env',
+    //       ],
+    //       plugins: [
+    //         "@babel/plugin-proposal-private-methods",
+    //         "@babel/plugin-proposal-class-properties",
+    //         '@babel/plugin-proposal-object-rest-spread',
+    //       ]
+    //     }
+    //   }
+    // });
     return config;
   }
 };
