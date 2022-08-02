@@ -1,10 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BellIcon,
+import {
+  BellIcon,
   ChevronDownIcon, CogIcon,
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon } from '@heroicons/react/outline';
+  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon
+} from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -13,7 +15,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import icon from '../images/icon.png';
 
-function Header (): JSX.Element {
+function Header(): JSX.Element {
   const router = useRouter();
   const [accountNumber, setAccountNumber] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
@@ -32,7 +34,7 @@ function Header (): JSX.Element {
   }
 
   return (
-    <div className='sticky top-0 z-50 bg-white border-b shadow-md'>
+    <div className='sticky top-0 z-50 bg-transparent'>
       <div className='flex justify-between max-w-6xl p-2 lg:mx-auto'>
         <div className='flex items-center justify-center space-x-10' >
           <div className='relative items-center w-10 h-10 my-auto cursor-pointer'
