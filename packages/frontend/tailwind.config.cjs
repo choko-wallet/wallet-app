@@ -13,7 +13,10 @@ module.exports = {
   },
   plugins: [require('daisyui')],
   theme: {
-    extend: {}
-  }
-
+    extend: {
+      colors: {
+        footerBg: "#d8c9d8",//bg-footerBg
+      },
+    },
+  },
 };

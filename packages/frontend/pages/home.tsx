@@ -2,14 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import Image from 'next/image';
+import {
+  ChevronDownIcon
+} from '@heroicons/react/outline';
 // import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-
+import {
+  PaperAirplaneIcon, ArrowDownIcon, SwitchHorizontalIcon
+} from '@heroicons/react/outline';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import btc from '../images/btc.png';
+import near from '../images/near.png';
 
-function Home (): JSX.Element {
+function Home(): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -21,105 +26,111 @@ function Home (): JSX.Element {
   }
 
   return (
-    <div>
+    <div className=' bg-gradient-to-br from-white via-[#e7bed3] to-white'>
       <Header />
-      {/* <div className="relative h-[400px] sm:h-[450px] lg:h-[500px] xl:h-[600px] 2xl:h-[700px] ">
-        <Image
-          src={bg}
-          layout="fill"
-          objectFit="contain"
-        />
-      </div> */}
-      <div className='flex flex-col max-w-2xl px-8 mx-auto my-10 sm:px-16 '>
-        <div className='stats bg-primary text-primary-content '>
-          <div className='stat'>
-            <div className='stat-title'>Account balance</div>
-            <div className='stat-value'>$66,600</div>
-            <div className='stat-desc'>24h  ↗︎ 400 (3%)</div>
-            <div className='stat-actions'>
-              {/* <button class="btn btn-sm btn-success">Add funds</button> */}
+
+      <div className='relative'>
+        <main className='flex flex-col items-center w-6/12 pb-10 m-10 mx-auto space-y-3 shadow-inner shadow-gray-500 rounded-3xl bg-gradient-to-br from-fuchsia-100 via-[#e7bed3] to-fuchsia-100'>
+          <p className='mt-8 text-lg italic font-semi-bold' >Total Balance</p>
+          <p className='text-3xl font-extrabold '>$793.32</p>
+          <p className='font-mono text-xs text-gray-500 '>in Choko Wallet</p>
+
+          <div className='flex p-2 space-x-10'>
+            <div>
+              <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
+                <PaperAirplaneIcon className='h-6 text-white rotate-45 cursor-pointer ' />
+              </div>
+              <p className='pt-2 text-gray-800'>Send</p>
             </div>
+            <div className='flex flex-col items-center justify-center'>
+              <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
+                <SwitchHorizontalIcon className='h-6 text-white cursor-pointer ' />
+
+              </div>
+              <p className='pt-2 text-gray-800'>Receive</p>
+            </div>
+            <div>
+              <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
+                <ArrowDownIcon className='h-6 text-white cursor-pointer ' />
+              </div>
+              <p className='pt-2 text-gray-800'>Swap</p>
+            </div>
+
           </div>
-          <div className='stat'>
-            <div className='stat-title'>Accont Id</div>
-            <div className='stat-title'>111111......1111</div>
-            <button className='w-16 btn btn-sm'>copy</button>
-            {/* <div class="stat-actions">
-              <button class="btn btn-sm">copy</button>
-            </div> */}
+
+          <div className='w-10/12 rounded-lg h-72 bg-[#cfbcdb] '>
+            <div className='flex justify-between text-white text-sm p-2 w-full  bg-[#c1aed6] rounded-lg'>
+              <p>Your Portfolio</p>
+              <p>Token Balance</p>
+            </div>
+
+            <div className=' mb-5  w-full  bg-[#cfbcdb] rounded-lg flex justify-between '>
+              <div className='flex items-center' >
+                <div className='relative w-6 h-6 m-3'>
+                  <Image
+                    layout='fill'
+                    objectFit='contain'
+                    src={near}
+                  />
+                </div>
+                <div className='p-1'>
+                  <p className='text-lg font-bold'>NEAR</p>
+                  <p className='text-xs text-white'>$10.12</p>
+                </div>
+              </div>
+
+              <div className='p-1'>
+                <div className='text-right p-3'>
+                  <p className='text-lg font-bold'>78.3912 Near</p>
+                  <p className='text-xs text-white'>$793.12USD</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+
+        </main >
+        <div className='absolute top-0 right-20'>
+          <div className='dropdown dropdown-hover dropdown-end '>
+            <label className='btn m-1 border-transparent  hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
+              <p className='flex items-center justify-center'>NETWORK
+                <ChevronDownIcon className='pl-2 h-5 cursor-pointer ' /></p>
+            </label>
+            <ul className='bg-gradient-to-br from-fuchsia-100 via-[#e7bed3] to-fuchsia-100 p-2  dropdown-content menu  rounded-box w-52 shadow-xl'>
+              <li className='flex'>
+                <a><span className='relative w-6 h-6'>
+                  <Image
+                    layout='fill'
+                    objectFit='contain'
+                    src={near}
+                  />
+                </span>Polkadot</a>
+              </li>
+              <li><a><span className='relative w-6 h-6'>
+                <Image
+                  layout='fill'
+                  objectFit='contain'
+                  src={near}
+                />
+              </span>Polygon</a>
+              </li>
+              <li><a><span className='relative w-6 h-6'>
+                <Image
+                  layout='fill'
+                  objectFit='contain'
+                  src={near}
+                />
+              </span>NEAR</a></li>
+            </ul>
           </div>
         </div>
-
-        <div className='shadow stats stats-horizontal'>
-          <div className='relative stat'>
-            <Image
-              layout='fill'
-              objectFit='contain'
-              src={btc}
-            />
-          </div>
-
-          <div className='stat'>
-            <div className='stat-title'>Bitcoin</div>
-            <div className='stat-value'>$30,000</div>
-            <div className='stat-desc'>1.5020306</div>
-          </div>
-
-          <div className='stat'>
-            <div className='stat-title'>market price</div>
-            <div className='stat-value'>20,200</div>
-            <div className='stat-desc'>↘︎ 2000 (2%) 24hrs</div>
-          </div>
-        </div>
-
-        <div className='shadow stats stats-horizontal'>
-          <div className='relative stat'>
-            <Image
-              layout='fill'
-              objectFit='contain'
-              src={btc}
-            />
-          </div>
-
-          <div className='stat'>
-            <div className='stat-title'>Bitcoin</div>
-            <div className='stat-value'>$30,000</div>
-            <div className='stat-desc'>1.5020306</div>
-          </div>
-
-          <div className='stat'>
-            <div className='stat-title'>market price</div>
-            <div className='stat-value'>20,200</div>
-            <div className='stat-desc'>↘︎ 2000 (2%) 24hrs</div>
-          </div>
-        </div>
-
-        <div className='shadow stats stats-horizontal'>
-          <div className='relative stat'>
-            <Image
-              layout='fill'
-              objectFit='contain'
-              src={btc}
-            />
-          </div>
-
-          <div className='stat'>
-            <div className='stat-title'>Bitcoin</div>
-            <div className='stat-value'>$30,000</div>
-            <div className='stat-desc'>1.5020306</div>
-          </div>
-
-          <div className='stat'>
-            <div className='stat-title'>market price</div>
-            <div className='stat-value'>20,200</div>
-            <div className='stat-desc'>↘︎ 2000 (2%) 24hrs</div>
-          </div>
-        </div>
-
-      </div>
-
+      </div >
       <Footer />
-    </div>
+
+    </div >
+
   );
 }
 
