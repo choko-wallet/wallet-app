@@ -1,1 +1,0 @@
-# @choko-wallet/sdk

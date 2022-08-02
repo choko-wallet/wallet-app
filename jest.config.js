@@ -5,12 +5,10 @@ const config = require('@skyekiwi/dev/config/jest.cjs');
 
 module.exports = Object.assign({}, config, {
   moduleNameMapper: {
-    '@choko-wallet/frontend(.*)$': '<rootDir>/packages/frontend/$1',
-    '@choko-wallet/sdk(.*)$': '<rootDir>/packages/sdk/src/$1'
+    '@choko-wallet/frontend(.*)$': '<rootDir>/packages/frontend/$1'
   },
   modulePathIgnorePatterns: [
-    '<rootDir>/packages/frontend/build',
-    '<rootDir>/packages/sdk/build'
+    '<rootDir>/packages/frontend/build'
   ],
   testTimeout: 3_000_000,
   transformIgnorePatterns: [
