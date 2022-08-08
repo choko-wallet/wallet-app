@@ -6,19 +6,44 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 
+import { useSelector } from 'react-redux';
+import { selectSeeds } from '../features/redux/selectors';
+
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
 
 function InputPass (): JSX.Element {
+  const seeds = useSelector(selectSeeds);
   const router = useRouter();
   const [input, setInput] = useState('');
+  const [randomInt, setRandomInt] = useState(0);
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
+
+  const randomIntFromInterval = (min: any, max: any) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
+  useEffect(() => {
+    setRandomInt(randomIntFromInterval(1, 12));
+  }, [])
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if(!seeds) {
+      router.push('/showpass');
+    }
+  }, [])
+
+  const handleVerify = () => {
+    if(input == seeds.split(' ')[randomInt - 1]) {
+      router.push('/setpassword');
+    }
+  }
 
   if (!mounted) {
     return null;
@@ -39,7 +64,7 @@ function InputPass (): JSX.Element {
           <div className='absolute flex flex-col items-center justify-center w-full text-center top-5'>
             <p className='text-2xl font-bold '>Verify Phrase</p>
             <p className='max-w-3xl py-6 text-sm font-bold'>Enter the following word from your recovery phrase to complete the setup process.</p>
-            <p className='text-lg font-bold '>Word #9</p>
+            <p className='text-lg font-bold '>Word #{randomInt}</p>
 
             {/* <div className="flex items-center py-2 rounded-full md:border-2 md:shadow-sm">
               <input
@@ -66,7 +91,7 @@ function InputPass (): JSX.Element {
             {/* 两种都行 disabled更好 */}
             <button className='px-10 py-3 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 disabled:bg-gray-300 disabled:active:scale-100 disabled:text-gray-800 disabled:shadow-none'
               disabled={!input}
-              onClick={() => router.push('/home')}
+              onClick={handleVerify}
             >
               Verify & Complete
             </button>

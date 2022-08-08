@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { DuplicateIcon, RefreshIcon } from '@heroicons/react/outline';
-import { mnemonicGenerate,
-  mnemonicValidate } from '@polkadot/util-crypto';
+import { mnemonicGenerate, mnemonicValidate } from '@polkadot/util-crypto';
 import { waitReady } from '@polkadot/wasm-crypto';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
@@ -11,7 +10,8 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
+import { saveSeeds } from '../features/slices/userSlice';
+import { useDispatch } from 'react-redux';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import bg from '../images/bg.jpg';
@@ -21,6 +21,7 @@ interface Props {
 }
 
 function ShowPass ({ m12Seeds }: Props): JSX.Element {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [seeds, setSeeds] = useState<Array<string>>(m12Seeds.split(' '));
   const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>(m12Seeds);
@@ -28,29 +29,19 @@ function ShowPass ({ m12Seeds }: Props): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const { theme } = useTheme();
 
-  console.log('m12Seeds');
-  console.log(m12Seeds);
-  // const m12SeedsArray = m12Seeds.split(" ");
-  // console.log(m12SeedsArray)
-  console.log(seeds);
-
-  // setSeeds()
-
   const refresh12Seeds = () => {
     const n12Seeds = mnemonicGenerate();
-
-    console.log(`Generated mnemonic: ${n12Seeds}`);
-
     const isValidMnemonic = mnemonicValidate(n12Seeds);
-
     if (isValidMnemonic) {
       setSeeds(n12Seeds.split(' '));
       setSeedsStringForCopy(n12Seeds);
+      dispatch(saveSeeds(n12Seeds));
     }
   };
 
   useEffect(() => {
     setMounted(true);
+    dispatch(saveSeeds(m12Seeds));
   }, []);
 
   if (!mounted) {
@@ -91,8 +82,7 @@ function ShowPass ({ m12Seeds }: Props): JSX.Element {
               </div>
               <div className='grid grid-cols-2 py-4' >
 
-                <CopyToClipboard onCopy={() => setCopied(true)}
-                  text={seedsStringForCopy}>
+                <CopyToClipboard onCopy={() => setCopied(true)} text={seedsStringForCopy}>
                   <p className='flex items-center justify-center w-48 p-1 m-1 text-sm font-semibold text-blue-800 bg-gray-200 rounded-md cursor-pointer'>
                     <DuplicateIcon className='h-5 px-3 cursor-pointer' />Copy</p>
                 </CopyToClipboard>

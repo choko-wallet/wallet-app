@@ -2,24 +2,45 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import Image from 'next/image';
-import {
-  ChevronDownIcon
-} from '@heroicons/react/outline';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
+import { ChevronDownIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
-import {
-  PaperAirplaneIcon, ArrowDownIcon, SwitchHorizontalIcon
-} from '@heroicons/react/outline';
+import { PaperAirplaneIcon, ArrowDownIcon, SwitchHorizontalIcon } from '@heroicons/react/outline';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import near from '../images/near.png';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { selectPassword, selectUserAccount, selectError } from '../features/redux/selectors';
+import { deserializeUserAccount } from '../features/slices/userSlice';
+
 function Home(): JSX.Element {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const userAccount = useSelector(selectUserAccount);
+  const password = useSelector(selectPassword);
+  const error = useSelector(selectError);
   const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    if(password) {
+      dispatch(deserializeUserAccount(password));
+    } else {
+      router.push('/showpassphrase');
+    }
+  }, [password])
+
+  useEffect(() => {
+    if(error) {
+      router.push('/showpassphrase');
+    }
+  }, [error])
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  console.log("userAccount: ", userAccount);
 
   if (!mounted) {
     return null;
