@@ -1,20 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import Image from 'next/image';
-import {
-  ChevronDownIcon
-} from '@heroicons/react/outline';
-// import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import {
-  PaperAirplaneIcon, ArrowDownIcon, SwitchHorizontalIcon
-} from '@heroicons/react/outline';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
-import near from '../images/near.png';
 
-function Home(): JSX.Element {
+function Home (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,113 +14,83 @@ function Home(): JSX.Element {
     return null;
   }
 
-  return (
-    <div className=' bg-gradient-to-br from-white via-[#e7bed3] to-white'>
-      <Header />
+  return (<main className='grid grid-cols-12 gap-4 h-screen content-center bg-gray-400'>
 
-      <div className='relative'>
-        <main className='flex flex-col items-center w-6/12 pb-10 m-10 mx-auto space-y-3 shadow-inner shadow-gray-500 rounded-3xl bg-gradient-to-br from-fuchsia-100 via-[#e7bed3] to-fuchsia-100'>
-          <p className='mt-8 text-lg italic font-semi-bold' >Total Balance</p>
-          <p className='text-3xl font-extrabold '>$793.32</p>
-          <p className='font-mono text-xs text-gray-500 '>in Choko Wallet</p>
+    {/* <div className='grid grid-cols-12 col-span-8 col-start-3'>
+      <div className="dropdown col-span-4">
+        <label tabIndex={0} className="btn btn-outline w-full normal-case">
+          {"14jyn27doBSRmSEx2ynac8LVw92wJAxKbuDhHkJRHhebwk54"}
+          <ChevronDoubleDownIcon
+            className='ml-2 h-4 duration-300 hover:scale-125 transtion east-out' />
+        </label>
 
-          <div className='flex p-2 space-x-10'>
-            <div>
-              <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
-                <PaperAirplaneIcon className='h-6 text-white rotate-45 cursor-pointer ' />
+        <ul tabIndex={0} className="dropdown-content menu shadow bg-base-100 w-full">
+          <li><a>{"14jyn27doBSRmSEx2ynac8LVw92wJAxKbuDhHkJRHhebwk54"}</a></li>
+          <li><a>{"14jyn27doBSRmSEx2ynac8LVw92wJAxKbuDhHkJRHhebwk54"}</a></li>
+          <div className="divider" />
+          <li><a>{"Remove Account"}</a></li>
+        </ul>
+      </div>
+    </div> */}
+
+    <div className='grid grid-cols-12 col-span-8 col-start-3'>
+
+      <div className='col-span-12 shadow-xl rounded-lg'>
+        <div className='card'
+          style={{ background: 'white' }}>
+          <div className='grid grid-cols-12'>
+            <div className='col-span-12'>
+              <div className='tabs tabs-boxed bg-transparent'>
+                <a className='tab'>Tab 1</a>
+                <a className='tab tab-active'>Tab 2</a>
+                <a className='tab'>Tab 3</a>
               </div>
-              <p className='pt-2 text-gray-800'>Send</p>
-            </div>
-            <div className='flex flex-col items-center justify-center'>
-              <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
-                <SwitchHorizontalIcon className='h-6 text-white cursor-pointer ' />
-
-              </div>
-              <p className='pt-2 text-gray-800'>Receive</p>
-            </div>
-            <div>
-              <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
-                <ArrowDownIcon className='h-6 text-white cursor-pointer ' />
-              </div>
-              <p className='pt-2 text-gray-800'>Swap</p>
-            </div>
-
-          </div>
-
-          <div className='w-10/12 rounded-lg h-72 bg-[#cfbcdb] '>
-            <div className='flex justify-between text-white text-sm p-2 w-full  bg-[#c1aed6] rounded-lg'>
-              <p>Your Portfolio</p>
-              <p>Token Balance</p>
-            </div>
-
-            <div className=' mb-5  w-full  bg-[#cfbcdb] rounded-lg flex justify-between '>
-              <div className='flex items-center' >
-                <div className='relative w-6 h-6 m-3'>
-                  <Image
-                    layout='fill'
-                    objectFit='contain'
-                    src={near}
-                  />
-                </div>
-                <div className='p-1'>
-                  <p className='text-lg font-bold'>NEAR</p>
-                  <p className='text-xs text-white'>$10.12</p>
-                </div>
-              </div>
-
-              <div className='p-1'>
-                <div className='text-right p-3'>
-                  <p className='text-lg font-bold'>78.3912 Near</p>
-                  <p className='text-xs text-white'>$793.12USD</p>
-                </div>
-              </div>
+              {/* <div className="btn-group btn-group-vertical">
+                <button className="btn">Polkadot</button>
+                <button className="btn">Kusama</button>
+                <button className="btn">SkyeKiwi</button>
+              </div> */}
             </div>
 
-          </div>
+            <div className='col-span-10 p-10'>
+              <h2 className='card-title'>
+                Account Balance
+              </h2>
+              <h3>Hint: select network on right. </h3>
+            </div>
 
+            <div className='col-span-2 p-5 bg-gray-300'>
+              <div className='form-control'>
+                <label className='label cursor-pointer'>
+                  <input checked
+                    className='radio checked:bg-red-500'
+                    name='radio-6'
+                    type='radio' />
+                  <span className='label-text'>Polkadot</span>
+                </label>
+              </div>
+              <div className='form-control'>
+                <label className='label cursor-pointer'>
+                  <input checked
+                    className='radio checked:bg-blue-500'
+                    name='radio-6'
+                    type='radio' />
+                  <span className='label-text'>Kusama</span>
+                </label>
+              </div>
+              {/* <div className="btn-group btn-group-vertical">
+                <button className="btn">Polkadot</button>
+                <button className="btn">Kusama</button>
+                <button className="btn">SkyeKiwi</button>
+              </div> */}
+            </div>
 
-
-        </main >
-        <div className='absolute top-0 right-20'>
-          <div className='dropdown dropdown-hover dropdown-end '>
-            <label className='btn m-1 border-transparent  hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
-              <p className='flex items-center justify-center'>NETWORK
-                <ChevronDownIcon className='pl-2 h-5 cursor-pointer ' /></p>
-            </label>
-            <ul className='bg-gradient-to-br from-fuchsia-100 via-[#e7bed3] to-fuchsia-100 p-2  dropdown-content menu  rounded-box w-52 shadow-xl'>
-              <li className='flex'>
-                <a><span className='relative w-6 h-6'>
-                  <Image
-                    layout='fill'
-                    objectFit='contain'
-                    src={near}
-                  />
-                </span>Polkadot</a>
-              </li>
-              <li><a><span className='relative w-6 h-6'>
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={near}
-                />
-              </span>Polygon</a>
-              </li>
-              <li><a><span className='relative w-6 h-6'>
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={near}
-                />
-              </span>NEAR</a></li>
-            </ul>
           </div>
         </div>
-      </div >
-      <Footer />
-
-    </div >
-
-  );
+      </div>
+      <div className='col-span-12'></div>
+    </div>
+  </main>);
 }
 
 export default Home;

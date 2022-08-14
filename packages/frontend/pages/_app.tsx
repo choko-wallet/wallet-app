@@ -17,11 +17,9 @@ const progress = new ProgressBar({
   className: 'z-50',
   color: '#3afbef',
   delay: 100,
-  size: 4 // 进度条宽度颜色延迟时间
-
+  size: 4
 });
 
-// 进度条启动停止
 Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);

@@ -1,23 +1,27 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { UserAccount, LockedPrivateKey } from '@choko-wallet/core';
 
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { LockedPrivateKey, UserAccount } from '@choko-wallet/core';
+
+/* eslint-disable sort-keys */
 const initial = createAsyncThunk(
   'users/init',
   async (userAccount: UserAccount) => {
     await userAccount.init();
   }
-)
+);
 
 const signMessage = createAsyncThunk(
   'users/signMessage',
   async (payload: SignMessagePayload) => {
-    const {userAccount, message} = payload;
+    const { message, userAccount } = payload;
     const response: Uint8Array = await userAccount.signMessage(message);
+
     return response;
   }
-)
+);
 
 interface SignMessagePayload {
   userAccount: UserAccount;
@@ -51,6 +55,7 @@ export const userSlice = createSlice({
         keyType: 'sr25519', // sr25519
         localKeyEncryptionStrategy: 0 // password-v0
       });
+
       state.userAccount = userAccount;
     },
 
@@ -58,6 +63,7 @@ export const userSlice = createSlice({
     lockUserAccount: (state, action: PayloadAction<Uint8Array>) => {
       const passwordHash = action.payload;
       const userAccount = state.userAccount;
+
       state.lockedPrivateKey = userAccount.lockUserAccount(passwordHash);
     },
 
@@ -65,21 +71,23 @@ export const userSlice = createSlice({
     unlockUserAccount: (state, action: PayloadAction<Uint8Array>) => {
       const passwordHash = action.payload;
       const userAccount = UserAccount.unlockUserAccount(state.lockedPrivateKey, passwordHash);
+
       state.userAccount = userAccount;
     }
   },
 
   extraReducers: (builder) => {
     // init
+    // eslint-disable-nextline
     builder.addCase(initial.fulfilled, (state, action) => {
-      console.log("initialized");
-    }),
-    
+      console.log('initialized');
+    });
+
     // signMessage
     builder.addCase(signMessage.fulfilled, (state, action) => {
       state.signMessage = action.payload;
-      console.log("signed message");
-    })
+      console.log('signed message');
+    });
   }
 });
 

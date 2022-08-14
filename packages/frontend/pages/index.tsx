@@ -49,7 +49,7 @@ const Home: NextPage = () => {
             <button className='px-10 py-4 my-3 mt-10 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 '
               onClick={() => router.push('/create')} >Create account</button>
             <button className='px-10 py-4 my-3 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 '
-              onClick={() => router.push('/importaccount')} >Import account</button>
+              onClick={() => router.push('/import')} >Import account</button>
           </div>
         </div>
       </main>
