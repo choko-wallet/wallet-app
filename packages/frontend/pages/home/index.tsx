@@ -1,23 +1,19 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import Footer from '../../components/Footer';
-import near from '../../images/btc.png';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import {
-  UserCircleIcon, CheckIcon, XIcon,
-} from '@heroicons/react/outline';
-
-// import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { Popover, RadioGroup, Transition } from '@headlessui/react'
-import { Fragment, } from 'react'
-import toast, { Toaster } from "react-hot-toast";
+import { Popover, RadioGroup, Transition } from '@headlessui/react';
+import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
+import React, { Fragment, useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
-function Home(): JSX.Element {
+import near from '../../images/btc.png';
 
+/* eslint-disable sort-keys */
+function Home (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -25,29 +21,28 @@ function Home(): JSX.Element {
   const [currentAccount, setCurrentAccount] = useState<string>('5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC');
   const [allAccounts, setAllAccounts] = useState<string[]>([
     '5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC',
-    '6DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC',
+    '6DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC'
   ]);
-  
+
   const [networkSelection, setNetworkSelection] = useState<string>('');
   const [network, setNetwork] = useState<string>('polkadot');
-
 
   const allNetworks = [{
     name: 'Polkadot',
     info: 'polkadot',
     rpc: 'wss://polkadot.parity.io/ws',
-    color: 'red-500',
+    color: 'red-500'
   }, {
     name: 'Kusama',
     info: 'kusama',
     rpc: 'wss://kusama.parity.io/ws',
-    color: 'gray-500',
+    color: 'gray-500'
   }, {
     name: 'SkyeKiwi',
     info: 'skyekiwi',
     rpc: 'wss://rpc.skye.kiwi',
-    color: 'blue-500',
-  }]
+    color: 'blue-500'
+  }];
 
   useEffect(() => {
     setMounted(true);
@@ -58,54 +53,54 @@ function Home(): JSX.Element {
   }
 
   const changeNetwork = async () => {
-    const notification = toast.loading("Changing Network...", {
+    const notification = toast.loading('Changing Network...', {
       style: {
-        background: "green",
-        color: "white",
+        background: 'green',
+        color: 'white',
         // fontWeight: "bolder",
         // fontFamily: "Poppins",
-        fontSize: "17px",
-        padding: "20px",
+        fontSize: '17px',
+        padding: '20px'
       }
-    })
+    });
 
-    return new Promise<void>((resolve, rej) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
-        console.log('changeNetwork')
+        console.log('changeNetwork');
         toast.dismiss(notification);
-        toast("Changed Successfully !", {
+        toast('Changed Successfully !', {
           duration: 4000,
           style: {
-            background: "green",
-            color: "white",
+            background: 'green',
+            color: 'white',
             // fontWeight: "bolder",
             // fontFamily: "Poppins",
-            fontSize: "17px",
-            padding: "20px",
+            fontSize: '17px',
+            padding: '20px'
           }
-        })
+        });
 
-        resolve()
+        resolve();
       }, 3000);
-    })
-  }
+    });
+  };
 
   return (<main className='grid grid-cols-12 gap-4 min-h-screen content-between bg-gray-400'>
     <Toaster />
     <div className='col-span-12'>
-      <div className="navbar bg-base-100">
+      <div className='navbar bg-base-100'>
 
-        <div className="navbar-start">
-          <a className="btn btn-ghost normal-case text-xl"
+        <div className='navbar-start'>
+          <a className='btn btn-ghost normal-case text-xl'
             onClick={() => router.push('/')}>Choko Wallet Logo</a>
         </div>
 
-        <div className="navbar-center">              
-          
+        <div className='navbar-center'>
+
         </div>
 
-        <div className="navbar-end">
-        <Popover className="relative">
+        <div className='navbar-end'>
+          <Popover className='relative'>
             {({ open }) => (
               <>
                 <Popover.Button
@@ -116,51 +111,51 @@ function Home(): JSX.Element {
                 </Popover.Button>
                 <Transition
                   as={Fragment}
-                  enter="transition ease-out duration-200"
-                  enterFrom="opacity-0 translate-y-1"
-                  enterTo="opacity-100 translate-y-0"
-                  leave="transition ease-in duration-150"
-                  leaveFrom="opacity-100 translate-y-0"
-                  leaveTo="opacity-0 translate-y-1"
+                  enter='transition ease-out duration-200'
+                  enterFrom='opacity-0 translate-y-1'
+                  enterTo='opacity-100 translate-y-0'
+                  leave='transition ease-in duration-150'
+                  leaveFrom='opacity-100 translate-y-0'
+                  leaveTo='opacity-0 translate-y-1'
                 >
-                  <Popover.Panel className="absolute z-10 w-full max-w-sm transform sm:px-0 lg:max-w-3xl">
-                    <div className="overflow-hidden rounded-lg shadow-lg">
-                      <div className="relative grid grid-cols-2 gap-4 bg-white py-5">
+                  <Popover.Panel className='absolute z-10 w-full max-w-sm transform sm:px-0 lg:max-w-3xl'>
+                    <div className='overflow-hidden rounded-lg shadow-lg'>
+                      <div className='relative grid grid-cols-2 gap-4 bg-white py-5'>
                         {allAccounts.map((name, index) => (
                           <div
+                            className='px-5 items-center col-span-2 rounded-lg py-2 transition duration-150 ease-in-out hover:bg-gray-50'
                             key={index}
-                            className="px-5 items-center col-span-2 rounded-lg py-2 transition duration-150 ease-in-out hover:bg-gray-50"
                           >
-                            <p className="text-sm font-medium text-gray-900 normal-case"> {name.substring(0, 13)} ... {name.substring(name.length - 13, name.length)}</p>
+                            <p className='text-sm font-medium text-gray-900 normal-case'> {name.substring(0, 13)} ... {name.substring(name.length - 13, name.length)}</p>
                           </div>
                         ))}
                       </div>
-                      <div className="bg-gray-50 p-4">
+                      <div className='bg-gray-50 p-4'>
                         <div
+                          className='flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100'
                           onClick={ () => router.push('/account') }
-                          className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100"
                         >
-                          <span className="flex items-center">
-                            <span className="text-sm font-medium text-gray-900">
+                          <span className='flex items-center'>
+                            <span className='text-sm font-medium text-gray-900'>
                               Add New Account
                             </span>
                           </span>
-                          <span className="block text-sm text-gray-500">
+                          <span className='block text-sm text-gray-500'>
                             Create or Import new Account
                           </span>
                         </div>
                       </div>
 
-                      <div className="bg-gray-200 p-4">
+                      <div className='bg-gray-200 p-4'>
                         <div
-                          className="flow-root rounded-md px-2 py-2 transition duration-200 ease-in-out hover:bg-gray-100"
+                          className='flow-root rounded-md px-2 py-2 transition duration-200 ease-in-out hover:bg-gray-100'
                         >
-                          <span className="flex items-center">
-                            <span className="text-sm font-medium text-gray-900">
+                          <span className='flex items-center'>
+                            <span className='text-sm font-medium text-gray-900'>
                               Remove Account
                             </span>
                           </span>
-                          <span className="block text-sm text-gray-500">
+                          <span className='block text-sm text-gray-500'>
                             Remove Current Account
                           </span>
                         </div>
@@ -179,7 +174,7 @@ function Home(): JSX.Element {
       <div className='flex flex-col items-center pb-10 m-10 mx-auto space-y-3'>
         <p className='mt-8 text-lg font-semi-bold' >Total Balance</p>
         <p className='text-3xl font-extrabold '>$793.32</p>
-        
+
         <br/><br/>
         {/* <div className='flex p-2 space-x-10'>
           <div>
@@ -237,42 +232,44 @@ function Home(): JSX.Element {
 
     <div className='col-span-2 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
       <div className='col-span-12 '>
-        <RadioGroup value={networkSelection ? networkSelection : network} onChange={setNetworkSelection}>
-            {allNetworks.map(({ name, info, rpc, color }) => (
-              <RadioGroup.Option
-                value={info}
-                className={({ active, checked }) =>
-                  `${ checked ? `bg-gray-500 bg-opacity-75 text-white` : 'bg-white' }
+        <RadioGroup onChange={setNetworkSelection}
+          value={networkSelection || network}>
+          {allNetworks.map(({ info, name, rpc }) => (
+            <RadioGroup.Option
+              className={({ active, checked }) =>
+                `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                   m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
-                }
-              >
-                {({ active, checked }) => (
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="text-sm">
-                        <RadioGroup.Label
-                          as="p"
-                          className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                        >
-                          {name}
-                        </RadioGroup.Label>
-                        <RadioGroup.Description
-                          as="span"
-                          className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                        >
-                          {rpc}
-                        </RadioGroup.Description>
-                      </div>
+              }
+              key={name}
+              value={info}
+            >
+              {({ active, checked }) => (
+                <div className='flex w-full items-center justify-between'>
+                  <div className='flex items-center'>
+                    <div className='text-sm'>
+                      <RadioGroup.Label
+                        as='p'
+                        className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                      >
+                        {name}
+                      </RadioGroup.Label>
+                      <RadioGroup.Description
+                        as='span'
+                        className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                      >
+                        {rpc}
+                      </RadioGroup.Description>
                     </div>
-                    {checked && (
-                      <div className="shrink-0 text-white">
-                        <CheckCircleIcon className="h-6 w-6" />
-                      </div>
-                    )}
                   </div>
-                )}
-              </RadioGroup.Option>
-            ))}
+                  {checked && (
+                    <div className='shrink-0 text-white'>
+                      <CheckCircleIcon className='h-6 w-6' />
+                    </div>
+                  )}
+                </div>
+              )}
+            </RadioGroup.Option>
+          ))}
         </RadioGroup>
       </div>
       <div className='col-span-3 col-start-4 mb-5'>
@@ -286,7 +283,7 @@ function Home(): JSX.Element {
           onClick={async () => {
             await changeNetwork();
             alert(`Network changed to ${networkSelection}`);
-            setNetworkSelection('')
+            setNetworkSelection('');
             setNetwork(networkSelection);
           }} >
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />

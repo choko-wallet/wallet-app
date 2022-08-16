@@ -4,16 +4,15 @@
 import type { NextPage } from 'next';
 
 import Head from 'next/head';
-
 import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 
+// import { useTheme } from 'next-themes';
 
 const Home: NextPage = () => {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -23,19 +22,20 @@ const Home: NextPage = () => {
     return null;
   }
 
-  return (<main className='grid grid-cols-12 gap-4 min-h-screen content-between' style={{
-    backgroundImage: `url(https://images.unsplash.com/photo-1623150502742-6a849aa94be4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8)`,
-  }}>
+  return (<main className='grid grid-cols-12 gap-4 min-h-screen content-between'
+    style={{
+      backgroundImage: 'url(https://images.unsplash.com/photo-1623150502742-6a849aa94be4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8)'
+    }}>
     <Head><title>Choko Wallet</title></Head>
     <div className='col-span-12'></div>
-    <div className="col-span-4 col-start-5 h-80 hero bg-base-100 shadow-xl rounded-xl">
-      <div className="hero-content text-center">
-        <div className="max-w-md">
-          <h1 className="text-3xl font-bold">Choko Wallet</h1>
-          <p className="py-6">Your ultimate cross-chain crypto wallet.</p><br/>
-          
-          <button className="btn btn-primary"
-            onClick={() => router.push('/account/create')}>Enter</button>
+    <div className='col-span-4 col-start-5 h-80 hero bg-base-100 shadow-xl rounded-xl'>
+      <div className='hero-content text-center'>
+        <div className='max-w-md'>
+          <h1 className='text-3xl font-bold'>Choko Wallet</h1>
+          <p className='py-6'>Your ultimate cross-chain crypto wallet.</p><br/>
+
+          <button className='btn'
+            onClick={() => router.push('/account')}>Enter</button>
         </div>
 
       </div>

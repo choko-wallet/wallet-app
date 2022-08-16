@@ -45,7 +45,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   }
 
   return (
-    <main className='grid grid-cols-12 gap-4 h-screen content-center bg-gray-400'>
+    <main className='grid grid-cols-12 gap-4 h-screen content-center bg-gray-400' >
 
       <ul className='steps col-span-6 col-start-4'>
         <li className={`step ${step > 0 ? 'step-neutral' : ''}`}>
