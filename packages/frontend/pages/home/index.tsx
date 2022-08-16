@@ -63,7 +63,7 @@ function Home(): JSX.Element {
         background: "green",
         color: "white",
         // fontWeight: "bolder",
-        fontFamily: "Poppins",
+        // fontFamily: "Poppins",
         fontSize: "17px",
         padding: "20px",
       }
@@ -79,7 +79,7 @@ function Home(): JSX.Element {
             background: "green",
             color: "white",
             // fontWeight: "bolder",
-            fontFamily: "Poppins",
+            // fontFamily: "Poppins",
             fontSize: "17px",
             padding: "20px",
           }
@@ -96,7 +96,8 @@ function Home(): JSX.Element {
       <div className="navbar bg-base-100">
 
         <div className="navbar-start">
-          <a className="btn btn-ghost normal-case text-xl">Choko Wallet Logo</a>
+          <a className="btn btn-ghost normal-case text-xl"
+            onClick={() => router.push('/')}>Choko Wallet Logo</a>
         </div>
 
         <div className="navbar-center">              
@@ -134,8 +135,8 @@ function Home(): JSX.Element {
                           </div>
                         ))}
                       </div>
-                      <div className="bg-gray-100 p-4">
-                        <a
+                      <div className="bg-gray-50 p-4">
+                        <div
                           onClick={ () => router.push('/account') }
                           className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100"
                         >
@@ -147,13 +148,12 @@ function Home(): JSX.Element {
                           <span className="block text-sm text-gray-500">
                             Create or Import new Account
                           </span>
-                        </a>
+                        </div>
                       </div>
 
                       <div className="bg-gray-200 p-4">
-                        <a
-                          href="##"
-                          className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100"
+                        <div
+                          className="flow-root rounded-md px-2 py-2 transition duration-200 ease-in-out hover:bg-gray-100"
                         >
                           <span className="flex items-center">
                             <span className="text-sm font-medium text-gray-900">
@@ -163,7 +163,7 @@ function Home(): JSX.Element {
                           <span className="block text-sm text-gray-500">
                             Remove Current Account
                           </span>
-                        </a>
+                        </div>
                       </div>
                     </div>
                   </Popover.Panel>
@@ -295,7 +295,7 @@ function Home(): JSX.Element {
     </div>
 
     <div className='col-span-12'>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   </main>);
 }
