@@ -8,7 +8,7 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
 
   // repalce with real conditional logic
-  const accountIsSet = true; 
+  const accountIsSet = false; 
   const search = request.nextUrl.search;
 
   if (!search.includes('forceRedirect=true')) {
