@@ -19,28 +19,30 @@ function AccountRouter(): JSX.Element {
   }
 
   return (
-    <main className='min-h-screen bg-white'>
+    <main className='grid grid-cols-12 gap-4 h-screen content-center bg-gray-400'>
+      <div className='grid grid-cols-12 col-span-4 col-start-5 gap-y-5'>
+        <div className=' col-span-12 shadow-xl rounded-lg'>
+          <div className='card p-10 '
+            style={{ background: 'white' }}>
+            <h2 className='card-title'>
+              Create Your Account
+            </h2><br/>
+            <h3>You may either import or generate a new 12 word mnemonic seeds. You will be asked to create a password for it.</h3>
 
-      <div className='flex flex-col items-center justify-center w-full text-center pt-20'>
-        <p className='text-2xl font-bold text-black '>Create or Import An Account</p>
-
-        <div className="w-96  border border-gray-400 p-3 mt-5 rounded-md bg-gray-100">
-          <p className='text-sm  text-black '>Generate and safely store a unique passphrase.This will be used to verify important activity, recover your account and access your account from other devices.</p>
-          <button className='px-10 py-4 my-3  font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 '
-            onClick={() => router.push('/create')} >Create account</button>
+            <div className='grid grid-cols-8 gap-5 m-10'>
+               <button className='btn col-span-3'
+                  onClick={() => router.push('account/create')}>
+                  <span className='ml-3'>Create New Mnemonic</span>
+                </button>
+                <button className='btn btn-accent col-span-3'
+                  onClick={() => router.push('account/import')}>
+                  <span className='ml-3'>Import Mnemonic</span>
+                </button>
+            </div>
+          </div>
         </div>
-
-        <div className="w-96 border border-gray-400 p-3 mt-5 rounded-md bg-gray-100">
-          <p className='text-sm  text-black '>Make sure you have your 12 word recovery phrase, then click below to begin the recovery process.</p>
-          <button className='px-10 py-4 my-3  font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md w-60 hover:shadow-xl active:scale-90 '
-            onClick={() => router.push('/create')} >Import account</button>
-        </div>
-
-
       </div>
     </main>
-
-
   );
 }
 

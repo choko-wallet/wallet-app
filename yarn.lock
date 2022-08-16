@@ -1479,6 +1479,7 @@ __metadata:
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
     "@choko-wallet/core": 0.1.6-0
+    "@headlessui/react": ^1.6.6
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
     "@polkadot/util-crypto": ^10.1.1
@@ -1495,6 +1496,7 @@ __metadata:
     react: 18.1.0
     react-copy-to-clipboard: ^5.1.0
     react-dom: 18.1.0
+    react-hot-toast: ^2.3.0
     react-redux: ^8.0.2
     tailwindcss: ^3.1.2
     typescript: ^4.7.4
@@ -1933,6 +1935,16 @@ __metadata:
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
   checksum: 4059f790e2d07bf3c3ff3e0fec0daa8144fe35c1f6e0111c9921bd32106adaa97a4ab096ad7dab1e28ee6a9060083c4d1a4ada42a7f5f3f7a96b8812e2b757c1
+  languageName: node
+  linkType: hard
+
+"@headlessui/react@npm:^1.6.6":
+  version: 1.6.6
+  resolution: "@headlessui/react@npm:1.6.6"
+  peerDependencies:
+    react: ^16 || ^17 || ^18
+    react-dom: ^16 || ^17 || ^18
+  checksum: 6ebb34bde0bd2a5045ae29a2bac1dc166f7163c9ad98aabe5abb580c3c770d0b3040d5992045f9e68b6c8e8eca5bf7eca71276ff9b1696a9fb88a9380d8fcf96
   languageName: node
   linkType: hard
 
@@ -6940,6 +6952,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"goober@npm:^2.1.10":
+  version: 2.1.10
+  resolution: "goober@npm:2.1.10"
+  peerDependencies:
+    csstype: ^3.0.10
+  checksum: 55a353a477665ea3ae748153132a32184a6a0db42b24ec66cdca97d1e046a2b63af29f698e245fe2f51c05d0eaefeda2cce4a106bc2b6293ea67490c39b6b5c8
+  languageName: node
+  linkType: hard
+
 "got@npm:^9.6.0":
   version: 9.6.0
   resolution: "got@npm:9.6.0"
@@ -10309,6 +10330,18 @@ __metadata:
   peerDependencies:
     react: ^18.1.0
   checksum: bb0d48eeb0b297c79c2a03978baa29f5b3ff7ba3d070b21e34c9af1a6e7fdf0ca8b8d73e41f9214d91ad40eeb6d1f3559f884cbbc338713374a51320637c23df
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "react-hot-toast@npm:2.3.0"
+  dependencies:
+    goober: ^2.1.10
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: d2526f4bf62d94ca1874de1d618e30537aa8123b5d954cf1ff4e41f063d4ab410fc4f10a0ad134d533c1e0ae3d910af1d21f5a4f37f46dcbdb1710380cbb4bc1
   languageName: node
   linkType: hard
 
