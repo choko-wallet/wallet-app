@@ -5,10 +5,6 @@
 
 module.exports = {
   distDir: 'build',
-  eslint: {
-    // TODO: remove this
-    ignoreDuringBuilds: true
-  },
   reactStrictMode: true,
 
   typescript: {
