@@ -1,21 +1,38 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import Footer from '../../components/Footer';
-import near from '../../images/btc.png';
+import { RadioGroup, Tab } from '@headlessui/react'
 // import { useRouter } from 'next/router';
-import Image from 'next/image';
 import {
-  PaperAirplaneIcon, ArrowDownIcon, SwitchHorizontalIcon, ChevronDownIcon
+  PaperAirplaneIcon, ArrowDownIcon, SwitchHorizontalIcon, ChevronDownIcon, CheckIcon
 } from '@heroicons/react/outline';
 
 // import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { Menu, Transition } from '@headlessui/react'
 import { Fragment, } from 'react'
 import toast, { Toaster } from "react-hot-toast";
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ')
+}
+
+
 function Home(): JSX.Element {
+
+  const allNetworks = [{
+    name: 'Polkadot',
+    info: 'polkadot',
+    rpc: 'wss://polkadot.parity.io/ws',
+  }, {
+    name: 'Kusama',
+    info: 'kusama',
+    rpc: 'wss://kusama.parity.io/ws',
+  }, {
+    name: 'SkyeKiwi',
+    info: 'skyekiwi',
+    rpc: 'wss://rpc.skye.kiwi',
+  }]
+
 
   // const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -26,6 +43,8 @@ function Home(): JSX.Element {
     '5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC',
     '6DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC',
   ]);
+  const [selectedNetwork, setSelectedNetwork] = useState<string>('polkadot');
+  const [network, setNetwork] = useState<string>('polkadot');
 
   useEffect(() => {
     setMounted(true);
@@ -34,103 +53,6 @@ function Home(): JSX.Element {
   if (!mounted) {
     return null;
   }
-
-
-
-  function ArchiveInactiveIcon(props: any) {
-    return (
-      <svg
-        {...props}
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          x="5"
-          y="8"
-          width="10"
-          height="8"
-          fill="#EDE9FE"
-          stroke="#A78BFA"
-          strokeWidth="2"
-        />
-        <rect
-          x="4"
-          y="4"
-          width="12"
-          height="4"
-          fill="#EDE9FE"
-          stroke="#A78BFA"
-          strokeWidth="2"
-        />
-        <path d="M8 12H12" stroke="#A78BFA" strokeWidth="2" />
-      </svg>
-    )
-  }
-
-  function ArchiveActiveIcon(props: any) {
-    return (
-      <svg
-        {...props}
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          x="5"
-          y="8"
-          width="10"
-          height="8"
-          fill="#8B5CF6"
-          stroke="#C4B5FD"
-          strokeWidth="2"
-        />
-        <rect
-          x="4"
-          y="4"
-          width="12"
-          height="4"
-          fill="#8B5CF6"
-          stroke="#C4B5FD"
-          strokeWidth="2"
-        />
-        <path d="M8 12H12" stroke="#A78BFA" strokeWidth="2" />
-      </svg>
-    )
-  }
-
-  function MoveInactiveIcon(props: any) {
-    return (
-      <svg
-        {...props}
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M10 4H16V10" stroke="#A78BFA" strokeWidth="2" />
-        <path d="M16 4L8 12" stroke="#A78BFA" strokeWidth="2" />
-        <path d="M8 6H4V16H14V12" stroke="#A78BFA" strokeWidth="2" />
-      </svg>
-    )
-  }
-
-  function MoveActiveIcon(props: any) {
-    return (
-      <svg
-        {...props}
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M10 4H16V10" stroke="#C4B5FD" strokeWidth="2" />
-        <path d="M16 4L8 12" stroke="#C4B5FD" strokeWidth="2" />
-        <path d="M8 6H4V16H14V12" stroke="#C4B5FD" strokeWidth="2" />
-      </svg>
-    )
-  }
-
-
-
 
   const changeNetwork = () => {
     const notification = toast.loading("Changing Network...", {
@@ -167,193 +89,112 @@ function Home(): JSX.Element {
 
   return (
     <>
-      <main className='grid grid-cols-12 gap-4 min-h-screen content-between bg-gray-400'>
-        <Toaster />
-        <div className='col-span-12'>
-          <div className="navbar bg-base-100">
-            <div className="navbar-start">
-              <a className="btn btn-ghost normal-case text-xl">Choko Wallet Logo</a>
-              {/* <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost btn-circle">
-              <DotsVerticalIcon className="h-5 w-5" />
-            </label>
-            <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-              <li><a>Setting</a></li>
-              <li><a>About</a></li>
-            </ul>
-          </div> */}
-            </div>
-            <div className="navbar-center">
-              <div className="dropdown">
-                <label tabIndex={0} className="btn btn-ghost normal-case">
-                  Current Account: {currentAccount}
-                </label>
-                <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box">
-                  {allAccounts.map((account, index) => (
-                    <li key={index}>
-                      <a onClick={() => setCurrentAccount(account)}>@{account}</a>
-                    </li>
-                  ))}
-                  <div className='divider'></div>
-                </ul>
-              </div>
-              {/* <a className="btn btn-ghost normal-case text-xl">Choko Wallet</a> */}
-            </div>
-            <div className="navbar-end">
-              <button className="btn btn-ghost btn-circle">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              </button>
-              <button className="btn btn-ghost btn-circle">
-                <div className="indicator">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                  <span className="badge badge-xs badge-primary indicator-item"></span>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-
-
-        <div className='relative col-span-12'>
-          <main className='flex flex-col items-center w-6/12 pb-10 m-10 mx-auto space-y-3 shadow-inner shadow-gray-500 rounded-3xl bg-white'>
-            <p className='mt-8 text-lg italic font-semi-bold' >Total Balance</p>
-            <p className='text-3xl font-extrabold '>$793.32</p>
-            <p className='font-mono text-xs text-gray-500 '>in Choko Wallet</p>
-
-            <div className='flex p-2 space-x-10'>
-              <div>
-                <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
-                  <PaperAirplaneIcon className='h-6 text-white rotate-45 cursor-pointer ' />
-                </div>
-                <p className='pt-2 text-gray-800'>Send</p>
-              </div>
-              <div className='flex flex-col items-center justify-center'>
-                <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
-                  <SwitchHorizontalIcon className='h-6 text-white cursor-pointer ' />
-
-                </div>
-                <p className='pt-2 text-gray-800'>Receive</p>
-              </div>
-              <div>
-                <div className='flex items-center justify-center w-10 h-10 bg-[#897db5] rounded-full'>
-                  <ArrowDownIcon className='h-6 text-white cursor-pointer ' />
-                </div>
-                <p className='pt-2 text-gray-800'>Swap</p>
-              </div>
-
-            </div>
-
-            <div className='w-10/12 rounded-lg h-72 bg-[#cfbcdb] '>
-              <div className='flex justify-between text-white text-sm p-2 w-full  bg-[#c1aed6] rounded-lg'>
-                <p>Your Portfolio</p>
-                <p>Token Balance</p>
-              </div>
-
-              <div className=' mb-5  w-full  bg-[#cfbcdb] rounded-lg flex justify-between '>
-                <div className='flex items-center' >
-                  <div className='relative w-6 h-6 m-3'>
-                    <Image
-                      layout='fill'
-                      objectFit='contain'
-                      src={near}
-                    />
-                  </div>
-                  <div className='p-1'>
-                    <p className='text-lg font-bold'>NEAR</p>
-                    <p className='text-xs text-white'>$10.12</p>
-                  </div>
-                </div>
-
-                <div className='p-1'>
-                  <div className='text-right p-3'>
-                    <p className='text-lg font-bold'>78.3912 Near</p>
-                    <p className='text-xs text-white'>$793.12USD</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </main >
-
-          <div className='absolute top-0 right-20'>
-            <div className="bg-transparent h-10 w-64   my-1 text-right z-50">
-              <Menu as="div" className="relative inline-block text-left rounded-full">
-                <div className='flex items-center justify-center'>
-                  <Menu.Button className="inline-flex w-full justify-center bg-white border border-gray-700 bg-opacity-20 px-4 py-2 text-sm font-medium  hover:bg-opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 rounded-full text-gray-800 ">
-
-                    Network
-                    <ChevronDownIcon
-                      className="w-5 h-5 ml-2 -mr-1 text-gray-400 hover:text-violet-100"
-                      aria-hidden="true"
-                    />
-                  </Menu.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
+      <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400'>
+        <div className='col-span-6 col-start-4'>
+          <Tab.Group>
+            <Tab.List className="grid grid-cols-12 flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-600',
+                      'ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none focus:ring-2',
+                      selected
+                        ? 'bg-white shadow'
+                        : 'text-gray-100 hover:bg-white/[0.12] hover:text-white'
+                    )
+                  }
                 >
-                  <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  Balance
+                </Tab>
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-600',
+                      'ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none focus:ring-2',
+                      selected
+                        ? 'bg-white shadow'
+                        : 'text-gray-100 hover:bg-white/[0.12] hover:text-white'
+                    )
+                  }
+                >
+                  Setting
+                </Tab>
+            </Tab.List>
+            <Tab.Panels className="mt-2">
+              <Tab.Panel
+                className={classNames(
+                  'rounded-xl shadow-xl bg-white p-3 grid grid-cols-12',
+                  'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+                )}
+              >
+                <div className='col-span-9 p-10'>
+                  <h1>Balance: $ {123}</h1>
+                  
+                </div>
+                <div className='col-span-3 col-start-10'>
+                  <RadioGroup value={network} onChange={setNetwork}>
+                      {allNetworks.map(({ name, info, rpc }) => (
+                        <RadioGroup.Option
+                          value={info}
+                          className={({ active, checked }) =>
+                            `${
+                              active
+                                ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
+                                : ''
+                            }
+                            ${
+                              checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-white'
+                            }
+                              m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
+                          }
+                        >
+                          {({ active, checked }) => (
+                            <div className="flex w-full items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="text-sm">
+                                  <RadioGroup.Label
+                                    as="p"
+                                    className={`font-medium  ${
+                                      checked ? 'text-white' : 'text-gray-900'
+                                    }`}
+                                  >
+                                    {name}
+                                  </RadioGroup.Label>
+                                  <RadioGroup.Description
+                                    as="span"
+                                    className={`inline ${
+                                      checked ? 'text-sky-100' : 'text-gray-500'
+                                    }`}
+                                  >
+                                    {rpc}
+                                  </RadioGroup.Description>
+                                </div>
+                              </div>
+                              {checked && (
+                                <div className="shrink-0 text-white">
+                                  <CheckIcon className="h-6 w-6" />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </RadioGroup.Option>
+                      ))}
+                  </RadioGroup>
 
-                    <div className="px-1 py-1">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button onClick={() => changeNetwork()}
-                            className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                          >
-                            {active ? (
-                              <ArchiveActiveIcon
-                                className="w-5 h-5 mr-2"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <ArchiveInactiveIcon
-                                className="w-5 h-5 mr-2"
-                                aria-hidden="true"
-                              />
-                            )}
-                            NEAR
-                          </button>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button onClick={() => changeNetwork()}
-                            className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                          >
-                            {active ? (
-                              <MoveActiveIcon
-                                className="w-5 h-5 mr-2"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <MoveInactiveIcon
-                                className="w-5 h-5 mr-2"
-                                aria-hidden="true"
-                              />
-                            )}
-                            ETH
-                          </button>
-                        )}
-                      </Menu.Item>
-                    </div>
+                </div>
+                
+              </Tab.Panel>
 
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            </div>
-          </div>
-        </div >
-
-        <div className='col-span-12 content-end'>
-          <Footer />
+              <Tab.Panel
+                  className={classNames(
+                    'rounded-xl shadow-xl bg-white p-3',
+                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+                  )}
+                >
+                  Setting
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
         </div>
       </main>
 

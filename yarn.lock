@@ -1461,6 +1461,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@choko-wallet/core@npm:0.1.5":
+  version: 0.1.5
+  resolution: "@choko-wallet/core@npm:0.1.5"
+  dependencies:
+    "@choko-wallet/known-networks": 0.1.5
+    "@polkadot/util-crypto": ^10.1.1
+    "@skyekiwi/crypto": 0.8.4-0
+    "@skyekiwi/util": 0.8.4-0
+  checksum: 65be6c5974f8a2c81894cef97a0658ffa47e729abdac33e18d2c2d1ced2d019ee6690fa0f38c8abee5361d51be0502d2601bcb6c5475040691008e15bd44dd71
+  languageName: node
+  linkType: hard
+
 "@choko-wallet/core@npm:0.1.6-0":
   version: 0.1.6-0
   resolution: "@choko-wallet/core@npm:0.1.6-0"
@@ -1479,6 +1491,7 @@ __metadata:
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
     "@choko-wallet/core": 0.1.6-0
+    "@choko-wallet/known-networks": ^0.1.5
     "@headlessui/react": ^1.6.6
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
@@ -1502,6 +1515,16 @@ __metadata:
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
+
+"@choko-wallet/known-networks@npm:0.1.5, @choko-wallet/known-networks@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@choko-wallet/known-networks@npm:0.1.5"
+  dependencies:
+    "@choko-wallet/core": 0.1.5
+    "@skyekiwi/util": 0.8.4-0
+  checksum: 75c84f0d21ca50ec82ffd98b7b70360e4eb099383b45f7fd467117d2e2bad402e6a019657b3e4d8cf003ec0a47d7c0e02aecb9bfd0bc392599b50c5414f63721
+  languageName: node
+  linkType: hard
 
 "@choko-wallet/known-networks@npm:0.1.6-0":
   version: 0.1.6-0
@@ -3090,6 +3113,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@skyekiwi/crypto@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/crypto@npm:0.8.4-0"
+  dependencies:
+    "@skyekiwi/metadata": 0.8.4-0
+    "@skyekiwi/util": 0.8.4-0
+    ethers: ^5.5.4
+    tweetnacl: ^1.0.3
+  checksum: 67e334bf5b825be3cc69372706a29bdeef8a892e85c832fbca098ae399f74076faa6f54e277f75d826f3dbf5859e4769d0f5ea9373a9f7dd5920be0733683ef3
+  languageName: node
+  linkType: hard
+
 "@skyekiwi/crypto@npm:0.8.4-1":
   version: 0.8.4-1
   resolution: "@skyekiwi/crypto@npm:0.8.4-1"
@@ -3195,6 +3230,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@skyekiwi/ipfs@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/ipfs@npm:0.8.4-0"
+  dependencies:
+    "@polkadot/keyring": ^10.1.1
+    "@polkadot/util-crypto": ^10.1.1
+    "@skyekiwi/util": 0.8.4-0
+    superagent: ^7.1.1
+    tweetnacl: ^1.0.3
+  checksum: 94d7dea6700ad3c0efa8937140865c3beaf68a3a5bfb7e75662463028c98c4df662aec660ef387f7071a595986486fde5bff5928efca7ec9676164a54704e693
+  languageName: node
+  linkType: hard
+
 "@skyekiwi/ipfs@npm:0.8.4-1":
   version: 0.8.4-1
   resolution: "@skyekiwi/ipfs@npm:0.8.4-1"
@@ -3208,6 +3256,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@skyekiwi/metadata@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/metadata@npm:0.8.4-0"
+  dependencies:
+    "@skyekiwi/crypto": 0.8.4-0
+    "@skyekiwi/ipfs": 0.8.4-0
+    "@skyekiwi/util": 0.8.4-0
+    tweetnacl: ^1.0.3
+  checksum: ec9bd782abd7d24972210329d1f58b4f8cae0494a08c6b1fd4628a17dbcfa09a42db4d4a40474a0bfb878fd823361ac23cfbe1d9d27e8719b04603b536734f10
+  languageName: node
+  linkType: hard
+
 "@skyekiwi/metadata@npm:0.8.4-1":
   version: 0.8.4-1
   resolution: "@skyekiwi/metadata@npm:0.8.4-1"
@@ -3217,6 +3277,18 @@ __metadata:
     "@skyekiwi/util": 0.8.4-1
     tweetnacl: ^1.0.3
   checksum: 40ef46339a7a9d06fcd0a19d60f7e3d5c03ce4d0c450a3ab8bda8ba7f56a8ee138fa522b7a55322e581d4a9abaa58ba5f8b85de56c610c544f54609c6c880342
+  languageName: node
+  linkType: hard
+
+"@skyekiwi/util@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/util@npm:0.8.4-0"
+  dependencies:
+    "@polkadot/api": ^8.14.1
+    "@polkadot/keyring": ^10.1.1
+    pino: ^7.6.5
+    pino-pretty: ^7.5.1
+  checksum: 2e1efc973cdf4884380cbe939e4cb944414e9dda21cede2baece10008a96dfe4d2c4bfd3ae395161b10dc0993e150e46bc23e947b3722625937fa9cc04fba292
   languageName: node
   linkType: hard
 
