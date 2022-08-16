@@ -20,7 +20,6 @@ function Home (): JSX.Element {
   ]);
 
   useEffect(() => {
-
     setMounted(true);
   }, []);
 
