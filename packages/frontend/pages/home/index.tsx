@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Popover, RadioGroup, Transition } from '@headlessui/react';
+import { Popover, RadioGroup, Transition, Dialog } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
@@ -10,12 +10,14 @@ import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
+
 import near from '../../images/btc.png';
 
 /* eslint-disable sort-keys */
-function Home (): JSX.Element {
+function Home(): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // const [tab, setTab] = useState<string>('balance');
   const [currentAccount, setCurrentAccount] = useState<string>('5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC');
@@ -52,6 +54,18 @@ function Home (): JSX.Element {
     return null;
   }
 
+  console.log(networkSelection)
+
+  function closeModal() {
+    setIsOpen(false);
+    setNetworkSelection('');
+    setNetwork(networkSelection);
+    console.log('close')
+  }
+
+
+
+
   const changeNetwork = async () => {
     const notification = toast.loading('Changing Network...', {
       style: {
@@ -68,17 +82,8 @@ function Home (): JSX.Element {
       setTimeout(() => {
         console.log('changeNetwork');
         toast.dismiss(notification);
-        toast('Changed Successfully !', {
-          duration: 4000,
-          style: {
-            background: 'green',
-            color: 'white',
-            // fontWeight: "bolder",
-            // fontFamily: "Poppins",
-            fontSize: '17px',
-            padding: '20px'
-          }
-        });
+
+        setIsOpen(true);
 
         resolve();
       }, 3000);
@@ -133,7 +138,7 @@ function Home (): JSX.Element {
                       <div className='bg-gray-50 p-4'>
                         <div
                           className='flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100'
-                          onClick={ () => router.push('/account') }
+                          onClick={() => router.push('/account')}
                         >
                           <span className='flex items-center'>
                             <span className='text-sm font-medium text-gray-900'>
@@ -170,12 +175,12 @@ function Home (): JSX.Element {
       </div>
     </div>
 
-    <div className='col-span-6 shadow-xl rounded-xl col-start-3 bg-white'>
+    <div className='col-span-10 col-start-2 md:col-span-6 md:col-start-2 2xl:md:col-start-3 shadow-xl rounded-xl  bg-white'>
       <div className='flex flex-col items-center pb-10 m-10 mx-auto space-y-3'>
         <p className='mt-8 text-lg font-semi-bold' >Total Balance</p>
         <p className='text-3xl font-extrabold '>$793.32</p>
 
-        <br/><br/>
+        <br /><br />
         {/* <div className='flex p-2 space-x-10'>
           <div>
             <div className='flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full'>
@@ -230,7 +235,7 @@ function Home (): JSX.Element {
       </div>
     </div >
 
-    <div className='col-span-2 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
+    <div className='col-span-10 col-start-2 md:col-span-4 md:col-start-8 2xl:md:col-span-3 2xl:col-start-9 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
       <div className='col-span-12 '>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection || network}>
@@ -282,9 +287,7 @@ function Home (): JSX.Element {
         <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
           onClick={async () => {
             await changeNetwork();
-            alert(`Network changed to ${networkSelection}`);
-            setNetworkSelection('');
-            setNetwork(networkSelection);
+
           }} >
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
@@ -294,6 +297,63 @@ function Home (): JSX.Element {
     <div className='col-span-12'>
       {/* <Footer /> */}
     </div>
+
+
+
+
+    <Transition appear show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Changed successfully
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    {`Network changed to ${networkSelection}`}
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    onClick={closeModal}
+                  >
+                    OK
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
   </main>);
 }
 
