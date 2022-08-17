@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "exclude": [
-    "node_modules\/(?!@skyekiwi)"
+    "node_modules/(?!@skyekiwi)"
   ],
   "compilerOptions": {
     "lib": [
@@ -14,7 +14,7 @@
     "noEmit": true,
     "incremental": true,
     "isolatedModules": true,
-
+    "jsx": "preserve",
     "allowSyntheticDefaultImports": true
   },
   "include": [

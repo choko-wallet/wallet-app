@@ -10,8 +10,10 @@ import Router from 'next/router';
 import { ThemeProvider } from 'next-themes';
 import React from 'react';
 import { Provider } from 'react-redux';
-
 import { store } from '../features/redux/store';
+
+// import { persistStore } from 'redux-persist';
+// import { PersistGate } from 'redux-persist/integration/react';
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -26,12 +28,16 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function MyApp ({ Component, pageProps }: AppProps): JSX.Element {
+// let persistor = persistStore(store);
+
+function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <Provider store={store}>
-      <ThemeProvider>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      {/* <PersistGate loading={null} persistor={persistor}> */}
+        <ThemeProvider>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      {/* </PersistGate> */}
     </Provider>
   );
 }
