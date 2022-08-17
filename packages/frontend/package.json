@@ -11,8 +11,12 @@
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.1",
     "@choko-wallet/core": "0.1.6-0",
+<<<<<<< HEAD
     "@choko-wallet/known-networks": "^0.1.5",
     "@headlessui/react": "^1.6.6",
+=======
+    "@choko-wallet/request-handler": "0.1.6-1",
+>>>>>>> master
     "@heroicons/react": "^1.0.6",
     "@polkadot/api": "^8.13.1",
     "@polkadot/util-crypto": "^10.1.1",
@@ -26,8 +30,13 @@
     "react": "18.1.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.1.0",
+<<<<<<< HEAD
     "react-hot-toast": "^2.3.0",
     "react-redux": "^8.0.2"
+=======
+    "react-redux": "^7.2.0",
+    "redux-persist": "6.0.0"
+>>>>>>> master
   },
   "devDependencies": {
     "@types/react-copy-to-clipboard": "^5.0.3",

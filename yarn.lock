@@ -1399,7 +1399,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.18.9
   resolution: "@babel/runtime@npm:7.18.9"
   dependencies:
@@ -1485,14 +1485,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@choko-wallet/core@npm:0.1.6-1":
+  version: 0.1.6-1
+  resolution: "@choko-wallet/core@npm:0.1.6-1"
+  dependencies:
+    "@choko-wallet/known-networks": 0.1.6-1
+    "@polkadot/util-crypto": ^10.1.1
+    "@skyekiwi/crypto": 0.8.4-1
+    "@skyekiwi/util": 0.8.4-1
+  checksum: ba8fc63b82a1e0fbe48cc8d55d4764a211f02c4f054be7285e58977e0d108889505a834019669aa3f88fd3c8956f1dcc28ef679e10e01dae0543f7e5d37f922e
+  languageName: node
+  linkType: hard
+
 "@choko-wallet/frontend@workspace:packages/frontend":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/frontend@workspace:packages/frontend"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
     "@choko-wallet/core": 0.1.6-0
+<<<<<<< HEAD
     "@choko-wallet/known-networks": ^0.1.5
     "@headlessui/react": ^1.6.6
+=======
+    "@choko-wallet/request-handler": 0.1.6-1
+>>>>>>> master
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
     "@polkadot/util-crypto": ^10.1.1
@@ -1509,8 +1525,13 @@ __metadata:
     react: 18.1.0
     react-copy-to-clipboard: ^5.1.0
     react-dom: 18.1.0
+<<<<<<< HEAD
     react-hot-toast: ^2.3.0
     react-redux: ^8.0.2
+=======
+    react-redux: ^7.2.0
+    redux-persist: 6.0.0
+>>>>>>> master
     tailwindcss: ^3.1.2
     typescript: ^4.7.4
   languageName: unknown
@@ -1533,6 +1554,28 @@ __metadata:
     "@choko-wallet/core": 0.1.6-0
     "@skyekiwi/util": 0.8.4-1
   checksum: 3a580d4e57b778573e55f692b587aeeee4453eb9d8973c9697ef69de75e5e8cab31062ebf253d288ab3624242ca7582cbb99625473de988e6c0c383c5b97bcfe
+  languageName: node
+  linkType: hard
+
+"@choko-wallet/known-networks@npm:0.1.6-1":
+  version: 0.1.6-1
+  resolution: "@choko-wallet/known-networks@npm:0.1.6-1"
+  dependencies:
+    "@choko-wallet/core": 0.1.6-1
+    "@skyekiwi/util": 0.8.4-1
+  checksum: f92b74b90d62baca72a2bfa3f7a2e2c87f40ba1c044b5af73b447c7c4bb6bc457fa2a106082b89456bcc04b87214f9589beafdffd2b3c01a1f885f1eed4eefff
+  languageName: node
+  linkType: hard
+
+"@choko-wallet/request-handler@npm:0.1.6-1":
+  version: 0.1.6-1
+  resolution: "@choko-wallet/request-handler@npm:0.1.6-1"
+  dependencies:
+    "@choko-wallet/core": 0.1.6-1
+    "@polkadot/keyring": ^10.1.2
+    "@polkadot/util-crypto": ^10.1.2
+    "@skyekiwi/util": 0.8.4-1
+  checksum: 78a42de197e6ca77e1888554e4bc5aeacd5233831fd9fb45f02691e8d39f285acffd69c98e5cb90a9a8c87afdb0ad8e59d682eaf06676d81ca98ff2d518ed80c
   languageName: node
   linkType: hard
 
@@ -2653,6 +2696,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/keyring@npm:^10.1.2":
+  version: 10.1.3
+  resolution: "@polkadot/keyring@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/util": 10.1.3
+    "@polkadot/util-crypto": 10.1.3
+  peerDependencies:
+    "@polkadot/util": 10.1.3
+    "@polkadot/util-crypto": 10.1.3
+  checksum: 23c5ef127b256384cc1b289391ff7adc43edb30949d521b8b726c8b82477c3232fdef9b7d1982d15372e5faf134f1b8ee7f4fb09411785aa4c20f8776931f7eb
+  languageName: node
+  linkType: hard
+
 "@polkadot/networks@npm:10.1.2, @polkadot/networks@npm:^10.1.1":
   version: 10.1.2
   resolution: "@polkadot/networks@npm:10.1.2"
@@ -2661,6 +2718,17 @@ __metadata:
     "@polkadot/util": 10.1.2
     "@substrate/ss58-registry": ^1.25.0
   checksum: 030fbd6ba97b0a05e835d94b8977508d512c1db9fba074902dd08737c73e93ea6d7aff7f703d5bd1a226d2db815169f0ed5a0bf523ab394fd87811a00dbdce8c
+  languageName: node
+  linkType: hard
+
+"@polkadot/networks@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/networks@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/util": 10.1.3
+    "@substrate/ss58-registry": ^1.25.0
+  checksum: c265c1be5672936af2b36d8d99233e19296d614285e9471076e976d001e74fa20b1713b57c1d4c3ae4d8d6bd81a54233ff5ace6a70f98f3f1b5f34e8e433b112
   languageName: node
   linkType: hard
 
@@ -2807,6 +2875,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/util-crypto@npm:10.1.3, @polkadot/util-crypto@npm:^10.1.2":
+  version: 10.1.3
+  resolution: "@polkadot/util-crypto@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@noble/hashes": 1.1.2
+    "@noble/secp256k1": 1.6.3
+    "@polkadot/networks": 10.1.3
+    "@polkadot/util": 10.1.3
+    "@polkadot/wasm-crypto": ^6.3.1
+    "@polkadot/x-bigint": 10.1.3
+    "@polkadot/x-randomvalues": 10.1.3
+    "@scure/base": 1.1.1
+    ed2curve: ^0.3.0
+    tweetnacl: ^1.0.3
+  peerDependencies:
+    "@polkadot/util": 10.1.3
+  checksum: 91b663f24db78aba6f236905af498009d54204273c387f59fa2a074b3f9e22f321482b1104c82156c269532097a8285033fede2c930544bd4b1936e53f2ae621
+  languageName: node
+  linkType: hard
+
 "@polkadot/util@npm:10.1.2, @polkadot/util@npm:^10.1.1":
   version: 10.1.2
   resolution: "@polkadot/util@npm:10.1.2"
@@ -2819,6 +2908,21 @@ __metadata:
     "@types/bn.js": ^5.1.0
     bn.js: ^5.2.1
   checksum: fd76295cc1d3cda17beff019074fc7e6eff74b4563d28a028e48a4b714592f1ab9f979b6d14245d3bec45a4318972834f0c5842f1f906611dd2ce228842e4899
+  languageName: node
+  linkType: hard
+
+"@polkadot/util@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/util@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/x-bigint": 10.1.3
+    "@polkadot/x-global": 10.1.3
+    "@polkadot/x-textdecoder": 10.1.3
+    "@polkadot/x-textencoder": 10.1.3
+    "@types/bn.js": ^5.1.0
+    bn.js: ^5.2.1
+  checksum: 458055c1ed89c83449571de2dd5a67067fe2d8cd6506f02d9ce32077bef106b0297446e15b22db3dc39406f50a4e13d8dc10cf97fb0dd5a4979ce8f68dfa5d7d
   languageName: node
   linkType: hard
 
@@ -2910,6 +3014,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/x-bigint@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/x-bigint@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/x-global": 10.1.3
+  checksum: 5bc2923b6c5bbab76c47bcd4710d68860312eb943a0a6d759d82c1b53ff12f0738cbc1b09bc9ee0344dbafb1e77a6ca20a4bcd42601c4ca5ef0348d9e7124b63
+  languageName: node
+  linkType: hard
+
 "@polkadot/x-fetch@npm:^10.1.1":
   version: 10.1.2
   resolution: "@polkadot/x-fetch@npm:10.1.2"
@@ -2931,6 +3045,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/x-global@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/x-global@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+  checksum: 8b3aacdf9102bb9b5c3ceb29f1b7288c7fee11fd79f375f5c61efc4ed77eae200e478edf6fe88d7ecdf5961d8d7cda69beea28eea2c1e0f6e70eecff19aa8cd2
+  languageName: node
+  linkType: hard
+
 "@polkadot/x-randomvalues@npm:10.1.2":
   version: 10.1.2
   resolution: "@polkadot/x-randomvalues@npm:10.1.2"
@@ -2938,6 +3061,16 @@ __metadata:
     "@babel/runtime": ^7.18.9
     "@polkadot/x-global": 10.1.2
   checksum: 269c726a8a39555305b826abab165a8e969ee10c0987ea33c5f589909bfaec1c1e0ce4bcfadadc2c152d3993858b487b4731e8724e270afb63c92bf852ca05fb
+  languageName: node
+  linkType: hard
+
+"@polkadot/x-randomvalues@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/x-randomvalues@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/x-global": 10.1.3
+  checksum: 3bb5ef49b1920f85c9aa965d77c60175c16d9203d3321646aef870d225454205f9969361d7a6ded193995a70aa0bab244d14516d0dc5997c36eb3ae5dbf378f3
   languageName: node
   linkType: hard
 
@@ -2951,6 +3084,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/x-textdecoder@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/x-textdecoder@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/x-global": 10.1.3
+  checksum: 62c159f6d966c82207e013147b0a9502a091f06c8ab9956ae65f698b1325f834b4aeb2f07fdc2cc560a3d5290355e3a9131f68c5578b25d640c8bc221b7eba5a
+  languageName: node
+  linkType: hard
+
 "@polkadot/x-textencoder@npm:10.1.2":
   version: 10.1.2
   resolution: "@polkadot/x-textencoder@npm:10.1.2"
@@ -2958,6 +3101,16 @@ __metadata:
     "@babel/runtime": ^7.18.9
     "@polkadot/x-global": 10.1.2
   checksum: ac53acfa931f55508b345a35a5d8e626195e92faeecf1706582ac9f7d3c0773cfb0a06aae4523c3408e3a29b1423b4fec279ab3b356a082c3a189ebf58997053
+  languageName: node
+  linkType: hard
+
+"@polkadot/x-textencoder@npm:10.1.3":
+  version: 10.1.3
+  resolution: "@polkadot/x-textencoder@npm:10.1.3"
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@polkadot/x-global": 10.1.3
+  checksum: 4947f187a1f5dbbde9031de144d14d64954662fa814936f84b145ca3bc41ff0f6f7e76ed72f252e780d4862a99f0b6cc899dabcb6788a05417a812cc8752cc31
   languageName: node
   linkType: hard
 
@@ -3443,7 +3596,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
   dependencies:
@@ -3558,6 +3711,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-redux@npm:^7.1.20":
+  version: 7.1.24
+  resolution: "@types/react-redux@npm:7.1.24"
+  dependencies:
+    "@types/hoist-non-react-statics": ^3.3.0
+    "@types/react": "*"
+    hoist-non-react-statics: ^3.3.0
+    redux: ^4.0.0
+  checksum: 6582246581331ac7fbbd44aa1f1c136c8a9c8febbcf462432ac81302263308c21e1a2e7868beb7f73bbcb52a8e67935d133cb37f5bdcb6564eaff3a811805101
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:*":
   version: 18.0.15
   resolution: "@types/react@npm:18.0.15"
@@ -3598,13 +3763,6 @@ __metadata:
   version: 2.0.1
   resolution: "@types/stack-utils@npm:2.0.1"
   checksum: 205fdbe3326b7046d7eaf5e494d8084f2659086a266f3f9cf00bccc549c8e36e407f88168ad4383c8b07099957ad669f75f2532ed4bc70be2b037330f7bae019
-  languageName: node
-  linkType: hard
-
-"@types/use-sync-external-store@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "@types/use-sync-external-store@npm:0.0.3"
-  checksum: 161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
   languageName: node
   linkType: hard
 
@@ -10242,7 +10400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -10424,49 +10582,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^17.0.1":
+"react-is@npm:^17.0.1, react-is@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
   languageName: node
   linkType: hard
 
-"react-is@npm:^18.0.0":
-  version: 18.2.0
-  resolution: "react-is@npm:18.2.0"
-  checksum: e72d0ba81b5922759e4aff17e0252bd29988f9642ed817f56b25a3e217e13eea8a7f2322af99a06edb779da12d5d636e9fda473d620df9a3da0df2a74141d53e
-  languageName: node
-  linkType: hard
-
-"react-redux@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "react-redux@npm:8.0.2"
+"react-redux@npm:^7.2.0":
+  version: 7.2.8
+  resolution: "react-redux@npm:7.2.8"
   dependencies:
-    "@babel/runtime": ^7.12.1
-    "@types/hoist-non-react-statics": ^3.3.1
-    "@types/use-sync-external-store": ^0.0.3
+    "@babel/runtime": ^7.15.4
+    "@types/react-redux": ^7.1.20
     hoist-non-react-statics: ^3.3.2
-    react-is: ^18.0.0
-    use-sync-external-store: ^1.0.0
+    loose-envify: ^1.4.0
+    prop-types: ^15.7.2
+    react-is: ^17.0.2
   peerDependencies:
-    "@types/react": ^16.8 || ^17.0 || ^18.0
-    "@types/react-dom": ^16.8 || ^17.0 || ^18.0
-    react: ^16.8 || ^17.0 || ^18.0
-    react-dom: ^16.8 || ^17.0 || ^18.0
-    react-native: ">=0.59"
-    redux: ^4
+    react: ^16.8.3 || ^17 || ^18
   peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    "@types/react-dom":
-      optional: true
     react-dom:
       optional: true
     react-native:
       optional: true
-    redux:
-      optional: true
-  checksum: 44c1739c45dad04ecc65a290897c73828ff0bf43f2b7618ed5ef6d4ceecedae38e76cecd189a5ecedf579c28ead05427bc000fb45ad30b9fcd5c2be27cd3ac73
+  checksum: ecf1933e91013f2d41bfc781515b536bf81eb1f70ff228607841094c8330fe77d522372b359687e51c0b52b9888dba73db9ac0486aace1896ab9eb9daec102d5
   languageName: node
   linkType: hard
 
@@ -10548,6 +10688,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redux-persist@npm:6.0.0":
+  version: 6.0.0
+  resolution: "redux-persist@npm:6.0.0"
+  peerDependencies:
+    redux: ">4.0.0"
+  checksum: edaf10dbf17351ce8058d0802357adae8665b3a1ff39371834e37838ddbe1a79cccbc717b8ba54acb5307651ccf51d0f7dc1cbc8dbae0726ff952d11ef61c6b8
+  languageName: node
+  linkType: hard
+
 "redux-thunk@npm:^2.4.1":
   version: 2.4.1
   resolution: "redux-thunk@npm:2.4.1"
@@ -10557,7 +10706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.1.2":
+"redux@npm:^4.0.0, redux@npm:^4.1.2":
   version: 4.2.0
   resolution: "redux@npm:4.2.0"
   dependencies:
@@ -12105,7 +12254,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.0.0":
+"use-sync-external-store@npm:1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:
