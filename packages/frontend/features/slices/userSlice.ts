@@ -40,7 +40,7 @@ export const serializeUserAccount = createAsyncThunk(
       lockedPrivateKey: u8aToHex(serializedLockedUserAccount)
     };
   }
-)
+);
 
 export const deserializeUserAccount = createAsyncThunk(
   'users/deserialize',
@@ -58,7 +58,7 @@ export const deserializeUserAccount = createAsyncThunk(
       return rejectWithValue("Something went wrong!");
     }
   }
-)
+);
 
 // User slice
 interface UserSliceItem {

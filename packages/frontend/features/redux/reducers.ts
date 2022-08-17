@@ -5,8 +5,6 @@ import { combineReducers, Reducer } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 
-import basketSlice from '../slices/test/basketSlice';
-import counterSlice from '../slices/test/counterSlice';
 import userSlice from '../slices/userSlice';
 
 const persistConfig = {
@@ -16,8 +14,6 @@ const persistConfig = {
 };
 
 export const rootReducer: Reducer = combineReducers({
-  basket: basketSlice,
-  counter: counterSlice,
   user: userSlice
 });
 

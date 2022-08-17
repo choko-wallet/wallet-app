@@ -15,8 +15,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        footerBg: "#d8c9d8",//bg-footerBg
-      },
-    },
-  },
+        footerBg: '#d8c9d8' // bg-footerBg
+      }
+    }
+  }
 };

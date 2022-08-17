@@ -13,3 +13,12 @@
   --background: black;
   --foreground: white;
 }
+
+.tabs-boxed .tab-active {
+  background-color: gray;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}

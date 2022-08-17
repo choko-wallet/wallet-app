@@ -1461,6 +1461,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@choko-wallet/core@npm:0.1.5":
+  version: 0.1.5
+  resolution: "@choko-wallet/core@npm:0.1.5"
+  dependencies:
+    "@choko-wallet/known-networks": 0.1.5
+    "@polkadot/util-crypto": ^10.1.1
+    "@skyekiwi/crypto": 0.8.4-0
+    "@skyekiwi/util": 0.8.4-0
+  checksum: 65be6c5974f8a2c81894cef97a0658ffa47e729abdac33e18d2c2d1ced2d019ee6690fa0f38c8abee5361d51be0502d2601bcb6c5475040691008e15bd44dd71
+  languageName: node
+  linkType: hard
+
 "@choko-wallet/core@npm:0.1.6-0":
   version: 0.1.6-0
   resolution: "@choko-wallet/core@npm:0.1.6-0"
@@ -1491,7 +1503,12 @@ __metadata:
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
     "@choko-wallet/core": 0.1.6-0
+<<<<<<< HEAD
+    "@choko-wallet/known-networks": ^0.1.5
+    "@headlessui/react": ^1.6.6
+=======
     "@choko-wallet/request-handler": 0.1.6-1
+>>>>>>> master
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
     "@polkadot/util-crypto": ^10.1.1
@@ -1508,12 +1525,27 @@ __metadata:
     react: 18.1.0
     react-copy-to-clipboard: ^5.1.0
     react-dom: 18.1.0
+<<<<<<< HEAD
+    react-hot-toast: ^2.3.0
+    react-redux: ^8.0.2
+=======
     react-redux: ^7.2.0
     redux-persist: 6.0.0
+>>>>>>> master
     tailwindcss: ^3.1.2
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
+
+"@choko-wallet/known-networks@npm:0.1.5, @choko-wallet/known-networks@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@choko-wallet/known-networks@npm:0.1.5"
+  dependencies:
+    "@choko-wallet/core": 0.1.5
+    "@skyekiwi/util": 0.8.4-0
+  checksum: 75c84f0d21ca50ec82ffd98b7b70360e4eb099383b45f7fd467117d2e2bad402e6a019657b3e4d8cf003ec0a47d7c0e02aecb9bfd0bc392599b50c5414f63721
+  languageName: node
+  linkType: hard
 
 "@choko-wallet/known-networks@npm:0.1.6-0":
   version: 0.1.6-0
@@ -1969,6 +2001,16 @@ __metadata:
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
   checksum: 4059f790e2d07bf3c3ff3e0fec0daa8144fe35c1f6e0111c9921bd32106adaa97a4ab096ad7dab1e28ee6a9060083c4d1a4ada42a7f5f3f7a96b8812e2b757c1
+  languageName: node
+  linkType: hard
+
+"@headlessui/react@npm:^1.6.6":
+  version: 1.6.6
+  resolution: "@headlessui/react@npm:1.6.6"
+  peerDependencies:
+    react: ^16 || ^17 || ^18
+    react-dom: ^16 || ^17 || ^18
+  checksum: 6ebb34bde0bd2a5045ae29a2bac1dc166f7163c9ad98aabe5abb580c3c770d0b3040d5992045f9e68b6c8e8eca5bf7eca71276ff9b1696a9fb88a9380d8fcf96
   languageName: node
   linkType: hard
 
@@ -3224,6 +3266,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@skyekiwi/crypto@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/crypto@npm:0.8.4-0"
+  dependencies:
+    "@skyekiwi/metadata": 0.8.4-0
+    "@skyekiwi/util": 0.8.4-0
+    ethers: ^5.5.4
+    tweetnacl: ^1.0.3
+  checksum: 67e334bf5b825be3cc69372706a29bdeef8a892e85c832fbca098ae399f74076faa6f54e277f75d826f3dbf5859e4769d0f5ea9373a9f7dd5920be0733683ef3
+  languageName: node
+  linkType: hard
+
 "@skyekiwi/crypto@npm:0.8.4-1":
   version: 0.8.4-1
   resolution: "@skyekiwi/crypto@npm:0.8.4-1"
@@ -3329,6 +3383,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@skyekiwi/ipfs@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/ipfs@npm:0.8.4-0"
+  dependencies:
+    "@polkadot/keyring": ^10.1.1
+    "@polkadot/util-crypto": ^10.1.1
+    "@skyekiwi/util": 0.8.4-0
+    superagent: ^7.1.1
+    tweetnacl: ^1.0.3
+  checksum: 94d7dea6700ad3c0efa8937140865c3beaf68a3a5bfb7e75662463028c98c4df662aec660ef387f7071a595986486fde5bff5928efca7ec9676164a54704e693
+  languageName: node
+  linkType: hard
+
 "@skyekiwi/ipfs@npm:0.8.4-1":
   version: 0.8.4-1
   resolution: "@skyekiwi/ipfs@npm:0.8.4-1"
@@ -3342,6 +3409,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@skyekiwi/metadata@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/metadata@npm:0.8.4-0"
+  dependencies:
+    "@skyekiwi/crypto": 0.8.4-0
+    "@skyekiwi/ipfs": 0.8.4-0
+    "@skyekiwi/util": 0.8.4-0
+    tweetnacl: ^1.0.3
+  checksum: ec9bd782abd7d24972210329d1f58b4f8cae0494a08c6b1fd4628a17dbcfa09a42db4d4a40474a0bfb878fd823361ac23cfbe1d9d27e8719b04603b536734f10
+  languageName: node
+  linkType: hard
+
 "@skyekiwi/metadata@npm:0.8.4-1":
   version: 0.8.4-1
   resolution: "@skyekiwi/metadata@npm:0.8.4-1"
@@ -3351,6 +3430,18 @@ __metadata:
     "@skyekiwi/util": 0.8.4-1
     tweetnacl: ^1.0.3
   checksum: 40ef46339a7a9d06fcd0a19d60f7e3d5c03ce4d0c450a3ab8bda8ba7f56a8ee138fa522b7a55322e581d4a9abaa58ba5f8b85de56c610c544f54609c6c880342
+  languageName: node
+  linkType: hard
+
+"@skyekiwi/util@npm:0.8.4-0":
+  version: 0.8.4-0
+  resolution: "@skyekiwi/util@npm:0.8.4-0"
+  dependencies:
+    "@polkadot/api": ^8.14.1
+    "@polkadot/keyring": ^10.1.1
+    pino: ^7.6.5
+    pino-pretty: ^7.5.1
+  checksum: 2e1efc973cdf4884380cbe939e4cb944414e9dda21cede2baece10008a96dfe4d2c4bfd3ae395161b10dc0993e150e46bc23e947b3722625937fa9cc04fba292
   languageName: node
   linkType: hard
 
@@ -7091,6 +7182,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"goober@npm:^2.1.10":
+  version: 2.1.10
+  resolution: "goober@npm:2.1.10"
+  peerDependencies:
+    csstype: ^3.0.10
+  checksum: 55a353a477665ea3ae748153132a32184a6a0db42b24ec66cdca97d1e046a2b63af29f698e245fe2f51c05d0eaefeda2cce4a106bc2b6293ea67490c39b6b5c8
+  languageName: node
+  linkType: hard
+
 "got@npm:^9.6.0":
   version: 9.6.0
   resolution: "got@npm:9.6.0"
@@ -10460,6 +10560,18 @@ __metadata:
   peerDependencies:
     react: ^18.1.0
   checksum: bb0d48eeb0b297c79c2a03978baa29f5b3ff7ba3d070b21e34c9af1a6e7fdf0ca8b8d73e41f9214d91ad40eeb6d1f3559f884cbbc338713374a51320637c23df
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "react-hot-toast@npm:2.3.0"
+  dependencies:
+    goober: ^2.1.10
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: d2526f4bf62d94ca1874de1d618e30537aa8123b5d954cf1ff4e41f063d4ab410fc4f10a0ad134d533c1e0ae3d910af1d21f5a4f37f46dcbdb1710380cbb4bc1
   languageName: node
   linkType: hard
 
