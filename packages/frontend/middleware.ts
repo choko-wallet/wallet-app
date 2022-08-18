@@ -8,14 +8,13 @@ import { NextResponse } from 'next/server';
 // This function can be marked `async` if using `await` inside
 export function middleware (request: NextRequest) {
   // repalce with real conditional logic
-  const accountIsSet = false;
-  const search = request.nextUrl.search;
+  // const search = request.nextUrl.search;
 
-  if (!search.includes('forceRedirect=true')) {
-    if (request.nextUrl.pathname.startsWith('/account') && accountIsSet) {
-      return NextResponse.redirect(new URL('/home', request.url));
-    }
-  } else {
-    // Do nothing
-  }
+  // if (!search.includes('forceRedirect=true')) {
+  //   if (request.nextUrl.pathname.startsWith('/account') && accountIsSet) {
+  //     return NextResponse.redirect(new URL('/home', request.url));
+  //   }
+  // } else {
+  //   // Do nothing
+  // }
 }

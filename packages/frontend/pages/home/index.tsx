@@ -25,28 +25,34 @@ function Home(): JSX.Element {
   const userAccount = useSelector(selectUserAccount);
   const error = useSelector(selectError);
   
+  const [currentAccount, setCurrentAccount] = useState<string>('');
+  const [allAccounts, setAllAccounts] = useState<string[]>(['']);
+
+  const [networkSelection, setNetworkSelection] = useState<string>('');
+  const [network, setNetwork] = useState<string>('polkadot');
+
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!localStorage.getItem("serialziedUserAccount") ) {
+      console.error("account not set.");
+      router.push('/account');
+    }
     dispatch(deserializeUserAccount());
-  })
+    setMounted(true);
+  }, [])
 
   useEffect(() => {
+    if (userAccount) {
+      setCurrentAccount(userAccount.address);
+      setAllAccounts([userAccount.address]);
+    }
     if(error) {
       // router.push('/showpassphrase');
 
     }
   }, [error])
-
-  const [currentAccount, setCurrentAccount] = useState<string>('5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC');
-  const [allAccounts, setAllAccounts] = useState<string[]>([
-    '5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC',
-    '6DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC'
-  ]);
-
-  const [networkSelection, setNetworkSelection] = useState<string>('');
-  const [network, setNetwork] = useState<string>('polkadot');
 
   const allNetworks = [{
     name: 'Polkadot',
@@ -65,15 +71,9 @@ function Home(): JSX.Element {
     color: 'blue-500'
   }];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   if (!mounted) {
     return null;
   }
-
-  console.log(userAccount)
 
   function closeModal() {
     setIsOpen(false);
@@ -128,7 +128,7 @@ function Home(): JSX.Element {
                   className={`
                     ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case`}
                 >
-                  <UserCircleIcon className='h-6 w-6 mr-5' /> ... {currentAccount.substring(25, currentAccount.length)}
+                  <UserCircleIcon className='h-6 w-6 mr-5' />{currentAccount.substring(0, 13)} ... {currentAccount.substring(currentAccount.length - 13, currentAccount.length)}
                 </Popover.Button>
                 <Transition
                   as={Fragment}

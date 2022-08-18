@@ -35,7 +35,7 @@ const Home: NextPage = () => {
           <p className='py-6'>Your ultimate cross-chain crypto wallet.</p><br/>
 
           <button className='btn'
-            onClick={() => router.push('/account')}>Enter</button>
+            onClick={() => router.push('/home')}>Enter</button>
         </div>
 
       </div>
