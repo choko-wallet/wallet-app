@@ -1,18 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { UserAccount, LockedPrivateKey } from '@choko-wallet/core';
-import { u8aToHex, hexToU8a, stringToU8a } from '@skyekiwi/util';
-
-const stringTo32 = (password: string) => {
-  let passwordHash = password;
-  if (password.length < 32) {
-    const curLength = password.length;
-    const remainLength = 32 - curLength;
-    passwordHash += ' '.repeat(remainLength);
-  }
-  return passwordHash;
-}
+import { blake2AsU8a } from '@polkadot/util-crypto';
+import { u8aToHex, hexToU8a } from '@skyekiwi/util';
 
 interface SetPasswordPayload {
   seeds: string;
@@ -31,26 +23,26 @@ export const serializeUserAccount = createAsyncThunk(
       localKeyEncryptionStrategy: 0
     });
     await userAccount.init();
+
     serialized = userAccount.serialize();
-    const lockedUserAccount = userAccount.lockUserAccount(stringToU8a(stringTo32(password)));
+    const lockedUserAccount = userAccount.lockUserAccount(blake2AsU8a(password));
     serializedLockedUserAccount = lockedUserAccount.serialize();
 
     return {
-      serializedUserAccountStr: u8aToHex(serialized),
+      serializedUserAccount: u8aToHex(serialized),
       lockedPrivateKey: u8aToHex(serializedLockedUserAccount)
     };
   }
 );
 
-export const deserializeUserAccount = createAsyncThunk(
-  'users/deserialize',
+export const unlockUserAccount = createAsyncThunk(
+  'users/unlock',
   async (password: string, { rejectWithValue }) => {
     console.log("password: ", password);
-    let userAccount;
     try {
       const serializedLockedPrivateKey = localStorage.getItem("lockedPrivateKey");
       const deserializedLockedPrivateKey = LockedPrivateKey.deserialize(hexToU8a(serializedLockedPrivateKey));
-      userAccount = UserAccount.unlockUserAccount(deserializedLockedPrivateKey, stringToU8a(stringTo32(password)));
+      const userAccount = UserAccount.unlockUserAccount(deserializedLockedPrivateKey, blake2AsU8a(password));
       await userAccount.init();
       return userAccount;
     } catch (e) {
@@ -63,13 +55,11 @@ export const deserializeUserAccount = createAsyncThunk(
 // User slice
 interface UserSliceItem {
   userAccount: UserAccount | null;
-  password: string;
   error: boolean;
 }
 
 const initialState: UserSliceItem = {
   userAccount: null,
-  password: '',
   error: false
 };
 
@@ -77,8 +67,9 @@ export const userSlice = createSlice({
   initialState,
   name: 'user',
   reducers: {
-    savePassword: (state, action: PayloadAction<string>) => {
-      state.password = action.payload;
+    deserializeUserAccount: (state, action: PayloadAction<string>) => {
+      const serializedUserAccount = localStorage.getItem("serialziedUserAccount");
+      state.userAccount = UserAccount.deserialize(hexToU8a(serializedUserAccount));
     }
   },
 
@@ -86,24 +77,24 @@ export const userSlice = createSlice({
     builder
       .addCase(serializeUserAccount.fulfilled, (state, action) => {
         const {
-          serializedUserAccountStr,
+          serializedUserAccount,
           lockedPrivateKey
         } = action.payload;
-        localStorage.setItem("serialziedUserAccountStr", serializedUserAccountStr);
+        localStorage.setItem("serialziedUserAccount", serializedUserAccount);
         localStorage.setItem("lockedPrivateKey", lockedPrivateKey)
       })
 
-      .addCase(deserializeUserAccount.fulfilled, (state, action) => {
+      .addCase(unlockUserAccount.fulfilled, (state, action) => {
         console.log("fulfiled");
         state.error = false;
         state.userAccount = action.payload;
       })
-      .addCase(deserializeUserAccount.rejected, (state) => {
+      .addCase(unlockUserAccount.rejected, (state) => {
         console.log('rejected');
         state.error = true;
       })
   }
 });
 
-export const { savePassword } = userSlice.actions;
+export const { deserializeUserAccount } = userSlice.actions;
 export default userSlice.reducer;

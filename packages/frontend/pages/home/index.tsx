@@ -11,7 +11,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { selectPassword, selectUserAccount, selectError } from '../../features/redux/selectors';
+import { selectUserAccount, selectError } from '../../features/redux/selectors';
 import { deserializeUserAccount } from '../../features/slices/userSlice';
 
 
@@ -21,20 +21,16 @@ import near from '../../images/btc.png';
 function Home(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const userAccount = useSelector(selectUserAccount);
-  const password = useSelector(selectPassword);
   const error = useSelector(selectError);
+  
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if(password) {
-      dispatch(deserializeUserAccount(password));
-    } else {
-      // router.push('/showpassphrase');
-      
-    }
-  }, [password])
+    dispatch(deserializeUserAccount());
+  })
 
   useEffect(() => {
     if(error) {
@@ -42,8 +38,6 @@ function Home(): JSX.Element {
 
     }
   }, [error])
-
-  console.log("userAccount: ", userAccount);
 
   const [currentAccount, setCurrentAccount] = useState<string>('5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC');
   const [allAccounts, setAllAccounts] = useState<string[]>([
@@ -79,7 +73,7 @@ function Home(): JSX.Element {
     return null;
   }
 
-  console.log(networkSelection)
+  console.log(userAccount)
 
   function closeModal() {
     setIsOpen(false);
@@ -87,9 +81,6 @@ function Home(): JSX.Element {
     setNetwork(networkSelection);
     console.log('close')
   }
-
-
-
 
   const changeNetwork = async () => {
     const notification = toast.loading('Changing Network...', {

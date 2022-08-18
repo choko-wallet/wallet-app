@@ -10,7 +10,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 
 // redux
 import { useDispatch } from 'react-redux';
-import { serializeUserAccount, savePassword } from '../../features/slices/userSlice';
+import { serializeUserAccount } from '../../features/slices/userSlice';
 
 interface Props {
   mnemonic: string,
@@ -36,7 +36,6 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
   };
 
   const handleSetPassword = () => {
-    dispatch(savePassword(password));
     dispatch(serializeUserAccount({seeds: seeds, password: password}));
     router.push('/home');
   }
@@ -246,7 +245,7 @@ export default CreateWallet;
 export const getServerSideProps: GetServerSideProps = async () => {
   await cryptoWaitReady();
   const mnemonic = mnemonicGenerate();
-  const quizMnemonic = Math.floor(Math.random() * 12);
+  const quizMnemonic = Math.floor(Math.random() * 12) + 1;
 
   return {
     props: {
