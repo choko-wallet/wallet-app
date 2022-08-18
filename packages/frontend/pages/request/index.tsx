@@ -67,13 +67,13 @@ function RequestRouter (): JSX.Element {
                       <textarea className='textarea border-gray-400'
                         cols={50}
                         rows={5}
-                        value={'0x123'}></textarea>
+                        defaultValue={'0x123'}></textarea>
                     )
                     : (
                       <textarea className='textarea border-gray-400'
                         cols={50}
                         rows={5}
-                        value={'abc'}></textarea>
+                        defaultValue={'abc'}></textarea>
                     )
                 }
               </div>

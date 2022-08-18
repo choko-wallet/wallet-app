@@ -8,33 +8,38 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
+// redux
+import { useDispatch } from 'react-redux';
+import { serializeUserAccount, savePassword } from '../../features/slices/userSlice';
+
 interface Props {
   mnemonic: string,
   quizMnemonic: number,
 }
 
-function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
+function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
-  // const { theme } = useTheme();
-
   const [step, setStep] = useState<number>(1);
-
   const [seeds, setSeeds] = useState<string>(mnemonic);
-
   const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>(mnemonic);
   const [copied, setCopied] = useState<boolean>(false);
-
   const [verifyMnemonic, setVerifyMnemonic] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
   const refreshMnemonic = () => {
     const mnemonic = mnemonicGenerate();
-
     setSeeds(mnemonic);
     setSeedsStringForCopy(mnemonic);
   };
+
+  const handleSetPassword = () => {
+    dispatch(savePassword(password));
+    dispatch(serializeUserAccount({seeds: seeds, password: password}));
+    router.push('/home');
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -104,7 +109,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 {
                   copied && <button
                     className='btn btn-outline btn-success col-span-2 border-none'>
-                  Copied!</button>
+                    Copied!</button>
                 }
               </div>
             </div>
@@ -226,10 +231,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
           </div>
           <div className='col-span-3 '>
             <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
-              onClick={async () => {
-                alert('DONE. Need to plugin redux logic here');
-                await router.push('/');
-              }} >
+              onClick={() => handleSetPassword()}>
               <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
             </button>
           </div>

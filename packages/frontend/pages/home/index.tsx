@@ -6,9 +6,13 @@ import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-// import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+import { selectPassword, selectUserAccount, selectError } from '../../features/redux/selectors';
+import { deserializeUserAccount } from '../../features/slices/userSlice';
 
 
 import near from '../../images/btc.png';
@@ -16,10 +20,31 @@ import near from '../../images/btc.png';
 /* eslint-disable sort-keys */
 function Home(): JSX.Element {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const userAccount = useSelector(selectUserAccount);
+  const password = useSelector(selectPassword);
+  const error = useSelector(selectError);
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  // const [tab, setTab] = useState<string>('balance');
+  useEffect(() => {
+    if(password) {
+      dispatch(deserializeUserAccount(password));
+    } else {
+      // router.push('/showpassphrase');
+      
+    }
+  }, [password])
+
+  useEffect(() => {
+    if(error) {
+      // router.push('/showpassphrase');
+
+    }
+  }, [error])
+
+  console.log("userAccount: ", userAccount);
+
   const [currentAccount, setCurrentAccount] = useState<string>('5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC');
   const [allAccounts, setAllAccounts] = useState<string[]>([
     '5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC',

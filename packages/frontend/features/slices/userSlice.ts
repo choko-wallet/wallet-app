@@ -63,14 +63,12 @@ export const deserializeUserAccount = createAsyncThunk(
 // User slice
 interface UserSliceItem {
   userAccount: UserAccount | null;
-  seeds: string;
   password: string;
   error: boolean;
 }
 
 const initialState: UserSliceItem = {
   userAccount: null,
-  seeds: '',
   password: '',
   error: false
 };
@@ -79,9 +77,6 @@ export const userSlice = createSlice({
   initialState,
   name: 'user',
   reducers: {
-    saveSeeds: (state, action: PayloadAction<string>) => {
-      state.seeds = action.payload;
-    },
     savePassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload;
     }
@@ -110,5 +105,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const { saveSeeds, savePassword } = userSlice.actions;
+export const { savePassword } = userSlice.actions;
 export default userSlice.reducer;

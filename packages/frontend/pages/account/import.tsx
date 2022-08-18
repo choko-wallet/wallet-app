@@ -9,12 +9,8 @@ import React, { useEffect, useState } from 'react';
 function ImportWallet (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  // const { theme } = useTheme();
-
   const [step, setStep] = useState<number>(1);
-
   const [seeds, setSeeds] = useState<Array<string>>(Array(12).fill(''));
-
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
