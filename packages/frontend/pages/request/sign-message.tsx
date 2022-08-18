@@ -5,16 +5,54 @@ import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-function SignMessageRequest (): JSX.Element {
-  const router = useRouter();
-  const [mounted, setMounted] = useState<boolean>(false);
-  // const { theme } = useTheme();
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 
+// sign message
+import { knownNetworks } from '@choko-wallet/known-networks';
+import { DappDescriptor } from '@choko-wallet/core/dapp';
+import { SignMessageDescriptor, SignMessageRequest, SignMessageRequestPayload } from '@choko-wallet/request-handler/signMessage';
+
+function SignMsgRequest(): JSX.Element {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const userAccount = useSelector(selectUserAccount);
+
+  const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSignMessage = () => {
+    dispatch(unlockUserAccount('asdf'));
+  }
+
+  useEffect(() => {
+    if (userAccount) {
+      (async () => {
+        const msg = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        const request = new SignMessageRequest({
+          dappOrigin: new DappDescriptor({
+            activeNetwork: knownNetworks['847e7b7fa160d85f'], // skyekiwi
+            displayName: 'Testing sign messsage',
+            infoName: 'test',
+            version: 0
+          }),
+          payload: new SignMessageRequestPayload({
+            message: msg
+          }),
+          userOrigin: userAccount
+        });
+        const signMessasge = new SignMessageDescriptor();
+        const response = await signMessasge.requestHandler(request, userAccount);
+        console.log("response: ", response);
+      })();
+    }
+  }, [userAccount])
 
   if (!mounted) {
     return null;
@@ -40,7 +78,7 @@ function SignMessageRequest (): JSX.Element {
             <div className='grid grid-cols-12 gap-5 m-10 select-none'>
               <div className='col-span-12'>
                 DApp Origin: <code className='m-2 p-2 border'> XXX Finance</code>
-              </div> <br/>
+              </div> <br />
               <div className='col-span-12'>
                 Your Orign: <code className='m-2 p-2 border'>5DFhSMLmnw3Fgc6trbp8AuErcZoJS64gDFHUemqh2FRYdtoC</code>
               </div>
@@ -67,13 +105,13 @@ function SignMessageRequest (): JSX.Element {
                       <textarea className='textarea border-gray-400'
                         cols={50}
                         rows={5}
-                        value={'0x123'}></textarea>
+                        defaultValue={'0x123'}></textarea>
                     )
                     : (
                       <textarea className='textarea border-gray-400'
                         cols={50}
                         rows={5}
-                        value={'abc'}></textarea>
+                        defaultValue={'abc'}></textarea>
                     )
                 }
               </div>
@@ -83,7 +121,7 @@ function SignMessageRequest (): JSX.Element {
       </div>
 
       <div className='col-span-1 col-start-6 m-5'>
-        <button className='btn btn-success btn-circle btn-lg' >
+        <button className='btn btn-success btn-circle btn-lg' onClick={() => handleSignMessage()}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -98,4 +136,4 @@ function SignMessageRequest (): JSX.Element {
   );
 }
 
-export default SignMessageRequest;
+export default SignMsgRequest;

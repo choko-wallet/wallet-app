@@ -17,7 +17,7 @@ function RequestRouter (): JSX.Element {
     } else if (requestType === 'signTransaction') {
       router.push('/request/tx');
     } else {
-      console.error("unkown request");
+      console.log("unkown request");
       router.push('/');
     }
   }, []);
