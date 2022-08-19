@@ -3,7 +3,8 @@
 
 import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { Popover, RadioGroup, Transition, Dialog } from '@headlessui/react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,10 +15,14 @@ import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSl
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 import { hexToU8a } from '@skyekiwi/util';
 
+// http://localhost:3000/request?requestType=signMessage&payload=00000004746573740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c4a6573742054657374696e6700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000847e7b7fa160d85f0000463c4dd84fdc93ee6f8fcaf479476246f8b8df4454b2827ae3d89f4eaf779a2b000000000000000a0102030405060708090a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&callbackUrl=dapp_url
 function SignMsgRequest(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const userAccount = useSelector(selectUserAccount);
+
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
@@ -31,8 +36,10 @@ function SignMsgRequest(): JSX.Element {
     setMounted(true);
   }, []);
 
-  const handleSignMessage = () => {
-    dispatch(unlockUserAccount('asdf'));
+  function closeModal() {
+    setOpenPasswordModal(false);
+    dispatch(unlockUserAccount('123'));
+    console.log('close')
   }
 
   useEffect(() => {
@@ -115,7 +122,7 @@ function SignMsgRequest(): JSX.Element {
       </div>
 
       <div className='col-span-1 col-start-6 m-5'>
-        <button className='btn btn-success btn-circle btn-lg' onClick={() => handleSignMessage()}>
+        <button className='btn btn-success btn-circle btn-lg' onClick={() => setOpenPasswordModal(true)}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -125,7 +132,66 @@ function SignMsgRequest(): JSX.Element {
           <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
+      
+      <Transition appear show={openPasswordModal} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
 
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Unlock Wallet with Password
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    <input className='input input-bordered w-full max-w-xs'
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder='Set a Password'
+
+                      type='password'
+                      value={password}
+                    />
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    onClick={closeModal}
+                  >
+                    Unlock
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
     </main>
   );
 }
