@@ -10,16 +10,22 @@ function RequestRouter (): JSX.Element {
   // const { theme } = useTheme();
 
   useEffect(() => {
-    setMounted(true);
     const requestType = router.query.requestType as string;
     if (requestType === 'signMessage') {
-      router.push('/request/sign-message');
+      router.push({
+        pathname: '/request/sign-message', 
+        query: router.query
+      });
     } else if (requestType === 'signTransaction') {
       router.push('/request/tx');
     } else {
       console.log("unkown request");
       router.push('/');
     }
+  }, [router.query])
+
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   if (!mounted) {

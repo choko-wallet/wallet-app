@@ -14,6 +14,7 @@ import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSl
 import { knownNetworks } from '@choko-wallet/known-networks';
 import { DappDescriptor } from '@choko-wallet/core/dapp';
 import { SignMessageDescriptor, SignMessageRequest, SignMessageRequestPayload } from '@choko-wallet/request-handler/signMessage';
+import { hexToU8a } from '@skyekiwi/util';
 
 function SignMsgRequest(): JSX.Element {
   const router = useRouter();
@@ -22,6 +23,11 @@ function SignMsgRequest(): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
+  const [payload, setPayload] = useState(null);
+
+  useEffect(() => {
+    setPayload(router.query.payload);
+  }, [router.query])
 
   useEffect(() => {
     setMounted(true);
@@ -32,27 +38,18 @@ function SignMsgRequest(): JSX.Element {
   }
 
   useEffect(() => {
-    if (userAccount) {
+    if (userAccount && payload) {
       (async () => {
-        const msg = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-        const request = new SignMessageRequest({
-          dappOrigin: new DappDescriptor({
-            activeNetwork: knownNetworks['847e7b7fa160d85f'], // skyekiwi
-            displayName: 'Testing sign messsage',
-            infoName: 'test',
-            version: 0
-          }),
-          payload: new SignMessageRequestPayload({
-            message: msg
-          }),
-          userOrigin: userAccount
-        });
+        const u8aRequest = hexToU8a(payload);
+        console.log("u8aRequest length: ", u8aRequest.length);
+        const request = SignMessageRequest.deserialize(u8aRequest);
+        console.log("request: ", request);
         const signMessasge = new SignMessageDescriptor();
         const response = await signMessasge.requestHandler(request, userAccount);
         console.log("response: ", response);
       })();
     }
-  }, [userAccount])
+  }, [userAccount, payload])
 
   if (!mounted) {
     return null;

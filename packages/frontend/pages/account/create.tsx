@@ -244,7 +244,8 @@ export default CreateWallet;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   await cryptoWaitReady();
-  const mnemonic = mnemonicGenerate();
+  // const mnemonic = mnemonicGenerate();
+  const mnemonic = 'leg satisfy enlist dizzy rib owner security live solution panther monitor replace';
   const quizMnemonic = Math.floor(Math.random() * 12) + 1;
 
   return {
