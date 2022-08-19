@@ -11,9 +11,7 @@ import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selecto
 import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 
 // sign message
-import { knownNetworks } from '@choko-wallet/known-networks';
-import { DappDescriptor } from '@choko-wallet/core/dapp';
-import { SignMessageDescriptor, SignMessageRequest, SignMessageRequestPayload } from '@choko-wallet/request-handler/signMessage';
+import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 import { hexToU8a } from '@skyekiwi/util';
 
 function SignMsgRequest(): JSX.Element {
@@ -41,7 +39,6 @@ function SignMsgRequest(): JSX.Element {
     if (userAccount && payload) {
       (async () => {
         const u8aRequest = hexToU8a(payload);
-        console.log("u8aRequest length: ", u8aRequest.length);
         const request = SignMessageRequest.deserialize(u8aRequest);
         console.log("request: ", request);
         const signMessasge = new SignMessageDescriptor();
