@@ -6,14 +6,19 @@ import { UserAccount, LockedPrivateKey } from '@choko-wallet/core';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { u8aToHex, hexToU8a } from '@skyekiwi/util';
 
-interface SetPasswordPayload {
+interface AddAccountPayload {
   seeds: string;
   password: string;
 }
 
-export const serializeUserAccount = createAsyncThunk(
-  'users/serialize',
-  async (payload: SetPasswordPayload) => {
+interface UnlockAccountPayload {
+  address: string;
+  password: string;
+}
+
+export const addUserAccount = createAsyncThunk(
+  'users/add',
+  async (payload: AddAccountPayload) => {
     const { seeds, password } = payload;
 
     let serialized, serializedLockedUserAccount;
@@ -37,29 +42,45 @@ export const serializeUserAccount = createAsyncThunk(
 
 export const unlockUserAccount = createAsyncThunk(
   'users/unlock',
-  async (password: string, { rejectWithValue }) => {
-    console.log("password: ", password);
-    try {
-      const serializedLockedPrivateKey = localStorage.getItem("lockedPrivateKey");
-      const deserializedLockedPrivateKey = LockedPrivateKey.deserialize(hexToU8a(serializedLockedPrivateKey));
-      const userAccount = UserAccount.unlockUserAccount(deserializedLockedPrivateKey, blake2AsU8a(password));
-      await userAccount.init();
-      return userAccount;
-    } catch (e) {
-      console.log("error: ", e);
-      return rejectWithValue("Something went wrong!");
+  async (payload: UnlockAccountPayload, { rejectWithValue }) => {
+    const { address, password } = payload;
+
+    const serializedLockedPrivateKey = hexToU8a( localStorage.getItem("lockedPrivateKey") );
+
+    let offsetLockedKey = 0;
+    const perLockedPrivateKeyLength = LockedPrivateKey.serializedLength();
+
+    while ( offsetLockedKey < serializedLockedPrivateKey.length ) {
+      const lockedKey = serializedLockedPrivateKey.slice( offsetLockedKey, offsetLockedKey + perLockedPrivateKeyLength );
+      const lockedPrivateKey = LockedPrivateKey.deserialize( lockedKey );
+      try {
+        const userAccount = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(password));
+        await userAccount.init();
+
+        if ( userAccount.address === address ) {
+          return userAccount;
+        }
+
+      } catch(e) {
+        // wrong key tried
+        // pass
+      }
+
+      offsetLockedKey += perLockedPrivateKeyLength;
     }
+
+    return rejectWithValue("User Account not found");
   }
 );
 
 // User slice
 interface UserSliceItem {
-  userAccount: UserAccount | null;
+  userAccount: {[key: string]: UserAccount};
   error: boolean;
 }
 
 const initialState: UserSliceItem = {
-  userAccount: null,
+  userAccount: {},
   error: false
 };
 
@@ -67,27 +88,46 @@ export const userSlice = createSlice({
   initialState,
   name: 'user',
   reducers: {
-    deserializeUserAccount: (state, action: PayloadAction<string>) => {
-      const serializedUserAccount = localStorage.getItem("serialziedUserAccount");
-      state.userAccount = UserAccount.deserialize(hexToU8a(serializedUserAccount));
+    loadUserAccount: (state, action: PayloadAction<string>) => {
+      const serializedUserAccount = hexToU8a( localStorage.getItem("serialziedUserAccount") );
+      
+      let offset = 0;
+      const serializedLength = UserAccount.serializedLength();
+      while (offset < serializedUserAccount.length) {
+        const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
+        offset += serializedLength;
+
+        const account = UserAccount.deserialize(currentSerializedUserAccount);
+        state.userAccount[account.address] = account;
+      }
     }
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(serializeUserAccount.fulfilled, (state, action) => {
+      .addCase(addUserAccount.fulfilled, (state, action) => {
         const {
           serializedUserAccount,
           lockedPrivateKey
         } = action.payload;
-        localStorage.setItem("serialziedUserAccount", serializedUserAccount);
-        localStorage.setItem("lockedPrivateKey", lockedPrivateKey)
+
+        console.error(serializedUserAccount);
+
+        const maybeCurrentSerializedAccount = localStorage.getItem("serialziedUserAccount");
+        const maybeCurrentlockedPrivateKey = localStorage.getItem("lockedPrivateKey");
+
+        const currentSerializedAccount = maybeCurrentSerializedAccount ? maybeCurrentSerializedAccount : "";
+        const currentlockedPrivateKey = maybeCurrentlockedPrivateKey ? maybeCurrentlockedPrivateKey : "";
+        
+        localStorage.setItem("serialziedUserAccount", currentSerializedAccount + serializedUserAccount);
+        localStorage.setItem("lockedPrivateKey", currentlockedPrivateKey+ lockedPrivateKey)
       })
 
       .addCase(unlockUserAccount.fulfilled, (state, action) => {
         console.log("fulfiled");
         state.error = false;
-        state.userAccount = action.payload;
+
+        state.userAccount[action.payload.address] = action.payload;
       })
       .addCase(unlockUserAccount.rejected, (state) => {
         console.log('rejected');
@@ -96,5 +136,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const { deserializeUserAccount } = userSlice.actions;
+export const { loadUserAccount } = userSlice.actions;
 export default userSlice.reducer;

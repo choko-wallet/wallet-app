@@ -7,14 +7,12 @@ import type { AppProps } from 'next/app';
 
 import ProgressBar from '@badrap/bar-of-progress';
 import Router from 'next/router';
-import { ThemeProvider } from 'next-themes';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../features/redux/store';
 import useAckee from 'use-ackee';
 
-// import { persistStore } from 'redux-persist';
-// import { PersistGate } from 'redux-persist/integration/react';
+// import { ThemeProvider } from 'next-themes';
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -41,11 +39,9 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <Provider store={store}>
-      {/* <PersistGate loading={null} persistor={persistor}> */}
-        <ThemeProvider>
+        {/* <ThemeProvider> */}
           <Component {...pageProps} />
-        </ThemeProvider>
-      {/* </PersistGate> */}
+        {/* </ThemeProvider> */}
     </Provider>
   );
 }
