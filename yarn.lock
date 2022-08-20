@@ -1461,15 +1461,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/core@npm:0.1.6-4":
-  version: 0.1.6-4
-  resolution: "@choko-wallet/core@npm:0.1.6-4"
+"@choko-wallet/core@npm:0.1.6-5":
+  version: 0.1.6-5
+  resolution: "@choko-wallet/core@npm:0.1.6-5"
   dependencies:
-    "@choko-wallet/known-networks": 0.1.6-4
+    "@choko-wallet/known-networks": 0.1.6-5
     "@polkadot/util-crypto": ^10.1.1
     "@skyekiwi/crypto": 0.8.4-1
     "@skyekiwi/util": 0.8.4-1
-  checksum: b68afe30038f4542fb1bcfd814730ced860a3da38f5af27bb975283b922a05b9620ebbb2b7d25d5065d700a0afb7c56545d2d9791ca1db44036e8ad7fa23f292
+    pako: ^2.0.4
+  checksum: 3057c13f45c64ef50f72aed301e676d20fd1ef570aea89d9edd197498e00f13c296ecd469a1c2f60ec837f876fdd18e86917656cf8aab2fd561c3c77a4ecbaa1
   languageName: node
   linkType: hard
 
@@ -1478,8 +1479,8 @@ __metadata:
   resolution: "@choko-wallet/frontend@workspace:packages/frontend"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
-    "@choko-wallet/core": 0.1.6-4
-    "@choko-wallet/request-handler": 0.1.6-4
+    "@choko-wallet/core": 0.1.6-5
+    "@choko-wallet/request-handler": 0.1.6-5
     "@fortawesome/fontawesome-svg-core": ^6.1.2
     "@fortawesome/free-brands-svg-icons": ^6.1.2
     "@fortawesome/free-regular-svg-icons": ^6.1.2
@@ -1493,7 +1494,6 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@skyekiwi/util": 0.8.4-1
     "@types/react-copy-to-clipboard": ^5.0.3
-    "@types/use-ackee": ^2.0.0
     autoprefixer: ^10.4.7
     daisyui: ^2.19.0
     next: latest
@@ -1509,29 +1509,28 @@ __metadata:
     redux-persist: 6.0.0
     tailwindcss: ^3.1.2
     typescript: ^4.7.4
-    use-ackee: ^3.0.1
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/known-networks@npm:0.1.6-4":
-  version: 0.1.6-4
-  resolution: "@choko-wallet/known-networks@npm:0.1.6-4"
+"@choko-wallet/known-networks@npm:0.1.6-5":
+  version: 0.1.6-5
+  resolution: "@choko-wallet/known-networks@npm:0.1.6-5"
   dependencies:
-    "@choko-wallet/core": 0.1.6-4
+    "@choko-wallet/core": 0.1.6-5
     "@skyekiwi/util": 0.8.4-1
-  checksum: f7cc8a597cd853905acf158062856c3254a323cc37d81b0d4e9ed0e1b5766b4548f3cff9c58ba2fbcd1eff05c955776f2f012122faf07063ce483eb2afe41c83
+  checksum: 05ad62638236818330ea34f9955cabfa442d29e0be92e7a09a775b3b8256df8bccfbc206d30877e040673206fce957ad51834d6f2b911b7ff06c04a981b19ae2
   languageName: node
   linkType: hard
 
-"@choko-wallet/request-handler@npm:0.1.6-4":
-  version: 0.1.6-4
-  resolution: "@choko-wallet/request-handler@npm:0.1.6-4"
+"@choko-wallet/request-handler@npm:0.1.6-5":
+  version: 0.1.6-5
+  resolution: "@choko-wallet/request-handler@npm:0.1.6-5"
   dependencies:
-    "@choko-wallet/core": 0.1.6-4
+    "@choko-wallet/core": 0.1.6-5
     "@polkadot/keyring": ^10.1.2
     "@polkadot/util-crypto": ^10.1.2
     "@skyekiwi/util": 0.8.4-1
-  checksum: 7b956a1c7743997624fba5bca71cd6b18edec3c1cc9f8190b0f429ce9d29feb25fc3f6caeb906f70d18e1a1112475e6a1479e440ec57886d234e7285c33f1e7b
+  checksum: fde605afb0f228190fd12f8c7d6599cd6f8a8cc41e178a9efb3651a6d2294d67d528913b4d2495cb5a80500a23f83183d77ce4b8351c7a8f4b913c0404a12d39
   languageName: node
   linkType: hard
 
@@ -3485,13 +3484,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ackee-tracker@npm:*":
-  version: 5.0.2
-  resolution: "@types/ackee-tracker@npm:5.0.2"
-  checksum: 253cabc3d4b1695fe9af03c36dfc938749678e2ff057ef81f58074f6235d790e9526fa67c621702119d5b5aaef79c4d0b4df55b8e1091dd4d8899ba25df65cc0
-  languageName: node
-  linkType: hard
-
 "@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14":
   version: 7.1.19
   resolution: "@types/babel__core@npm:7.1.19"
@@ -3735,15 +3727,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/use-ackee@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/use-ackee@npm:2.0.0"
-  dependencies:
-    "@types/ackee-tracker": "*"
-  checksum: c70483690a20a1acf45df23d0b97dac1733325207691a73426b972b7e17b75780122b5cad10406ff5755ad990874a1f98dad7713aa8fe392a90d833335713550
-  languageName: node
-  linkType: hard
-
 "@types/websocket@npm:^1.0.5":
   version: 1.0.5
   resolution: "@types/websocket@npm:1.0.5"
@@ -3934,15 +3917,6 @@ __metadata:
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: a4a97ec07d7ea112c517036882b2ac22f3109b7b19077dc656316d07d308438aac28e4d9746dc4d84bf6b1e75b4a7b0a5f3cb30592419f128ca9a8cee3bcfa17
-  languageName: node
-  linkType: hard
-
-"ackee-tracker@npm:^5.0.1":
-  version: 5.1.0
-  resolution: "ackee-tracker@npm:5.1.0"
-  dependencies:
-    platform: ^1.3.6
-  checksum: f472eb6fe9632eb0a4cc8a4fbdc4048fba1a1da56ecf10f4abf713bf3f69b2f39a5cddb5e3720d95df14ca263f2609fa57491788cf457dacb9502de4b6961519
   languageName: node
   linkType: hard
 
@@ -9895,6 +9869,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pako@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "pako@npm:2.0.4"
+  checksum: 82b9b0b99dd830c9103856a6dbd10f0cb2c8c32b9768184727ea381a99666de9a47a069d2e6efe6acf09336f363956b50835c196ef9311b34b7274d420eb0d88
+  languageName: node
+  linkType: hard
+
 "parent-module@npm:^1.0.0":
   version: 1.0.1
   resolution: "parent-module@npm:1.0.1"
@@ -10122,13 +10103,6 @@ __metadata:
   dependencies:
     find-up: ^3.0.0
   checksum: 5bac346b7c7c903613c057ae3ab722f320716199d753f4a7d053d38f2b5955460f3e6ab73b4762c62fd3e947f58e04f1343e92089e7bb6091c90877406fcd8c8
-  languageName: node
-  linkType: hard
-
-"platform@npm:^1.3.6":
-  version: 1.3.6
-  resolution: "platform@npm:1.3.6"
-  checksum: 6f472a09c61d418c7e26c1c16d0bdc029549d512dbec6526216a1e59ec68100d07007d0097dcba69dddad883d6f2a83361b4bdfe0094a3d9a2af24158643d85e
   languageName: node
   linkType: hard
 
@@ -12266,17 +12240,6 @@ resolve@^2.0.0-next.3:
   dependencies:
     prepend-http: ^2.0.0
   checksum: 1040e357750451173132228036aff1fd04abbd43eac1fb3e4fca7495a078bcb8d33cb765fe71ad7e473d9c94d98fd67adca63bd2716c815a2da066198dd37217
-  languageName: node
-  linkType: hard
-
-"use-ackee@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "use-ackee@npm:3.0.1"
-  dependencies:
-    ackee-tracker: ^5.0.1
-  peerDependencies:
-    react: ^17.0.0
-  checksum: cfce5b45db4cfcdce5f13e52e7dba5993fc0ac592b90dd1e5a47a3ebba5bd32fd07ba1e0d9f249bc8a26f81738799321fdc13fa9c960d97832614ce43fc69778
   languageName: node
   linkType: hard
 

@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.1",
-    "@choko-wallet/core": "0.1.6-4",
-    "@choko-wallet/request-handler": "0.1.6-4",
+    "@choko-wallet/core": "0.1.6-5",
+    "@choko-wallet/request-handler": "0.1.6-5",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-brands-svg-icons": "^6.1.2",
     "@fortawesome/free-regular-svg-icons": "^6.1.2",
@@ -34,12 +34,10 @@
     "react-hot-toast": "^2.3.0",
     "react-redux": "^7.2.0",
     "react-typed": "^1.2.0",
-    "redux-persist": "6.0.0",
-    "use-ackee": "^3.0.1"
+    "redux-persist": "6.0.0"
   },
   "devDependencies": {
     "@types/react-copy-to-clipboard": "^5.0.3",
-    "@types/use-ackee": "^2.0.0",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.2",
