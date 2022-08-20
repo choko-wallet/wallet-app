@@ -12,11 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
-// sign message
-import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
+import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
-// http://localhost:3000/request?requestType=signMessage&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da8065646266616560a9d3d0a8636000075931a96&callbackUrl=https://localhost:3001/callback
-function SignMessageHandler (): JSX.Element {
+// http://localhost:3000/request?requestType=signTx&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da806b5292c2c0c0c7cc7b4cf1871efdffebbfc9f77cffd1b85d76e08fab13afd60ae8bcb9d2d5de49dc642a1bf46c1a00600ab7d2aa6&callbackUrl=https://localhost:3001/callback
+
+function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -29,14 +29,14 @@ function SignMessageHandler (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
 
-  const [request, setRequest] = useState<SignMessageRequest>(null);
+  const [request, setRequest] = useState<SignTxRequest>(null);
   const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
 
   useEffect(() => {
     if (router.query) {
       const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
 
-      setRequest(SignMessageRequest.deserialize(u8aRequest));
+      setRequest(SignTxRequest.deserialize(u8aRequest));
     }
   }, [router.query]);
 
@@ -45,8 +45,10 @@ function SignMessageHandler (): JSX.Element {
       for (const account in userAccount) {
         if (!userAccount[account].isLocked) {
           void (async () => {
-            const signMessasge = new SignMessageDescriptor();
-            const response = await signMessasge.requestHandler(request, userAccount[account]);
+            const signTx = new SignTxDescriptor();
+            const response = await signTx.requestHandler(request, userAccount[account]);
+
+            console.error(response);
             const s = response.serialize();
 
             setResponse(compressParameters(s));
@@ -80,20 +82,20 @@ function SignMessageHandler (): JSX.Element {
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
 
-      <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-gray-600'>
+      <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-600'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          General Request
+          {request.dappOrigin.activeNetwork.text}
         </h1>
         <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          General Request
+          {request.dappOrigin.activeNetwork.text}
         </h1>
       </div>
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
         <div className='col-span-12 shadow-xl rounded-lg card p-10 bg-white'>
           <h2 className='card-title'>
-            Request to Sign a Message
+            Request to Sign a Transaction
           </h2>
-          <h3>Generate a cryptographic singature.</h3>
+          <h3>Send a transaction on the selected blockchain network.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
             <br/>
@@ -101,24 +103,25 @@ function SignMessageHandler (): JSX.Element {
               DApp Origin:
             </div>
             <div className='col-span-12'>
-              <code className='underline text-clip'>{request.dappOrigin.displayName}</code>
+              <code className='underline'>{request.dappOrigin.displayName}</code>
             </div>
             <div className='col-span-12'>
               Your Orign:
             </div>
             <div className='col-span-12'>
-              <code className='underline text-clip'
+              <code className='underline'
                 style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
             </div>
+
             <div className='col-span-12'>
-              <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{response}</code>
+              <code className='underline'
+                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
             </div>
             <div className='col-span-12'>
               <div className='divider'></div>
             </div>
             <div className='col-span-12'>
-              Message To Sign:
+              Transaction To Sign:
             </div>
 
             <div className='col-span-12'>
@@ -135,11 +138,11 @@ function SignMessageHandler (): JSX.Element {
                 displayType === 'hex'
                   ? (
                     <div className='textarea h-[10vh] font-mono border-gray-400'
-                      style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.message)}</div>
+                      style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
                   )
                   : (
                     <div className='textarea h-[10vh] font-mono border-gray-400'
-                      style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.message)}</div>
+                      style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.encoded)}</div>
                   )
               }
             </div>
@@ -227,4 +230,4 @@ function SignMessageHandler (): JSX.Element {
   );
 }
 
-export default SignMessageHandler;
+export default SignTxHandler;

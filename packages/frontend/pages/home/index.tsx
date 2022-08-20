@@ -42,7 +42,7 @@ function Home (): JSX.Element {
       setCurrentAccount(allAddrs[0]);
       setAllAccounts(allAddrs);
     }
-  }, [router, dispatch, userAccount, currentAccount, allAccounts]);
+  }, [dispatch, router, userAccount]);
 
   useEffect(() => {
     setMounted(true);

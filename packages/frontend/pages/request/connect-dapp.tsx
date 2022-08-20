@@ -1,9 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon, XIcon } from '@heroicons/react/outline';
-import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
+import { Dialog, RadioGroup, Transition } from '@headlessui/react';
+import { CheckCircleIcon, CheckIcon, XIcon } from '@heroicons/react/outline';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 // redux
@@ -11,42 +11,66 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { loadUserAccount, unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
-import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
+import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 
-// http://localhost:3000/request?requestType=signMessage&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da8065646266616560a9d3d0a8636000075931a96&callbackUrl=https://localhost:3001/callback
-function SignMessageHandler (): JSX.Element {
+//  http://localhost:3000/request?requestType=connectDapp&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf1c4eb0000282108a3&callbackUrl=https://localhost:3001/callback
+// http://localhost:3000/request?requestType=connectDapp&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf1c4eb0000282108a3&callbackUrl=https://localhost:3001/callback
+function ConnectDappHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
-  // const requestError = useSelector(selectError);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
-  const [displayType, setDisplayType] = useState<string>('hex');
 
-  const [request, setRequest] = useState<SignMessageRequest>(null);
+  const [currentAccount, setCurrentAccount] = useState<string>('');
+  const [allAccounts, setAllAccounts] = useState<string[]>(['']);
+
+  const [request, setRequest] = useState<ConnectDappRequest>(null);
   const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+
+  useEffect(() => {
+    // TODO: is this right?
+    if (allAccounts && currentAccount) {
+      return;
+    }
+
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      void router.push('/account');
+    } else {
+      dispatch(loadUserAccount());
+    }
+
+    if (userAccount && Object.keys(userAccount).length > 0) {
+      const allAddrs = Object.keys(userAccount);
+
+      setCurrentAccount(allAddrs[0]);
+      setAllAccounts(allAddrs);
+    }
+  }, [router, dispatch, userAccount, currentAccount, allAccounts]);
 
   useEffect(() => {
     if (router.query) {
       const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
 
-      setRequest(SignMessageRequest.deserialize(u8aRequest));
+      setRequest(ConnectDappRequest.deserialize(u8aRequest));
     }
-  }, [router.query]);
+  }, [router]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
       for (const account in userAccount) {
         if (!userAccount[account].isLocked) {
           void (async () => {
-            const signMessasge = new SignMessageDescriptor();
-            const response = await signMessasge.requestHandler(request, userAccount[account]);
+            const connectDapp = new ConnectDappDescriptor();
+            const response = await connectDapp.requestHandler(request, userAccount[account]);
+
+            console.error(response);
             const s = response.serialize();
 
             setResponse(compressParameters(s));
@@ -57,15 +81,15 @@ function SignMessageHandler (): JSX.Element {
   }, [userAccount, request]);
 
   useEffect(() => {
-    if (request) setMounted(true);
-  }, [request]);
+    setMounted(true);
+  }, []);
 
   function closeModal () {
     setOpenPasswordModal(false);
 
     if (request) {
       dispatch(unlockUserAccount({
-        address: request.userOrigin.address,
+        address: currentAccount,
         password: password
       }));
     } else {
@@ -77,23 +101,24 @@ function SignMessageHandler (): JSX.Element {
     return null;
   }
 
+  console.log(userAccount);
+
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
-
-      <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-gray-600'>
+      <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          General Request
+          {request.dappOrigin.activeNetwork.text}
         </h1>
         <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          General Request
+          {request.dappOrigin.activeNetwork.text}
         </h1>
       </div>
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
         <div className='col-span-12 shadow-xl rounded-lg card p-10 bg-white'>
           <h2 className='card-title'>
-            Request to Sign a Message
+            Request to Connect From a Dapp
           </h2>
-          <h3>Generate a cryptographic singature.</h3>
+          <h3>Give the Dapp your public address.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
             <br/>
@@ -104,17 +129,45 @@ function SignMessageHandler (): JSX.Element {
               <code className='underline text-clip'>{request.dappOrigin.displayName}</code>
             </div>
             <div className='col-span-12'>
-              Your Orign:
-            </div>
-            <div className='col-span-12'>
               <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
+                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
             </div>
-            <div className='col-span-12'>
-              <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{response}</code>
-            </div>
-            <div className='col-span-12'>
+
+            <RadioGroup className='col-span-12'
+              onChange={setCurrentAccount}
+              value={currentAccount}>
+              {allAccounts.map((name, index) => (
+                <RadioGroup.Option
+                  className={({ active, checked }) =>
+                    `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
+                      m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
+                  }
+                  key={index}
+                  value={name}
+                >
+                  {({ active, checked }) => (
+                    <div className='flex w-full items-center justify-between'>
+                      <div className='flex items-center'>
+                        <div className='text-sm'>
+                          <RadioGroup.Label
+                            as='p'
+                            className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                          >
+                            {name}
+                          </RadioGroup.Label>
+                        </div>
+                      </div>
+                      {checked && (
+                        <div className='shrink-0 text-white'>
+                          <CheckCircleIcon className='h-6 w-6' />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </RadioGroup.Option>
+              ))}
+            </RadioGroup>
+            {/* <div className='col-span-12'>
               <div className='divider'></div>
             </div>
             <div className='col-span-12'>
@@ -134,15 +187,13 @@ function SignMessageHandler (): JSX.Element {
               {
                 displayType === 'hex'
                   ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
-                      style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.message)}</div>
+                    <div className='textarea h-[10vh] font-mono border-gray-400'>{'0x' + u8aToHex(request.payload.message)}</div>
                   )
                   : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
-                      style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.message)}</div>
+                    <div className='textarea h-[10vh] font-mono border-gray-400'>{u8aToString(request.payload.message)}</div>
                   )
               }
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -227,4 +278,4 @@ function SignMessageHandler (): JSX.Element {
   );
 }
 
-export default SignMessageHandler;
+export default ConnectDappHandler;

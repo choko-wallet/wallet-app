@@ -12,19 +12,28 @@ function RequestRouter (): JSX.Element {
     if (router.query && router.query.requestType) {
       const requestType = router.query.requestType as string;
 
-      if (requestType === 'signMessage') {
-        void router.push({
-          pathname: '/request/sign-message',
-          query: router.query
-        });
-      } else if (requestType === 'signTransaction') {
-        void router.push({
-          pathname: '/request/tx',
-          query: router.query
-        });
-      } else {
-        console.log('unkown request');
-        // router.push('/');
+      switch (requestType) {
+        case 'connectDapp':
+          void router.push({
+            pathname: '/request/connect-dapp',
+            query: router.query
+          });
+          break;
+        case 'signMessage':
+          void router.push({
+            pathname: '/request/sign-message',
+            query: router.query
+          });
+          break;
+        case 'signTx':
+          void router.push({
+            pathname: '/request/sign-tx',
+            query: router.query
+          });
+          break;
+        default:
+          alert('unkown request');
+          break;
       }
     }
   }, [router]);

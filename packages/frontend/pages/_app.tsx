@@ -26,14 +26,19 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function MyApp ({ Component, pageProps }: AppProps): JSX.Element {
+function Root ({ Component, pageProps }: AppProps): JSX.Element {
+  console.error(process.env);
+
   return (
     <Provider store={store}>
       <Head>
-        <script async
-          data-website-id='335764cb-9720-47f1-9747-7db2d62cb891'
-          defer
-          src='https://analytics.skye.kiwi/umami.js'></script>
+        {
+          process.env.ENABLE_TRACKING &&
+          <script async
+            data-website-id='c309f7b0-7e50-4944-b73b-1e779ac13207'
+            defer
+            src='https://analytics.skye.kiwi/umami.js'></script>
+        }
       </Head>
       {/* <ThemeProvider> */}
       <Component {...pageProps} />
@@ -42,4 +47,4 @@ function MyApp ({ Component, pageProps }: AppProps): JSX.Element {
   );
 }
 
-export default MyApp;
+export default Root;
