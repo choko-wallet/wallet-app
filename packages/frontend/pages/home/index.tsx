@@ -4,19 +4,15 @@
 import { Popover, RadioGroup, Transition, Dialog } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
+
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUserAccount, selectError } from '../../features/redux/selectors';
-import { deserializeUserAccount } from '../../features/slices/userSlice';
-
-
-import logo from '../../images/logo.svg';
-import near from '../../images/btc.png';
+import { selectUserAccount } from '../../features/redux/selectors';
+import { loadUserAccount } from '../../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
 function Home(): JSX.Element {
@@ -24,7 +20,6 @@ function Home(): JSX.Element {
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
-  const error = useSelector(selectError);
   
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
@@ -36,28 +31,22 @@ function Home(): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!localStorage.getItem("serialziedUserAccount") ) {
-      console.error("account not set.");
-      router.push('/account');
-    } else {
-      dispatch(deserializeUserAccount());
-      setMounted(true);
-    }
-  }, [])
+    if (!mounted) {
+      console.error(userAccount)
+      if (!localStorage.getItem("serialziedUserAccount") ) {
+        router.push('/account');
+      } else {
+        dispatch(loadUserAccount());
+      }
 
-  useEffect(() => {
-    if (userAccount) {
-      setCurrentAccount(userAccount.address);
-      setAllAccounts([userAccount.address]);
+      if (userAccount && Object.keys(userAccount).length > 0) {
+        const allAddrs = Object.keys(userAccount);
+        setCurrentAccount(allAddrs[0]);
+        setAllAccounts(allAddrs);
+        setMounted(true);
+      }
     }
-  }, [ userAccount ])
-
-  useEffect(() => {
-    if(error) {
-      // router.push('/showpassphrase');
-
-    }
-  }, [error])
+  }, [ userAccount, currentAccount, allAccounts ])
 
   const allNetworks = [{
     name: 'Polkadot',
@@ -130,10 +119,7 @@ function Home(): JSX.Element {
             </a>
         </div>
 
-        <div className='navbar-center'>
-          {/* <a className='btn btn-ghost normal-case text-xl'
-            onClick={() => router.push('/')}> Setting </a> */}
-        </div>
+        <div className='navbar-center'></div>
 
         <div className='navbar-end'>
           <Popover className='relative'>
@@ -143,7 +129,9 @@ function Home(): JSX.Element {
                   className={`
                     ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case`}
                 >
-                  <UserCircleIcon className='h-6 w-6 mr-5' />{currentAccount.substring(0, 13)} ... {currentAccount.substring(currentAccount.length - 13, currentAccount.length)}
+                  <UserCircleIcon className='h-6 w-6 mr-5' />
+                  <span className='hidden md:block'>{currentAccount.substring(0, 13)} ... {currentAccount.substring(currentAccount.length - 13, currentAccount.length)}</span>
+                  <span className='block md:hidden'>{currentAccount.substring(0, 10)} ...</span>
                 </Popover.Button>
                 <Transition
                   as={Fragment}
@@ -205,69 +193,16 @@ function Home(): JSX.Element {
         </div>
       </div>
     </div>
-
-    <div className='col-span-10 col-start-2 md:col-span-6 md:col-start-2 2xl:md:col-start-3 shadow-xl rounded-xl  bg-white'>
-      <div className='flex flex-col items-center pb-10 m-10 mx-auto space-y-3'>
-        <p className='mt-8 text-lg font-semi-bold' >Total Balance</p>
-        <p className='text-3xl font-extrabold '>$793.32</p>
-
-        <br /><br />
-        {/* <div className='flex p-2 space-x-10'>
-          <div>
-            <div className='flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full'>
-              <PaperAirplaneIcon className='h-6 text-white cursor-pointer ' />
-            </div>
-            <p className='pt-2 text-gray-800'>Send</p>
-          </div>
-          <div className='flex flex-col items-center justify-center'>
-            <div className='flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full'>
-              <ArrowDownIcon className='h-6 text-white cursor-pointer ' />
-            </div>
-            <p className='pt-2 text-gray-800'>Receive</p>
-          </div>
-          <div>
-            <div className='flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full'>
-              <SwitchHorizontalIcon className='h-6 text-white cursor-pointer ' />
-            </div>
-            <p className='pt-2 text-gray-800'>Swap</p>
-          </div>
-        </div> */}
-
-        <div className='w-10/12 rounded-lg h-72 bg-gray-300 '>
-          <div className='flex justify-between text-white text-sm p-2 w-full  bg-gray-400 rounded-lg'>
-            <p>Your Portfolio</p>
-            <p>Token Balance</p>
-          </div>
-
-          <div className=' mb-5  w-full  bg-gray-300 rounded-lg flex justify-between '>
-            <div className='flex items-center' >
-              <div className='relative w-6 h-6 m-3'>
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={near}
-                />
-              </div>
-              <div className='p-1'>
-                <p className='text-lg font-bold'>NEAR</p>
-                <p className='text-xs'>$10.12</p>
-              </div>
-            </div>
-
-            <div className='p-1'>
-              <div className='text-right p-3'>
-                <p className='text-lg font-bold'>78.3912 Near</p>
-                <p className='text-xs'>$793.12USD</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      
+    <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-6 md:col-start-3 shadow-xl rounded-xl  bg-white'>
+      <div className='card p-10'>
+        <h2 className='card-title text-3xl'> $793.32 </h2>
+        <h3>Your avalaible token Balance on the current network. </h3>
       </div>
     </div >
 
-    <div className='col-span-10 col-start-2 md:col-span-4 md:col-start-8 2xl:md:col-span-3 2xl:col-start-9 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
-      <div className='col-span-12 '>
+    <div className='col-span-12 mx-3 mb-10 md:mb-0 md:col-span-2 md:col-start-9 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
+      <div className='col-span-12 card p-5'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection || network}>
           {allNetworks.map(({ info, name, rpc }) => (
@@ -308,7 +243,7 @@ function Home(): JSX.Element {
           ))}
         </RadioGroup>
       </div>
-      <div className='col-span-3 col-start-4 mb-5'>
+      <div className='col-span-3 col-start-3 mb-5 md:mb-20'>
         <button className='btn btn-error btn-circle btn-md'
           onClick={() => setNetworkSelection('')} >
           <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
@@ -325,12 +260,7 @@ function Home(): JSX.Element {
       </div>
     </div>
 
-    <div className='col-span-12'>
-      {/* <Footer /> */}
-    </div>
-
-
-
+    <div className='col-span-12'> </div>
 
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
