@@ -7,9 +7,9 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-
 // redux
 import { useDispatch } from 'react-redux';
+
 import { addUserAccount } from '../../features/slices/userSlice';
 
 interface Props {
@@ -17,7 +17,7 @@ interface Props {
   quizMnemonic: number,
 }
 
-function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
+function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -31,14 +31,15 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
   const refreshMnemonic = () => {
     const mnemonic = mnemonicGenerate();
+
     setSeeds(mnemonic);
     setSeedsStringForCopy(mnemonic);
   };
 
   const handleSetPassword = () => {
-    dispatch(addUserAccount({seeds: seeds, password: password}));
-    router.push('/home');
-  }
+    dispatch(addUserAccount({ password: password, seeds: seeds }));
+    void router.push('/home');
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -51,29 +52,28 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5' >
 
-    <div className='md:hidden col-span-12'></div>
-    <div className='md:hidden col-span-12'></div>
+      <div className='md:hidden col-span-12'></div>
+      <div className='md:hidden col-span-12'></div>
 
-    <ul className='steps steps-horizontal col-span-10 col-start-2 md:col-span-6 md:col-start-4'>
-      <li className={`step ${step > 0 ? 'step-neutral' : ''}`}>
+      <ul className='steps steps-horizontal col-span-10 col-start-2 md:col-span-6 md:col-start-4'>
+        <li className={`step ${step > 0 ? 'step-neutral' : ''}`}>
         Generate Mnemonic
-      </li>
-      <li className={`step ${step > 1 ? 'step-neutral' : ''}`}>
+        </li>
+        <li className={`step ${step > 1 ? 'step-neutral' : ''}`}>
         Verify
-      </li>
-      <li className={`step ${step > 2 ? 'step-neutral' : ''}`}>
+        </li>
+        <li className={`step ${step > 2 ? 'step-neutral' : ''}`}>
         Set a Password
-      </li>
-    </ul>
+        </li>
+      </ul>
 
-    {/* TODO: these are used to create more space between the steps and main content.
+      {/* TODO: these are used to create more space between the steps and main content.
     We should have a better way to deal with it  */}
-    <div className='hidden md:block col-span-12'></div>
-    <div className='hidden md:block col-span-12'></div>
-    <div className='hidden md:block col-span-12'></div>
+      <div className='hidden md:block col-span-12'></div>
+      <div className='hidden md:block col-span-12'></div>
+      <div className='hidden md:block col-span-12'></div>
 
-
-    {step === 1 &&
+      {step === 1 &&
       <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
         <div className='col-span-12 shadow-xl rounded-lg'>
           <div className='card p-5 md:p-6 bg-white'>
@@ -130,9 +130,9 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
           </button>
         </div>
       </div>
-    }
+      }
 
-    {step === 2 &&
+      {step === 2 &&
 
       <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
         <div className=' col-span-12 shadow-xl rounded-lg'>
@@ -143,7 +143,7 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
             <h3>Verify if you have securely remember these mneomic.</h3>
 
             <div className='grid grid-cols-12 gap-5 m-6'>
-              
+
               {/* TODO: Should not use this pt-2, but some vertical-align instead */}
               <h2 className='col-span-6 pt-2'>
                 <span className=''>What is Word #{quizMnemonic}</span>
@@ -172,19 +172,19 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
         </div>
 
         <div className='col-span-4'>
-          <button className={`btn btn-accent btn-circle btn-lg ${ verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'btn-disabled'}`}
+          <button className={`btn btn-accent btn-circle btn-lg ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'btn-disabled'}`}
             onClick={() => setStep(step + 1)} >
             <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
           </button>
         </div>
       </div>
-    }
+      }
 
-    {step === 3 &&
+      {step === 3 &&
       <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-      <div className=' col-span-12 shadow-xl rounded-lg'>
-        <div className='card p-5 md:p-6 bg-white'>
-          <h2 className='card-title'>
+        <div className=' col-span-12 shadow-xl rounded-lg'>
+          <div className='card p-5 md:p-6 bg-white'>
+            <h2 className='card-title'>
               Set a Password
             </h2>
             <h3>Set a local password for you walelt. </h3>
@@ -230,13 +230,13 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
         </div>
         <div className='col-span-4 '>
           <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
-             onClick={() => handleSetPassword()}>
+            onClick={() => handleSetPassword()}>
             <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
           </button>
         </div>
       </div>
-    }
-  </main>
+      }
+    </main>
   );
 }
 

@@ -9,8 +9,9 @@ import ProgressBar from '@badrap/bar-of-progress';
 import Router from 'next/router';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../features/redux/store';
 import useAckee from 'use-ackee';
+
+import { store } from '../features/redux/store';
 
 // import { ThemeProvider } from 'next-themes';
 
@@ -25,23 +26,22 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  
+function MyApp ({ Component, pageProps }: AppProps): JSX.Element {
   useAckee('/', {
-    server: 'https://analytics.choko.app',
-    domainId: 'd29f288d-14fa-47fc-b6dd-f06f4f72f5e3'
+    domainId: 'd29f288d-14fa-47fc-b6dd-f06f4f72f5e3',
+    server: 'https://analytics.choko.app'
   }, {
     // TODO: cookie consent form for user
     detailed: true,
     ignoreLocalhost: true,
     ignoreOwnVisits: true
-  })
+  });
 
   return (
     <Provider store={store}>
-        {/* <ThemeProvider> */}
-          <Component {...pageProps} />
-        {/* </ThemeProvider> */}
+      {/* <ThemeProvider> */}
+      <Component {...pageProps} />
+      {/* </ThemeProvider> */}
     </Provider>
   );
 }

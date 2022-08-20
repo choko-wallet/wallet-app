@@ -11,22 +11,23 @@ function RequestRouter (): JSX.Element {
   useEffect(() => {
     if (router.query && router.query.requestType) {
       const requestType = router.query.requestType as string;
+
       if (requestType === 'signMessage') {
-        router.push({
-          pathname: '/request/sign-message', 
+        void router.push({
+          pathname: '/request/sign-message',
           query: router.query
         });
       } else if (requestType === 'signTransaction') {
-        router.push({
+        void router.push({
           pathname: '/request/tx',
           query: router.query
         });
       } else {
-        console.log("unkown request");
+        console.log('unkown request');
         // router.push('/');
       }
     }
-  }, [router.query])
+  }, [router]);
 
   useEffect(() => {
     setMounted(true);

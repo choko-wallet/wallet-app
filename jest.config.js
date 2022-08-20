@@ -8,7 +8,6 @@ module.exports = Object.assign({}, config, {
     '<rootDir>/packages/frontend/build'
   ],
   testTimeout: 3_000_000,
-  testEnvironment: 'jsdom',
   transformIgnorePatterns: [
     '/node_modules/(?!@polkadot|@skyekiwi|@babel/runtime/helpers/esm/)'
   ]

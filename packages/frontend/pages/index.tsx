@@ -1,16 +1,17 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import type { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import type { NextPage } from 'next';
 
+import { faDiscord, faGithub, faMedium, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDiscord, faTwitter, faGithub, faMedium } from '@fortawesome/free-brands-svg-icons';
 import Typed from 'react-typed';
+
 // import { useTheme } from 'next-themes';
 import logo from '../images/logo.svg';
 
@@ -34,49 +35,54 @@ const Home: NextPage = () => {
 
     <div className='col-span-10 col-start-2 min-h-[60vh] text-white'>
       <div className='md:p-10'>
-          {/* <h1 className='text-3xl font-bold'>Choko Wallet</h1> */}
-          <Image
-            className='relative w-10 m-0'
-            // layout='fill'
-            objectFit='fill'
-            src={logo}
-          />
+        {/* <h1 className='text-3xl font-bold'>Choko Wallet</h1> */}
+        <Image
+          className='relative w-10 m-0'
+          // layout='fill'
+          objectFit='fill'
 
-          <p className='py-6 text-2xl text-black font-mono'>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          src={logo}
+        />
+
+        <p className='py-6 text-2xl text-black font-mono'>
             Your <Typed
-              strings={[
-                'easy to use',
-                'secure',
-                'multi-chain',
-                'portable',
-                'extensible']}
-              typeSpeed={100}
-              backSpeed={20}
-              loop />crypto wallet
-            </p><br/>
+            backSpeed={20}
+            loop
+            strings={[
+              'easy to use',
+              'secure',
+              'multi-chain',
+              'portable',
+              'extensible']}
+            typeSpeed={100} />crypto wallet
+        </p><br/>
 
-          <button className='btn w-[70%] md:w-[15%] mb-10'
-            onClick={() => router.push('/home')}>Enter
-          </button>
-          
-          <div className='flex'>
-            {/* <span className='text-xl'>Follow us:</span> */}
-            {[
-                [faGithub, 'http://github.com/choko-wallet'],
-                [faMedium, 'http://github.com/choko-wallet'],
-                [faTwitter, 'http://github.com/choko-wallet'],
-                [faDiscord, 'http://github.com/choko-wallet'],
-              ].map(([icon, url]) => (
-                <div className='m-1'>
-                  <button className='btn btn-circle' onClick={() =>
-                    window.open(url, '_blank')
-                  }>
-                    <FontAwesomeIcon className='h-6' icon={icon} />
-                  </button>
-                </div>
-              ))
-            }
-          </div>
+        <button className='btn w-[70%] md:w-[15%] mb-10'
+          onClick={() => router.push('/home')}>Enter
+        </button>
+
+        <div className='flex'>
+          {/* <span className='text-xl'>Follow us:</span> */}
+          {[
+            [faGithub, 'http://github.com/choko-wallet'],
+            [faMedium, 'http://github.com/choko-wallet'],
+            [faTwitter, 'http://github.com/choko-wallet'],
+            [faDiscord, 'http://github.com/choko-wallet']
+          ].map(([icon, url], index) => (
+            <div className='m-1'
+              key={index}>
+              <button className='btn btn-circle'
+                onClick={() =>
+                  window.open(url as string, '_blank')
+                }>
+                <FontAwesomeIcon className='h-6'
+                  icon={icon as IconDefinition} />
+              </button>
+            </div>
+          ))
+          }
+        </div>
       </div>
     </div>
   </main>);

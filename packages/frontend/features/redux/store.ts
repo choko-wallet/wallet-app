@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { configureStore, Store } from '@reduxjs/toolkit';
+
 import { rootReducer } from './reducers';
 
 export const store: Store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false})
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+  reducer: rootReducer
 });
 
 export type RootState = ReturnType<typeof store.getState>

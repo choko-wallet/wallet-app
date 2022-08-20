@@ -1,26 +1,25 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Popover, RadioGroup, Transition, Dialog } from '@headlessui/react';
+import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
-
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-
 // redux
 import { useDispatch, useSelector } from 'react-redux';
+
 import { selectUserAccount } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
+function Home (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
-  
+
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
 
@@ -31,22 +30,23 @@ function Home(): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!mounted) {
-      console.error(userAccount)
-      if (!localStorage.getItem("serialziedUserAccount") ) {
-        router.push('/account');
-      } else {
-        dispatch(loadUserAccount());
-      }
-
-      if (userAccount && Object.keys(userAccount).length > 0) {
-        const allAddrs = Object.keys(userAccount);
-        setCurrentAccount(allAddrs[0]);
-        setAllAccounts(allAddrs);
-        setMounted(true);
-      }
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      void router.push('/account');
+    } else {
+      dispatch(loadUserAccount());
     }
-  }, [ userAccount, currentAccount, allAccounts ])
+
+    if (userAccount && Object.keys(userAccount).length > 0) {
+      const allAddrs = Object.keys(userAccount);
+
+      setCurrentAccount(allAddrs[0]);
+      setAllAccounts(allAddrs);
+    }
+  }, [router, dispatch, userAccount, currentAccount, allAccounts]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const allNetworks = [{
     name: 'Polkadot',
@@ -69,11 +69,11 @@ function Home(): JSX.Element {
     return null;
   }
 
-  function closeModal() {
+  function closeModal () {
     setIsOpen(false);
     setNetworkSelection('');
     setNetwork(networkSelection);
-    console.log('close')
+    console.log('close');
   }
 
   const changeNetwork = async () => {
@@ -110,13 +110,13 @@ function Home(): JSX.Element {
           <a className='btn btn-ghost normal-case text-xl'
             onClick={() => router.push('/')}>
               Choko
-              {/* <Image
+            {/* <Image
                   className='relative w-10 m-0'
                   // layout='fill'
                   objectFit='fill'
                   src={logo}
                 /> */}
-            </a>
+          </a>
         </div>
 
         <div className='navbar-center'></div>
@@ -193,7 +193,7 @@ function Home(): JSX.Element {
         </div>
       </div>
     </div>
-      
+
     <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-6 md:col-start-3 shadow-xl rounded-xl  bg-white'>
       <div className='card p-10'>
         <h2 className='card-title text-3xl'> $793.32 </h2>
@@ -253,7 +253,6 @@ function Home(): JSX.Element {
         <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
           onClick={async () => {
             await changeNetwork();
-
           }} >
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
@@ -262,49 +261,53 @@ function Home(): JSX.Element {
 
     <div className='col-span-12'> </div>
 
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+    <Transition appear
+      as={Fragment}
+      show={isOpen}>
+      <Dialog as='div'
+        className='relative z-10'
+        onClose={closeModal}>
         <Transition.Child
           as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+          enter='ease-out duration-300'
+          enterFrom='opacity-0'
+          enterTo='opacity-100'
+          leave='ease-in duration-200'
+          leaveFrom='opacity-100'
+          leaveTo='opacity-0'
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className='fixed inset-0 bg-black bg-opacity-25' />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
+        <div className='fixed inset-0 overflow-y-auto'>
+          <div className='flex min-h-full items-center justify-center p-4 text-center'>
             <Transition.Child
               as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              enter='ease-out duration-300'
+              enterFrom='opacity-0 scale-95'
+              enterTo='opacity-100 scale-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100 scale-100'
+              leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  as='h3'
+                  className='text-lg font-medium leading-6 text-gray-900'
                 >
                   Changed successfully
                 </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
+                <div className='mt-2'>
+                  <p className='text-sm text-gray-500'>
                     {`Network changed to ${networkSelection}`}
                   </p>
                 </div>
 
-                <div className="mt-4">
+                <div className='mt-4'>
                   <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                     onClick={closeModal}
+                    type='button'
                   >
                     OK
                   </button>

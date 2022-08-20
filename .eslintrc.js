@@ -31,6 +31,7 @@ module.exports = {
       ], 2],
     // this seems very broken atm, false positives
     '@typescript-eslint/unbound-method': 'off',
+    'no-void': 'off',
     'node/no-callback-literal': 'off'
   }
 };
