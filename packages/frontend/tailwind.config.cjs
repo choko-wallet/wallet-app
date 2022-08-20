@@ -14,6 +14,9 @@ module.exports = {
   plugins: [require('daisyui')],
   theme: {
     extend: {
+      fontFamily: {
+        Italiana: ["Italiana", "mono"],
+      },
       colors: {
         footerBg: '#d8c9d8' // bg-footerBg
       }

@@ -15,6 +15,7 @@ import { selectUserAccount, selectError } from '../../features/redux/selectors';
 import { deserializeUserAccount } from '../../features/slices/userSlice';
 
 
+import logo from '../../images/logo.svg';
 import near from '../../images/btc.png';
 
 /* eslint-disable sort-keys */
@@ -38,9 +39,10 @@ function Home(): JSX.Element {
     if (!localStorage.getItem("serialziedUserAccount") ) {
       console.error("account not set.");
       router.push('/account');
+    } else {
+      dispatch(deserializeUserAccount());
+      setMounted(true);
     }
-    dispatch(deserializeUserAccount());
-    setMounted(true);
   }, [])
 
   useEffect(() => {
@@ -48,6 +50,9 @@ function Home(): JSX.Element {
       setCurrentAccount(userAccount.address);
       setAllAccounts([userAccount.address]);
     }
+  }, [ userAccount ])
+
+  useEffect(() => {
     if(error) {
       // router.push('/showpassphrase');
 
@@ -112,12 +117,22 @@ function Home(): JSX.Element {
       <div className='navbar bg-base-100'>
 
         <div className='navbar-start'>
+          {/* TODO: fix the logo */}
           <a className='btn btn-ghost normal-case text-xl'
-            onClick={() => router.push('/')}>Choko Wallet Logo</a>
+            onClick={() => router.push('/')}>
+              Choko
+              {/* <Image
+                  className='relative w-10 m-0'
+                  // layout='fill'
+                  objectFit='fill'
+                  src={logo}
+                /> */}
+            </a>
         </div>
 
         <div className='navbar-center'>
-
+          {/* <a className='btn btn-ghost normal-case text-xl'
+            onClick={() => router.push('/')}> Setting </a> */}
         </div>
 
         <div className='navbar-end'>

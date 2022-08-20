@@ -1480,6 +1480,11 @@ __metadata:
     "@badrap/bar-of-progress": ^0.2.1
     "@choko-wallet/core": 0.1.6-4
     "@choko-wallet/request-handler": 0.1.6-4
+    "@fortawesome/fontawesome-svg-core": ^6.1.2
+    "@fortawesome/free-brands-svg-icons": ^6.1.2
+    "@fortawesome/free-regular-svg-icons": ^6.1.2
+    "@fortawesome/free-solid-svg-icons": ^6.1.2
+    "@fortawesome/react-fontawesome": latest
     "@headlessui/react": ^1.6.6
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
@@ -1500,6 +1505,7 @@ __metadata:
     react-dom: 18.1.0
     react-hot-toast: ^2.3.0
     react-redux: ^7.2.0
+    react-typed: ^1.2.0
     redux-persist: 6.0.0
     tailwindcss: ^3.1.2
     typescript: ^4.7.4
@@ -1944,6 +1950,61 @@ __metadata:
     "@ethersproject/properties": ^5.6.0
     "@ethersproject/strings": ^5.6.1
   checksum: 3be4f300705b3f4f2b1dfa3948aac2e5030ab6216086578ec5cd2fad130b6b30d2a6a3c54d94c6669601ed62b56e7052232bc0a934a451ef3320fd6513734729
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-common-types@npm:6.1.2":
+  version: 6.1.2
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.1.2"
+  checksum: 16ba97f73256adef5cd680a027e6dbd3e76f34ba9227f7bd9e8c372cb4f337c7ccbf41f35dcfbc22b11320bbb579d01daccf1aa7ae47df5d0b17260c0097bb30
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-svg-core@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.1.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": 6.1.2
+  checksum: bb82ed1e79ade9977746b4bb28ac0d03de7557e7c923446adec78cb3447740aca0859e91d6310007d758055a1b8f3a6f740915f04cac738931135c9bdbfe5d32
+  languageName: node
+  linkType: hard
+
+"@fortawesome/free-brands-svg-icons@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@fortawesome/free-brands-svg-icons@npm:6.1.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": 6.1.2
+  checksum: 178b7f97bf64dcc1589bff74fc73cd0de32f002d585254e5dfb362d16c21011a77c61439dd507873d288f3c93de615cfc63235622968b037d8d8ded2d56f1d81
+  languageName: node
+  linkType: hard
+
+"@fortawesome/free-regular-svg-icons@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@fortawesome/free-regular-svg-icons@npm:6.1.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": 6.1.2
+  checksum: 1485773e16a019fd4af0053ab7e7f51558fe016dcfd8b975d5fc14069dd494d0c345477c1ceddc0356634a53add780761242aa4b20fc5ce616274aa7808bff39
+  languageName: node
+  linkType: hard
+
+"@fortawesome/free-solid-svg-icons@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.1.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": 6.1.2
+  checksum: b7258cd092304f9bd1e557cd3a59e9ff560165631b04f16785da14ce3148873fa8e688d62f95d68f668be32e1207c47a1fe556978ae7e9573a5b0fec09fc0f0c
+  languageName: node
+  linkType: hard
+
+"@fortawesome/react-fontawesome@npm:latest":
+  version: 0.2.0
+  resolution: "@fortawesome/react-fontawesome@npm:0.2.0"
+  dependencies:
+    prop-types: ^15.8.1
+  peerDependencies:
+    "@fortawesome/fontawesome-svg-core": ~1 || ~6
+    react: ">=16.3"
+  checksum: f652a0c2172e7b209e2d9e7e511f9b8c17abad85f55e0bd09bb1175ea1927693215da47eb6cd95b1f3a23bd124368553c677907fa76cb17c5093afc1fcffe338
   languageName: node
   linkType: hard
 
@@ -10334,7 +10395,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -10541,6 +10602,19 @@ __metadata:
     react-native:
       optional: true
   checksum: ecf1933e91013f2d41bfc781515b536bf81eb1f70ff228607841094c8330fe77d522372b359687e51c0b52b9888dba73db9ac0486aace1896ab9eb9daec102d5
+  languageName: node
+  linkType: hard
+
+"react-typed@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "react-typed@npm:1.2.0"
+  dependencies:
+    prop-types: ^15.6.0
+    typed.js: ^2.0.6
+  peerDependencies:
+    react: ^16.3.0
+    react-dom: ^16.3.0
+  checksum: c750d68710f918904b9bf07ea253e51d3447f9533c8277bd0afcdd20725b9e42e52ddcccd63ce93b4d0eb40db14573ccc82fce27b568b72a250d2167fc375b6f
   languageName: node
   linkType: hard
 
@@ -12004,6 +12078,13 @@ resolve@^2.0.0-next.3:
   version: 2.6.1
   resolution: "type@npm:2.6.1"
   checksum: 910726872c9330bc8ff13591727a86d221b0cf113732819dd7fb1ecbadc6aacac7ac0ed46b78249f210ee9f04030b74b1c920f4c074398e45256f92d2eb33d57
+  languageName: node
+  linkType: hard
+
+"typed.js@npm:^2.0.6":
+  version: 2.0.12
+  resolution: "typed.js@npm:2.0.12"
+  checksum: ea753bf8e01fd6e37390f8d02de58cc084e7b11620e937e75a6cad58829dd55a9273954191529cddad58ab102479f097db4587c6790ba4ff2dabc5d4fb6192d8
   languageName: node
   linkType: hard
 
