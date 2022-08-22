@@ -4,7 +4,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-function RequestRouter(): JSX.Element {
+function RequestRouter (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ function RequestRouter(): JSX.Element {
         alert('unkown request');
         break;
     }
-  }, [router.isReady, router.query]);
+  }, [router, router.isReady, router.query]);
 
   useEffect(() => {
     setMounted(true);

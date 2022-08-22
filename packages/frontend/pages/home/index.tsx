@@ -194,14 +194,14 @@ function Home (): JSX.Element {
       </div>
     </div>
 
-    <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-6 md:col-start-3 shadow-xl rounded-xl  bg-white'>
+    <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-7 md:col-start-2 shadow-xl rounded-xl  bg-white'>
       <div className='card p-10'>
         <h2 className='card-title text-3xl'> $793.32 </h2>
         <h3>Your avalaible token Balance on the current network. </h3>
       </div>
     </div >
 
-    <div className='col-span-12 mx-3 mb-10 md:mb-0 md:col-span-2 md:col-start-9 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
+    <div className='col-span-12 mx-3 mb-10 md:mb-0 md:col-span-3 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
       <div className='col-span-12 card p-5'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection || network}>

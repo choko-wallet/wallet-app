@@ -10,7 +10,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectUserAccount, selectError } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectError, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
@@ -36,6 +36,7 @@ function SignMessageHandler (): JSX.Element {
   useEffect(() => {
     if (!router.isReady) return;
     const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+
     setRequest(SignMessageRequest.deserialize(u8aRequest));
   }, [router.query, router.isReady]);
 
@@ -65,7 +66,7 @@ function SignMessageHandler (): JSX.Element {
     } else {
       setOpenPasswordModal(false);
     }
-  }, [error])
+  }, [error]);
 
   function closeModal () {
     setOpenPasswordModal(false);
@@ -210,7 +211,7 @@ function SignMessageHandler (): JSX.Element {
                     <p className='text-sm text-gray-500'>
                       <input className={`input input-bordered w-full max-w-xs ${showError && 'border-red-700 border'}`}
                         onChange={(e) => {
-                          setPassword(e.target.value)
+                          setPassword(e.target.value);
                           setShowError('');
                         }}
                         placeholder='Set a Password'
