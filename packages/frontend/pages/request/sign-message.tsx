@@ -10,7 +10,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectUserAccount, selectError } from '@choko-wallet/frontend/features/redux/selectors';
 import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
@@ -21,7 +21,7 @@ function SignMessageHandler (): JSX.Element {
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
-  // const requestError = useSelector(selectError);
+  const error = useSelector(selectError);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -31,14 +31,13 @@ function SignMessageHandler (): JSX.Element {
 
   const [request, setRequest] = useState<SignMessageRequest>(null);
   const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [showError, setShowError] = useState<string>('');
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
-
-      setRequest(SignMessageRequest.deserialize(u8aRequest));
-    }
-  }, [router.query]);
+    if (!router.isReady) return;
+    const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    setRequest(SignMessageRequest.deserialize(u8aRequest));
+  }, [router.query, router.isReady]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -60,14 +59,25 @@ function SignMessageHandler (): JSX.Element {
     if (request) setMounted(true);
   }, [request]);
 
+  useEffect(() => {
+    if (error !== '') {
+      setShowError(error);
+    } else {
+      setOpenPasswordModal(false);
+    }
+  }, [error])
+
   function closeModal () {
     setOpenPasswordModal(false);
+  }
 
+  function handleUnlock () {
     if (request) {
       dispatch(unlockUserAccount({
         address: request.userOrigin.address,
         password: password
       }));
+      setOpenPasswordModal(false);
     } else {
       alert('unexpected!');
     }
@@ -198,20 +208,24 @@ function SignMessageHandler (): JSX.Element {
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
-                      <input className='input input-bordered w-full max-w-xs'
-                        onChange={(e) => setPassword(e.target.value)}
+                      <input className={`input input-bordered w-full max-w-xs ${showError && 'border-red-700 border'}`}
+                        onChange={(e) => {
+                          setPassword(e.target.value)
+                          setShowError('');
+                        }}
                         placeholder='Set a Password'
 
                         type='password'
                         value={password}
-                      />
+                      /><br/>
+                      {showError && <span className='text-red-600'>{showError}</span>}
                     </p>
                   </div>
 
                   <div className='mt-4'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={closeModal}
+                      onClick={handleUnlock}
                       type='button'
                     >
                     Unlock

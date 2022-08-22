@@ -78,12 +78,12 @@ export const unlockUserAccount = createAsyncThunk(
 
 // User slice
 interface UserSliceItem {
-  error: boolean;
+  error: string;
   userAccount: {[key: string]: UserAccount};
 }
 
 const initialState: UserSliceItem = {
-  error: false,
+  error: '',
   userAccount: {}
 };
 
@@ -128,13 +128,13 @@ export const userSlice = createSlice({
 
       .addCase(unlockUserAccount.fulfilled, (state, action) => {
         console.log('fulfiled');
-        state.error = false;
+        state.error = '';
 
         state.userAccount[action.payload.address] = action.payload;
       })
-      .addCase(unlockUserAccount.rejected, (state) => {
+      .addCase(unlockUserAccount.rejected, (state, action) => {
         console.log('rejected');
-        state.error = true;
+        state.error = 'Invalid password!';
       });
   }
 });
