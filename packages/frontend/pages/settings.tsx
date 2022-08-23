@@ -36,14 +36,16 @@ function Home(): JSX.Element {
     } else {
       dispatch(loadUserAccount());
     }
+  }, [dispatch, router]);
 
+  useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
       const allAddrs = Object.keys(userAccount);
 
       setCurrentAccount(allAddrs[0]);
       setAllAccounts(allAddrs);
     }
-  }, [dispatch, router, userAccount]);
+  }, [userAccount])
 
   useEffect(() => {
     setMounted(true);
