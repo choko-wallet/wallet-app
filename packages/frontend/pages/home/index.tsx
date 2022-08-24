@@ -3,10 +3,12 @@
 
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
+import Image from 'next/image'
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import btcIcon from '../../images/btc.png'
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -14,7 +16,7 @@ import { selectUserAccount } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
-function Home (): JSX.Element {
+function Home(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -28,6 +30,8 @@ function Home (): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
+
 
   useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -69,7 +73,7 @@ function Home (): JSX.Element {
     return null;
   }
 
-  function closeModal () {
+  function closeModal() {
     setIsOpen(false);
     setNetworkSelection('');
     setNetwork(networkSelection);
@@ -100,6 +104,11 @@ function Home (): JSX.Element {
     });
   };
 
+  function closeModal2() {
+    setIsSendOpen(false)
+  }
+
+
   return (<main className='grid grid-cols-12 gap-4 min-h-screen content-between bg-gray-400'>
     <Toaster />
     <div className='col-span-12'>
@@ -109,7 +118,7 @@ function Home (): JSX.Element {
           {/* TODO: fix the logo */}
           <a className='btn btn-ghost normal-case text-xl'
             onClick={() => router.push('/')}>
-              Choko
+            Choko
             {/* <Image
                   className='relative w-10 m-0'
                   // layout='fill'
@@ -198,6 +207,16 @@ function Home (): JSX.Element {
       <div className='card p-10'>
         <h2 className='card-title text-3xl'> $793.32 </h2>
         <h3>Your avalaible token Balance on the current network. </h3>
+      </div>
+
+      <div className="flex items-center justify-center">
+        <button
+          type="button"
+          onClick={() => setIsSendOpen(true)}
+          className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+        >
+          <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
+        </button>
       </div>
     </div >
 
@@ -318,7 +337,113 @@ function Home (): JSX.Element {
         </div>
       </Dialog>
     </Transition>
-  </main>);
+
+
+    <Transition appear
+      as={Fragment}
+      show={isSendOpen}>
+      <Dialog as='div'
+        className='relative z-10'
+        onClose={closeModal2}>
+        <Transition.Child
+          as={Fragment}
+          enter='ease-out duration-300'
+          enterFrom='opacity-0'
+          enterTo='opacity-100'
+          leave='ease-in duration-200'
+          leaveFrom='opacity-100'
+          leaveTo='opacity-0'
+        >
+          <div className='fixed inset-0 bg-black bg-opacity-25' />
+        </Transition.Child>
+
+        <div className='fixed inset-0 overflow-y-auto'>
+          <div className='flex min-h-full items-center justify-center p-4 text-center'>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0 scale-95'
+              enterTo='opacity-100 scale-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100 scale-100'
+              leaveTo='opacity-0 scale-95'
+            >
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 flex '
+                >
+                  <PaperAirplaneIcon className='rotate-45 text-gray-700 h-5 w-5' />
+                  <p className=' text-gray-700 '>Send Crypto</p>
+                </Dialog.Title>
+                <div className='mt-2 '>
+                  <p className=' text-gray-700'>Currency</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+
+                    <div className="relative h-5 w-5">
+                      <Image
+                        src={btcIcon}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                    <p className='flex flex-grow'> BTC</p>
+                    <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
+
+                  </div>
+
+                  <p className=' '>From</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+                    <p className='flex flex-grow'>1111.....222222</p>
+                    <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' />
+                  </div>
+
+                  <p className=' text-gray-700 mt-3 mb-1'>To</p>
+                  <input type="text" placeholder="Destination Address" className=" input input-bordered input-info w-full " />
+
+
+                  <div className='flex items-end'>
+                    <div className='relative'>
+                      <p className=' text-gray-700 mt-3 mb-1'>Amount</p>
+                      <input type="text" placeholder="0" className=" input input-bordered input-info w-full " />
+                      <p className='absolute bottom-3 right-3'>BTC</p>
+                    </div>
+                    <p className='mx-1 pb-3'>=</p>
+                    <div className='relative'>
+                      <p className=' text-gray-700'></p>
+                      <input type="text" placeholder="0" className=" input input-bordered input-info w-full " />
+                      <p className='absolute bottom-3 right-3'>USD</p>
+                    </div>
+
+                  </div>
+
+                  <p className=' text-gray-700 py-1 pt-3'>Network Fee</p>
+                  <p className=' text-gray-700 text-sm'>0.00000123BTC(US$1.6)</p>
+                  <p className=' text-gray-700 text-sm'>Estimated confirmation time 20 min</p>
+
+
+                </div>
+
+                <div className='mt-4'>
+                  <button
+                    className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                    onClick={closeModal2}
+                    type='button'
+                  >
+                    Send
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+
+
+
+
+  </main >);
 }
 
 export default Home;
