@@ -12,7 +12,7 @@ import superagent from 'superagent';
 
 import { UserAccount } from '@choko-wallet/core';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { ConnectDappResponse } from '@choko-wallet/request-handler';
+import { ConnectDappResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignTxUrl, configSDKAndStore, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 
 const AlphaTest: NextPage = () => {
@@ -24,9 +24,36 @@ const AlphaTest: NextPage = () => {
   const [tosAgreed, setTOSAgreed] = useState<boolean>(false);
 
   const [account, setAccount] = useState<UserAccount>(null);
+  
   const [response, setResponse] = useState<string>('');
+  const [submit, setSubmit] = useState<boolean>(false);
 
   // http://localhost:3000/alpha?response=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c454795571588dc65b5ea49fa75764ef9b4c9ace29fceaed86fca62bbcdf5ea26375e90eae93e337d0e6ee6507cee3de16d59d4f259fd4d9b7364b9d3b8a66cdf7d8b5dfb611ec44c001c3d2cc3&responseType=signTx
+  
+  useEffect(() => {
+
+    if (response && submit) {
+      const u = decompressParameters ( hexToU8a(response) );
+      const resp = SignTxResponse.deserialize(u);
+      console.error(resp);
+
+      (async() => {
+        const r = await superagent
+          .post('https://formapi.skye.kiwi/choko/alpha/update')
+          .send({ 
+            accessToken: accessToken,
+            address: resp.userOrigin.address,
+            txSent: u8aToHex( resp.payload.txHash ),
+            faucetClaimed: true,
+          });
+        if (r.body.error === "None" ) {
+          alert("All Done! Data is recorded to our database.")
+        }
+      })();
+    }
+
+  }, [submit, response])
+  
   useEffect(() => {
     if (router.query && router.query.response && router.query.responseType) {
       const u8aResponse = decompressParameters(hexToU8a(router.query.response as string));
@@ -42,6 +69,14 @@ const AlphaTest: NextPage = () => {
 
         setAccount(a);
         setResponse(u8aToHex(compressParameters(u8aResponse)));
+      }
+    } else {
+      try {
+        const a = getUserAccount();
+        if (a) setAccount(a);
+      } catch(e) {
+        console.error(e);
+        // pass
       }
     }
   }, [router]);
@@ -62,7 +97,6 @@ const AlphaTest: NextPage = () => {
 
         activeNetworkHash: '847e7b7fa160d85f',
 
-        // callbackUrlBase: 'https://choko.app/alpha',
         callbackUrlBase: 'http://localhost:3000/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
@@ -82,7 +116,7 @@ const AlphaTest: NextPage = () => {
 
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'https://choko.app/alpha',
+        callbackUrlBase: 'http://localhost:3000/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
@@ -142,7 +176,7 @@ const AlphaTest: NextPage = () => {
             <br/>
             <h2>Any DMs requesting recovering wallet private keys <b>WILL BE IGNORED</b> as there is nothing we can do about it.</h2>
             <br/>
-            <h2>Also, our team will <b>NEVER DM FOR YOUR PRIVATE KEY</b> or <b>ASK FOR FUNDS</b>.</h2>
+            <h2>Also, our team will <b>NEVER DM FOR YOUR PRIVATE KEY</b> or <b>NEVER ASK FOR FUNDS</b>.</h2>
 
             <button className='btn m-5'
               onClick={() => {
@@ -150,7 +184,6 @@ const AlphaTest: NextPage = () => {
               }}>Read & Acknowledged. Let me Proceeed!</button>
           </div>
         }
-
         {
           tosAgreed && <div className='col-span-12 px-5'>
             <div className='divider'></div>
@@ -159,7 +192,7 @@ const AlphaTest: NextPage = () => {
             <h2>1. Generate or Import a walelt address on the home page. Switch network to SkyeKiwi Network and connect this page to the wallet. </h2>
             <button className='btn m-5 btn-error'
               onClick={() => {
-                const x = buildConnectDappUrl();
+                const x = buildConnectDappUrl().replace("https://choko.app", "http://localhost:3000");
 
                 window.location.href = x;
               }}>Take me there</button>
@@ -168,7 +201,7 @@ const AlphaTest: NextPage = () => {
             {
               account && <>
                 <h2>2. Claim some faucet token so that you could send a transaction on the next step.  </h2><br/>
-                <h3><span>Address of your account is: <b>{account.address}</b></span></h3> <br/>
+                <h3 style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br/>
                 <h3>Follow SkyeKiwi on their <a className='text-sky-400'
                   href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.</h3>
                 <br/>
@@ -180,13 +213,23 @@ const AlphaTest: NextPage = () => {
                     const api = await ApiPromise.create({ provider: provider });
                     const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
                     const encoded = hexToU8a(tx.toHex().substring(2));
-                    const x = buildSignTxUrl(encoded);
+                    const x = buildSignTxUrl(encoded).replace("https://choko.app", "http://localhost:3000");
 
                     // await provider.disconnect();
                     window.location.href = x;
                   }}>Take me there</button><br/>
 
-                {response && <h1 style={{ overflowWrap: 'break-word' }}>Finally, keep this response hex string and send it to our team. <b>0x{response}</b>. <br/>Then you are all done!</h1>}
+                {response && <>
+                  <h1 style={{ overflowWrap: 'break-word' }}>
+                    Finally, keep this response hex string. Most likely it will be recorded automatically... but just in case. <b>0x{response}</b>. <br/>Then you are all done!
+                  </h1>
+
+                  <button className='btn m-5 btn-success'
+                  onClick={() => {
+                    setSubmit(true);
+                  }}>Finish!</button><br/>
+                </>
+                }
               </>
             }
           </div>

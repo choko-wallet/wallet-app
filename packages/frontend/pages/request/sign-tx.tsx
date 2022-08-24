@@ -53,10 +53,15 @@ function SignTxHandler (): JSX.Element {
         if (!userAccount[account].isLocked) {
           void (async () => {
             const signTx = new SignTxDescriptor();
-            const response = await signTx.requestHandler(request, userAccount[account]);
-            const s = response.serialize();
-
-            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            try {
+              const response = await signTx.requestHandler(request, userAccount[account]);
+              const s = response.serialize();
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            } catch(err) {
+              alert(err)
+              console.error(err);
+            }
+          
           })();
         }
       }
@@ -138,11 +143,11 @@ function SignTxHandler (): JSX.Element {
               {
                 displayType === 'hex'
                   ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400'
                       style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
                   )
                   : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400'
                       style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.encoded)}</div>
                   )
               }

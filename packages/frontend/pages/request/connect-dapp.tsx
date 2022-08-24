@@ -55,8 +55,6 @@ function ConnectDappHandler (): JSX.Element {
 
   useEffect(() => {
     if (!router.isReady) return;
-    console.error(router.query, Object.keys(router.query));
-
     const payload = router.query.payload as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
 
@@ -149,10 +147,10 @@ function ConnectDappHandler (): JSX.Element {
                       <div className='flex items-center'>
                         <div className='text-sm'>
                           <RadioGroup.Label
-                            as='p'
-                            className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                            as='div'
+                            className={`font-medium ${checked ? 'text-white' : 'text-gray-900'}`}
                           >
-                            {name}
+                            <div className="w-1/2 md:w-full" style={{ overflowWrap: 'break-word' }}>{name}</div>
                           </RadioGroup.Label>
                         </div>
                       </div>

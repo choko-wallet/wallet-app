@@ -36,7 +36,6 @@
     "react-hot-toast": "^2.3.0",
     "react-redux": "^7.2.0",
     "react-typed": "^1.2.0",
-    "redux-persist": "6.0.0",
     "superagent": "^8.0.0"
   },
   "devDependencies": {
