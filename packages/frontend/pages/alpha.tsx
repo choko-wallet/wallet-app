@@ -97,7 +97,7 @@ const AlphaTest: NextPage = () => {
 
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'http://localhost:3000/alpha',
+        callbackUrlBase: 'https://choko.app/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
@@ -116,7 +116,7 @@ const AlphaTest: NextPage = () => {
 
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'http://localhost:3000/alpha',
+        callbackUrlBase: 'https://choko.app/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
@@ -192,7 +192,7 @@ const AlphaTest: NextPage = () => {
             <h2>1. Generate or Import a walelt address on the home page. Switch network to SkyeKiwi Network and connect this page to the wallet. </h2>
             <button className='btn m-5 btn-error'
               onClick={() => {
-                const x = buildConnectDappUrl().replace("https://choko.app", "http://localhost:3000");
+                const x = buildConnectDappUrl();
 
                 window.location.href = x;
               }}>Take me there</button>
@@ -213,7 +213,7 @@ const AlphaTest: NextPage = () => {
                     const api = await ApiPromise.create({ provider: provider });
                     const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
                     const encoded = hexToU8a(tx.toHex().substring(2));
-                    const x = buildSignTxUrl(encoded).replace("https://choko.app", "http://localhost:3000");
+                    const x = buildSignTxUrl(encoded);
 
                     // await provider.disconnect();
                     window.location.href = x;
