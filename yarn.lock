@@ -1461,16 +1461,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/core@npm:0.1.6-6":
-  version: 0.1.6-6
-  resolution: "@choko-wallet/core@npm:0.1.6-6"
+"@choko-wallet/core@npm:0.1.6-7":
+  version: 0.1.6-7
+  resolution: "@choko-wallet/core@npm:0.1.6-7"
   dependencies:
-    "@choko-wallet/known-networks": 0.1.6-6
+    "@choko-wallet/known-networks": 0.1.6-7
     "@polkadot/util-crypto": ^10.1.1
     "@skyekiwi/crypto": 0.8.4-1
     "@skyekiwi/util": 0.8.4-1
     pako: ^2.0.4
-  checksum: fe85222a6dde7712ff07be31f4a5d91a4afadc5df6eb6422c723ff54687cf2cae9c205e463e202bacea77aad0b7bf648514f2ea9754784470581ed50fc0cac25
+  checksum: b59067a1986a1f65b6fabb191c9704a9331365c6c77432c43307cee66f56d313f9c83e27fb0cf86bb4acd8d03c35575b53763bdfdf3a42e92f58991d9a60283c
   languageName: node
   linkType: hard
 
@@ -1479,8 +1479,9 @@ __metadata:
   resolution: "@choko-wallet/frontend@workspace:packages/frontend"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
-    "@choko-wallet/core": 0.1.6-6
-    "@choko-wallet/request-handler": 0.1.6-6
+    "@choko-wallet/core": 0.1.6-7
+    "@choko-wallet/known-networks": 0.1.6-7
+    "@choko-wallet/request-handler": 0.1.6-7
     "@fortawesome/fontawesome-svg-core": ^6.1.2
     "@fortawesome/free-brands-svg-icons": ^6.1.2
     "@fortawesome/free-regular-svg-icons": ^6.1.2
@@ -1512,25 +1513,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/known-networks@npm:0.1.6-6":
-  version: 0.1.6-6
-  resolution: "@choko-wallet/known-networks@npm:0.1.6-6"
+"@choko-wallet/known-networks@npm:0.1.6-7":
+  version: 0.1.6-7
+  resolution: "@choko-wallet/known-networks@npm:0.1.6-7"
   dependencies:
-    "@choko-wallet/core": 0.1.6-6
+    "@choko-wallet/core": 0.1.6-7
     "@skyekiwi/util": 0.8.4-1
-  checksum: 90fdbcb1c405dbcddc5c3ab52b8dbaf501804d8af7d7de49554c9226fa905227bb05b66583fcf5fcf19198ca8404f12cc5cf5fc6a40d7e8a888a067f4f098e0a
+  checksum: e06fa5be3c573507e90fc20f9c12c141d2214c72e2d61bbcd0b3814bcbe9e8496c8793df270b3d464dcb1956dfc3ccbcc93354001fb8d2d76f9bf05e1c2d58c8
   languageName: node
   linkType: hard
 
-"@choko-wallet/request-handler@npm:0.1.6-6":
-  version: 0.1.6-6
-  resolution: "@choko-wallet/request-handler@npm:0.1.6-6"
+"@choko-wallet/request-handler@npm:0.1.6-7":
+  version: 0.1.6-7
+  resolution: "@choko-wallet/request-handler@npm:0.1.6-7"
   dependencies:
-    "@choko-wallet/core": 0.1.6-6
+    "@choko-wallet/core": 0.1.6-7
     "@polkadot/keyring": ^10.1.2
     "@polkadot/util-crypto": ^10.1.2
     "@skyekiwi/util": 0.8.4-1
-  checksum: c75809053874f03dc28e189d3bd1e165edd80bb0a1b0d9f4031e2738f6efbc06ae87f079ac0df128c1a44df097c3a0c9a434e2a22c50ebbe7c1f8a33c3be1393
+  checksum: 63f79974eb0557a3c1ca1e96dc295999e45b9f2335cb62bffbd402fb2fe26cba0d20582577c7d1ac6e3fa0825328939f21a63289fae1431806f7e0e2b1b1fdf7
   languageName: node
   linkType: hard
 

@@ -7,11 +7,15 @@ import { CheckCircleIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+
+import { knownNetworks } from '@choko-wallet/known-networks';
+
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUserAccount } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 
 /* eslint-disable sort-keys */
 function Home (): JSX.Element {
@@ -24,10 +28,37 @@ function Home (): JSX.Element {
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
 
   const [networkSelection, setNetworkSelection] = useState<string>('');
-  const [network, setNetwork] = useState<string>('polkadot');
+  const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  
+  const [balance, setBalance] = useState<number>(0);
+
+  useEffect(() => {
+    const getBalance = async() => {
+      const provider = new WsProvider(knownNetworks[network].defaultProvider);
+      const api = await ApiPromise.create({
+        provider: provider
+      });
+  
+      const data = await api.query.system.account(currentAccount);
+      // console.error(data['data'].toHuman()['free']);
+
+      const tokenDecimals = {
+        '847e7b7fa160d85f': 12,
+        '0018a49f151bcb20': 12,
+        'e658ad422326d7f7': 10,
+      }
+      setBalance(Number(data['data'].toHuman()['free'].replaceAll(",", "")) / (10 ** tokenDecimals[network]));
+
+      // const chainInfo = await api.registry.getChainProperties()
+      // return ( data.createdAtHash.free )
+  
+    }
+    
+    getBalance();
+  }, [network, currentAccount]);
 
   useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -48,28 +79,11 @@ function Home (): JSX.Element {
     setMounted(true);
   }, []);
 
-  const allNetworks = [{
-    name: 'Polkadot',
-    info: 'polkadot',
-    rpc: 'wss://polkadot.parity.io/ws',
-    color: 'red-500'
-  }, {
-    name: 'Kusama',
-    info: 'kusama',
-    rpc: 'wss://kusama.parity.io/ws',
-    color: 'gray-500'
-  }, {
-    name: 'SkyeKiwi',
-    info: 'skyekiwi',
-    rpc: 'wss://rpc.skye.kiwi',
-    color: 'blue-500'
-  }];
-
   if (!mounted) {
     return null;
   }
 
-  function closeModal () {
+  const closeModal = () => {
     setIsOpen(false);
     setNetworkSelection('');
     setNetwork(networkSelection);
@@ -149,6 +163,7 @@ function Home (): JSX.Element {
                           <div
                             className='px-5 items-center col-span-2 rounded-lg py-2 transition duration-150 ease-in-out hover:bg-gray-50'
                             key={index}
+                            onClick={() => setCurrentAccount(name)}
                           >
                             <p className='text-sm font-medium text-gray-900 normal-case'> {name.substring(0, 13)} ... {name.substring(name.length - 13, name.length)}</p>
                           </div>
@@ -196,8 +211,11 @@ function Home (): JSX.Element {
 
     <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-7 md:col-start-2 shadow-xl rounded-xl  bg-white'>
       <div className='card p-10'>
-        <h2 className='card-title text-3xl'> $793.32 </h2>
-        <h3>Your avalaible token Balance on the current network. </h3>
+        <h2 className='card-title text-3xl'> {balance} SKW </h2><br/>
+        <h3>Your token Balance on the current network. </h3><br/>
+
+        <h2 className='card-title'> {currentAccount} </h2><br/>
+        <h3>Your current address selected. </h3>
       </div>
     </div >
 
@@ -205,14 +223,16 @@ function Home (): JSX.Element {
       <div className='col-span-12 card p-5'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection || network}>
-          {allNetworks.map(({ info, name, rpc }) => (
-            <RadioGroup.Option
+          {Object.entries(knownNetworks).map(([hash, network], index) => {
+            
+            const {info, text, defaultProvider} = network;
+            return <RadioGroup.Option
               className={({ active, checked }) =>
                 `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                   m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
               }
-              key={name}
-              value={info}
+              key={hash}
+              value={hash}
             >
               {({ active, checked }) => (
                 <div className='flex w-full items-center justify-between'>
@@ -222,13 +242,13 @@ function Home (): JSX.Element {
                         as='p'
                         className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
                       >
-                        {name}
+                        {text}
                       </RadioGroup.Label>
                       <RadioGroup.Description
                         as='span'
                         className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
                       >
-                        {rpc}
+                        {defaultProvider}
                       </RadioGroup.Description>
                     </div>
                   </div>
@@ -240,7 +260,7 @@ function Home (): JSX.Element {
                 </div>
               )}
             </RadioGroup.Option>
-          ))}
+          })}
         </RadioGroup>
       </div>
       <div className='col-span-3 col-start-3 mb-5 md:mb-20'>
