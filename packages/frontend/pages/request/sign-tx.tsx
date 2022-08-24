@@ -30,15 +30,22 @@ function SignTxHandler (): JSX.Element {
   const [displayType, setDisplayType] = useState<string>('hex');
 
   const [request, setRequest] = useState<SignTxRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    if (!router.isReady) return;
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
 
-      setRequest(SignTxRequest.deserialize(u8aRequest));
-    }
-  }, [router.query]);
+    setRequest(SignTxRequest.deserialize(u8aRequest));
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -47,16 +54,14 @@ function SignTxHandler (): JSX.Element {
           void (async () => {
             const signTx = new SignTxDescriptor();
             const response = await signTx.requestHandler(request, userAccount[account]);
-
-            console.error(response);
             const s = response.serialize();
 
-            setResponse(compressParameters(s));
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
@@ -113,10 +118,6 @@ function SignTxHandler (): JSX.Element {
                 style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
             </div>
 
-            <div className='col-span-12'>
-              <code className='underline'
-                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
-            </div>
             <div className='col-span-12'>
               <div className='divider'></div>
             </div>

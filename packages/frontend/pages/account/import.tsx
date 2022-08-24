@@ -19,15 +19,29 @@ function ImportWallet (): JSX.Element {
   const [seeds, setSeeds] = useState<Array<string>>(Array(12).fill(''));
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
+  const [redirectRequest, setRedirectRequest] = useState<string>('');
 
   const handleSetPassword = () => {
     dispatch(addUserAccount({ password: password, seeds: seeds.join(' ') }));
+
+    if (redirectRequest) {
+      void router.push('/request?' + redirectRequest);
+    }
+
     void router.push('/home');
   };
 
   useEffect(() => {
+    const redirectParams = localStorage.getItem('requestParams');
+
+    localStorage.removeItem('requestParams');
+
+    if (redirectParams) {
+      setRedirectRequest(redirectParams);
+    }
+
     setMounted(true);
-  }, []);
+  }, [router]);
 
   if (!mounted) {
     return null;
@@ -40,14 +54,6 @@ function ImportWallet (): JSX.Element {
       setSeeds(seeds.map((seed, i) => i === index ? text : seed));
     }
   };
-
-  /* eslint-disable */
-  // @ts-ignore
-  // window.addEventListener('paste', (e: ClipboardEvent) => {
-  //   const text = e.clipboardData.getData('text/plain');
-  //   handleMnemonicInput(text, 0);
-  // });
-  /* eslint-enable */
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5' >

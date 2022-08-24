@@ -4,18 +4,17 @@
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon } from '@heroicons/react/solid';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-
-import { knownNetworks } from '@choko-wallet/known-networks';
-
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
+import { knownNetworks } from '@choko-wallet/known-networks';
+
 import { selectUserAccount } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 
 /* eslint-disable sort-keys */
 function Home (): JSX.Element {
@@ -32,32 +31,35 @@ function Home (): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  
+
   const [balance, setBalance] = useState<number>(0);
 
   useEffect(() => {
-    const getBalance = async() => {
+    const getBalance = async () => {
       const provider = new WsProvider(knownNetworks[network].defaultProvider);
       const api = await ApiPromise.create({
         provider: provider
       });
-  
+
       const data = await api.query.system.account(currentAccount);
       // console.error(data['data'].toHuman()['free']);
 
       const tokenDecimals = {
         '847e7b7fa160d85f': 12,
         '0018a49f151bcb20': 12,
-        'e658ad422326d7f7': 10,
-      }
-      setBalance(Number(data['data'].toHuman()['free'].replaceAll(",", "")) / (10 ** tokenDecimals[network]));
+        e658ad422326d7f7: 10
+      };
+
+      /* eslint-disable */
+      // @ts-ignore
+      setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** tokenDecimals[network]));
+      /* eslint-enable */
 
       // const chainInfo = await api.registry.getChainProperties()
       // return ( data.createdAtHash.free )
-  
-    }
-    
-    getBalance();
+    };
+
+    void getBalance();
   }, [network, currentAccount]);
 
   useEffect(() => {
@@ -87,8 +89,7 @@ function Home (): JSX.Element {
     setIsOpen(false);
     setNetworkSelection('');
     setNetwork(networkSelection);
-    console.log('close');
-  }
+  };
 
   const changeNetwork = async () => {
     const notification = toast.loading('Changing Network...', {
@@ -104,7 +105,6 @@ function Home (): JSX.Element {
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
-        console.log('changeNetwork');
         toast.dismiss(notification);
 
         setIsOpen(true);
@@ -214,8 +214,9 @@ function Home (): JSX.Element {
         <h2 className='card-title text-3xl'> {balance} SKW </h2><br/>
         <h3>Your token Balance on the current network. </h3><br/>
 
-        <h2 className='card-title'> {currentAccount} </h2><br/>
-        <h3>Your current address selected. </h3>
+        <h2 className='card-title'
+          style={{ overflowWrap: 'break-word' }}> {currentAccount} </h2><br/>
+        <h3>Your current address selected. </h3><br/>
       </div>
     </div >
 
@@ -224,8 +225,8 @@ function Home (): JSX.Element {
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection || network}>
           {Object.entries(knownNetworks).map(([hash, network], index) => {
-            
-            const {info, text, defaultProvider} = network;
+            const { defaultProvider, text } = network;
+
             return <RadioGroup.Option
               className={({ active, checked }) =>
                 `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
@@ -259,7 +260,7 @@ function Home (): JSX.Element {
                   )}
                 </div>
               )}
-            </RadioGroup.Option>
+            </RadioGroup.Option>;
           })}
         </RadioGroup>
       </div>

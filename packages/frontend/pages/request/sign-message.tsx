@@ -30,15 +30,23 @@ function SignMessageHandler (): JSX.Element {
   const [displayType, setDisplayType] = useState<string>('hex');
 
   const [request, setRequest] = useState<SignMessageRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
   const [showError, setShowError] = useState<string>('');
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
     if (!router.isReady) return;
-    const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
 
     setRequest(SignMessageRequest.deserialize(u8aRequest));
-  }, [router.query, router.isReady]);
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -49,12 +57,12 @@ function SignMessageHandler (): JSX.Element {
             const response = await signMessasge.requestHandler(request, userAccount[account]);
             const s = response.serialize();
 
-            setResponse(compressParameters(s));
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
@@ -120,10 +128,6 @@ function SignMessageHandler (): JSX.Element {
             <div className='col-span-12'>
               <code className='underline text-clip'
                 style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
-            </div>
-            <div className='col-span-12'>
-              <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{response}</code>
             </div>
             <div className='col-span-12'>
               <div className='divider'></div>

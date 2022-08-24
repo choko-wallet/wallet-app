@@ -32,10 +32,9 @@ function ConnectDappHandler (): JSX.Element {
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
 
   const [request, setRequest] = useState<ConnectDappRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    // TODO: is this right?
     if (allAccounts && currentAccount) {
       return;
     }
@@ -55,12 +54,21 @@ function ConnectDappHandler (): JSX.Element {
   }, [router, dispatch, userAccount, currentAccount, allAccounts]);
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    if (!router.isReady) return;
+    console.error(router.query, Object.keys(router.query));
 
-      setRequest(ConnectDappRequest.deserialize(u8aRequest));
-    }
-  }, [router]);
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
+
+    setRequest(ConnectDappRequest.deserialize(u8aRequest));
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -69,16 +77,14 @@ function ConnectDappHandler (): JSX.Element {
           void (async () => {
             const connectDapp = new ConnectDappDescriptor();
             const response = await connectDapp.requestHandler(request, userAccount[account]);
-
-            console.error(response);
             const s = response.serialize();
 
-            setResponse(compressParameters(s));
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     setMounted(true);
@@ -100,8 +106,6 @@ function ConnectDappHandler (): JSX.Element {
   if (!mounted) {
     return null;
   }
-
-  console.log(userAccount);
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
@@ -128,11 +132,6 @@ function ConnectDappHandler (): JSX.Element {
             <div className='col-span-12'>
               <code className='underline text-clip'>{request.dappOrigin.displayName}</code>
             </div>
-            <div className='col-span-12'>
-              <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
-            </div>
-
             <RadioGroup className='col-span-12'
               onChange={setCurrentAccount}
               value={currentAccount}>
@@ -167,33 +166,6 @@ function ConnectDappHandler (): JSX.Element {
                 </RadioGroup.Option>
               ))}
             </RadioGroup>
-            {/* <div className='col-span-12'>
-              <div className='divider'></div>
-            </div>
-            <div className='col-span-12'>
-              Message To Sign:
-            </div>
-
-            <div className='col-span-12'>
-              <div className='tabs'>
-                <a className={`tab tab-bordered ${displayType === 'hex' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('hex')}>Hex</a>
-                <a className={`tab tab-bordered ${displayType === 'ascii' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('ascii')}>Ascii</a>
-              </div>
-            </div>
-
-            <div className='col-span-12'>
-              {
-                displayType === 'hex'
-                  ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'>{'0x' + u8aToHex(request.payload.message)}</div>
-                  )
-                  : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'>{u8aToString(request.payload.message)}</div>
-                  )
-              }
-            </div> */}
           </div>
         </div>
       </div>

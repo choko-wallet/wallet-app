@@ -12,6 +12,11 @@ function RequestRouter (): JSX.Element {
     if (!router.isReady) return;
     const requestType = router.query.requestType as string;
 
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      localStorage.setItem('requestParams', `requestType=${router.query.requestType as string}&payload=${router.query.payload as string}&callbackUrl=${encodeURIComponent(router.query.callbackUrl as string)}`);
+      void router.push('/account');
+    }
+
     switch (requestType) {
       case 'connectDapp':
         void router.push({

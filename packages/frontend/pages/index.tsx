@@ -60,6 +60,10 @@ const Home: NextPage = () => {
 
         <button className='btn w-[70%] md:w-[15%] mb-10'
           onClick={() => router.push('/home')}>Enter
+        </button><br/>
+
+        <button className='btn btn-accent w-[70%] md:w-[15%] mb-10'
+          onClick={() => router.push('/alpha')}>Alpha Test
         </button>
 
         <div className='flex'>
