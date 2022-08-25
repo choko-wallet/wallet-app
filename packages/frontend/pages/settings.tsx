@@ -15,7 +15,7 @@ import { selectUserAccount } from '../features/redux/selectors';
 import { loadUserAccount } from '../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
+function Settings(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -323,4 +323,4 @@ function Home(): JSX.Element {
   );
 }
 
-export default Home;
+export default Settings;

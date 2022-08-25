@@ -3,12 +3,17 @@
 
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon } from '@heroicons/react/solid';
+import {
+  CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
+  DownloadIcon
+} from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import Image from 'next/image'
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import btcIcon from '../../images/btc.png'
+import btcQr from '../../images/btcqr.png'
+
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -31,6 +36,8 @@ function Home(): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
+  const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
+
 
 
   useEffect(() => {
@@ -106,6 +113,11 @@ function Home(): JSX.Element {
 
   function closeModal2() {
     setIsSendOpen(false)
+  }
+
+  function closeModal3() {
+    setIsReceiveOpen(false)
+
   }
 
 
@@ -203,20 +215,44 @@ function Home(): JSX.Element {
       </div>
     </div>
 
-    <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-7 md:col-start-2 shadow-xl rounded-xl  bg-white'>
-      <div className='card p-10'>
+    <div className=' col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-7 md:col-start-2 shadow-xl rounded-xl  bg-white'>
+      <div className='card p-5 md:p-10'>
         <h2 className='card-title text-3xl'> $793.32 </h2>
         <h3>Your avalaible token Balance on the current network. </h3>
       </div>
 
-      <div className="flex items-center justify-center">
-        <button
-          type="button"
-          onClick={() => setIsSendOpen(true)}
-          className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-        >
-          <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
-        </button>
+      <div className="flex items-center justify-evenly">
+        <div className="flex items-center justify-center">
+          <button
+            type="button"
+            onClick={() => setIsSendOpen(true)}
+            className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+          >
+            <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <button
+            type="button"
+            onClick={() => setIsReceiveOpen(true)}
+            className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+          >
+            <DownloadIcon className=' text-white h-5 w-5' />Receive
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center">
+          <button
+            type="button"
+            onClick={() => router.push('/transaction')}
+            className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+          >
+            Transaction History
+          </button>
+        </div>
+
+
       </div>
     </div >
 
@@ -278,8 +314,9 @@ function Home(): JSX.Element {
       </div>
     </div>
 
-    <div className='col-span-12'> </div>
+    <div className='col-span-12'></div>
 
+    {/* change network modal */}
     <Transition appear
       as={Fragment}
       show={isOpen}>
@@ -338,7 +375,7 @@ function Home(): JSX.Element {
       </Dialog>
     </Transition>
 
-
+    {/* send modal */}
     <Transition appear
       as={Fragment}
       show={isSendOpen}>
@@ -371,7 +408,7 @@ function Home(): JSX.Element {
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <Dialog.Title
                   as='h3'
-                  className='text-lg font-medium leading-6 flex '
+                  className='text-lg font-medium leading-6 flex items-center'
                 >
                   <PaperAirplaneIcon className='rotate-45 text-gray-700 h-5 w-5' />
                   <p className=' text-gray-700 '>Send Crypto</p>
@@ -394,7 +431,7 @@ function Home(): JSX.Element {
 
                   <p className=' '>From</p>
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
-                    <p className='flex flex-grow'>1111.....222222</p>
+                    <p className='flex flex-grow'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
                     <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' />
                   </div>
 
@@ -440,7 +477,121 @@ function Home(): JSX.Element {
       </Dialog>
     </Transition>
 
+    {/* receive modal */}
+    <Transition appear
+      as={Fragment}
+      show={isReceiveOpen}>
+      <Dialog as='div'
+        className='relative z-10'
+        onClose={closeModal3}>
+        <Transition.Child
+          as={Fragment}
+          enter='ease-out duration-300'
+          enterFrom='opacity-0'
+          enterTo='opacity-100'
+          leave='ease-in duration-200'
+          leaveFrom='opacity-100'
+          leaveTo='opacity-0'
+        >
+          <div className='fixed inset-0 bg-black bg-opacity-25' />
+        </Transition.Child>
 
+        <div className='fixed inset-0 overflow-y-auto'>
+          <div className='flex min-h-full items-center justify-center p-4 text-center'>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0 scale-95'
+              enterTo='opacity-100 scale-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100 scale-100'
+              leaveTo='opacity-0 scale-95'
+            >
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 flex items-center'
+                >
+                  <DownloadIcon className=' text-gray-700 h-5 w-5' />
+                  <p className=' text-gray-700 flex flex-grow'>Receive Crypto</p>
+
+                  <button
+                    className='w-16 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-gray-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                    onClick={closeModal3}
+                    type='button'
+                  >
+                    <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
+                  </button>
+
+                </Dialog.Title>
+                <div className='mt-2 '>
+                  <p className=' text-gray-700'>Currency</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+
+                    <div className="relative h-5 w-5">
+                      <Image
+                        src={btcIcon}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                    <p className='flex flex-grow'> BTC</p>
+                    <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
+
+                  </div>
+
+                  <p className=' '>Network</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+                    <div className="relative h-5 w-5">
+                      <Image
+                        src={btcIcon}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
+                    <p className='flex flex-grow'> BTC</p>
+                    <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
+                  </div>
+
+
+                  <p className=' text-gray-700 mt-3 mb-1'>Address</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+                    <p className='flex flex-grow'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+                    <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' />
+                  </div>
+
+                  <div className="relative h-36 w-36 mx-auto m-3">
+                    <Image
+                      src={btcQr}
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  </div>
+
+                  <div className='flex space-x-5'>
+                    <div>
+                      <p className=' text-gray-700 pt-3'>Expected arrival</p>
+                      <p className=' text-gray-700 text-sm'>6 network confirmations</p>
+                    </div>
+                    <div>
+                      <p className=' text-gray-700 pt-3'>Minimum deposit</p>
+                      <p className=' text-gray-700 text-sm'>0.0000001BTC</p>
+                    </div>
+                  </div>
+                  <p className=' text-gray-700 text-sm pt-3'>Send only BTC to this deposit address.</p>
+                  <p className=' text-gray-700 text-sm'>Ensure the network is {" "}
+                    <span className='text-red-400'>Bitcoin</span>.</p>
+
+
+                </div>
+
+
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
 
 
   </main >);
