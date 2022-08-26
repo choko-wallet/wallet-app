@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
+import { CheckIcon, UserCircleIcon, XIcon, DocumentDuplicateIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import Dropdown from '../components/Dropdown';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,6 +30,14 @@ function Settings(): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [currencyArr, setCurrencyArr] = useState<string[]>(['USD', 'EUR']);
+  const [currency, setCurrency] = useState<string>('USD');
+  const [languageArr, setLanguageArr] = useState<string[]>(['ENG', '中文']);
+  const [language, setLanguage] = useState<string>('ENG');
+  const [isMnemonicOpen, setIsMnemonicOpen] = useState<boolean>(false);
+  const [showMnemonic, setShowMnemonic] = useState<boolean>(false);
+
+
 
   useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -57,10 +66,14 @@ function Settings(): JSX.Element {
     return null;
   }
 
+  function closeMnemonic() {
+    setIsMnemonicOpen(false)
+    setShowMnemonic(false)
+  }
 
   return (
-    <main className='grid grid-cols-12 min-h-screen bg-gray-400'>
-      {/* header */}
+    <div className='grid grid-cols-12 min-h-screen bg-gray-400'>
+
       <div className='col-span-12 '>
         <div className='navbar bg-base-100'>
 
@@ -159,18 +172,19 @@ function Settings(): JSX.Element {
 
             <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
               <div className='flex-col'>
-                <p className='text-xl'>Wallet ID</p>
+                <p className='text-lg'>Wallet ID</p>
                 <p className='text-sm text-gray-500'>Wallet ID is your unique identifier.</p>
               </div>
 
-              <div className=" w-56 text-right">
-                <p>5GW95DHJ...FYi3z</p>
+              <div className=" text-right bg-gray-100 p-2 px-4 rounded-full">
+                <p className='font-semibold flex items-center'>5G16tBnZEmtnL6A5nxZJpJtUw
+                  <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-white rounded-full' /></p>
               </div>
             </div>
 
             <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
               <div className='flex-col'>
-                <p className='text-xl'>Change Password</p>
+                <p className='text-lg'>Change Password</p>
                 <p className='text-sm text-gray-500'>Password is password.</p>
               </div>
 
@@ -184,12 +198,12 @@ function Settings(): JSX.Element {
 
             <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
               <div className='flex-col'>
-                <p className='text-xl'>View Your Mnemonic</p>
+                <p className='text-lg'>View Your Mnemonic</p>
                 <p className='text-sm text-gray-500'>Do not share your private keys with anyone. </p>
               </div>
 
-              <div className=" w-56 text-right">
-                <button className='btn ' >
+              <div className=" w-56 text-right ">
+                <button onClick={() => setIsMnemonicOpen(true)} className='btn '  >
                   <p className=''>Mnemonic</p>
                 </button>
               </div>
@@ -197,129 +211,111 @@ function Settings(): JSX.Element {
 
             <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
               <div className='flex-col'>
-                <p className='text-xl'>Select Language</p>
+                <p className='text-lg'>Select Language</p>
                 <p className='text-sm text-gray-500'>Set your preferred language</p>
               </div>
+              <Dropdown arr={languageArr} defaultValue={language} onClick={setLanguage} />
 
-              <div className=" w-56 text-right">
-                <Menu as="div" className="relative inline-block text-left">
-                  <div>
-                    <Menu.Button className="inline-flex w-[150px] justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                      English
-                      <ChevronDownIcon
-                        className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
-                        aria-hidden="true"
-                      />
-                    </Menu.Button>
-                  </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="z-50 absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <div className="px-1 py-1 ">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            >
-
-                              English
-                            </button>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            >
-
-                              中文
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </div>
-
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
-              </div>
             </div>
 
             <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
               <div className='flex-col'>
-                <p className='text-xl'>Trading Currency</p>
+                <p className='text-lg'>Trading Currency</p>
                 <p className='text-sm text-gray-500'>Select your trading currency</p>
               </div>
+              <Dropdown arr={currencyArr} defaultValue={currency} onClick={setCurrency} />
 
-              <div className=" w-56 text-right">
-                <Menu as="div" className="relative inline-block text-left">
-                  <div>
-                    <Menu.Button className="inline-flex w-[150px] justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                      USD
-                      <ChevronDownIcon
-                        className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
-                        aria-hidden="true"
-                      />
-                    </Menu.Button>
-                  </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <div className="px-1 py-1 ">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            >
-
-                              USD
-                            </button>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            >
-
-                              GBP
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </div>
-
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
-              </div>
             </div>
           </div>
 
         </div>
 
 
+        <Transition appear
+          as={Fragment}
+          show={isMnemonicOpen}>
+          <Dialog as='div'
+            className='relative z-10'
+            onClose={closeMnemonic}>
+            <Transition.Child
+              as={Fragment}
+              enter='ease-out duration-300'
+              enterFrom='opacity-0'
+              enterTo='opacity-100'
+              leave='ease-in duration-200'
+              leaveFrom='opacity-100'
+              leaveTo='opacity-0'
+            >
+              <div className='fixed inset-0 bg-black bg-opacity-25' />
+            </Transition.Child>
+
+            <div className='fixed inset-0 overflow-y-auto'>
+              <div className='flex min-h-full items-center justify-center p-4 text-center'>
+                <Transition.Child
+                  as={Fragment}
+                  enter='ease-out duration-300'
+                  enterFrom='opacity-0 scale-95'
+                  enterTo='opacity-100 scale-100'
+                  leave='ease-in duration-200'
+                  leaveFrom='opacity-100 scale-100'
+                  leaveTo='opacity-0 scale-95'
+                >
+                  <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+                    <Dialog.Title
+                      as='h3'
+                      className='text-lg font-medium leading-6 flex items-center'
+                    >
+                      <p className=' text-gray-700 flex flex-grow'>Export Account Mnemonic</p>
+
+                      <button
+                        className='w-16 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-gray-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                        onClick={closeMnemonic}
+                        type='button'
+                      >
+                        <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
+                      </button>
+
+                    </Dialog.Title>
+                    <div className='mt-2 flex-col space-y-3'>
+
+                      <div className='flex text-sm justify-between items-center'>
+                        <p className='text-gray-500'>Address</p>
+                        <p className='font-semibold text-xs flex items-center'>5G16tBnZEmtnL6A5nxZJpJtUw
+                          <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' /></p>
+                      </div>
+
+
+                      <p className=' text-gray-700 mt-3 mb-1'>Please input your password</p>
+                      <input type="text" placeholder="Password" className=" input input-bordered input-info w-full " />
+
+                      {showMnemonic ? <p className='h-10 w-full'>Mnemonic</p> : <p className=' text-gray-700 mt-3 mb-1 h-10 w-full'></p>}
+
+                      <div className='mt-4'>
+                        <button
+                          onClick={() => setShowMnemonic(true)}
+                          className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                          type='button'
+                        >
+                          Export
+                        </button>
+                      </div>
+
+                    </div>
+
+
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+
+
 
 
 
       </div>
-    </main>
+    </div>
   );
 }
 
