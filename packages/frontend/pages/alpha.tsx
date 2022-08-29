@@ -105,7 +105,7 @@ const AlphaTest: NextPage = () => {
         version: 0
       }, a.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' ? a : null);
       setValidToken(lsValidToken);
-      setAccessToken(lsAccessToken);
+      setAccessToken(lsAccessToken === null ? '' : lsAccessToken);
     } catch (e) {
       configSDKAndStore({
         accountCreationOption: {

@@ -81,10 +81,6 @@ function Home (): JSX.Element {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
   const closeModal = () => {
     setIsOpen(false);
     setNetworkSelection('');
@@ -114,6 +110,10 @@ function Home (): JSX.Element {
     });
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (<main className='grid grid-cols-12 gap-4 min-h-screen content-between bg-gray-400'>
     <Toaster />
     <div className='col-span-12'>
@@ -121,8 +121,11 @@ function Home (): JSX.Element {
 
         <div className='navbar-start'>
           {/* TODO: fix the logo */}
-          <a className='btn btn-ghost normal-case text-xl'
-            onClick={() => router.push('/')}>
+          <div className='btn btn-ghost normal-case text-xl'
+            onClick={(e) => {
+              // router.push('/')
+              window.location.href = "/";
+            }}>
               Choko
             {/* <Image
                   className='relative w-10 m-0'
@@ -130,7 +133,7 @@ function Home (): JSX.Element {
                   objectFit='fill'
                   src={logo}
                 /> */}
-          </a>
+          </div>
         </div>
 
         <div className='navbar-center'></div>
@@ -172,7 +175,10 @@ function Home (): JSX.Element {
                       <div className='bg-gray-50 p-4'>
                         <div
                           className='flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100'
-                          onClick={() => router.push('/account')}
+                          onClick={() => {
+                            // router.push('/account')
+                            window.location.href = '/account'
+                          }}
                         >
                           <span className='flex items-center'>
                             <span className='text-sm font-medium text-gray-900'>

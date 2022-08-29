@@ -109,10 +109,10 @@ function ConnectDappHandler (): JSX.Element {
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
         <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
       </div>
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
@@ -128,7 +128,7 @@ function ConnectDappHandler (): JSX.Element {
               DApp Origin:
             </div>
             <div className='col-span-12'>
-              <code className='underline text-clip'>{request.dappOrigin.displayName}</code>
+              <code className='underline text-clip'>{request?.dappOrigin.displayName}</code>
             </div>
             <RadioGroup className='col-span-12'
               onChange={setCurrentAccount}
