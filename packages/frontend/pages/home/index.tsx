@@ -7,8 +7,10 @@ import {
   CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
   DownloadIcon
 } from '@heroicons/react/solid';
+
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  BellIcon, CogIcon,
+  BellIcon, CogIcon, ChevronRightIcon,
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
   HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon
 } from '@heroicons/react/outline';
@@ -21,6 +23,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import btcIcon from '../../images/btc.png'
 import btcQr from '../../images/btcqr.png'
 import Modal from '../../components/Modal'
+import Dropdown2 from '../../components/Dropdown2'
 
 
 // redux
@@ -32,7 +35,25 @@ import { bip39ToEntropy } from '@polkadot/wasm-crypto';
 
 
 interface Props {
-  coinPriceData: object,
+  coinPriceData: CoinPrice,
+};
+
+interface Crypto {
+  name: string;
+  img: string;
+  price: number;
+  shortName: string;
+  networkFee: string;
+  estimatedTime: string;
+
+};
+
+interface CoinPrice {
+  [key: string]: PriceUsd
+};
+
+interface PriceUsd {
+  usd: number;
 }
 
 /* eslint-disable sort-keys */
@@ -55,6 +76,25 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [isNetworkChangeOpen, setIsNetworkChangeOpen] = useState<boolean>(false);
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
+
+  const [languageArr, setLanguageArr] = useState<string[]>(['ENG', '中文']);
+  const [language, setLanguage] = useState<string>('ENG');
+
+  const [cryptoArr, setCryptoArr] = useState<Crypto[]>(
+    [
+      { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min' },
+      { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min' },
+      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min' },
+    ]
+  );
+  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min' },);
+
+  const [copied, setCopied] = useState<boolean>(false);
+  // const [amount, setAmount] = useState<string>("");
+  // const [amountToCurrency, setAmountToCurrency] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
+  const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
+
 
 
 
@@ -137,6 +177,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   function closeModal2() {
     setIsSendOpen(false)
+    setCopied(false)
   }
 
   function closeModal3() {
@@ -150,7 +191,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
     <div className='bg-gray-100'>
       {/* header */}
       <div className='sticky top-0 z-20 bg-white shadow-md'>
-        <div className='flex justify-between max-w-7xl p-2 lg:mx-auto'>
+        <div className='flex justify-between p-2 '>
           <div className='flex items-center justify-center space-x-10' >
             <div className='relative items-center w-10 h-10 my-auto cursor-pointer'
               onClick={() => router.push('/')}>
@@ -276,6 +317,121 @@ function Home({ coinPriceData }: Props): JSX.Element {
         </div>
       </div >
 
+      <div className="drawer md:hidden bg-black">
+        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content bg-white">
+
+          <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-2">Change Network
+            <ChevronRightIcon className=' text-white h-5 w-5 ml-2' /></label>
+
+
+          {/* balance */}
+          <div className='flex flex-grow m-5 h-[300px] shadow-xl rounded-xl bg-white'>
+            <div className='card p-5 md:p-10'>
+              <h2 className='card-title text-3xl'> $793.32 </h2>
+              <p>You are on Skyekiwi</p>
+              <h3>Your avalaible token Balance on the current network. </h3>
+            </div>
+
+            <div className="flex items-center justify-evenly">
+              <div className="flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => setIsSendOpen(true)}
+                  className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+                >
+                  <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
+                </button>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => setIsReceiveOpen(true)}
+                  className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+                >
+                  <DownloadIcon className=' text-white h-5 w-5' />Receive
+                </button>
+              </div>
+
+
+            </div>
+          </div >
+
+        </div>
+        <div className="drawer-side">
+          <label htmlFor="my-drawer" className="drawer-overlay"></label>
+          <ul className="menu overflow-y-auto w-80 bg-blue-100 text-base-content">
+
+
+
+            <div className='flex items-center justify-between ml-10 mx-5'>
+              <p className='text-lg font-semibold text-gray-600 '>Change Network</p>
+              <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-2">
+                <XIcon className=' text-white h-5 w-5 ' /></label>
+            </div>
+            <div className='w-full card p-2 '>
+              <RadioGroup onChange={setNetworkSelection}
+                value={networkSelection || network}>
+                {allNetworks.map(({ info, name, rpc }) => (
+                  <RadioGroup.Option
+                    className={({ active, checked }) =>
+                      `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
+                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
+                    }
+                    key={name}
+                    value={info}
+                  >
+                    {({ active, checked }) => (
+                      <div className='flex w-full items-center justify-between'>
+                        <div className='flex items-center'>
+                          <div className='text-sm'>
+                            <RadioGroup.Label
+                              as='p'
+                              className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                            >
+                              {name}
+                            </RadioGroup.Label>
+                            <RadioGroup.Description
+                              as='span'
+                              className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                            >
+                              {rpc}
+                            </RadioGroup.Description>
+                          </div>
+                        </div>
+                        {checked && (
+                          <div className='shrink-0 text-white'>
+                            <CheckCircleIcon className='h-6 w-6' />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </RadioGroup.Option>
+                ))}
+              </RadioGroup>
+            </div>
+
+            <div className='flex flex-frow justify-evenly mb-5'>
+              <button className='btn btn-error btn-circle btn-md'
+                onClick={() => setNetworkSelection('')} >
+                <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+              </button>
+
+              <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
+                onClick={async () => {
+                  await changeNetwork();
+                }} >
+                <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+              </button>
+            </div>
+
+
+
+
+          </ul>
+        </div>
+      </div>
 
       <main className='grid grid-cols-12 min-h-screen bg-gray-100 max-w-7xl mx-auto'>
         <Toaster />
@@ -288,41 +444,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
           <div className='flex-col md:h-full  flex md:flex-row'>
-
-            {/* balance */}
-            <div className='flex flex-grow m-5 h-[300px] shadow-xl rounded-xl bg-white'>
-              <div className='card p-5 md:p-10'>
-                <h2 className='card-title text-3xl'> $793.32 </h2>
-                <h3>Your avalaible token Balance on the current network. </h3>
-              </div>
-
-              <div className="flex items-center justify-evenly">
-                <div className="flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsSendOpen(true)}
-                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-                  >
-                    <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsReceiveOpen(true)}
-                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-                  >
-                    <DownloadIcon className=' text-white h-5 w-5' />Receive
-                  </button>
-                </div>
-
-
-              </div>
-            </div >
-
             {/* network */}
-            <div className=" flex flex-col items-center px-5 md:px-0 md:h-full " >
+            <div className="hidden md:inline-flex  md:flex-col items-center px-5 md:px-0 md:h-full " >
               <div className='shadow-xl rounded-xl bg-white w-full md:h-full md:bg-blue-100 '>
                 <p className='text-lg font-semibold text-gray-600 mt-5 ml-10 mx-auto'>Network</p>
                 <div className='col-span-12 card p-5 '>
@@ -383,6 +506,40 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
               </div>
             </div>
+
+            {/* balance */}
+            <div className='hidden md:flex flex-grow m-5 h-[300px] shadow-xl rounded-xl bg-white'>
+              <div className='card p-5 md:p-10'>
+                <h2 className='card-title text-3xl'> $793.32 </h2>
+                <h3>Your avalaible token Balance on the current network. </h3>
+              </div>
+
+              <div className="flex items-center justify-evenly">
+                <div className="flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsSendOpen(true)}
+                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+                  >
+                    <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsReceiveOpen(true)}
+                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+                  >
+                    <DownloadIcon className=' text-white h-5 w-5' />Receive
+                  </button>
+                </div>
+
+
+              </div>
+            </div >
+
+
           </div>
 
 
@@ -424,25 +581,22 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <p className=' text-gray-700 '>Send Crypto</p>
               </Dialog.Title>
               <div className='mt-2 '>
-                <p className=' text-gray-700'>Currency</p>
-                <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
 
-                  <div className="relative h-5 w-5">
-                    <Image
-                      src={btcIcon}
-                      layout="fill"
-                      objectFit="contain"
-                    />
-                  </div>
-                  <p className='flex flex-grow'> BTC</p>
-                  <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
 
-                </div>
+                <Dropdown2 arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} />
 
                 <p className=' '>From</p>
                 <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
                   <p className='flex flex-grow'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-                  <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' />
+                  {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
+                  <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
+                    onCopy={() => setCopied(true)}>
+                    <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-gray-200 cursor-pointer rounded-full' />
+                  </CopyToClipboard>
+
+
+
+
                 </div>
 
                 <p className=' text-gray-700 mt-3 mb-1'>To</p>
@@ -452,21 +606,41 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <div className='flex items-end'>
                   <div className='relative'>
                     <p className=' text-gray-700 mt-3 mb-1'>Amount</p>
-                    <input type="text" placeholder="0" className=" input input-bordered input-info w-full " />
-                    <p className='absolute bottom-3 right-3'>BTC</p>
+                    <input
+
+                      value={amountToCurrency ? amount : 0}
+                      onChange={(e) => {
+                        setAmount(parseFloat(e.target.value));
+                        setAmountToCurrency(
+                          parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
+                      }}
+                      type="number" placeholder="1.0" step="0.00000001" min="0" max="10000000"
+                      className="pr-12 input input-bordered input-info w-full " />
+                    <p className='absolute bottom-4 right-2 text-sm'>{cryptoToSend.shortName}</p>
                   </div>
+
                   <p className='mx-1 pb-3'>=</p>
                   <div className='relative'>
                     <p className=' text-gray-700'></p>
-                    <input type="text" placeholder="0" className=" input input-bordered input-info w-full " />
-                    <p className='absolute bottom-3 right-3'>USD</p>
+                    <input
+                      value={amount ? amountToCurrency : 0}
+                      onChange={(e) => {
+                        setAmountToCurrency(parseFloat(e.target.value));
+                        setAmount(
+                          parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
+                      }}
+                      type="number" placeholder="100.00" step="0.01" min="0" max="10000000"
+                      className="pr-12  input input-bordered input-info w-full " />
+                    <p className='absolute bottom-4 right-2 text-sm'>USD</p>
                   </div>
 
                 </div>
+                <p className=' text-gray-700 text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
+
 
                 <p className=' text-gray-700 py-1 pt-3'>Network Fee</p>
-                <p className=' text-gray-700 text-sm'>0.00000123BTC(US$1.6)</p>
-                <p className=' text-gray-700 text-sm'>Estimated confirmation time 20 min</p>
+                <p className=' text-gray-700 text-sm'>{cryptoToSend.networkFee}</p>
+                <p className=' text-gray-700 text-sm'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
 
 
               </div>
@@ -570,7 +744,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
         </div>
 
       </main >
-    </div>
+    </div >
   );
 }
 
