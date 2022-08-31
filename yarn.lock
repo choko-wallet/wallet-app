@@ -1504,6 +1504,8 @@ __metadata:
     react-copy-to-clipboard: ^5.1.0
     react-dom: 18.1.0
     react-hot-toast: ^2.3.0
+    react-qr-code: ^2.0.7
+    react-qr-reader: ^3.0.0-beta-1
     react-redux: ^7.2.0
     react-typed: ^1.2.0
     redux-persist: 6.0.0
@@ -3903,6 +3905,40 @@ __metadata:
     prettier:
       optional: true
   checksum: 70fee2289a4f54ec1be4d46136ee9b9893e31bf5622cead5be06c3dfb83449c3dbe6f8c03404625ccf302d0628ff9e2ea1debfae609d1bfe1d065d8f57c5dba8
+  languageName: node
+  linkType: hard
+
+"@zxing/browser@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@zxing/browser@npm:0.0.7"
+  dependencies:
+    "@zxing/text-encoding": ^0.9.0
+  peerDependencies:
+    "@zxing/library": ^0.18.3
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 5f56628382a053436f0fd4163d0853e11f24059655e26e5311a97baae5fce524efe6fc397a82de7634b12585568c714789bca75d9747478d6030d27b907fc3ab
+  languageName: node
+  linkType: hard
+
+"@zxing/library@npm:^0.18.3":
+  version: 0.18.6
+  resolution: "@zxing/library@npm:0.18.6"
+  dependencies:
+    "@zxing/text-encoding": ~0.9.0
+    ts-custom-error: ^3.0.0
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 564a25f6245b4fd81b4ce686116bf1fe577daa2aaee4263b4dea3776676482fd3e063ad43783c6378713a4a3dcefd311b6154b6cd43e7be24bb7e7c3e5fec98a
+  languageName: node
+  linkType: hard
+
+"@zxing/text-encoding@npm:^0.9.0, @zxing/text-encoding@npm:~0.9.0":
+  version: 0.9.0
+  resolution: "@zxing/text-encoding@npm:0.9.0"
+  checksum: c23b12aee7639382e4949961304a1294776afaffa40f579e09ffecd0e5e68cf26ef3edd75009de46da8a536e571448755ca68b3e2ea707d53793c0edb2e2c34a
   languageName: node
   linkType: hard
 
@@ -10438,6 +10474,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qr.js@npm:0.0.0":
+  version: 0.0.0
+  resolution: "qr.js@npm:0.0.0"
+  checksum: 5ac6c393967bdeaa660e7fd3a501a25eb538c1f6008a4d30ab2b97bbe520e5c236530090773f1578aa0a523cdaa6923c866615e21143f9e7cd22abd41c789b69
+  languageName: node
+  linkType: hard
+
 "qs@npm:6.9.3":
   version: 6.9.3
   resolution: "qs@npm:6.9.3"
@@ -10555,6 +10598,36 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
+  languageName: node
+  linkType: hard
+
+"react-qr-code@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "react-qr-code@npm:2.0.7"
+  dependencies:
+    prop-types: ^15.7.2
+    qr.js: 0.0.0
+  peerDependencies:
+    react: ^16.x || ^17.x || ^18.x
+    react-native-svg: "*"
+  peerDependenciesMeta:
+    react-native-svg:
+      optional: true
+  checksum: f79d6ae9756b722afe59fe2f86ae6e810a13bc91d72c019f529f87e30dc3dfe1a46f8f2cbb57a05f149f32efe91012ca22d0a700a81b392135cdaa3e8ea1794e
+  languageName: node
+  linkType: hard
+
+"react-qr-reader@npm:^3.0.0-beta-1":
+  version: 3.0.0-beta-1
+  resolution: "react-qr-reader@npm:3.0.0-beta-1"
+  dependencies:
+    "@zxing/browser": 0.0.7
+    "@zxing/library": ^0.18.3
+    rollup: ^2.67.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  checksum: f85fc490251cba1b763b9f1eb56ac8fb3cd006fcb189ed2b4e8e59bfb61f9493d96274aeb5e980b6093b9ca5595af76893369ecc00562664d033f37f567bd00d
   languageName: node
   linkType: hard
 
@@ -11024,6 +11097,20 @@ resolve@^2.0.0-next.3:
   bin:
     rollup: dist/bin/rollup
   checksum: 5a84fb98a6f858906bceba091430442f6c1f362b07c5fa9123b708f87e39f52640e34a189cd9a1776ceae61300055c78ba648205fa03188451539ebeb19797df
+  languageName: node
+  linkType: hard
+
+"rollup@npm:^2.67.2":
+  version: 2.79.0
+  resolution: "rollup@npm:2.79.0"
+  dependencies:
+    fsevents: ~2.3.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    rollup: dist/bin/rollup
+  checksum: 166f1ffea1898e157003920065b3a328e7012ea6808860ee8fe5d1ce94804fcce9985c95a3c0f7fe9c611aff0d09a70f073f1d6f715c8faba28e4e40f71ee3bb
   languageName: node
   linkType: hard
 
@@ -11932,6 +12019,13 @@ resolve@^2.0.0-next.3:
   dependencies:
     escape-string-regexp: ^1.0.2
   checksum: e25c235305b82c43f1d64a67a71226c406b00281755e4c2c4f3b1d0b09c687a535dd3c4483327f949f28bb89dc400a0bc5e5b749054f4b99f49ebfe48ba36496
+  languageName: node
+  linkType: hard
+
+"ts-custom-error@npm:^3.0.0":
+  version: 3.2.2
+  resolution: "ts-custom-error@npm:3.2.2"
+  checksum: e0d8ab82c631ae16111eb9d55941151c060290b245203f425df2878c2dc0cd4ba9deea4fbb7a3b5e527dc03d434c4a34ca1c96ac122e3edb08d5cbdd6f544802
   languageName: node
   linkType: hard
 

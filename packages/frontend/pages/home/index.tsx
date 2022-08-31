@@ -7,15 +7,17 @@ import {
   CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
   DownloadIcon
 } from '@heroicons/react/solid';
-
+import QRCode from "react-qr-code";
+import { QrReader } from 'react-qr-reader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   BellIcon, CogIcon, ChevronRightIcon,
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon
+  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon, CameraIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
+
 
 import Image from 'next/image'
 import React, { Fragment, useEffect, useState } from 'react';
@@ -24,6 +26,9 @@ import btcIcon from '../../images/btc.png'
 import btcQr from '../../images/btcqr.png'
 import Modal from '../../components/Modal'
 import Dropdown2 from '../../components/Dropdown2'
+import DropdownForNetwork from '../../components/DropdownForNetwork'
+import SuperButton from '../../components/SuperButton'
+
 
 
 // redux
@@ -45,7 +50,8 @@ interface Crypto {
   shortName: string;
   networkFee: string;
   estimatedTime: string;
-
+  arrival: string;
+  MinDeposit: string;
 };
 
 interface CoinPrice {
@@ -82,20 +88,30 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   const [cryptoArr, setCryptoArr] = useState<Crypto[]>(
     [
-      { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min' },
-      { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min' },
-      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min' },
+      { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
+      { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
+      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' },
     ]
   );
-  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min' },);
+
+  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },);
+
+  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },);
+
+  const [networkToReceive, setNetworkToReceive] = useState<string>("");
+
+  const [networkArr, setNetworkArr] = useState<string[]>(
+    ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)']
+  );
 
   const [copied, setCopied] = useState<boolean>(false);
-  // const [amount, setAmount] = useState<string>("");
-  // const [amountToCurrency, setAmountToCurrency] = useState<string>("");
+
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
 
+  const [openScan, setOpenScan] = useState<boolean>(false);
 
+  const [addressToSend, setAddressToSend] = useState<string>('');
 
 
   useEffect(() => {
@@ -508,31 +524,34 @@ function Home({ coinPriceData }: Props): JSX.Element {
             </div>
 
             {/* balance */}
-            <div className='hidden md:flex flex-grow m-5 h-[300px] shadow-xl rounded-xl bg-white'>
+            <div className='hidden md:flex md:flex-col flex-grow m-5 h-[300px] shadow-xl rounded-xl bg-[#00040f]'>
               <div className='card p-5 md:p-10'>
-                <h2 className='card-title text-3xl'> $793.32 </h2>
-                <h3>Your avalaible token Balance on the current network. </h3>
+                <p className='text-3xl text-white'> $793.32 </p>
+                <p className='text-md text-gradient'>Your avalaible token Balance on the current network. </p>
               </div>
 
-              <div className="flex items-center justify-evenly">
-                <div className="flex items-center justify-center">
-                  <button
+              <div className="flex items-center justify-evenly bg-[#00040f]">
+                <div className="flex items-center justify-center" onClick={() => setIsSendOpen(true)} >
+                  <SuperButton Icon={PaperAirplaneIcon} title='Send' />
+                  {/* <button
                     type="button"
                     onClick={() => setIsSendOpen(true)}
                     className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
                   >
                     <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
-                  </button>
+                  </button> */}
                 </div>
 
-                <div className="flex items-center justify-center">
-                  <button
+                <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
+                  <SuperButton Icon={DownloadIcon} title='Receive' />
+
+                  {/* <button
                     type="button"
                     onClick={() => setIsReceiveOpen(true)}
                     className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
                   >
                     <DownloadIcon className=' text-white h-5 w-5' />Receive
-                  </button>
+                  </button> */}
                 </div>
 
 
@@ -593,15 +612,40 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     onCopy={() => setCopied(true)}>
                     <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-gray-200 cursor-pointer rounded-full' />
                   </CopyToClipboard>
-
-
-
-
                 </div>
 
-                <p className=' text-gray-700 mt-3 mb-1'>To</p>
-                <input type="text" placeholder="Destination Address" className=" input input-bordered input-info w-full " />
+                <div className='relative'>
+                  <p className=' text-gray-700 mt-3 mb-1'>To</p>
+                  <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className=" input input-bordered input-info w-full " />
+                  <CameraIcon
+                    onClick={() => setOpenScan(!openScan)}
+                    className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 cursor-pointer rounded-full' />
+                </div>
 
+                {openScan &&
+                  <div>
+                    <QrReader
+                      constraints={{ facingMode: 'user' }}
+                      className='absolute top-0 right-5 left-5 bottom-0 z-40'
+                      onResult={(result, error) => {
+                        if (!!result) {
+                          setAddressToSend(result?.text);
+                          setOpenScan(false);
+                        }
+
+                        if (!!error) {
+                          console.info(error);
+                        }
+                      }}
+                    />
+                    <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
+                      <XIcon onClick={() => setOpenScan(false)} className='h-5 w-5' />
+                    </div>
+
+                    {/* <div className='absolute top-24 right-24 z-50 left-24 bottom-64 border-2 border-yellow-200'>
+                    </div> */}
+
+                  </div>}
 
                 <div className='flex items-end'>
                   <div className='relative'>
@@ -677,62 +721,46 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
               </Dialog.Title>
               <div className='mt-2 '>
-                <p className=' text-gray-700'>Currency</p>
-                <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+                <p className=' text-gray-700'>Coin</p>
+                <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
 
-                  <div className="relative h-5 w-5">
-                    <Image
-                      src={btcIcon}
-                      layout="fill"
-                      objectFit="contain"
-                    />
-                  </div>
-                  <p className='flex flex-grow'> BTC</p>
-                  <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
 
-                </div>
 
                 <p className=' '>Network</p>
-                <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
-                  <div className="relative h-5 w-5">
-                    <Image
-                      src={btcIcon}
-                      layout="fill"
-                      objectFit="contain"
-                    />
-                  </div>
-                  <p className='flex flex-grow'> BTC</p>
-                  <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
-                </div>
+                <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
+
 
 
                 <p className=' text-gray-700 mt-3 mb-1'>Address</p>
                 <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
                   <p className='flex flex-grow'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-                  <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' />
+                  {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
+                  <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
+                    onCopy={() => setCopied(true)}>
+                    <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-gray-200 cursor-pointer rounded-full' />
+                  </CopyToClipboard>
                 </div>
 
-                <div className="relative h-36 w-36 mx-auto m-3">
-                  <Image
-                    src={btcQr}
-                    layout="fill"
-                    objectFit="contain"
-                  />
+                <div className="relative h-64 w-64 mx-auto m-3 bg-red-800">
+                  <QRCode
+                    size={256}
+                    style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                    value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
                 </div>
 
                 <div className='flex space-x-5'>
                   <div>
                     <p className=' text-gray-700 pt-3'>Expected arrival</p>
-                    <p className=' text-gray-700 text-sm'>6 network confirmations</p>
+                    <p className=' text-gray-700 text-sm'>{cryptoToReceive.arrival}</p>
                   </div>
                   <div>
                     <p className=' text-gray-700 pt-3'>Minimum deposit</p>
-                    <p className=' text-gray-700 text-sm'>0.0000001BTC</p>
+                    <p className=' text-gray-700 text-sm'>{cryptoToReceive.MinDeposit}</p>
                   </div>
                 </div>
                 <p className=' text-gray-700 text-sm pt-3'>Send only BTC to this deposit address.</p>
                 <p className=' text-gray-700 text-sm'>Ensure the network is {" "}
-                  <span className='text-red-400'>Bitcoin</span>.</p>
+                  <span className='text-red-400'>{networkToReceive}</span>.</p>
 
 
               </div>

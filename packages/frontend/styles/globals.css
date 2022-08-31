@@ -24,7 +24,34 @@
 }
 
 .color-bg {
-  background: #bbd2c5; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #bbd2c5, #536976); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #bbd2c5, #536976); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #bbd2c5;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #bbd2c5, #536976);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #bbd2c5, #536976);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.bg-blue-gradient {
+  background: linear-gradient(157.81deg,
+      #def9fa -43.27%,
+      #bef3f5 -21.24%,
+      #9dedf0 12.19%,
+      #7de7eb 29.82%,
+      #5ce1e6 51.94%,
+      #33bbcf 90.29%);
+}
+
+.text-gradient {
+  background: radial-gradient(64.18% 64.18% at 71.16% 35.69%,
+      #def9fa 0.89%,
+      #bef3f5 17.23%,
+      #9dedf0 42.04%,
+      #7de7eb 55.12%,
+      #5ce1e6 71.54%,
+      #33bbcf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
