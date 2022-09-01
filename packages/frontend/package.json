@@ -24,6 +24,7 @@
     "@polkadot/wasm-crypto": "^6.3.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/util": "0.8.4-1",
+    "crypto-js": "^4.1.1",
     "daisyui": "^2.19.0",
     "next": "latest",
     "next-themes": "^0.2.0",

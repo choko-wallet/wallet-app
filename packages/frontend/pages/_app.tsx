@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 
 import { store } from '../features/redux/store';
 
-// import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from 'next-themes';
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -26,7 +26,7 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function Root ({ Component, pageProps }: AppProps): JSX.Element {
+function Root({ Component, pageProps }: AppProps): JSX.Element {
   // console.error(process.env);
 
   return (
@@ -40,9 +40,9 @@ function Root ({ Component, pageProps }: AppProps): JSX.Element {
             src='https://analytics.skye.kiwi/umami.js'></script>
         }
       </Head>
-      {/* <ThemeProvider> */}
-      <Component {...pageProps} />
-      {/* </ThemeProvider> */}
+      <ThemeProvider>
+        <Component {...pageProps} />
+      </ThemeProvider>
     </Provider>
   );
 }

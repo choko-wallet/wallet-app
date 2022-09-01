@@ -1495,6 +1495,7 @@ __metadata:
     "@skyekiwi/util": 0.8.4-1
     "@types/react-copy-to-clipboard": ^5.0.3
     autoprefixer: ^10.4.7
+    crypto-js: ^4.1.1
     daisyui: ^2.19.0
     next: latest
     next-themes: ^0.2.0
@@ -5243,6 +5244,13 @@ __metadata:
     shebang-command: ^2.0.0
     which: ^2.0.1
   checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
+  languageName: node
+  linkType: hard
+
+"crypto-js@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "crypto-js@npm:4.1.1"
+  checksum: b3747c12ee3a7632fab3b3e171ea50f78b182545f0714f6d3e7e2858385f0f4101a15f2517e033802ce9d12ba50a391575ff4638c9de3dd9b2c4bc47768d5425
   languageName: node
   linkType: hard
 

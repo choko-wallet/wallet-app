@@ -3,7 +3,7 @@ import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState, useRef } from 'react';
-
+import { useTheme } from 'next-themes';
 
 interface Props {
   closeModal: () => void;
@@ -12,7 +12,11 @@ interface Props {
 }
 
 function Dropdown({ closeModal, isOpen, children }: Props) {
+
+
+
   return (
+
     <Transition appear
       as={Fragment}
       show={isOpen}>
@@ -51,6 +55,7 @@ function Dropdown({ closeModal, isOpen, children }: Props) {
         </div>
       </Dialog>
     </Transition>
+
   )
 }
 
