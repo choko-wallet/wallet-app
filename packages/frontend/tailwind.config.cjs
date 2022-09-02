@@ -17,6 +17,7 @@ module.exports = {
     extend: {
       colors: {
         primary: "#00040f",
+        dimBlue: "rgba(9, 151, 124, 0.1)",
         footerBg: '#d8c9d8' // bg-footerBg
       },
 

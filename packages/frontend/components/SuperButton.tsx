@@ -14,7 +14,7 @@ function SuperButton({ Icon, title, onClick }: Props) {
       <div className="flex justify-center items-center flex-col dark:bg-primary w-[100%] h-[100%] rounded-full">
         <div className="flex justify-center items-start flex-row">
           <p className="text-[18px] leading-[23px]">
-            <Icon className="h-6 w-6 text-white" />
+            <Icon className="h-6 w-6 text-white dark:text-[#03F3FF] " />
           </p>
         </div>
 

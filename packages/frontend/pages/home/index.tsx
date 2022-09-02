@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next';
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import {
+  HomeIcon, BellIcon, CogIcon, MoonIcon, SunIcon, TranslateIcon,
   CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
   DownloadIcon
 } from '@heroicons/react/solid';
@@ -11,9 +12,9 @@ import QRCode from "react-qr-code";
 import { QrReader } from 'react-qr-reader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  BellIcon, CogIcon, ChevronRightIcon,
+  ChevronRightIcon,
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon, CameraIcon,
+  UserIcon, CameraIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -28,6 +29,8 @@ import Modal from '../../components/Modal'
 import Dropdown2 from '../../components/Dropdown2'
 import DropdownForNetwork from '../../components/DropdownForNetwork'
 import SuperButton from '../../components/SuperButton'
+import CryptoRow from '../../components/CryptoRow'
+
 
 
 
@@ -112,6 +115,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [openScan, setOpenScan] = useState<boolean>(false);
 
   const [addressToSend, setAddressToSend] = useState<string>('');
+  const [showCheck, setShowCheck] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -201,13 +205,23 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   }
 
+  const handleCopy = async () => {
+    console.log('first')
+    setShowCheck(true);
+    setTimeout(() => {
+      setShowCheck(false);
+    }, 1000);
+
+  }
+
   console.log(coinPriceData)
   console.log(theme)
 
 
   return (
     <div className={theme}>
-      <div className='bg-gray-100 dark:bg-black'>
+      <div className='bg-gray-100 dark:bg-primary min-h-screen overflow-hidden'>
+        <Toaster />
 
         {/* header */}
         <div className='sticky top-0 z-20 bg-white dark:bg-primary border-b border-gray-800 shadow-md'>
@@ -228,29 +242,29 @@ function Home({ coinPriceData }: Props): JSX.Element {
             <div className='flex items-center text-gray-500 '>
 
               <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-                <HomeIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white'
+                <HomeIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]'
                   onClick={() => router.push('/home')} />
 
                 <div className='relative transition duration-150 ease-out cursor-pointer md:inline-flex '>
-                  <BellIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white' />
+                  <BellIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
                   <div className="animate-pulse absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-400 rounded-full -right-2 -top-1">
                     3</div>
                 </div>
-                <CogIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white' />
+                <CogIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
 
 
               </div>
               {theme === 'light'
                 ? <SunIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125'
                   onClick={() => setTheme('dark')} />
-                : <MoonIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white'
+                : <MoonIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]'
                   onClick={() => setTheme('light')} />
               }
 
               <div className='dropdown dropdown-hover hidden md:inline '>
                 <label className='btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
-                  <TranslateIcon className='h-5 cursor-pointer dark:text-white' />
-                  <ChevronDownIcon className='h-5 cursor-pointer dark:text-white' />
+                  <TranslateIcon className='h-5 cursor-pointer dark:text-[#03F3FF]' />
+                  <ChevronDownIcon className='h-5 cursor-pointer dark:text-[#03F3FF]' />
                 </label>
                 <ul className=' p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52'>
                   <li><a>English</a></li>
@@ -338,59 +352,60 @@ function Home({ coinPriceData }: Props): JSX.Element {
         </div >
 
         {/* drawer */}
-        <div className="drawer md:hidden bg-black">
-          <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content bg-white">
+        <div className="drawer md:hidden bg-black overflow-hidden">
+          <input id="my-drawer" type="checkbox" className="drawer-toggle overflow-hidden" />
+          <div className="drawer-content bg-white dark:bg-primary overflow-hidden">
 
-            <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-2">Change Network
-              <ChevronRightIcon className=' text-white h-5 w-5 ml-2' /></label>
+
+            <label htmlFor="my-drawer" className="btn btn-primary drawer-button py-3 px-6 mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">Change Network
+              <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' /></label>
 
 
             {/* balance */}
-            <div className='flex flex-grow m-5 h-[300px] shadow-xl rounded-xl bg-white'>
+
+            <div className='relative flex md:hidden flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
               <div className='card p-5 md:p-10'>
-                <h2 className='card-title text-3xl'> $793.32 </h2>
-                <p>You are on Skyekiwi</p>
-                <h3>Your avalaible token Balance on the current network. </h3>
+                <p className='text-3xl text-gray-700 dark:text-white'> $793.32 </p>
+                <p className='text-md text-gradient'>Your avalaible token Balance on the current network. </p>
               </div>
 
-              <div className="flex items-center justify-evenly">
-                <div className="flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsSendOpen(true)}
-                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-                  >
-                    <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
-                  </button>
+              <div className="flex items-center justify-evenly ">
+                <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
+                  <SuperButton Icon={PaperAirplaneIcon} title='Send' />
                 </div>
-
-                <div className="flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setIsReceiveOpen(true)}
-                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-                  >
-                    <DownloadIcon className=' text-white h-5 w-5' />Receive
-                  </button>
+                <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
+                  <SuperButton Icon={DownloadIcon} title='Receive' />
                 </div>
-
-
               </div>
+
+              <div className='flex flex-col'>
+                {cryptoArr.map((item) => (
+                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
+                ))}
+              </div>
+
+
+
+
+
             </div >
 
           </div>
-          <div className="drawer-side">
+
+          <div className="drawer-side dark:bg-primary ">
             <label htmlFor="my-drawer" className="drawer-overlay"></label>
-            <ul className="menu overflow-y-auto w-80 bg-blue-100 text-base-content">
+            <ul className="menu overflow-y-auto w-80 bg-blue-100 text-base-content dark:bg-primary ">
 
 
 
-              <div className='flex items-center justify-between ml-10 mx-5'>
-                <p className='text-lg font-semibold text-gray-600 '>Change Network</p>
-                <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-2">
-                  <XIcon className=' text-white h-5 w-5 ' /></label>
+              <div className='flex items-center justify-between ml-10 mx-5 dark:bg-primary '>
+                <p className='text-lg  font-semibold  text-gradient'>Change Network</p>
+                <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-2 py-3 px-6 mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
+                  <XIcon className=' text-white h-5 w-5 dark:text-primary' /></label>
               </div>
+
+
+
               <div className='w-full card p-2 '>
                 <RadioGroup onChange={setNetworkSelection}
                   value={networkSelection || network}>
@@ -454,14 +469,10 @@ function Home({ coinPriceData }: Props): JSX.Element {
           </div>
         </div>
 
-        <main className='grid grid-cols-12 min-h-screen bg-gray-100 dark:bg-primary max-w-7xl mx-auto'>
-          <Toaster />
-
-
-
+        < main className='hidden md:grid md:grid-cols-12 bg-gray-100 dark:bg-primary max-w-7xl mx-auto' >
 
           {/* under header  */}
-          <div className='col-span-12 '>
+          <div className='col-span-12 ' >
 
 
             <div className='flex-col md:h-full  flex md:flex-row'>
@@ -530,7 +541,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
               </div>
 
               {/* balance */}
-              <div className='hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 h-[300px] shadow-xl rounded-xl '>
+              <div className='relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
                 <div className='card p-5 md:p-10'>
                   <p className='text-3xl text-gray-700 dark:text-white'> $793.32 </p>
                   <p className='text-md text-gradient'>Your avalaible token Balance on the current network. </p>
@@ -539,29 +550,25 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <div className="flex items-center justify-evenly ">
                   <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
                     <SuperButton Icon={PaperAirplaneIcon} title='Send' />
-                    {/* <button
-                    type="button"
-                    onClick={() => setIsSendOpen(true)}
-                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-                  >
-                    <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
-                  </button> */}
                   </div>
-
                   <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
                     <SuperButton Icon={DownloadIcon} title='Receive' />
-
-                    {/* <button
-                    type="button"
-                    onClick={() => setIsReceiveOpen(true)}
-                    className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
-                  >
-                    <DownloadIcon className=' text-white h-5 w-5' />Receive
-                  </button> */}
                   </div>
-
-
                 </div>
+
+                <div className='flex flex-col'>
+                  {cryptoArr.map((item) => (
+                    <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
+                  ))}
+                </div>
+
+
+                {/* gradient light */}
+
+                <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
+                <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " />
+
+
               </div >
 
 
@@ -575,7 +582,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
                   <Dialog.Title
                     as='h3'
-                    className='text-lg font-medium leading-6 text-gradient '
+                    className='text-lg font-medium leading-6 text-gradient w-72'
                   >
                     Changed successfully
                   </Dialog.Title>
@@ -601,12 +608,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
             {/* send modal */}
             <Modal closeModal={closeModal2} isOpen={isSendOpen}>
               <div className={theme}>
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
+                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'>
                   <Dialog.Title
                     as='h3'
-                    className='text-lg font-medium leading-6 flex items-center'
+                    className='text-lg font-medium leading-6 flex items-center mb-6'
                   >
-                    <PaperAirplaneIcon className='rotate-45 text-gray-700 h-5 w-5 dark:text-white' />
+                    <PaperAirplaneIcon className='rotate-45 text-gray-700 h-5 w-5 dark:text-[#03F3FF]' />
                     {theme === 'dark' ? <p className=' text-gradient '>Send Crypto</p> : <p className=' text-gray-700  '>Send Crypto</p>}
 
                   </Dialog.Title>
@@ -616,23 +623,29 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <Dropdown2 arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} />
 
                     <p className=' text-gray-700 dark:text-white '>From</p>
-                    <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
+                    <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
                       <p className='flex flex-grow dark:text-white'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-                      {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
+                      {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
                       <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
-                        onCopy={() => setCopied(true)}>
-                        <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-gray-200 cursor-pointer rounded-full' />
+                        onCopy={() => { setCopied(true) }}>
+                        <div onClick={handleCopy}>
+                          {showCheck
+                            ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                            : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+
+                        </div>
                       </CopyToClipboard>
                     </div>
 
                     <div className='relative'>
 
-                      <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Tp</p>
+                      <p className=' text-gray-700 dark:text-white mt-3 mb-1'>To</p>
 
                       <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className=" input input-bordered input-info w-full " />
                       <CameraIcon
                         onClick={() => setOpenScan(!openScan)}
-                        className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200  cursor-pointer rounded-full' />
+                        className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
+
                     </div>
 
                     {openScan &&
@@ -704,17 +717,18 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   </div>
 
                   <div className='mt-4'>
-                    <button
+                    {/* <button
                       className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       onClick={closeModal2}
                       type='button'
                     >
                       Send
-                    </button>
+                    </button> */}
 
                     <button
                       className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                      onClick={closeModal}
+                      onClick={closeModal2}
+
                       type='button'
                     >
                       Send
@@ -727,77 +741,94 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
             {/* receive modal */}
             <Modal closeModal={closeModal3} isOpen={isReceiveOpen}>
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
-                <Dialog.Title
-                  as='h3'
-                  className='text-lg font-medium leading-6 flex items-center'
-                >
-                  <DownloadIcon className=' text-gray-700 h-5 w-5' />
-                  <p className=' text-gray-700 flex flex-grow'>Receive Crypto</p>
+              <div className={theme}>
 
-                  <button
-                    className='w-16 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-gray-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                    onClick={closeModal3}
-                    type='button'
+                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'>
+                  <Dialog.Title
+                    as='h3'
+                    className='text-lg font-medium leading-6 flex items-center mb-6'
                   >
-                    <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
-                  </button>
 
-                </Dialog.Title>
-                <div className='mt-2 '>
-                  <p className=' text-gray-700'>Coin</p>
-                  <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
+                    <DownloadIcon className=' text-gray-700 h-5 w-5 dark:text-[#03F3FF] ' />
+                    {theme === 'dark' ? <p className=' text-gradient flex flex-grow'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow '>Receive Crypto</p>}
+
+                    {/* <button
+                      className='w-16 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-gray-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                      onClick={closeModal3}
+                      type='button'
+                    >
+                      <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
+                    </button> */}
+
+                    <button
+                      className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                      onClick={closeModal3}
+                      type='button'
+                    >
+                      <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
+                    </button>
+                  </Dialog.Title>
+                  <div className='mt-2 '>
+                    {/* <p className=' text-gray-700'>Coin</p> */}
+                    <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
 
 
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network</p>
 
-                  <p className=' '>Network</p>
-                  <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
+                    <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
 
 
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Address</p>
 
-                  <p className=' text-gray-700 mt-3 mb-1'>Address</p>
-                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
-                    <p className='flex flex-grow'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-                    {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>}
-                    <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
-                      onCopy={() => setCopied(true)}>
-                      <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-gray-200 cursor-pointer rounded-full' />
-                    </CopyToClipboard>
-                  </div>
+                    <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
+                      <p className='flex flex-grow text-gray-700 dark:text-white mb-1'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
-                  <div className="relative h-64 w-64 mx-auto m-3 bg-red-800">
-                    <QRCode
-                      size={256}
-                      style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                      value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
-                  </div>
+                      {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
+                      <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
+                        onCopy={() => { setCopied(true) }}>
+                        <div onClick={handleCopy}>
+                          {showCheck
+                            ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                            : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
 
-                  <div className='flex space-x-5'>
-                    <div>
-                      <p className=' text-gray-700 pt-3'>Expected arrival</p>
-                      <p className=' text-gray-700 text-sm'>{cryptoToReceive.arrival}</p>
+                        </div>
+                      </CopyToClipboard>
                     </div>
-                    <div>
-                      <p className=' text-gray-700 pt-3'>Minimum deposit</p>
-                      <p className=' text-gray-700 text-sm'>{cryptoToReceive.MinDeposit}</p>
+
+                    <div className="relative h-64 w-64 mx-auto m-3 ">
+                      <QRCode
+                        size={256}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
                     </div>
+
+                    <div className='flex space-x-5'>
+                      <div>
+                        <p className='dark:text-white text-gray-700 pt-3'>Expected arrival</p>
+                        <p className='dark:text-white text-gray-700 text-sm'>{cryptoToReceive.arrival}</p>
+                      </div>
+                      <div>
+                        <p className='dark:text-white text-gray-700 pt-3'>Minimum deposit</p>
+                        <p className='dark:text-white text-gray-700 text-sm'>{cryptoToReceive.MinDeposit}</p>
+                      </div>
+                    </div>
+                    <p className='dark:text-white text-gray-700 text-sm pt-3'>Send only BTC to this deposit address.</p>
+                    <p className='dark:text-white text-gray-700 text-sm'>Ensure the network is {" "}
+                      <span className='text-red-400'>{networkToReceive}</span>.</p>
+
+
                   </div>
-                  <p className=' text-gray-700 text-sm pt-3'>Send only BTC to this deposit address.</p>
-                  <p className=' text-gray-700 text-sm'>Ensure the network is {" "}
-                    <span className='text-red-400'>{networkToReceive}</span>.</p>
 
 
-                </div>
-
-
-              </Dialog.Panel>
+                </Dialog.Panel>
+              </div>
             </Modal>
 
-          </div>
+          </div >
 
         </main >
       </div >
-    </div>
+    </div >
   );
 }
 
