@@ -56,7 +56,7 @@ function Dropdown2({ arr, defaultValue, onClick }: Props) {
             <div className="px-1 py-1 ">
 
               {arr.map((item) => (
-                <Menu.Item>
+                <Menu.Item key={item.img}>
                   {({ active }) => (
                     <button onClick={() => onClick(item)}
                       className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white' : 'text-gray-900'

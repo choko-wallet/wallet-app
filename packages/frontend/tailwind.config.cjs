@@ -12,7 +12,11 @@ module.exports = {
   daisyui: {
     darkTheme: 'light'
   },
-  plugins: [require('daisyui')],
+  plugins: [require('daisyui'), require('tailwind-scrollbar'),],
+  variants: {
+    // ...
+    scrollbar: ['dark']
+  },
   theme: {
     extend: {
       colors: {

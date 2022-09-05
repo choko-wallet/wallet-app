@@ -12,7 +12,7 @@ import QRCode from "react-qr-code";
 import { QrReader } from 'react-qr-reader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  ChevronRightIcon,
+  ChevronRightIcon, MenuIcon,
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
   UserIcon, CameraIcon,
 } from '@heroicons/react/outline';
@@ -27,6 +27,8 @@ import btcIcon from '../../images/btc.png'
 import btcQr from '../../images/btcqr.png'
 import Modal from '../../components/Modal'
 import Dropdown2 from '../../components/Dropdown2'
+import DropdownHeader from '../../components/DropdownHeader'
+
 import DropdownForNetwork from '../../components/DropdownForNetwork'
 import SuperButton from '../../components/SuperButton'
 import CryptoRow from '../../components/CryptoRow'
@@ -117,6 +119,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
+  const [sidebar, setSidebar] = useState<boolean>(true);//默认打开sidebar
+  const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
+  const [networkInput, setNetworkInput] = useState<string>('');
+
+  const [menuIcon, setMenuIcon] = useState<boolean>(false);
+
+
 
   useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -205,6 +214,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   }
 
+  function closeAddNetworkModal() {
+    setAddNetworkModalOpen(false);
+    setNetworkInput('')
+  }
+
   const handleCopy = async () => {
     console.log('first')
     setShowCheck(true);
@@ -226,16 +240,33 @@ function Home({ coinPriceData }: Props): JSX.Element {
         {/* header */}
         <div className='sticky top-0 z-20 bg-white dark:bg-primary border-b border-gray-800 shadow-md'>
           <div className='flex justify-between p-2 '>
-            <div className='flex items-center justify-center space-x-10' >
-              <div className='relative items-center w-10 h-10 my-auto cursor-pointer'
+            <div className='flex items-center justify-center ' >
+
+              {/* <div className='hidden md:inline-flex md:mr-5 relative items-center w-10 h-10 my-auto cursor-pointer'
                 onClick={() => router.push('/')}>
                 <Image
                   layout='fill'
                   objectFit='contain'
                   src={btcIcon.src}
                 />
-              </div>
+              </div> */}
 
+
+
+              <label htmlFor="my-drawer" className="flex md:hidden flex-grow items-center justify-center active:scale-95 transition duration-150 ease-out px-6 drawer-button py-3  mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
+                <p className='text-black text-lg font-semibold italic'>Network</p>
+
+                <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
+              </label>
+
+              <button
+                className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none '
+                onClick={() => setSidebar(!sidebar)}
+              >
+                <p className='text-black text-lg font-semibold italic'>Network</p>
+
+                <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
+              </button>
 
             </div>
 
@@ -245,12 +276,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <HomeIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]'
                   onClick={() => router.push('/home')} />
 
-                <div className='relative transition duration-150 ease-out cursor-pointer md:inline-flex '>
+                <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
                   <BellIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
                   <div className="animate-pulse absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-400 rounded-full -right-2 -top-1">
                     3</div>
                 </div>
-                <CogIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
+                <CogIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
 
 
               </div>
@@ -272,18 +303,25 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 </ul>
               </div>
 
+              <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-[#03F3FF]" />
+
+
+
+              {/* 这个要重新做dropdown */}
+              {/* <DropdownHeader arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} /> */}
+
               <div >
-                <Popover className='relative w-48 md:w-64 '>
+                <Popover className='relative flex md:w-64 '>
                   {({ open }) => (
                     <>
                       <Popover.Button
                         className={`
-                    ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case flex justify-between w-48 md:w-64 dark:bg-gray-600`}
+                    ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case flex justify-between  md:w-64 dark:bg-gray-600`}
                       >
                         <UserCircleIcon className='h-6 w-6 dark:text-white' />
                         <p className='hidden md:inline-flex dark:text-white'>{currentAccount.substring(0, 7)} ... {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}</p>
 
-                        <p className='inline-flex md:hidden'>{currentAccount.substring(0, 6)} ...</p>
+                        {/* <p className='inline-flex md:hidden'>{currentAccount.substring(0, 6)} ...</p> */}
                         <ChevronDownIcon className=' text-gray-500 h-6 w-6 dark:text-white' />
 
                       </Popover.Button>
@@ -351,14 +389,49 @@ function Home({ coinPriceData }: Props): JSX.Element {
           </div>
         </div >
 
+        {/* menu各种icon */}
+        {menuIcon ?
+          <div className='flex bg-primary items-center justify-center h-10 w-full md:hidden'>
+            <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
+              <HomeIcon className='h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]'
+                onClick={() => router.push('/home')} />
+
+              <div className='inline-flex relative transition duration-150 ease-out cursor-pointer '>
+                <BellIcon className='h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]' />
+                <div className="animate-pulse absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-400 rounded-full -right-2 -top-1">
+                  3</div>
+              </div>
+              <CogIcon className=' h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]' />
+
+
+            </div>
+            {theme === 'light'
+              ? <SunIcon className=' h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125'
+                onClick={() => setTheme('dark')} />
+              : <MoonIcon className=' h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]'
+                onClick={() => setTheme('light')} />
+            }
+
+            <div className='dropdown dropdown-hover inline '>
+              <label className='btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
+                <TranslateIcon className='h-8 cursor-pointer dark:text-[#03F3FF]' />
+                <ChevronDownIcon className='h-5 cursor-pointer dark:text-[#03F3FF]' />
+              </label>
+              <ul className=' p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52'>
+                <li><a>English</a></li>
+                <li><a>中文</a></li>
+              </ul>
+            </div>
+          </div>
+          : null}
+
+
         {/* drawer */}
         <div className="drawer md:hidden bg-black overflow-hidden">
           <input id="my-drawer" type="checkbox" className="drawer-toggle overflow-hidden" />
           <div className="drawer-content bg-white dark:bg-primary overflow-hidden">
 
 
-            <label htmlFor="my-drawer" className="btn btn-primary drawer-button py-3 px-6 mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">Change Network
-              <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' /></label>
 
 
             {/* balance */}
@@ -404,15 +477,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <XIcon className=' text-white h-5 w-5 dark:text-primary' /></label>
               </div>
 
-
-
-              <div className='w-full card p-2 '>
+              <div className='m-5 scrollbar-thin max-h-[600px] overflow-y-scroll overflow-x-hidden'>
+                <div className='bg-white h-16 w-[230px] ml-5 rounded-lg bg-blue-gradient flex items-center justify-center ' onClick={() => setAddNetworkModalOpen(true)}>
+                  <p className='text-black text-lg font-semibold italic'>Add Network</p>
+                </div>
                 <RadioGroup onChange={setNetworkSelection}
                   value={networkSelection || network}>
                   {allNetworks.map(({ info, name, rpc }) => (
                     <RadioGroup.Option
                       className={({ active, checked }) =>
-                        `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
+                        `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
                   m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
                       }
                       key={name}
@@ -424,13 +498,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                             <div className='text-sm'>
                               <RadioGroup.Label
                                 as='p'
-                                className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                                className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
                               >
                                 {name}
                               </RadioGroup.Label>
                               <RadioGroup.Description
                                 as='span'
-                                className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                className={`inline ${checked ? 'text-black' : 'text-white'}`}
                               >
                                 {rpc}
                               </RadioGroup.Description>
@@ -446,23 +520,19 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     </RadioGroup.Option>
                   ))}
                 </RadioGroup>
+
+
               </div>
 
-              <div className='flex flex-frow justify-evenly mb-5'>
-                <button className='btn btn-error btn-circle btn-md'
-                  onClick={() => setNetworkSelection('')} >
-                  <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-                </button>
+              <button
+                className='flex w-[230px] ml-10 items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none '
+                onClick={async () => {
+                  await changeNetwork();
+                }}
+              >
+                <p className='text-black text-lg font-semibold italic'>Change Network</p>
 
-                <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
-                  onClick={async () => {
-                    await changeNetwork();
-                  }} >
-                  <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-                </button>
-              </div>
-
-
+              </button>
 
 
             </ul>
@@ -476,69 +546,166 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
             <div className='flex-col md:h-full  flex md:flex-row'>
-              {/* network */}
-              <div className="hidden md:inline-flex  md:flex-col items-center px-5 md:px-0 md:h-full " >
-                <div className='shadow-xl rounded-xl bg-white w-full md:h-full md:bg-blue-100 dark:bg-primary '>
-                  <p className='text-lg font-semibold  mt-5 ml-10 mx-auto text-gradient'>Network</p>
 
-                  <div className='col-span-12 card p-5 '>
-                    <RadioGroup onChange={setNetworkSelection}
-                      value={networkSelection || network}>
-                      {allNetworks.map(({ info, name, rpc }) => (
-                        <RadioGroup.Option
-                          className={({ active, checked }) =>
-                            `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
+              {/* network sidebar */}
+              {sidebar ?
+                <div className=" hidden md:inline-flex md:flex-col items-center px-5 md:px-0 md:h-full " >
+                  <div className='shadow-xl rounded-xl  w-full h-full min-h-[700px] bg-white dark:bg-primary'>
+                    <p className='text-lg font-semibold  mt-5 ml-10 mx-auto text-gradient'>Network</p>
+
+                    <div className='m-5 scrollbar-thin max-h-[600px] overflow-y-scroll'>
+                      <div className='bg-white h-20 w-64 ml-5 rounded-lg bg-blue-gradient flex items-center justify-center ' onClick={() => setAddNetworkModalOpen(true)}>
+                        <p className='text-black text-lg font-semibold italic'>Add Network</p>
+                      </div>
+                      <RadioGroup onChange={setNetworkSelection}
+                        value={networkSelection || network}>
+                        {allNetworks.map(({ info, name, rpc }) => (
+                          <RadioGroup.Option
+                            className={({ active, checked }) =>
+                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
                   m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
-                          }
-                          key={name}
-                          value={info}
-                        >
-                          {({ active, checked }) => (
-                            <div className='flex w-full items-center justify-between'>
-                              <div className='flex items-center'>
-                                <div className='text-sm'>
-                                  <RadioGroup.Label
-                                    as='p'
-                                    className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                  >
-                                    {name}
-                                  </RadioGroup.Label>
-                                  <RadioGroup.Description
-                                    as='span'
-                                    className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                  >
-                                    {rpc}
-                                  </RadioGroup.Description>
+                            }
+                            key={name}
+                            value={info}
+                          >
+                            {({ active, checked }) => (
+                              <div className='flex w-full items-center justify-between'>
+                                <div className='flex items-center'>
+                                  <div className='text-sm'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                    >
+                                      {name}
+                                    </RadioGroup.Label>
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                    >
+                                      {rpc}
+                                    </RadioGroup.Description>
+                                  </div>
                                 </div>
+                                {checked && (
+                                  <div className='shrink-0 text-white'>
+                                    <CheckCircleIcon className='h-6 w-6' />
+                                  </div>
+                                )}
                               </div>
-                              {checked && (
-                                <div className='shrink-0 text-white'>
-                                  <CheckCircleIcon className='h-6 w-6' />
+                            )}
+                          </RadioGroup.Option>
+                        ))}
+                      </RadioGroup>
+                      <RadioGroup onChange={setNetworkSelection}
+                        value={networkSelection || network}>
+                        {allNetworks.map(({ info, name, rpc }) => (
+                          <RadioGroup.Option
+                            className={({ active, checked }) =>
+                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
+                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
+                            }
+                            key={name}
+                            value={info}
+                          >
+                            {({ active, checked }) => (
+                              <div className='flex w-full items-center justify-between'>
+                                <div className='flex items-center'>
+                                  <div className='text-sm'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                    >
+                                      {name}
+                                    </RadioGroup.Label>
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                    >
+                                      {rpc}
+                                    </RadioGroup.Description>
+                                  </div>
                                 </div>
-                              )}
-                            </div>
-                          )}
-                        </RadioGroup.Option>
-                      ))}
-                    </RadioGroup>
+                                {checked && (
+                                  <div className='shrink-0 text-white'>
+                                    <CheckCircleIcon className='h-6 w-6' />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </RadioGroup.Option>
+                        ))}
+                      </RadioGroup>
+                      <RadioGroup onChange={setNetworkSelection}
+                        value={networkSelection || network}>
+                        {allNetworks.map(({ info, name, rpc }) => (
+                          <RadioGroup.Option
+                            className={({ active, checked }) =>
+                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
+                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
+                            }
+                            key={name}
+                            value={info}
+                          >
+                            {({ active, checked }) => (
+                              <div className='flex w-full items-center justify-between'>
+                                <div className='flex items-center'>
+                                  <div className='text-sm'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                    >
+                                      {name}
+                                    </RadioGroup.Label>
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                    >
+                                      {rpc}
+                                    </RadioGroup.Description>
+                                  </div>
+                                </div>
+                                {checked && (
+                                  <div className='shrink-0 text-white'>
+                                    <CheckCircleIcon className='h-6 w-6' />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </RadioGroup.Option>
+                        ))}
+                      </RadioGroup>
+
+                    </div>
+
+                    <div className='flex flex-frow justify-evenly mb-5'>
+                      {/* <button className='btn btn-error btn-circle btn-md'
+                        onClick={() => setNetworkSelection('')} >
+                        <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />a
+                      </button> */}
+
+                      <button
+                        className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none '
+                        onClick={async () => {
+                          await changeNetwork();
+                        }}
+                      >
+                        <p className='text-black text-lg font-semibold italic'>Change Network</p>
+
+                      </button>
+
+                      {/* <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
+                        onClick={async () => {
+                          await changeNetwork();
+                        }} >
+                        <CheckIcon className=' h-8 duration-300 hover:scale-125 transtion east-out' />
+                      </button> */}
+
+                    </div>
+
                   </div>
-
-                  <div className='flex flex-frow justify-evenly mb-5'>
-                    <button className='btn btn-error btn-circle btn-md'
-                      onClick={() => setNetworkSelection('')} >
-                      <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-                    </button>
-
-                    <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
-                      onClick={async () => {
-                        await changeNetwork();
-                      }} >
-                      <CheckIcon className=' h-8 duration-300 hover:scale-125 transtion east-out' />
-                    </button>
-                  </div>
-
                 </div>
-              </div>
+                : null}
+
 
               {/* balance */}
               <div className='relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
@@ -576,7 +743,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
             {/* network change modal */}
-
             <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
               <div className={theme}>
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
@@ -675,7 +841,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <div className='flex items-end'>
                       <div className='relative'>
-                        <p className=' text-gray-700 ddark:white mt-3 mb-1'>Amount</p>
+                        <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Amount</p>
 
                         <input
 
@@ -752,14 +918,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <DownloadIcon className=' text-gray-700 h-5 w-5 dark:text-[#03F3FF] ' />
                     {theme === 'dark' ? <p className=' text-gradient flex flex-grow'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow '>Receive Crypto</p>}
 
-                    {/* <button
-                      className='w-16 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-gray-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={closeModal3}
-                      type='button'
-                    >
-                      <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
-                    </button> */}
-
                     <button
                       className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
                       onClick={closeModal3}
@@ -769,9 +927,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     </button>
                   </Dialog.Title>
                   <div className='mt-2 '>
-                    {/* <p className=' text-gray-700'>Coin</p> */}
                     <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
-
 
                     <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network</p>
 
@@ -812,7 +968,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                         <p className='dark:text-white text-gray-700 text-sm'>{cryptoToReceive.MinDeposit}</p>
                       </div>
                     </div>
-                    <p className='dark:text-white text-gray-700 text-sm pt-3'>Send only BTC to this deposit address.</p>
+                    <p className='dark:text-white text-gray-700 text-sm pt-3'>Send only {cryptoToReceive.name} to this deposit address.</p>
                     <p className='dark:text-white text-gray-700 text-sm'>Ensure the network is {" "}
                       <span className='text-red-400'>{networkToReceive}</span>.</p>
 
@@ -824,6 +980,42 @@ function Home({ coinPriceData }: Props): JSX.Element {
               </div>
             </Modal>
 
+            {/* add network modal */}
+            <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
+              <div className={theme}>
+                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'><Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 text-gradient '
+                >
+                  Add Network
+                </Dialog.Title>
+                  <div className='mt-2'>
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
+                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input input-bordered input-info w-full " />
+
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
+                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input input-bordered input-info w-full " />
+
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
+                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input input-bordered input-info w-full " />
+
+
+
+                  </div>
+
+                  <div className='mt-4'>
+                    <button
+                      className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                      onClick={closeAddNetworkModal}
+                      type='button'
+                    >
+                      OK
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </div >
+
+            </Modal>
           </div >
 
         </main >
