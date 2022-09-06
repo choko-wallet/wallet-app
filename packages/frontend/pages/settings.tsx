@@ -2,18 +2,31 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon, DocumentDuplicateIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import {
+  CheckIcon, UserCircleIcon, XIcon, DocumentDuplicateIcon, ChevronRightIcon, MenuIcon,
+  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
+  UserIcon, CameraIcon,
+} from '@heroicons/react/outline';
+import {
+  BellIcon, CheckCircleIcon,
+  PaperAirplaneIcon, DownloadIcon,
+  ChevronDownIcon, CogIcon, HomeIcon, MoonIcon, SunIcon, TranslateIcon
+} from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Dropdown from '../components/Dropdown';
+
+
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUserAccount } from '../features/redux/selectors';
 import { loadUserAccount } from '../features/slices/userSlice';
+import DropdownHeader from '../components/DropdownHeader';
+import SuperButton from '../components/SuperButton';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 /* eslint-disable sort-keys */
 function Settings(): JSX.Element {
@@ -36,8 +49,21 @@ function Settings(): JSX.Element {
   const [language, setLanguage] = useState<string>('ENG');
   const [isMnemonicOpen, setIsMnemonicOpen] = useState<boolean>(false);
   const [showMnemonic, setShowMnemonic] = useState<boolean>(false);
+  const [menuIcon, setMenuIcon] = useState<boolean>(false);
 
+  const [theme, setTheme] = useState<string>('dark');//暂时先这样配置 没有light
 
+  const [showCheck, setShowCheck] = useState<boolean>(false);
+
+  const [copied, setCopied] = useState<boolean>(false);
+
+  const handleCopy = async () => {
+    console.log('first')
+    setShowCheck(true);
+    setTimeout(() => {
+      setShowCheck(false);
+    }, 1000);
+  }
 
   useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -71,251 +97,269 @@ function Settings(): JSX.Element {
     setShowMnemonic(false)
   }
 
+
+
+
+
+
   return (
-    <div className='grid grid-cols-12 min-h-screen bg-gray-400'>
-
-      <div className='col-span-12 '>
-        <div className='navbar bg-base-100'>
-
-          <div className='navbar-start'>
-            {/* TODO: fix the logo */}
-            <a className='btn btn-ghost normal-case text-xl'
-              onClick={() => router.push('/')}>
-              Choko
-              {/* <Image
-                  className='relative w-10 m-0'
-                  // layout='fill'
-                  objectFit='fill'
-                  src={logo}
-                /> */}
-            </a>
-          </div>
-
-          <div className='navbar-center'></div>
-
-          <div className='navbar-end'>
-            <Popover className='relative'>
-              {({ open }) => (
-                <>
-                  <Popover.Button
-                    className={`
-                    ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case`}
-                  >
-                    <UserCircleIcon className='h-6 w-6 mr-5' />
-                    <span className='hidden md:block'>{currentAccount.substring(0, 13)} ... {currentAccount.substring(currentAccount.length - 13, currentAccount.length)}</span>
-                    <span className='block md:hidden'>{currentAccount.substring(0, 10)} ...</span>
-                  </Popover.Button>
-                  <Transition
-                    as={Fragment}
-                    enter='transition ease-out duration-200'
-                    enterFrom='opacity-0 translate-y-1'
-                    enterTo='opacity-100 translate-y-0'
-                    leave='transition ease-in duration-150'
-                    leaveFrom='opacity-100 translate-y-0'
-                    leaveTo='opacity-0 translate-y-1'
-                  >
-                    <Popover.Panel className='absolute z-10 w-full max-w-sm transform sm:px-0 lg:max-w-3xl'>
-                      <div className='overflow-hidden rounded-lg shadow-lg'>
-                        <div className='relative grid grid-cols-2 gap-4 bg-white py-5'>
-                          {allAccounts.map((name, index) => (
-                            <div
-                              className='px-5 items-center col-span-2 rounded-lg py-2 transition duration-150 ease-in-out hover:bg-gray-50'
-                              key={index}
-                            >
-                              <p className='text-sm font-medium text-gray-900 normal-case'> {name.substring(0, 13)} ... {name.substring(name.length - 13, name.length)}</p>
-                            </div>
-                          ))}
-                        </div>
-                        <div className='bg-gray-50 p-4'>
-                          <div
-                            className='flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100'
-                            onClick={() => router.push('/account')}
-                          >
-                            <span className='flex items-center'>
-                              <span className='text-sm font-medium text-gray-900'>
-                                Add New Account
-                              </span>
-                            </span>
-                            <span className='block text-sm text-gray-500'>
-                              Create or Import new Account
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className='bg-gray-200 p-4'>
-                          <div
-                            className='flow-root rounded-md px-2 py-2 transition duration-200 ease-in-out hover:bg-gray-100'
-                          >
-                            <span className='flex items-center'>
-                              <span className='text-sm font-medium text-gray-900'>
-                                Remove Account
-                              </span>
-                            </span>
-                            <span className='block text-sm text-gray-500'>
-                              Remove Current Account
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
-                </>
-              )}
-            </Popover>
-          </div>
-        </div>
-
-        {/* settings */}
+    <div className={theme}>
+      <div className='bg-gray-100 grid grid-cols-12 dark:bg-primary min-h-screen overflow-hidden'>
+        <Toaster />
         <div className='col-span-12 '>
-          <div className='bg-white p-5 m-5 max-w-[750px] mx-auto rounded-lg justify-between items-center '>
-            <p className='text-xl'>Settings</p>
 
-            <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
-              <div className='flex-col'>
-                <p className='text-lg'>Wallet ID</p>
-                <p className='text-sm text-gray-500'>Wallet ID is your unique identifier.</p>
-              </div>
+          {/* header */}
+          <div className='sticky top-0 z-20 bg-white dark:bg-primary border-b border-gray-800 shadow-md'>
+            <div className='flex justify-between p-2 '>
+              <div className='flex items-center justify-center ' >
 
-              <div className=" text-right bg-gray-100 p-2 px-4 rounded-full">
-                <p className='font-semibold flex items-center'>5G16tBnZEmtnL6A5nxZJpJtUw
-                  <DocumentDuplicateIcon className=' text-gray-500 ml-2 p-1 h-7 w-7 bg-white rounded-full' /></p>
-              </div>
-            </div>
-
-            <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
-              <div className='flex-col'>
-                <p className='text-lg'>Change Password</p>
-                <p className='text-sm text-gray-500'>Password is password.</p>
-              </div>
-
-              <div className=" w-56 text-right">
-                <button className='btn ' >
-                  <p className=''>Password</p>
-                </button>
-              </div>
-            </div>
+                {/* <div className='hidden md:inline-flex md:mr-5 relative items-center w-10 h-10 my-auto cursor-pointer'
+                onClick={() => router.push('/')}>
+                <Image
+                  layout='fill'
+                  objectFit='contain'
+                  src={btcIcon.src}
+                />
+              </div> */}
 
 
-            <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
-              <div className='flex-col'>
-                <p className='text-lg'>View Your Mnemonic</p>
-                <p className='text-sm text-gray-500'>Do not share your private keys with anyone. </p>
-              </div>
 
-              <div className=" w-56 text-right ">
-                <button onClick={() => setIsMnemonicOpen(true)} className='btn '  >
-                  <p className=''>Mnemonic</p>
-                </button>
-              </div>
-            </div>
+                {/* <label htmlFor="my-drawer" className="flex md:hidden flex-grow items-center justify-center active:scale-95 transition duration-150 ease-out px-4 drawer-button py-2  mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
+                  <p className='text-black text-lg font-semibold font-poppins '>Network</p>
 
-            <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
-              <div className='flex-col'>
-                <p className='text-lg'>Select Language</p>
-                <p className='text-sm text-gray-500'>Set your preferred language</p>
-              </div>
-              <Dropdown arr={languageArr} defaultValue={language} onClick={setLanguage} />
+                  <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
+                </label>
 
-            </div>
-
-            <div className='bg-white m-5 max-w-[700px] mx-auto rounded-lg flex justify-between items-center'>
-              <div className='flex-col'>
-                <p className='text-lg'>Trading Currency</p>
-                <p className='text-sm text-gray-500'>Select your trading currency</p>
-              </div>
-              <Dropdown arr={currencyArr} defaultValue={currency} onClick={setCurrency} />
-
-            </div>
-          </div>
-
-        </div>
-
-
-        <Transition appear
-          as={Fragment}
-          show={isMnemonicOpen}>
-          <Dialog as='div'
-            className='relative z-10'
-            onClose={closeMnemonic}>
-            <Transition.Child
-              as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0'
-              enterTo='opacity-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100'
-              leaveTo='opacity-0'
-            >
-              <div className='fixed inset-0 bg-black bg-opacity-25' />
-            </Transition.Child>
-
-            <div className='fixed inset-0 overflow-y-auto'>
-              <div className='flex min-h-full items-center justify-center p-4 text-center'>
-                <Transition.Child
-                  as={Fragment}
-                  enter='ease-out duration-300'
-                  enterFrom='opacity-0 scale-95'
-                  enterTo='opacity-100 scale-100'
-                  leave='ease-in duration-200'
-                  leaveFrom='opacity-100 scale-100'
-                  leaveTo='opacity-0 scale-95'
+                <button
+                  className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none '
+                  onClick={() => setSidebar(!sidebar)}
                 >
-                  <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
-                    <Dialog.Title
-                      as='h3'
-                      className='text-lg font-medium leading-6 flex items-center'
-                    >
-                      <p className=' text-gray-700 flex flex-grow'>Export Account Mnemonic</p>
+                  <p className='text-black text-lg font-semibold font-poppins'>Network</p>
 
-                      <button
-                        className='w-16 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-gray-600 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                        onClick={closeMnemonic}
-                        type='button'
-                      >
-                        <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
-                      </button>
+                  <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
+                </button> */}
 
-                    </Dialog.Title>
-                    <div className='mt-2 flex-col space-y-3'>
+              </div>
 
-                      <div className='flex text-sm justify-between items-center'>
-                        <p className='text-gray-500'>Address</p>
-                        <p className='font-semibold text-xs flex items-center'>5G16tBnZEmtnL6A5nxZJpJtUw
-                          <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' /></p>
-                      </div>
+              <div className='flex items-center text-gray-500  '>
+
+                <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
+                  <HomeIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]'
+                    onClick={() => router.push('/home')} />
+
+                  <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
+                    <BellIcon className='h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
+                    <div className="animate-pulse absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-400 rounded-full -right-2 -top-1">
+                      3</div>
+                  </div>
+                  <CogIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]' />
 
 
-                      <p className=' text-gray-700 mt-3 mb-1'>Please input your password</p>
-                      <input type="text" placeholder="Password" className=" input input-bordered input-info w-full " />
+                </div>
+                {theme === 'light'
+                  ? <SunIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125'
+                    onClick={() => setTheme('dark')} />
+                  : <MoonIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]'
+                  // onClick={() => setTheme('light')} 
+                  />
+                }
 
-                      {showMnemonic ? <p className='h-10 w-full'>Mnemonic</p> : <p className=' text-gray-700 mt-3 mb-1 h-10 w-full'></p>}
+                <div className='dropdown dropdown-hover hidden md:inline-flex '>
+                  <label className='btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
+                    <TranslateIcon className='h-8 cursor-pointer dark:text-[#03F3FF]' />
+                    <ChevronDownIcon className='h-8 cursor-pointer dark:text-[#03F3FF]' />
+                  </label>
+                  <ul className=' p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52 '>
+                    <li ><a>English</a></li>
+                    <li ><a>中文</a></li>
+                  </ul>
+                </div>
 
-                      <div className='mt-4'>
-                        <button
-                          onClick={() => setShowMnemonic(true)}
-                          className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                          type='button'
-                        >
-                          Export
-                        </button>
-                      </div>
+                <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-[#03F3FF]" />
+
+
+                <DropdownHeader currentAccount={currentAccount} />
+
+
+
+              </div>
+
+            </div>
+          </div >
+
+          {menuIcon ?
+            <div className='flex bg-primary items-center justify-center h-10 w-full md:hidden'>
+              <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
+                <HomeIcon className='h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]'
+                  onClick={() => router.push('/home')} />
+
+                <div className='inline-flex relative transition duration-150 ease-out cursor-pointer '>
+                  <BellIcon className='h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]' />
+                  <div className="animate-pulse absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-400 rounded-full -right-2 -top-1">
+                    3</div>
+                </div>
+                <CogIcon className=' h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]' />
+
+
+              </div>
+              {theme === 'light'
+                ? <SunIcon className=' h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125'
+                  onClick={() => setTheme('dark')} />
+                : <MoonIcon className=' h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]'
+                  onClick={() => setTheme('light')} />
+              }
+
+              <div className='dropdown dropdown-hover inline '>
+                <label className='btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
+                  <TranslateIcon className='h-8 cursor-pointer dark:text-[#03F3FF]' />
+                  <ChevronDownIcon className='h-5 cursor-pointer dark:text-[#03F3FF]' />
+                </label>
+                <ul className=' p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52'>
+                  <li><a>English</a></li>
+                  <li><a>中文</a></li>
+                </ul>
+              </div>
+            </div>
+            : null}
+
+
+
+          {/* settings */}
+          <div className='max-w-3xl mx-auto p-5 relative flex flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
+            <div className='p-5 '>
+              <p className='text-2xl text-gray-700 dark:text-white font-poppins'> Settings </p>
+
+            </div>
+
+            <div className='flex justify-between m-1 '>
+              <div className='my-auto'>
+                <p className='text-lg dark:text-[#03F3FF]'>Wallet ID</p>
+
+              </div>
+
+
+              <div className='h-12 my-auto'>
+                <button className='cursor-pointer flex w-full items-center rounded-md px-2 py-2 text-sm'>
+
+                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 8)}
+                    <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
+
+                    {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}</p>
+
+                  <CopyToClipboard text={currentAccount}
+                    onCopy={() => { setCopied(true) }}>
+                    <div onClick={handleCopy}>
+                      {showCheck
+                        ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                        : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
 
                     </div>
+                  </CopyToClipboard>
 
+                </button>
 
-                  </Dialog.Panel>
-                </Transition.Child>
               </div>
             </div>
-          </Dialog>
-        </Transition>
+
+            <div className='flex justify-between m-1'>
+              <div className='flex-col'>
+                <p className='text-md md:text-lg dark:text-[#03F3FF]'>Change Password</p>
+                <p className='text-sm font-normal text-dimWhite font-poppins'>Password is your unique password.</p>
+              </div>
+
+              <div className='md:w-40 w-32 flex justify-end'>
+                <button
+                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                // onClick={closeModal2}
+
+                >
+                  Password
+                </button>
+              </div>
+            </div>
+
+            <div className='flex justify-between m-1'>
+              <div className='flex-col'>
+                <p className='text-md md:text-lg dark:text-[#03F3FF]'>View Your Mnemonic</p>
+                <p className='text-sm font-normal text-dimWhite font-poppins'>Do not share your private keys with anyone.</p>
+              </div>
+
+
+              <div className='md:w-40 w-32 flex justify-end'>
+                <button
+                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                // onClick={closeModal2}
+
+                >
+                  Mnemonic
+                </button>
+              </div>
+            </div>
+
+
+            <div className='flex justify-between m-1'>
+              <div className='flex-col'>
+                <p className='text-md md:text-lg dark:text-[#03F3FF]'>Select Language</p>
+                <p className='text-sm font-normal text-dimWhite font-poppins'>Set your preferred language</p>
+              </div>
+
+
+              <div className='md:w-40 w-32 flex justify-end'>
+                <button
+                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                // onClick={closeModal2}
+
+                >
+                  Language
+                </button>
+              </div>
+            </div>
+
+
+            <div className='flex justify-between m-1 '>
+              <div className='flex-col'>
+                <p className='text-md md:text-lg dark:text-[#03F3FF]'>Trading Currency</p>
+                <p className='text-sm font-normal text-dimWhite font-poppins'>Select your trading currency</p>
+              </div>
+
+
+              <div className='md:w-40 w-32 flex justify-end'>
+                <button
+                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                // onClick={closeModal2}
+
+                >
+                  Currency
+                </button>
+              </div>
+            </div>
 
 
 
 
 
+
+
+
+
+
+            {/* gradient light */}
+
+            <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
+            <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " />
+
+
+
+          </div >
+
+
+
+
+
+        </div>
       </div>
-    </div>
+    </div >
+
   );
 }
 

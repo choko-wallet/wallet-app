@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { GetServerSideProps } from 'next';
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
+import { CheckIcon, UserCircleIcon, XIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import {
   HomeIcon, BellIcon, CogIcon, MoonIcon, SunIcon, TranslateIcon,
   CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
@@ -253,8 +253,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
 
-              <label htmlFor="my-drawer" className="flex md:hidden flex-grow items-center justify-center active:scale-95 transition duration-150 ease-out px-6 drawer-button py-3  mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
-                <p className='text-black text-lg font-semibold italic'>Network</p>
+              <label htmlFor="my-drawer" className="flex md:hidden flex-grow items-center justify-center active:scale-95 transition duration-150 ease-out px-4 drawer-button py-2  mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
+                <p className='text-black text-lg font-semibold font-poppins '>Network</p>
 
                 <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
               </label>
@@ -263,14 +263,14 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none '
                 onClick={() => setSidebar(!sidebar)}
               >
-                <p className='text-black text-lg font-semibold italic'>Network</p>
+                <p className='text-black text-lg font-semibold font-poppins'>Network</p>
 
                 <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
               </button>
 
             </div>
 
-            <div className='flex items-center text-gray-500 '>
+            <div className='flex items-center text-gray-500  '>
 
               <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
                 <HomeIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-[#03F3FF]'
@@ -292,97 +292,23 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   onClick={() => setTheme('light')} />
               }
 
-              <div className='dropdown dropdown-hover hidden md:inline '>
+              <div className='dropdown dropdown-hover hidden md:inline-flex '>
                 <label className='btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
-                  <TranslateIcon className='h-5 cursor-pointer dark:text-[#03F3FF]' />
-                  <ChevronDownIcon className='h-5 cursor-pointer dark:text-[#03F3FF]' />
+                  <TranslateIcon className='h-8 cursor-pointer dark:text-[#03F3FF]' />
+                  <ChevronDownIcon className='h-8 cursor-pointer dark:text-[#03F3FF]' />
                 </label>
-                <ul className=' p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52'>
-                  <li><a>English</a></li>
-                  <li><a>中文</a></li>
+                <ul className=' p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52 '>
+                  <li ><a>English</a></li>
+                  <li ><a>中文</a></li>
                 </ul>
               </div>
 
               <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-[#03F3FF]" />
 
 
+              <DropdownHeader currentAccount={currentAccount} />
 
-              {/* 这个要重新做dropdown */}
-              {/* <DropdownHeader arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} /> */}
 
-              <div >
-                <Popover className='relative flex md:w-64 '>
-                  {({ open }) => (
-                    <>
-                      <Popover.Button
-                        className={`
-                    ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case flex justify-between  md:w-64 dark:bg-gray-600`}
-                      >
-                        <UserCircleIcon className='h-6 w-6 dark:text-white' />
-                        <p className='hidden md:inline-flex dark:text-white'>{currentAccount.substring(0, 7)} ... {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}</p>
-
-                        {/* <p className='inline-flex md:hidden'>{currentAccount.substring(0, 6)} ...</p> */}
-                        <ChevronDownIcon className=' text-gray-500 h-6 w-6 dark:text-white' />
-
-                      </Popover.Button>
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-200'
-                        enterFrom='opacity-0 translate-y-1'
-                        enterTo='opacity-100 translate-y-0'
-                        leave='transition ease-in duration-150'
-                        leaveFrom='opacity-100 translate-y-0'
-                        leaveTo='opacity-0 translate-y-1'
-                      >
-                        <Popover.Panel className='absolute z-10 w-full max-w-sm transform sm:px-0 lg:max-w-3xl'>
-                          <div className='overflow-hidden rounded-lg shadow-lg'>
-                            <div className='relative grid grid-cols-2 gap-4 bg-white py-5'>
-                              {allAccounts.map((name, index) => (
-                                <div
-                                  className='px-5 items-center col-span-2 rounded-lg py-2 transition duration-150 ease-in-out hover:bg-gray-50'
-                                  key={index}
-                                >
-                                  <p className='text-sm font-medium text-gray-900 normal-case'> {name.substring(0, 13)} ... {name.substring(name.length - 13, name.length)}</p>
-                                </div>
-                              ))}
-                            </div>
-                            <div className='bg-gray-50 p-4'>
-                              <div
-                                className='flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100'
-                                onClick={() => router.push('/account')}
-                              >
-                                <span className='flex items-center'>
-                                  <span className='text-sm font-medium text-gray-900'>
-                                    Add New Account
-                                  </span>
-                                </span>
-                                <span className='block text-sm text-gray-500'>
-                                  Create or Import new Account
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className='bg-gray-200 p-4'>
-                              <div
-                                className='flow-root rounded-md px-2 py-2 transition duration-200 ease-in-out hover:bg-gray-100'
-                              >
-                                <span className='flex items-center'>
-                                  <span className='text-sm font-medium text-gray-900'>
-                                    Remove Account
-                                  </span>
-                                </span>
-                                <span className='block text-sm text-gray-500'>
-                                  Remove Current Account
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </Popover.Panel>
-                      </Transition>
-                    </>
-                  )}
-                </Popover>
-              </div>
 
             </div>
 
@@ -438,8 +364,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
             <div className='relative flex md:hidden flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
               <div className='card p-5 md:p-10'>
-                <p className='text-3xl text-gray-700 dark:text-white'> $793.32 </p>
-                <p className='text-md text-gradient'>Your avalaible token Balance on the current network. </p>
+                <p className='text-3xl text-gray-700 dark:text-white font-poppins'> $793.32 </p>
+                <p className='text-md text-white cursor-pointer hover:text-[#00f6ff] font-poppins'>Your avalaible token Balance on the current network. </p>
               </div>
 
               <div className="flex items-center justify-evenly ">
@@ -472,14 +398,14 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
               <div className='flex items-center justify-between ml-10 mx-5 dark:bg-primary '>
-                <p className='text-lg  font-semibold  text-gradient'>Change Network</p>
-                <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-2 py-3 px-6 mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
+                <p className='text-lg  font-semibold  text-gradient font-poppins'>Change Network</p>
+                <label htmlFor="my-drawer" className="drawer-button px-4 py-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
                   <XIcon className=' text-white h-5 w-5 dark:text-primary' /></label>
               </div>
 
               <div className='m-5 scrollbar-thin max-h-[600px] overflow-y-scroll overflow-x-hidden'>
                 <div className='bg-white h-16 w-[230px] ml-5 rounded-lg bg-blue-gradient flex items-center justify-center ' onClick={() => setAddNetworkModalOpen(true)}>
-                  <p className='text-black text-lg font-semibold italic'>Add Network</p>
+                  <p className='text-black text-lg font-semibold font-poppins'>Add Network</p>
                 </div>
                 <RadioGroup onChange={setNetworkSelection}
                   value={networkSelection || network}>
@@ -498,13 +424,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                             <div className='text-sm'>
                               <RadioGroup.Label
                                 as='p'
-                                className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                               >
                                 {name}
                               </RadioGroup.Label>
                               <RadioGroup.Description
                                 as='span'
-                                className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                               >
                                 {rpc}
                               </RadioGroup.Description>
@@ -530,7 +456,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   await changeNetwork();
                 }}
               >
-                <p className='text-black text-lg font-semibold italic'>Change Network</p>
+                <p className='text-black text-lg font-semibold font-poppins'>Change Network</p>
 
               </button>
 
@@ -551,11 +477,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
               {sidebar ?
                 <div className=" hidden md:inline-flex md:flex-col items-center px-5 md:px-0 md:h-full " >
                   <div className='shadow-xl rounded-xl  w-full h-full min-h-[700px] bg-white dark:bg-primary'>
-                    <p className='text-lg font-semibold  mt-5 ml-10 mx-auto text-gradient'>Network</p>
+                    <p className='text-lg font-semibold  mt-5 ml-10 mx-auto text-gradient font-poppins'>Network</p>
 
                     <div className='m-5 scrollbar-thin max-h-[600px] overflow-y-scroll'>
-                      <div className='bg-white h-20 w-64 ml-5 rounded-lg bg-blue-gradient flex items-center justify-center ' onClick={() => setAddNetworkModalOpen(true)}>
-                        <p className='text-black text-lg font-semibold italic'>Add Network</p>
+                      <div className='bg-white h-20 w-64 ml-5 rounded-lg bg-blue-gradient flex items-center justify-center cursor-pointer ' onClick={() => setAddNetworkModalOpen(true)}>
+
+
+                        <p className='text-black flex items-center justify-center text-lg font-semibold font-poppins'>Add Network
+                          <PlusCircleIcon className='h-8 w-8 ml-3 text-black ' /></p>
+
+
                       </div>
                       <RadioGroup onChange={setNetworkSelection}
                         value={networkSelection || network}>
@@ -574,13 +505,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
-                                      className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                                     >
                                       {name}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
-                                      className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                                     >
                                       {rpc}
                                     </RadioGroup.Description>
@@ -613,13 +544,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
-                                      className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                                     >
                                       {name}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
-                                      className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                                     >
                                       {rpc}
                                     </RadioGroup.Description>
@@ -652,13 +583,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
-                                      className={`font-medium  ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                                     >
                                       {name}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
-                                      className={`inline ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                                     >
                                       {rpc}
                                     </RadioGroup.Description>
@@ -674,6 +605,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                           </RadioGroup.Option>
                         ))}
                       </RadioGroup>
+
 
                     </div>
 
@@ -689,7 +621,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                           await changeNetwork();
                         }}
                       >
-                        <p className='text-black text-lg font-semibold italic'>Change Network</p>
+                        <p className='text-black text-lg font-semibold font-poppins'>Change Network</p>
 
                       </button>
 
@@ -710,8 +642,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
               {/* balance */}
               <div className='relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
                 <div className='card p-5 md:p-10'>
-                  <p className='text-3xl text-gray-700 dark:text-white'> $793.32 </p>
-                  <p className='text-md text-gradient'>Your avalaible token Balance on the current network. </p>
+                  <p className='text-3xl text-gray-700 dark:text-white font-poppins'> $793.32 </p>
+                  <p className='text-md text-white cursor-pointer hover:text-[#00f6ff] font-poppins'>Your avalaible token Balance on the current network. </p>
                 </div>
 
                 <div className="flex items-center justify-evenly ">
@@ -736,6 +668,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " />
 
 
+
               </div >
 
 
@@ -748,19 +681,19 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
                   <Dialog.Title
                     as='h3'
-                    className='text-lg font-medium leading-6 text-gradient w-72'
+                    className='font-poppins text-lg font-medium leading-6 text-gradient w-72'
                   >
                     Changed successfully
                   </Dialog.Title>
                   <div className='mt-2'>
-                    <p className='text-sm text-gray-500 dark:text-white'>
+                    <p className='text-sm font-poppins text-gray-500 dark:text-white'>
                       {`Network changed to ${networkSelection}`}
                     </p>
                   </div>
 
                   <div className='mt-4'>
                     <button
-                      className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                      className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
                       onClick={closeModal}
                       type='button'
                     >
@@ -777,11 +710,20 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'>
                   <Dialog.Title
                     as='h3'
-                    className='text-lg font-medium leading-6 flex items-center mb-6'
+                    className='text-lg  font-medium leading-6 flex items-center mb-6 '
                   >
-                    <PaperAirplaneIcon className='rotate-45 text-gray-700 h-5 w-5 dark:text-[#03F3FF]' />
-                    {theme === 'dark' ? <p className=' text-gradient '>Send Crypto</p> : <p className=' text-gray-700  '>Send Crypto</p>}
-
+                    <div className='flex items-center  flex-grow'>
+                      <PaperAirplaneIcon className='rotate-45 text-gray-700 h-8 w-8 dark:text-[#03F3FF]' />
+                      {theme === 'dark'
+                        ?
+                        <p className=' text-gradient font-poppins'>Send Crypto</p>
+                        :
+                        <p className=' text-gray-700 font-poppins'>Send Crypto</p>
+                      }
+                    </div>
+                    <div onClick={closeModal2}>
+                      <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+                    </div>
                   </Dialog.Title>
                   <div className='mt-2 '>
 
@@ -790,7 +732,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <p className=' text-gray-700 dark:text-white '>From</p>
                     <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
-                      <p className='flex flex-grow dark:text-white'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+                      <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
                       {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
                       <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
                         onCopy={() => { setCopied(true) }}>
@@ -805,9 +747,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <div className='relative'>
 
-                      <p className=' text-gray-700 dark:text-white mt-3 mb-1'>To</p>
+                      <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-                      <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className=" input input-bordered input-info w-full " />
+                      <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className="font-poppins input input-bordered input-info w-full " />
                       <CameraIcon
                         onClick={() => setOpenScan(!openScan)}
                         className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
@@ -841,7 +783,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <div className='flex items-end'>
                       <div className='relative'>
-                        <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Amount</p>
+                        <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
                         <input
 
@@ -852,8 +794,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
                               parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
                           }}
                           type="number" placeholder="1.0" step="0.00000001" min="0" max="10000000"
-                          className="pr-12 input input-bordered input-info w-full " />
-                        <p className='absolute bottom-4 right-2 text-sm'>{cryptoToSend.shortName}</p>
+                          className="font-poppins pr-12 input input-bordered input-info w-full " />
+                        <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
                       </div>
 
                       <p className='mx-1 pb-3'>=</p>
@@ -867,17 +809,17 @@ function Home({ coinPriceData }: Props): JSX.Element {
                               parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
                           }}
                           type="number" placeholder="100.00" step="0.01" min="0" max="10000000"
-                          className="pr-12  input input-bordered input-info w-full " />
-                        <p className='absolute bottom-4 right-2 text-sm'>USD</p>
+                          className="font-poppins pr-12  input input-bordered input-info w-full " />
+                        <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
                       </div>
 
                     </div>
-                    <p className=' text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
+                    <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
 
-                    <p className=' text-gray-700 dark:text-white py-1 pt-3'>Network Fee</p>
-                    <p className=' text-gray-700 dark:text-white text-sm'>{cryptoToSend.networkFee}</p>
-                    <p className=' text-gray-700 dark:text-white text-sm'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
+                    <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee</p>
+                    <p className=' text-gray-700 dark:text-white text-sm font-poppins'>{cryptoToSend.networkFee}</p>
+                    <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
 
 
                   </div>
@@ -892,7 +834,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     </button> */}
 
                     <button
-                      className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                      className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
                       onClick={closeModal2}
 
                       type='button'
@@ -915,11 +857,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     className='text-lg font-medium leading-6 flex items-center mb-6'
                   >
 
-                    <DownloadIcon className=' text-gray-700 h-5 w-5 dark:text-[#03F3FF] ' />
-                    {theme === 'dark' ? <p className=' text-gradient flex flex-grow'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow '>Receive Crypto</p>}
+                    <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
+                    {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
 
                     <button
-                      className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                      className='py-2 px-4 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
                       onClick={closeModal3}
                       type='button'
                     >
@@ -929,15 +871,15 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <div className='mt-2 '>
                     <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
 
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network</p>
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
 
                     <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
 
 
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Address</p>
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
                     <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
-                      <p className='flex flex-grow text-gray-700 dark:text-white mb-1'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+                      <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
                       {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
                       <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
@@ -960,16 +902,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <div className='flex space-x-5'>
                       <div>
-                        <p className='dark:text-white text-gray-700 pt-3'>Expected arrival</p>
-                        <p className='dark:text-white text-gray-700 text-sm'>{cryptoToReceive.arrival}</p>
+                        <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Expected arrival</p>
+                        <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.arrival}</p>
                       </div>
                       <div>
-                        <p className='dark:text-white text-gray-700 pt-3'>Minimum deposit</p>
-                        <p className='dark:text-white text-gray-700 text-sm'>{cryptoToReceive.MinDeposit}</p>
+                        <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Minimum deposit</p>
+                        <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.MinDeposit}</p>
                       </div>
                     </div>
-                    <p className='dark:text-white text-gray-700 text-sm pt-3'>Send only {cryptoToReceive.name} to this deposit address.</p>
-                    <p className='dark:text-white text-gray-700 text-sm'>Ensure the network is {" "}
+                    <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p>
+                    <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {" "}
                       <span className='text-red-400'>{networkToReceive}</span>.</p>
 
 

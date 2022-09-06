@@ -1,11 +1,12 @@
 import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import { CheckIcon, UserCircleIcon, XIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, ChevronDownIcon, DocumentDuplicateIcon, } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import Image from 'next/image'
 
 import btcIcon from '../images/btc.png'
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 interface Crypto {
   name: string;
@@ -20,27 +21,44 @@ interface Crypto {
 
 
 interface Props {
-  arr: Crypto[];
-  defaultValue: Crypto;
-  onClick?: (value: Crypto) => void;
+  // arr: Crypto[];
+  // defaultValue: Crypto;
+  // onClick?: (value: Crypto) => void;
+  currentAccount: string;
 }
 
-function DropdownHeader({ arr, defaultValue, onClick }: Props) {
+function DropdownHeader({ currentAccount }: Props) {
+
+  const [showCheck, setShowCheck] = useState<boolean>(false);
+
+  const [copied, setCopied] = useState<boolean>(false);
+  const handleCopy = async () => {
+    console.log('first')
+    setShowCheck(true);
+    setTimeout(() => {
+      setShowCheck(false);
+    }, 1000);
+
+  }
+
+
+
   return (
-    <div className=" w-full  text-right">
+    <div className="w-24 md:w-64 text-right">
       <Menu as="div" className="relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-blue-300">
         <div>
           <Menu.Button className="inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 
-            <div className="relative h-5 w-5">
-              <Image
-                src={defaultValue.img}
-                layout="fill"
-                objectFit="contain"
-              />
+            <div className="relative h-6 w-6">
+              <UserCircleIcon className='h-6 w-6 dark:text-[#03F3FF]' />
+
             </div>
-            <p className='flex flex-grow mx-3 text-black dark:text-white'> {defaultValue.name}</p>
-            <ChevronDownIcon className="ml-2 -mr-1 h-5 w-5 text-gray-700 dark:text-white" />
+
+            <p className='font-poppins text-gradient whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>{currentAccount.substring(0, 8)}
+              <DotsHorizontalIcon className='dark:text-[#03F3FF] h-6 w-6 mx-1' />
+
+              {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}</p>
+            <ChevronDownIcon className="dark:text-[#03F3FF] ml-2 -mr-1 h-6 w-6 text-gray-700 " />
           </Menu.Button>
         </div>
         <Transition
@@ -52,36 +70,67 @@ function DropdownHeader({ arr, defaultValue, onClick }: Props) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="z-50 absolute right-0 mt-1 w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-400 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
 
-              {arr.map((item) => (
-                <Menu.Item key={item.img}>
-                  {({ active }) => (
-                    <button onClick={() => onClick(item)}
-                      className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white' : 'text-gray-900'
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      <div className="relative h-5 w-5 ml-2 mr-3">
-                        <Image
-                          src={item.img}
-                          layout="fill"
-                          objectFit="contain"
-                        />
-                      </div>
-                      {item.name}
 
-                    </button>
-                  )}
-                </Menu.Item>
-              ))}
+
+              <div className='h-12'>
+                <button className='flex w-full items-center rounded-md px-2 py-2 text-sm'>
+
+                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 8)}
+                    <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
+
+                    {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}</p>
+
+                  <CopyToClipboard text={currentAccount}
+                    onCopy={() => { setCopied(true) }}>
+                    <div onClick={handleCopy}>
+                      {showCheck
+                        ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                        : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+
+                    </div>
+                  </CopyToClipboard>
+
+                </button>
+
+              </div>
+
+
+              <Menu.Item >
+                {({ active }) => (
+                  <button
+                    className={`${active ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white' : 'font-poppins text-gray-900'
+                      } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                  >
+
+                    <p className='text-gradient '>Add New Account</p>
+
+                  </button>
+                )}
+              </Menu.Item>
+
+              <Menu.Item >
+                {({ active }) => (
+                  <button
+                    className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
+                      } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                  >
+
+                    <p className='font-poppins text-gradient text-center'>Remove Account</p>
+
+
+                  </button>
+                )}
+              </Menu.Item>
 
             </div>
 
           </Menu.Items>
         </Transition>
       </Menu>
-    </div>
+    </div >
   )
 }
 

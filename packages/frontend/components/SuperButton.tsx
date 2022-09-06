@@ -19,7 +19,7 @@ function SuperButton({ Icon, title, onClick }: Props) {
         </div>
 
         <p className="text-[18px] leading-[23px]">
-          <span className="text-gradient">{title}</span>
+          <span className="text-gradient font-poppins">{title}</span>
         </p>
       </div>
     </div>

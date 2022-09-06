@@ -24,7 +24,10 @@ module.exports = {
         dimBlue: "rgba(9, 151, 124, 0.1)",
         footerBg: '#d8c9d8' // bg-footerBg
       },
-
+      fontFamily: {
+        'poppins': ["Poppins", "sans-serif"],
+        "Josefin": ["Josefin Sans", "sans-serif"],
+      },
     }
   }
 };

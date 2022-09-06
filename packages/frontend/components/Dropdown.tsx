@@ -40,7 +40,7 @@ function Dropdown({ arr, defaultValue, onClick }: Props) {
                 <Menu.Item>
                   {({ active }) => (
                     <button onClick={() => onClick(item)}
-                      className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
+                      className={`${active ? 'bg-violet-500 text-white font-poppins' : 'font-poppins text-gray-900'
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     >
                       {item}

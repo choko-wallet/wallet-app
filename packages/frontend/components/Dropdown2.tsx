@@ -39,7 +39,7 @@ function Dropdown2({ arr, defaultValue, onClick }: Props) {
                 objectFit="contain"
               />
             </div>
-            <p className='flex flex-grow mx-3 text-black dark:text-white'> {defaultValue.name}</p>
+            <p className='flex flex-grow mx-3 text-black dark:text-white font-poppins'> {defaultValue.name}</p>
             <ChevronDownIcon className="ml-2 -mr-1 h-5 w-5 text-gray-700 dark:text-white" />
           </Menu.Button>
         </div>
@@ -59,7 +59,7 @@ function Dropdown2({ arr, defaultValue, onClick }: Props) {
                 <Menu.Item key={item.img}>
                   {({ active }) => (
                     <button onClick={() => onClick(item)}
-                      className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white' : 'text-gray-900'
+                      className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white font-poppins' : 'font-poppins text-gray-900'
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     >
                       <div className="relative h-5 w-5 ml-2 mr-3">
