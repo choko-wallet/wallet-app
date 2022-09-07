@@ -45,12 +45,12 @@ function DropdownHeader({ currentAccount }: Props) {
 
   return (
     <div className="w-24 md:w-64 text-right">
-      <Menu as="div" className="relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-blue-300">
+      <Menu as="div" className="relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-[#00f6ff]">
         <div>
           <Menu.Button className="inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 
             <div className="relative h-6 w-6">
-              <UserCircleIcon className='h-6 w-6 dark:text-[#03F3FF]' />
+              <UserCircleIcon className='h-6 w-6 dark:text-[#03F3FF] ' />
 
             </div>
 
@@ -70,7 +70,7 @@ function DropdownHeader({ currentAccount }: Props) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]">
             <div className="px-1 py-1 ">
 
 

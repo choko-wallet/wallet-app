@@ -32,6 +32,7 @@ import DropdownHeader from '../../components/DropdownHeader'
 import DropdownForNetwork from '../../components/DropdownForNetwork'
 import SuperButton from '../../components/SuperButton'
 import CryptoRow from '../../components/CryptoRow'
+import Loading from '../../components/Loading'
 
 
 
@@ -85,6 +86,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isNetworkChangeOpen, setIsNetworkChangeOpen] = useState<boolean>(false);
+  const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
+
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
 
@@ -181,21 +184,23 @@ function Home({ coinPriceData }: Props): JSX.Element {
   }
 
   const changeNetwork = async () => {
-    const notification = toast.loading('Changing Network...', {
-      style: {
-        background: 'green',
-        color: 'white',
-        // fontWeight: "bolder",
-        // fontFamily: "Poppins",
-        fontSize: '17px',
-        padding: '20px'
-      }
-    });
+    setIsLoadingOpen(true);
+    // const notification = toast.loading('Changing Network...', {
+    //   style: {
+    //     background: 'green',
+    //     color: 'white',
+    //     // fontWeight: "bolder",
+    //     // fontFamily: "Poppins",
+    //     fontSize: '17px',
+    //     padding: '20px'
+    //   }
+    // });
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         console.log('changeNetwork');
-        toast.dismiss(notification);
+        // toast.dismiss(notification);
+        setIsLoadingOpen(false);
 
         setIsNetworkChangeOpen(true);
 
@@ -231,14 +236,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
   console.log(coinPriceData)
   console.log(theme)
 
+  if (isLoadingOpen) return <Loading title='Changing Network' />
+
 
   return (
     <div className={theme}>
       <div className='bg-gray-100 dark:bg-primary min-h-screen overflow-hidden'>
-        <Toaster />
+        {/* <Toaster /> */}
 
         {/* header */}
-        <div className='sticky top-0 z-20 bg-white dark:bg-primary border-b border-gray-800 shadow-md'>
+        <div className='sticky top-0 z-20 bg-white dark:bg-primary border-b border-gray-700 shadow-md'>
           <div className='flex justify-between p-2 '>
             <div className='flex items-center justify-center ' >
 
@@ -253,14 +260,14 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
 
-              <label htmlFor="my-drawer" className="flex md:hidden flex-grow items-center justify-center active:scale-95 transition duration-150 ease-out px-4 drawer-button py-2  mt-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
-                <p className='text-black text-lg font-semibold font-poppins '>Network</p>
+              <label htmlFor="my-drawer" className="flex md:hidden flex-grow items-center justify-center active:scale-95 transition duration-150 ease-out px-2 drawer-button py-2 mt-2 font-medium  text-primary bg-blue-gradient rounded-[6px] outline-none">
+                <p className='text-black text-sm font-semibold font-poppins '>Network</p>
 
-                <ChevronRightIcon className=' text-white h-5 w-5 ml-2 dark:text-black' />
+                <ChevronRightIcon className=' text-white h-4 w-4 ml-1 dark:text-black' />
               </label>
 
               <button
-                className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none '
+                className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-2 px-2  text-primary bg-blue-gradient rounded-[10px] outline-none '
                 onClick={() => setSidebar(!sidebar)}
               >
                 <p className='text-black text-lg font-semibold font-poppins'>Network</p>
@@ -317,7 +324,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
         {/* menu各种icon */}
         {menuIcon ?
-          <div className='flex bg-primary items-center justify-center h-10 w-full md:hidden'>
+          <div className='flex bg-primary items-center justify-center h-10 mt-2 w-full md:hidden'>
             <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
               <HomeIcon className='h-8 transition duration-150 ease-out cursor-pointer inline-flex active:scale-125 dark:text-[#03F3FF]'
                 onClick={() => router.push('/home')} />
@@ -362,7 +369,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
             {/* balance */}
 
-            <div className='relative flex md:hidden flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
+            <div className='relative flex md:hidden flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl dark:border-[#00f6ff] dark:border'>
               <div className='card p-5 md:p-10'>
                 <p className='text-3xl text-gray-700 dark:text-white font-poppins'> $793.32 </p>
                 <p className='text-md text-white cursor-pointer hover:text-[#00f6ff] font-poppins'>Your avalaible token Balance on the current network. </p>
@@ -391,21 +398,25 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
           </div>
 
-          <div className="drawer-side dark:bg-primary ">
+          <div className="drawer-side dark:bg-primary   ">
             <label htmlFor="my-drawer" className="drawer-overlay"></label>
-            <ul className="menu overflow-y-auto w-80 bg-blue-100 text-base-content dark:bg-primary ">
+            <ul className="menu overflow-y-auto w-80 bg-blue-100 text-base-content dark:bg-primary dark:border-r dark:border-[#00f6ff] ">
 
 
 
-              <div className='flex items-center justify-between ml-10 mx-5 dark:bg-primary '>
+              <div className='flex items-center justify-between ml-10 z-50 mx-5 mt-3 dark:bg-primary '>
                 <p className='text-lg  font-semibold  text-gradient font-poppins'>Change Network</p>
-                <label htmlFor="my-drawer" className="drawer-button px-4 py-2 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none">
-                  <XIcon className=' text-white h-5 w-5 dark:text-primary' /></label>
+                <label htmlFor="my-drawer" className="drawer-button ">
+
+                  <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+
+                </label>
               </div>
 
               <div className='m-5 scrollbar-thin max-h-[600px] overflow-y-scroll overflow-x-hidden'>
-                <div className='bg-white h-16 w-[230px] ml-5 rounded-lg bg-blue-gradient flex items-center justify-center ' onClick={() => setAddNetworkModalOpen(true)}>
-                  <p className='text-black text-lg font-semibold font-poppins'>Add Network</p>
+                <div className='bg-white h-16 w-[230px] ml-5 rounded-lg dark:bg-[#c67391] flex items-center justify-center ' onClick={() => setAddNetworkModalOpen(true)}>
+                  <p className='text-black flex items-center justify-center text-lg font-semibold font-poppins'>Add Network
+                    <PlusCircleIcon className='h-8 w-8 ml-3 text-black ' /></p>
                 </div>
                 <RadioGroup onChange={setNetworkSelection}
                   value={networkSelection || network}>
@@ -424,15 +435,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
                             <div className='text-sm'>
                               <RadioGroup.Label
                                 as='p'
-                                className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
+                                className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                               >
                                 {name}
                               </RadioGroup.Label>
                               <RadioGroup.Description
                                 as='span'
-                                className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
+                                className={`inline text-xs  ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                               >
-                                {rpc}
+
+                                <p className='w-40 truncate'>{rpc}</p>
                               </RadioGroup.Description>
                             </div>
                           </div>
@@ -480,16 +492,23 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <p className='text-lg font-semibold  mt-5 ml-10 mx-auto text-gradient font-poppins'>Network</p>
 
                     <div className='m-5 scrollbar-thin max-h-[600px] overflow-y-scroll'>
-                      <div className='bg-white h-20 w-64 ml-5 rounded-lg bg-blue-gradient flex items-center justify-center cursor-pointer ' onClick={() => setAddNetworkModalOpen(true)}>
-
-
-                        <p className='text-black flex items-center justify-center text-lg font-semibold font-poppins'>Add Network
-                          <PlusCircleIcon className='h-8 w-8 ml-3 text-black ' /></p>
-
-
+                      <div className='bg-white h-20 w-64 ml-5 my-1 rounded-lg flex items-center justify-center cursor-pointer dark:bg-[#c67391] ' onClick={() => setAddNetworkModalOpen(true)}>
+                        <p className='flex items-center text-gradient justify-center text-xl font-semibold font-poppins'>Add Network
+                          <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
                       </div>
+
+                      <div className='bg-white h-20 w-64 ml-5 my-1 rounded-lg flex items-center justify-center cursor-pointer dark:bg-[#c67391] ' onClick={() => setAddNetworkModalOpen(true)}>
+                        <p className=' flex items-center text-black justify-center text-xl font-semibold font-poppins'>Add Network
+                          <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
+                      </div>
+
+                      <div className='bg-blue-gradient dark:border-4 my-1 dark:border-[#c67391] h-20 w-64 ml-5 rounded-lg flex items-center justify-center cursor-pointer dark:bg-blue-gradient' onClick={() => setAddNetworkModalOpen(true)}>
+                        <p className=' flex items-center text-black justify-center text-xl font-semibold font-poppins'>Add Network
+                          <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
+                      </div>
+
                       <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network}>
+                        value={networkSelection || network} className='z-50'>
                         {allNetworks.map(({ info, name, rpc }) => (
                           <RadioGroup.Option
                             className={({ active, checked }) =>
@@ -505,15 +524,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
-                                      className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                                     >
                                       {name}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
-                                      className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
+                                      className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                                     >
-                                      {rpc}
+                                      <p className='w-44 truncate'>{rpc}</p>
+
                                     </RadioGroup.Description>
                                   </div>
                                 </div>
@@ -528,7 +548,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                         ))}
                       </RadioGroup>
                       <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network}>
+                        value={networkSelection || network} className='z-50'>
                         {allNetworks.map(({ info, name, rpc }) => (
                           <RadioGroup.Option
                             className={({ active, checked }) =>
@@ -544,15 +564,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
-                                      className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                                     >
                                       {name}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
-                                      className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
+                                      className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                                     >
-                                      {rpc}
+                                      <p className='w-44 truncate'>{rpc}</p>
+
                                     </RadioGroup.Description>
                                   </div>
                                 </div>
@@ -567,7 +588,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                         ))}
                       </RadioGroup>
                       <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network}>
+                        value={networkSelection || network} className='z-50'>
                         {allNetworks.map(({ info, name, rpc }) => (
                           <RadioGroup.Option
                             className={({ active, checked }) =>
@@ -583,15 +604,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
-                                      className={`font-medium font-poppins  ${checked ? 'text-black' : 'text-white'}`}
+                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
                                     >
                                       {name}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
-                                      className={`inline ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
+                                      className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
                                     >
-                                      {rpc}
+                                      <p className='w-44 truncate'>{rpc}</p>
+
                                     </RadioGroup.Description>
                                   </div>
                                 </div>
@@ -605,6 +627,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
                           </RadioGroup.Option>
                         ))}
                       </RadioGroup>
+
+
+
 
 
                     </div>
@@ -616,7 +641,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                       </button> */}
 
                       <button
-                        className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none '
+                        className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none z-50'
                         onClick={async () => {
                           await changeNetwork();
                         }}
@@ -640,7 +665,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
               {/* balance */}
-              <div className='relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
+              <div className='relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl dark:border-[#00f6ff] dark:border'>
                 <div className='card p-5 md:p-10'>
                   <p className='text-3xl text-gray-700 dark:text-white font-poppins'> $793.32 </p>
                   <p className='text-md text-white cursor-pointer hover:text-[#00f6ff] font-poppins'>Your avalaible token Balance on the current network. </p>
@@ -678,7 +703,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
             {/* network change modal */}
             <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
               <div className={theme}>
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
+                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
                   <Dialog.Title
                     as='h3'
                     className='font-poppins text-lg font-medium leading-6 text-gradient w-72'
@@ -707,7 +732,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
             {/* send modal */}
             <Modal closeModal={closeModal2} isOpen={isSendOpen}>
               <div className={theme}>
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'>
+                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg  font-medium leading-6 flex items-center mb-6 '
@@ -851,7 +876,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
             <Modal closeModal={closeModal3} isOpen={isReceiveOpen}>
               <div className={theme}>
 
-                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'>
+                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg font-medium leading-6 flex items-center mb-6'
@@ -860,13 +885,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
                     {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
 
-                    <button
-                      className='py-2 px-4 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                      onClick={closeModal3}
-                      type='button'
-                    >
-                      <XIcon className='h-5 w-5 duration-300 hover:scale-120 transtion east-out' />
-                    </button>
+
+                    <div onClick={closeModal3}>
+                      <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+                    </div>
+
                   </Dialog.Title>
                   <div className='mt-2 '>
                     <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
@@ -923,9 +946,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
             </Modal>
 
             {/* add network modal */}
-            <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
+            {/* <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
               <div className={theme}>
-                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all'><Dialog.Title
+                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'><Dialog.Title
                   as='h3'
                   className='text-lg font-medium leading-6 text-gradient '
                 >
@@ -948,6 +971,44 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <div className='mt-4'>
                     <button
                       className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                      onClick={closeAddNetworkModal}
+                      type='button'
+                    >
+                      OK
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </div >
+
+            </Modal> */}
+
+            {/* add network modal pink */}
+
+            <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
+              <div className={theme}>
+                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#c67391]'><Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 text-gradient '
+                >
+                  Add Network
+                </Dialog.Title>
+                  <div className='mt-2'>
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
+                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input dark:border dark:border-[#c67391] w-full  " />
+
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
+                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input dark:border dark:border-[#c67391] w-full " />
+
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
+                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input dark:border dark:border-[#c67391] w-full " />
+
+
+
+                  </div>
+
+                  <div className='mt-4'>
+                    <button
+                      className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none'
                       onClick={closeAddNetworkModal}
                       type='button'
                     >
