@@ -36,7 +36,7 @@ function Dropdown({ closeModal, isOpen, children }: Props) {
         </Transition.Child>
 
         <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4 text-center'>
+          <div className='flex min-h-full items-center justify-center p-4 text-center '>
             <Transition.Child
               as={Fragment}
               enter='ease-out duration-300'

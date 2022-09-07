@@ -1008,7 +1008,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                   <div className='mt-4'>
                     <button
-                      className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none'
+                      className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
                       onClick={closeAddNetworkModal}
                       type='button'
                     >
