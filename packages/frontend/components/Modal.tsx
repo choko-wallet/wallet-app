@@ -32,7 +32,7 @@ function Dropdown({ closeModal, isOpen, children }: Props) {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <div className='fixed inset-0 bg-primary bg-opacity-70' />
+          <div className='fixed inset-0  backdrop-blur-md' />
         </Transition.Child>
 
         <div className='fixed inset-0 overflow-y-auto'>

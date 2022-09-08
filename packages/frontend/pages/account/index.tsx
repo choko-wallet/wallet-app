@@ -35,7 +35,7 @@ function AccountRouter (): JSX.Element {
                 Create New Mnemonic
               </button>
               <button className='btn btn-accent col-span-8 md:col-span-3'
-                onClick={() => router.push('account/import')}>
+                onClick={() => router.push('account/import$')}>
                 Import Mnemonic
               </button>
             </div>

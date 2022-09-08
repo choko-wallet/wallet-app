@@ -11,7 +11,9 @@
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.1",
     "@choko-wallet/core": "0.1.6-7",
+    "@choko-wallet/known-networks": "0.1.6-7",
     "@choko-wallet/request-handler": "0.1.6-7",
+    "@choko-wallet/sdk": "0.1.6-9",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-brands-svg-icons": "^6.1.2",
     "@fortawesome/free-regular-svg-icons": "^6.1.2",
@@ -24,7 +26,6 @@
     "@polkadot/wasm-crypto": "^6.3.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/util": "0.8.4-1",
-    "crypto-js": "^4.1.1",
     "daisyui": "^2.19.0",
     "next": "latest",
     "next-themes": "^0.2.0",
@@ -38,8 +39,8 @@
     "react-redux": "^7.2.0",
     "react-spinners": "^0.13.4",
     "react-typed": "^1.2.0",
-    "redux-persist": "6.0.0",
-    "tailwind-scrollbar": "^1.3.2"
+    "superagent": "^8.0.0",
+    "tailwind-scrollbar": "^2.0.1"
   },
   "devDependencies": {
     "@types/react-copy-to-clipboard": "^5.0.3",

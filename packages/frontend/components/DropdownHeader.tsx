@@ -54,10 +54,11 @@ function DropdownHeader({ currentAccount }: Props) {
 
             </div>
 
-            <p className='font-poppins text-gradient whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>{currentAccount.substring(0, 8)}
+            <p className='font-poppins text-gradient whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
+              {currentAccount.substring(0, 7)}
               <DotsHorizontalIcon className='dark:text-[#03F3FF] h-6 w-6 mx-1' />
-
-              {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}</p>
+              {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}
+            </p>
             <ChevronDownIcon className="dark:text-[#03F3FF] ml-2 -mr-1 h-6 w-6 text-gray-700 " />
           </Menu.Button>
         </div>
@@ -78,10 +79,10 @@ function DropdownHeader({ currentAccount }: Props) {
               <div className='h-12'>
                 <button className='flex w-full items-center rounded-md px-2 py-2 text-sm'>
 
-                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 8)}
+                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 7)}
                     <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
 
-                    {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}</p>
+                    {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}</p>
 
                   <CopyToClipboard text={currentAccount}
                     onCopy={() => { setCopied(true) }}>

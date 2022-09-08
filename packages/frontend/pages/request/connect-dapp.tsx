@@ -32,10 +32,9 @@ function ConnectDappHandler (): JSX.Element {
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
 
   const [request, setRequest] = useState<ConnectDappRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    // TODO: is this right?
     if (allAccounts && currentAccount) {
       return;
     }
@@ -55,12 +54,19 @@ function ConnectDappHandler (): JSX.Element {
   }, [router, dispatch, userAccount, currentAccount, allAccounts]);
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    if (!router.isReady) return;
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
 
-      setRequest(ConnectDappRequest.deserialize(u8aRequest));
-    }
-  }, [router]);
+    setRequest(ConnectDappRequest.deserialize(u8aRequest));
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -69,16 +75,14 @@ function ConnectDappHandler (): JSX.Element {
           void (async () => {
             const connectDapp = new ConnectDappDescriptor();
             const response = await connectDapp.requestHandler(request, userAccount[account]);
-
-            console.error(response);
             const s = response.serialize();
 
-            setResponse(compressParameters(s));
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     setMounted(true);
@@ -101,16 +105,14 @@ function ConnectDappHandler (): JSX.Element {
     return null;
   }
 
-  console.log(userAccount);
-
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
         <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
       </div>
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
@@ -126,13 +128,8 @@ function ConnectDappHandler (): JSX.Element {
               DApp Origin:
             </div>
             <div className='col-span-12'>
-              <code className='underline text-clip'>{request.dappOrigin.displayName}</code>
+              <code className='underline text-clip'>{request?.dappOrigin.displayName}</code>
             </div>
-            <div className='col-span-12'>
-              <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
-            </div>
-
             <RadioGroup className='col-span-12'
               onChange={setCurrentAccount}
               value={currentAccount}>
@@ -150,10 +147,10 @@ function ConnectDappHandler (): JSX.Element {
                       <div className='flex items-center'>
                         <div className='text-sm'>
                           <RadioGroup.Label
-                            as='p'
-                            className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                            as='div'
+                            className={`font-medium ${checked ? 'text-white' : 'text-gray-900'}`}
                           >
-                            {name}
+                            <div className="w-1/2 md:w-full" style={{ overflowWrap: 'break-word' }}>{name}</div>
                           </RadioGroup.Label>
                         </div>
                       </div>
@@ -167,33 +164,6 @@ function ConnectDappHandler (): JSX.Element {
                 </RadioGroup.Option>
               ))}
             </RadioGroup>
-            {/* <div className='col-span-12'>
-              <div className='divider'></div>
-            </div>
-            <div className='col-span-12'>
-              Message To Sign:
-            </div>
-
-            <div className='col-span-12'>
-              <div className='tabs'>
-                <a className={`tab tab-bordered ${displayType === 'hex' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('hex')}>Hex</a>
-                <a className={`tab tab-bordered ${displayType === 'ascii' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('ascii')}>Ascii</a>
-              </div>
-            </div>
-
-            <div className='col-span-12'>
-              {
-                displayType === 'hex'
-                  ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'>{'0x' + u8aToHex(request.payload.message)}</div>
-                  )
-                  : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'>{u8aToString(request.payload.message)}</div>
-                  )
-              }
-            </div> */}
           </div>
         </div>
       </div>

@@ -29,6 +29,8 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
+  const [redirectRequest, setRedirectRequest] = useState<string>('');
+
   const refreshMnemonic = () => {
     const mnemonic = mnemonicGenerate();
 
@@ -38,12 +40,25 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
   const handleSetPassword = () => {
     dispatch(addUserAccount({ password: password, seeds: seeds }));
-    void router.push('/home');
+
+    if (redirectRequest) {
+      void router.push('/request?' + redirectRequest);
+    } else {
+      void router.push('/home');
+    }
   };
 
   useEffect(() => {
+    const redirectParams = localStorage.getItem('requestParams');
+
+    localStorage.removeItem('requestParams');
+
+    if (redirectParams) {
+      setRedirectRequest(redirectParams);
+    }
+
     setMounted(true);
-  }, []);
+  }, [router]);
 
   if (!mounted) {
     return null;

@@ -105,7 +105,7 @@ function Settings(): JSX.Element {
   return (
     <div className={theme}>
       <div className='bg-gray-100 grid grid-cols-12 dark:bg-primary min-h-screen overflow-hidden'>
-        <Toaster />
+        {/* <Toaster /> */}
         <div className='col-span-12 '>
 
           {/* header */}
@@ -225,114 +225,126 @@ function Settings(): JSX.Element {
 
 
           {/* settings */}
-          <div className='max-w-3xl mx-auto p-5 relative flex flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl '>
-            <div className='p-5 '>
-              <p className='text-2xl text-gray-700 dark:text-white font-poppins'> Settings </p>
-
-            </div>
-
-            <div className='flex justify-between m-1 '>
-              <div className='my-auto'>
-                <p className='text-lg dark:text-[#03F3FF]'>Wallet ID</p>
+          <div className='p-3'>
+            <div className='dark:border-[#00f6ff] dark:border max-w-3xl mx-auto p-5 relative flex flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 rounded-xl '>
+              <div className='p-5 '>
+                <p className='text-2xl text-gray-700 dark:text-white font-poppins'> Settings </p>
 
               </div>
 
+              <div className='flex justify-between m-1 '>
+                <div className='my-auto'>
+                  <p className='text-lg dark:text-[#03F3FF]'>Wallet ID</p>
 
-              <div className='h-12 my-auto'>
-                <button className='cursor-pointer flex w-full items-center rounded-md px-2 py-2 text-sm'>
+                </div>
 
-                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 8)}
+
+                <div className='h-12 my-auto'>
+                  <button className='cursor-pointer flex w-full items-center rounded-md px-2 py-2 text-sm'>
+
+                    <p className='font-poppins whitespace-nowrap flex md:hidden text-center items-center justify-certer flex-grow  ml-2 text-gradient'>
+                      {/* {currentAccount} */}
+                      {currentAccount.substring(0, 8)}
+                      <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
+                      {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}
+                    </p>
+
+                    <p className='font-poppins whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>
+                      {currentAccount}
+                      {/* {currentAccount.substring(0, 8)}
                     <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
+                    {currentAccount.substring(currentAccount.length - 8, currentAccount.length)} */}
+                    </p>
 
-                    {currentAccount.substring(currentAccount.length - 8, currentAccount.length)}</p>
+                    <CopyToClipboard text={currentAccount}
+                      onCopy={() => { setCopied(true) }}>
+                      <div onClick={handleCopy}>
+                        {showCheck
+                          ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
 
-                  <CopyToClipboard text={currentAccount}
-                    onCopy={() => { setCopied(true) }}>
-                    <div onClick={handleCopy}>
-                      {showCheck
-                        ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                        : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+                      </div>
+                    </CopyToClipboard>
 
-                    </div>
-                  </CopyToClipboard>
+                  </button>
 
-                </button>
-
-              </div>
-            </div>
-
-            <div className='flex justify-between m-1'>
-              <div className='flex-col'>
-                <p className='text-md md:text-lg dark:text-[#03F3FF]'>Change Password</p>
-                <p className='text-sm font-normal text-dimWhite font-poppins'>Password is your unique password.</p>
+                </div>
               </div>
 
-              <div className='md:w-40 w-32 flex justify-end'>
-                <button
-                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                // onClick={closeModal2}
+              <div className='flex justify-between m-1'>
+                <div className='flex-col'>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Change Password</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Password is your unique password.</p>
+                </div>
 
-                >
-                  Password
-                </button>
+                <div className='md:w-40 w-32 flex justify-end'>
+                  <button
+                    className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                  // onClick={closeModal2}
+
+                  >
+                    Password
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className='flex justify-between m-1'>
-              <div className='flex-col'>
-                <p className='text-md md:text-lg dark:text-[#03F3FF]'>View Your Mnemonic</p>
-                <p className='text-sm font-normal text-dimWhite font-poppins'>Do not share your private keys with anyone.</p>
-              </div>
-
-
-              <div className='md:w-40 w-32 flex justify-end'>
-                <button
-                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                // onClick={closeModal2}
-
-                >
-                  Mnemonic
-                </button>
-              </div>
-            </div>
+              <div className='flex justify-between m-1'>
+                <div className='flex-col'>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>View Your Mnemonic</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Do not share your private keys with anyone.</p>
+                </div>
 
 
-            <div className='flex justify-between m-1'>
-              <div className='flex-col'>
-                <p className='text-md md:text-lg dark:text-[#03F3FF]'>Select Language</p>
-                <p className='text-sm font-normal text-dimWhite font-poppins'>Set your preferred language</p>
+                <div className='md:w-40 w-32 flex justify-end'>
+                  <button
+                    className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                  // onClick={closeModal2}
+
+                  >
+                    Mnemonic
+                  </button>
+                </div>
               </div>
 
 
-              <div className='md:w-40 w-32 flex justify-end'>
-                <button
-                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                // onClick={closeModal2}
+              <div className='flex justify-between m-1'>
+                <div className='flex-col'>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Select Language</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Set your preferred language</p>
+                </div>
 
-                >
-                  Language
-                </button>
+
+                <div className='md:w-40 w-32 flex justify-end'>
+                  <button
+                    className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                  // onClick={closeModal2}
+
+                  >
+                    Language
+                  </button>
+                </div>
               </div>
-            </div>
 
 
-            <div className='flex justify-between m-1 '>
-              <div className='flex-col'>
-                <p className='text-md md:text-lg dark:text-[#03F3FF]'>Trading Currency</p>
-                <p className='text-sm font-normal text-dimWhite font-poppins'>Select your trading currency</p>
+              <div className='flex justify-between m-1 '>
+                <div className='flex-col'>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Trading Currency</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Select your trading currency</p>
+                </div>
+
+
+                <div className='md:w-40 w-32 flex justify-end'>
+                  <button
+                    className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                  // onClick={closeModal2}
+
+                  >
+                    Currency
+                  </button>
+                </div>
               </div>
 
 
-              <div className='md:w-40 w-32 flex justify-end'>
-                <button
-                  className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                // onClick={closeModal2}
-
-                >
-                  Currency
-                </button>
-              </div>
-            </div>
 
 
 
@@ -341,17 +353,15 @@ function Settings(): JSX.Element {
 
 
 
+              {/* gradient light */}
 
-
-            {/* gradient light */}
-
-            <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
-            <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " />
+              <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
+              <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " />
 
 
 
-          </div >
-
+            </div >
+          </div>
 
 
 

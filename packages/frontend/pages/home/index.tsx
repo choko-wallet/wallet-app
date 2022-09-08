@@ -1,13 +1,27 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
-import { GetServerSideProps } from 'next';
+
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import {
   HomeIcon, BellIcon, CogIcon, MoonIcon, SunIcon, TranslateIcon,
-  CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
-  DownloadIcon
+  PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
+  DownloadIcon, CheckCircleIcon
 } from '@heroicons/react/solid';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { useRouter } from 'next/router';
+import React, { Fragment, useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+import { knownNetworks } from '@choko-wallet/known-networks';
+import { selectUserAccount } from '../../features/redux/selectors';
+import { loadUserAccount } from '../../features/slices/userSlice';
+
+import type { NextPage } from 'next';
+import { GetServerSideProps } from 'next';
+
 import QRCode from "react-qr-code";
 import { QrReader } from 'react-qr-reader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -16,15 +30,9 @@ import {
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
   UserIcon, CameraIcon,
 } from '@heroicons/react/outline';
-import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 
-
 import Image from 'next/image'
-import React, { Fragment, useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import btcIcon from '../../images/btc.png'
-import btcQr from '../../images/btcqr.png'
 import Modal from '../../components/Modal'
 import Dropdown2 from '../../components/Dropdown2'
 import DropdownHeader from '../../components/DropdownHeader'
@@ -34,15 +42,6 @@ import SuperButton from '../../components/SuperButton'
 import CryptoRow from '../../components/CryptoRow'
 import Loading from '../../components/Loading'
 
-
-
-
-// redux
-import { useDispatch, useSelector } from 'react-redux';
-
-import { selectUserAccount } from '../../features/redux/selectors';
-import { loadUserAccount } from '../../features/slices/userSlice';
-import { bip39ToEntropy } from '@polkadot/wasm-crypto';
 
 
 interface Props {
@@ -68,29 +67,26 @@ interface PriceUsd {
   usd: number;
 }
 
+
+
 /* eslint-disable sort-keys */
 function Home({ coinPriceData }: Props): JSX.Element {
-
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   const router = useRouter();
   const dispatch = useDispatch();
-
   const userAccount = useSelector(selectUserAccount);
-
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
-
-  const [networkSelection, setNetworkSelection] = useState<string>('');
-  const [network, setNetwork] = useState<string>('polkadot');
-
+  const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');//初始化设置默认网络skyekiwi
+  const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
   const [mounted, setMounted] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);//网络切换原始modal弹框
+  const [balance, setBalance] = useState<number>(0);
   const [isNetworkChangeOpen, setIsNetworkChangeOpen] = useState<boolean>(false);
   const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
-
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
-
   const [languageArr, setLanguageArr] = useState<string[]>(['ENG', '中文']);
   const [language, setLanguage] = useState<string>('ENG');
 
@@ -101,47 +97,63 @@ function Home({ coinPriceData }: Props): JSX.Element {
       { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' },
     ]
   );
-
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },);
-
   const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },);
-
   const [networkToReceive, setNetworkToReceive] = useState<string>("");
-
   const [networkArr, setNetworkArr] = useState<string[]>(
     ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)']
   );
-
   const [copied, setCopied] = useState<boolean>(false);
-
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
-
   const [openScan, setOpenScan] = useState<boolean>(false);
-
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
-
   const [sidebar, setSidebar] = useState<boolean>(true);//默认打开sidebar
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
-
   const [menuIcon, setMenuIcon] = useState<boolean>(false);
 
 
 
   useEffect(() => {
+    const getBalance = async () => {
+      const provider = new WsProvider(knownNetworks[network].defaultProvider);
+      const api = await ApiPromise.create({
+        provider: provider
+      });
+
+      const data = await api.query.system.account(currentAccount);
+      // console.error(data['data'].toHuman()['free']);
+
+      const tokenDecimals = {
+        '847e7b7fa160d85f': 12,
+        '0018a49f151bcb20': 12,
+        e658ad422326d7f7: 10
+      };
+
+      /* eslint-disable */
+      // @ts-ignore
+      setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** tokenDecimals[network]));
+      /* eslint-enable */
+
+      // const chainInfo = await api.registry.getChainProperties()
+      // return ( data.createdAtHash.free )
+    };
+
+    void getBalance();
+    // }, []);
+  }, [network, currentAccount]);
+
+
+  useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
-      console.log('1')
       void router.push('/account');
     } else {
-      console.log('2')//always run here
       dispatch(loadUserAccount());
     }
 
     if (userAccount && Object.keys(userAccount).length > 0) {
-      console.log('3')//always run here
-
       const allAddrs = Object.keys(userAccount);
 
       setCurrentAccount(allAddrs[0]);
@@ -154,6 +166,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+
+
+  if (!mounted) {
+    return null;
+  }
 
   const allNetworks = [{
     name: 'Polkadot',
@@ -172,19 +190,19 @@ function Home({ coinPriceData }: Props): JSX.Element {
     color: 'blue-500'
   }];
 
-  if (!mounted) {
-    return null;
-  }
 
   function closeModal() {
     setIsNetworkChangeOpen(false);
-    setNetworkSelection('');
-    setNetwork(networkSelection);
-    console.log('close');
+
   }
 
+
+
   const changeNetwork = async () => {
+
     setIsLoadingOpen(true);
+    setNetwork(networkSelection);
+
     // const notification = toast.loading('Changing Network...', {
     //   style: {
     //     background: 'green',
@@ -233,10 +251,18 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   }
 
-  console.log(coinPriceData)
-  console.log(theme)
+  // console.log(coinPriceData)
+  // console.log(theme)
 
   if (isLoadingOpen) return <Loading title='Changing Network' />
+
+
+  // console.log(knownNetworks[networkSelection].text)
+  console.log(network)
+
+  console.log(networkSelection)
+
+
 
 
   return (
@@ -418,16 +444,18 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <p className='text-black flex items-center justify-center text-lg font-semibold font-poppins'>Add Network
                     <PlusCircleIcon className='h-8 w-8 ml-3 text-black ' /></p>
                 </div>
+
                 <RadioGroup onChange={setNetworkSelection}
                   value={networkSelection || network}>
-                  {allNetworks.map(({ info, name, rpc }) => (
-                    <RadioGroup.Option
+                  {Object.entries(knownNetworks).map(([hash, network], index) => {
+                    const { defaultProvider, text } = network;
+
+                    return <RadioGroup.Option
                       className={({ active, checked }) =>
-                        `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
-                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
+                        `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '} m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
                       }
-                      key={name}
-                      value={info}
+                      key={hash}
+                      value={hash}
                     >
                       {({ active, checked }) => (
                         <div className='flex w-full items-center justify-between'>
@@ -435,16 +463,21 @@ function Home({ coinPriceData }: Props): JSX.Element {
                             <div className='text-sm'>
                               <RadioGroup.Label
                                 as='p'
+                                // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
                                 className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
+
                               >
-                                {name}
+                                {text}
                               </RadioGroup.Label>
                               <RadioGroup.Description
                                 as='span'
-                                className={`inline text-xs  ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
-                              >
+                                className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
 
-                                <p className='w-40 truncate'>{rpc}</p>
+                              // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                              >
+                                <p className='w-44 truncate'>{defaultProvider}</p>
+
+                                {/* {defaultProvider} */}
                               </RadioGroup.Description>
                             </div>
                           </div>
@@ -455,22 +488,31 @@ function Home({ coinPriceData }: Props): JSX.Element {
                           )}
                         </div>
                       )}
-                    </RadioGroup.Option>
-                  ))}
+                    </RadioGroup.Option>;
+                  })}
                 </RadioGroup>
 
 
               </div>
 
-              <button
-                className='flex w-[230px] ml-10 items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none '
-                onClick={async () => {
-                  await changeNetwork();
-                }}
-              >
-                <p className='text-black text-lg font-semibold font-poppins'>Change Network</p>
+              <div className='flex justify-center '>
+                {network == networkSelection
+                  ?
+                  <p className='flex items-center justify-center    outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                  :
+                  <button
+                    // disabled={network == networkSelection}
+                    className='flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none z-50'
+                    onClick={async () => {
+                      await changeNetwork();
+                    }}
+                  >
+                    <p className='text-black text-lg font-semibold font-poppins'>Change Network</p>
 
-              </button>
+                  </button>}
+
+
+              </div>
 
 
             </ul>
@@ -507,16 +549,18 @@ function Home({ coinPriceData }: Props): JSX.Element {
                           <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
                       </div>
 
+
                       <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network} className='z-50'>
-                        {allNetworks.map(({ info, name, rpc }) => (
-                          <RadioGroup.Option
+                        value={networkSelection || network}>
+                        {Object.entries(knownNetworks).map(([hash, network], index) => {
+                          const { defaultProvider, text } = network;
+
+                          return <RadioGroup.Option
                             className={({ active, checked }) =>
-                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
-                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
+                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '} m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
                             }
-                            key={name}
-                            value={info}
+                            key={hash}
+                            value={hash}
                           >
                             {({ active, checked }) => (
                               <div className='flex w-full items-center justify-between'>
@@ -524,16 +568,21 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <div className='text-sm'>
                                     <RadioGroup.Label
                                       as='p'
+                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
                                       className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
+
                                     >
-                                      {name}
+                                      {text}
                                     </RadioGroup.Label>
                                     <RadioGroup.Description
                                       as='span'
                                       className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
-                                    >
-                                      <p className='w-44 truncate'>{rpc}</p>
 
+                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                    >
+                                      <p className='w-44 truncate'>{defaultProvider}</p>
+
+                                      {/* {defaultProvider} */}
                                     </RadioGroup.Description>
                                   </div>
                                 </div>
@@ -544,88 +593,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                 )}
                               </div>
                             )}
-                          </RadioGroup.Option>
-                        ))}
-                      </RadioGroup>
-                      <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network} className='z-50'>
-                        {allNetworks.map(({ info, name, rpc }) => (
-                          <RadioGroup.Option
-                            className={({ active, checked }) =>
-                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
-                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
-                            }
-                            key={name}
-                            value={info}
-                          >
-                            {({ active, checked }) => (
-                              <div className='flex w-full items-center justify-between'>
-                                <div className='flex items-center'>
-                                  <div className='text-sm'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
-                                    >
-                                      {name}
-                                    </RadioGroup.Label>
-                                    <RadioGroup.Description
-                                      as='span'
-                                      className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
-                                    >
-                                      <p className='w-44 truncate'>{rpc}</p>
-
-                                    </RadioGroup.Description>
-                                  </div>
-                                </div>
-                                {checked && (
-                                  <div className='shrink-0 text-white'>
-                                    <CheckCircleIcon className='h-6 w-6' />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </RadioGroup.Option>
-                        ))}
-                      </RadioGroup>
-                      <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network} className='z-50'>
-                        {allNetworks.map(({ info, name, rpc }) => (
-                          <RadioGroup.Option
-                            className={({ active, checked }) =>
-                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '}
-                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
-                            }
-                            key={name}
-                            value={info}
-                          >
-                            {({ active, checked }) => (
-                              <div className='flex w-full items-center justify-between'>
-                                <div className='flex items-center'>
-                                  <div className='text-sm'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-black' : 'text-white'}`}
-                                    >
-                                      {name}
-                                    </RadioGroup.Label>
-                                    <RadioGroup.Description
-                                      as='span'
-                                      className={`inline text-xs ${checked ? 'text-black font-poppins' : 'text-white font-poppins'}`}
-                                    >
-                                      <p className='w-44 truncate'>{rpc}</p>
-
-                                    </RadioGroup.Description>
-                                  </div>
-                                </div>
-                                {checked && (
-                                  <div className='shrink-0 text-white'>
-                                    <CheckCircleIcon className='h-6 w-6' />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </RadioGroup.Option>
-                        ))}
+                          </RadioGroup.Option>;
+                        })}
                       </RadioGroup>
 
 
@@ -634,28 +603,22 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     </div>
 
-                    <div className='flex flex-frow justify-evenly mb-5'>
-                      {/* <button className='btn btn-error btn-circle btn-md'
-                        onClick={() => setNetworkSelection('')} >
-                        <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />a
-                      </button> */}
+                    <div className='flex justify-center '>
+                      {network == networkSelection
+                        ?
+                        <p className='flex items-center justify-center    outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                        :
+                        <button
+                          // disabled={network == networkSelection}
+                          className='flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none z-50'
+                          onClick={async () => {
+                            await changeNetwork();
+                          }}
+                        >
+                          <p className='text-black text-lg font-semibold font-poppins'>Change Network</p>
 
-                      <button
-                        className='hidden md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-blue-gradient rounded-[10px] outline-none z-50'
-                        onClick={async () => {
-                          await changeNetwork();
-                        }}
-                      >
-                        <p className='text-black text-lg font-semibold font-poppins'>Change Network</p>
+                        </button>}
 
-                      </button>
-
-                      {/* <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
-                        onClick={async () => {
-                          await changeNetwork();
-                        }} >
-                        <CheckIcon className=' h-8 duration-300 hover:scale-125 transtion east-out' />
-                      </button> */}
 
                     </div>
 
@@ -712,7 +675,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm font-poppins text-gray-500 dark:text-white'>
-                      {`Network changed to ${networkSelection}`}
+                      {`Network changed to ${knownNetworks[networkSelection].text}`}
                     </p>
                   </div>
 
@@ -1029,6 +992,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 export default Home;
 
+
 export const getServerSideProps: GetServerSideProps = async () => {
   const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
   const toCurrency = 'usd';
@@ -1041,5 +1005,4 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   }
 }
-
 

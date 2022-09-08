@@ -30,15 +30,22 @@ function SignTxHandler (): JSX.Element {
   const [displayType, setDisplayType] = useState<string>('hex');
 
   const [request, setRequest] = useState<SignTxRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    if (!router.isReady) return;
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
 
-      setRequest(SignTxRequest.deserialize(u8aRequest));
-    }
-  }, [router.query]);
+    setRequest(SignTxRequest.deserialize(u8aRequest));
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -46,17 +53,20 @@ function SignTxHandler (): JSX.Element {
         if (!userAccount[account].isLocked) {
           void (async () => {
             const signTx = new SignTxDescriptor();
-            const response = await signTx.requestHandler(request, userAccount[account]);
-
-            console.error(response);
-            const s = response.serialize();
-
-            setResponse(compressParameters(s));
+            try {
+              const response = await signTx.requestHandler(request, userAccount[account]);
+              const s = response.serialize();
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            } catch(err) {
+              alert(err)
+              console.error(err);
+            }
+          
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
@@ -114,10 +124,6 @@ function SignTxHandler (): JSX.Element {
             </div>
 
             <div className='col-span-12'>
-              <code className='underline'
-                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
-            </div>
-            <div className='col-span-12'>
               <div className='divider'></div>
             </div>
             <div className='col-span-12'>
@@ -137,11 +143,11 @@ function SignTxHandler (): JSX.Element {
               {
                 displayType === 'hex'
                   ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400'
                       style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
                   )
                   : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400'
                       style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.encoded)}</div>
                   )
               }
