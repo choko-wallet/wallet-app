@@ -285,7 +285,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
           <div className='flex justify-between p-2 '>
             <div className='flex items-center justify-center ' >
 
-              <div className='flex md:mr-5 relative items-center w-[50px] h-[50px] md:w-[70px] md:h-[70px] my-auto cursor-pointer'
+              <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
                 onClick={() => router.push('/')}>
                 <Image
                   layout='fill'
@@ -652,6 +652,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                         objectFit='contain'
                         src={addNetworkButton.src}
                       />
+
                       <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
                     </div>
 
