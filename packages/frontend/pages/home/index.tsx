@@ -709,8 +709,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                 {/* network sidebar */}
                 {sidebar ?
-                  <div className=" hidden md:inline-flex md:flex-col items-center  md:h-full mr-10" >
-                    <div className='shadow-xl rounded-xl  w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
+                  <div className=" hidden md:inline-flex md:flex-col bg-[#22262f] items-center md:h-full mr-10" >
+                    <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
 
                       <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
 
