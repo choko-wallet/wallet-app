@@ -1077,13 +1077,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                         <input
 
-                          value={amountToCurrency ? amount : 0}
+                          value={amountToCurrency ? amount : null}
                           onChange={(e) => {
                             setAmount(parseFloat(e.target.value));
                             setAmountToCurrency(
                               parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
                           }}
-                          type="number" placeholder="1.0" step="0.00000001" min="0" max="10000000"
+                          type="number" placeholder="0.0" min="0" max="10000000"
                           className="font-poppins pr-12 input input-bordered input-info w-full " />
                         <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
                       </div>
@@ -1092,13 +1092,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                       <div className='relative'>
                         <p className=' text-gray-700'></p>
                         <input
-                          value={amount ? amountToCurrency : 0}
+                          value={amount ? amountToCurrency : null}
                           onChange={(e) => {
                             setAmountToCurrency(parseFloat(e.target.value));
                             setAmount(
                               parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
                           }}
-                          type="number" placeholder="100.00" step="0.01" min="0" max="10000000"
+                          type="number" placeholder="0.0" min="0" max="10000000"
                           className="font-poppins pr-12  input input-bordered input-info w-full " />
                         <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
                       </div>

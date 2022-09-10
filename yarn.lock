@@ -1511,6 +1511,7 @@ __metadata:
     "@types/react-copy-to-clipboard": ^5.0.3
     autoprefixer: ^10.4.7
     daisyui: ^2.19.0
+    lodash: ^4.17.21
     next: latest
     next-themes: ^0.2.0
     postcss: ^8.4.14

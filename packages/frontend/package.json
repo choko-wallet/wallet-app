@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/util": "0.8.4-1",
     "daisyui": "^2.19.0",
+    "lodash": "^4.17.21",
     "next": "latest",
     "next-themes": "^0.2.0",
     "query-string": "^7.1.1",

@@ -12,6 +12,8 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { shuffle } from "lodash";
+
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -67,7 +69,15 @@ interface PriceUsd {
   usd: number;
 }
 
-
+const colors = [
+  'bg-indigo-500',
+  'bg-blue-500',
+  'bg-red-500',
+  'bg-green-500',
+  'bg-yellow-500',
+  'bg-pink-500',
+  'bg-purple-500',
+];
 
 /* eslint-disable sort-keys */
 function Home({ coinPriceData }: Props): JSX.Element {
@@ -113,8 +123,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
   const [menuIcon, setMenuIcon] = useState<boolean>(false);
+  const [color, setColor] = useState<string>('');
 
-
+  useEffect(() => {
+    setColor(shuffle(colors).pop());
+  }, [networkSelection]);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -261,6 +274,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
   console.log(network)
 
   console.log(networkSelection)
+  console.log(color)
+
 
 
 
@@ -539,16 +554,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
                           <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
                       </div>
 
-                      <div className='bg-white h-20 w-64 ml-5 my-1 rounded-lg flex items-center justify-center cursor-pointer dark:bg-[#c67391] ' onClick={() => setAddNetworkModalOpen(true)}>
-                        <p className=' flex items-center text-black justify-center text-xl font-semibold font-poppins'>Add Network
-                          <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
-                      </div>
-
-                      <div className='bg-blue-gradient dark:border-4 my-1 dark:border-[#c67391] h-20 w-64 ml-5 rounded-lg flex items-center justify-center cursor-pointer dark:bg-blue-gradient' onClick={() => setAddNetworkModalOpen(true)}>
-                        <p className=' flex items-center text-black justify-center text-xl font-semibold font-poppins'>Add Network
-                          <PlusCircleIcon className='h-8 w-8 ml-3 ' /></p>
-                      </div>
-
 
                       <RadioGroup onChange={setNetworkSelection}
                         value={networkSelection || network}>
@@ -557,8 +562,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                           return <RadioGroup.Option
                             className={({ active, checked }) =>
-                              `${checked ? 'bg-blue-gradient ' : 'bg-gray-600 '} m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
+                              `${checked ? `${color}` : 'bg-gray-600 '} m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none md:w-64`
                             }
+
                             key={hash}
                             value={hash}
                           >
@@ -628,40 +634,45 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
               {/* balance */}
-              <div className='relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow m-5 shadow-xl rounded-xl dark:border-[#00f6ff] dark:border'>
-                <div className='card p-5 md:p-10'>
-                  <p className='text-3xl text-gray-700 dark:text-white font-poppins'> $793.32 </p>
-                  <p className='text-md text-white cursor-pointer hover:text-[#00f6ff] font-poppins'>Your avalaible token Balance on the current network. </p>
-                </div>
+              <div className='relative gradient-border p-[2px] m-20 rounded-3xl w-full'>
+                <div className="pink_gradient" />
 
-                <div className="flex items-center justify-evenly ">
-                  <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
-                    <SuperButton Icon={PaperAirplaneIcon} title='Send' />
+                <div className='z-20 relative hidden md:flex md:flex-col dark:bg-gradient-to-br from-gray-900 to-black flex-grow shadow-xl rounded-3xl '>
+                  <div className=' card p-5 md:p-10'>
+                    <p className='text-3xl text-gray-700 dark:text-white font-poppins'> $793.32 </p>
+                    <p className='text-md text-white cursor-pointer hover:text-[#00f6ff] font-poppins'>Your avalaible token Balance on the current network. </p>
                   </div>
-                  <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
-                    <SuperButton Icon={DownloadIcon} title='Receive' />
+
+                  <div className="flex items-center justify-evenly ">
+                    <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
+                      <SuperButton Icon={PaperAirplaneIcon} title='Send' />
+                    </div>
+                    <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
+                      <SuperButton Icon={DownloadIcon} title='Receive' />
+                    </div>
                   </div>
-                </div>
 
-                <div className='flex flex-col scrollbar-thin max-h-[500px] overflow-y-scroll m-5'>
-                  {cryptoArr.map((item) => (
-                    <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
-                  ))}
-                  {cryptoArr.map((item) => (
-                    <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
-                  ))}
-                </div>
-
-
-                {/* gradient light */}
-
-                <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
-                <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " />
+                  <div className='flex flex-col scrollbar-thin max-h-[500px] overflow-y-scroll m-5'>
+                    {cryptoArr.map((item) => (
+                      <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
+                    ))}
+                    {cryptoArr.map((item) => (
+                      <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
+                    ))}
+                  </div>
 
 
+                  {/* gradient light */}
 
-              </div >
+                  {/* <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
+                <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " /> */}
 
+
+
+                </div >
+                <div className="blue_gradient z-10" />
+
+              </div>
 
             </div>
 
@@ -778,13 +789,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                         <input
 
-                          value={amountToCurrency ? amount : 0}
+                          value={amountToCurrency ? amount : null}
                           onChange={(e) => {
                             setAmount(parseFloat(e.target.value));
                             setAmountToCurrency(
                               parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
                           }}
-                          type="number" placeholder="1.0" step="0.00000001" min="0" max="10000000"
+                          type="number" placeholder="0.0" min="0" max="10000000"
                           className="font-poppins pr-12 input input-bordered input-info w-full " />
                         <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
                       </div>
@@ -793,18 +804,19 @@ function Home({ coinPriceData }: Props): JSX.Element {
                       <div className='relative'>
                         <p className=' text-gray-700'></p>
                         <input
-                          value={amount ? amountToCurrency : 0}
+                          value={amount ? amountToCurrency : null}
                           onChange={(e) => {
                             setAmountToCurrency(parseFloat(e.target.value));
                             setAmount(
                               parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
                           }}
-                          type="number" placeholder="100.00" step="0.01" min="0" max="10000000"
+                          type="number" placeholder="0.0" min="0" max="10000000"
                           className="font-poppins pr-12  input input-bordered input-info w-full " />
                         <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
                       </div>
 
                     </div>
+
                     <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
 
