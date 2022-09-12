@@ -26,6 +26,7 @@
     "@polkadot/wasm-crypto": "^6.3.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/util": "0.8.4-1",
+    "@types/react-transition-group": "^4.4.5",
     "daisyui": "^2.19.0",
     "lodash": "^4.17.21",
     "next": "latest",
@@ -39,6 +40,7 @@
     "react-qr-reader": "^3.0.0-beta-1",
     "react-redux": "^7.2.0",
     "react-spinners": "^0.13.4",
+    "react-transition-group": "^4.4.5",
     "react-typed": "^1.2.0",
     "superagent": "^8.0.0",
     "tailwind-scrollbar": "^2.0.1"

@@ -3,7 +3,7 @@
 
 import {
   BellIcon,
-  ChevronDownIcon, CogIcon,
+  ChevronDownIcon, CogIcon, MenuIcon,
   CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
   HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon
 } from '@heroicons/react/outline';
@@ -12,20 +12,25 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import DropdownHeader2 from './DropdownHeader2'
 
-import icon from '../images/btc.png';
+import logo from '../images/logo.png'
+import icon1 from '../images/icon1.png'
+import setting from '../images/setting.png'
 
-function Header(): JSX.Element {
+interface Props {
+
+  currentAccount: string;
+}
+
+
+function Header({ currentAccount }: Props): JSX.Element {
   const router = useRouter();
-  const [accountNumber, setAccountNumber] = useState<string>('');
-  const [copied, setCopied] = useState<boolean>(false);
-  const [showpass, setShowpass] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const { setTheme, theme } = useTheme();
+  const [menuIcon, setMenuIcon] = useState<boolean>(false);
 
-  // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
-    setAccountNumber('222222222222222222222');
     setMounted(true);
   }, []);
 
@@ -34,57 +39,111 @@ function Header(): JSX.Element {
   }
 
   return (
-    <div className='sticky top-0 z-50 bg-transparent'>
-      <div className='flex justify-between max-w-6xl p-2 lg:mx-auto'>
-        <div className='flex items-center justify-center space-x-10' >
-          <div className='relative items-center w-10 h-10 my-auto cursor-pointer'
+
+    <div className='sticky top-0 z-20 bg-white dark:bg-[#22262f] border-b border-[#435474]'>
+      <div className='flex justify-between p-2 '>
+        <div className='flex items-center justify-center ' >
+          <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
             <Image
               layout='fill'
               objectFit='contain'
-              src={icon}
+              src={logo.src}
             />
           </div>
-
-
         </div>
 
-        {/* 下拉框需要调整对齐 可用items-start或justify-start */}
-        <div className='flex items-center text-gray-500 '>
-
+        <div className='flex items-center text-gray-500  '>
           <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-            <HomeIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125'
-              onClick={() => router.push('/home')} />
+            <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
+            // onClick={() => router.push('/')}
+            >
+              <Image
+                layout='fill'
+                objectFit='contain'
+                src={icon1.src}
+              />
+            </div>
 
-            <BellIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125' />
-            <CogIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125' />
+            <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
+            // onClick={() => router.push('/')}
+            >
+              <Image
+                layout='fill'
+                objectFit='contain'
+                src={setting.src}
+              />
+            </div>
 
+            {/* <CogIcon className='hidden h-6 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' /> */}
+            <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
+              <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
+              <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
+              </div>
+            </div>
+
+            {theme === 'light'
+              ? <SunIcon className='hidden h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 text-gray-500'
+                onClick={() => setTheme('dark')} />
+              : <MoonIcon className='hidden h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500'
+                onClick={() => setTheme('light')} />
+            }
 
           </div>
-          {theme === 'light'
-            ? <SunIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125'
-              onClick={() => setTheme('dark')} />
-            : <MoonIcon className='hidden h-8 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125'
-              onClick={() => setTheme('light')} />
-          }
 
-          <div className='dropdown dropdown-hover'>
-            <label className='btn m-1 border-transparent hover:border-transparent bg-transparent hover:bg-transparent text-gray-900 !outline-none'>
-              <TranslateIcon className='h-5 cursor-pointer ' />
-              <ChevronDownIcon className='h-5 cursor-pointer ' />
-            </label>
-            <ul className='p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52'>
-              <li><a>English</a></li>
-              <li><a>中文</a></li>
-            </ul>
+
+          <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500" />
+
+          <DropdownHeader2 currentAccount={currentAccount} />
+
+        </div>
+      </div>
+      {menuIcon ?
+        <div className='flex bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
+          <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
+            <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
+            // onClick={() => router.push('/')}
+            >
+              <Image
+                layout='fill'
+                objectFit='contain'
+                src={icon1.src}
+              />
+            </div>
+
+            <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
+            // onClick={() => router.push('/')}
+            >
+              <Image
+                layout='fill'
+                objectFit='contain'
+                src={setting.src}
+              />
+            </div>
+
+            <div className='flex relative transition duration-150 ease-out cursor-pointer '>
+              <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
+              <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
+              </div>
+            </div>
+
+            {theme === 'light'
+              ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-500'
+                onClick={() => setTheme('dark')} />
+              : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
+                onClick={() => setTheme('light')} />
+            }
+
           </div>
 
 
 
         </div>
-
-      </div>
+        : null}
     </div >
+
+
+
   );
 }
 

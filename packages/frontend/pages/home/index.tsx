@@ -48,7 +48,10 @@ import icon1 from '../../images/icon1.png'
 import setting from '../../images/setting.png'
 import check from '../../images/check.png'
 import addNetworkButton from '../../images/addNetworkButton.png'
+import Header from '../../components/Header';
 
+
+import { CSSTransition } from 'react-transition-group';
 
 
 
@@ -123,6 +126,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
   const [menuIcon, setMenuIcon] = useState<boolean>(false);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [drawerTrue, setDrawerTrue] = useState<boolean>(false);
+
+  const [activeMenu, setActiveMenu] = useState<boolean>(false);
+
+
 
 
 
@@ -157,6 +166,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
   useEffect(() => {
+    // console.log('2')
+    // console.log(localStorage.getItem('serialziedUserAccount'))
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
@@ -179,7 +190,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
 
-  if (!mounted) {
+  if (!mounted || !localStorage.getItem('serialziedUserAccount')) {
     return null;
   }
 
@@ -277,657 +288,364 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   return (
     <div className={theme}>
-      <div className='bg-gray-100 dark:bg-[#22262f] min-h-screen overflow-hidden'>
+      <Header currentAccount={currentAccount} />
+
+      <div className='bg-gray-100 relative dark:bg-[#22262f] min-h-screen overflow-hidden'>
         {/* <Toaster /> */}
 
-        {/* header */}
-        <div className='sticky top-0 z-20 bg-white dark:bg-[#22262f] border-b border-[#435474]'>
-          <div className='flex justify-between p-2 '>
-            <div className='flex items-center justify-center ' >
-
-              <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
-                onClick={() => router.push('/')}>
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={logo.src}
-                />
-              </div>
-
-
-
-
-
-
-
-            </div>
-
-            <div className='flex items-center text-gray-500  '>
-
-              <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-
-                <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-                // onClick={() => router.push('/')}
-                >
-                  <Image
-                    layout='fill'
-                    objectFit='contain'
-                    src={icon1.src}
-                  />
-                </div>
-
-                <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-                // onClick={() => router.push('/')}
-                >
-                  <Image
-                    layout='fill'
-                    objectFit='contain'
-                    src={setting.src}
-                  />
-                </div>
-
-                {/* <CogIcon className='hidden h-6 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' /> */}
-                <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
-                  <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
-                  <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
-                  </div>
-                </div>
-
-                {theme === 'light'
-                  ? <SunIcon className='hidden h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 text-gray-500'
-                    onClick={() => setTheme('dark')} />
-                  : <MoonIcon className='hidden h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500'
-                    onClick={() => setTheme('light')} />
-                }
-
-              </div>
-
-
-
-
-              <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500" />
-
-
-              <DropdownHeader2 currentAccount={currentAccount} />
-
-
-
-            </div>
-
-          </div>
-        </div >
-
-        {/* menu各种icon */}
-        {menuIcon ?
-          <div className='flex bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
-            <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-              <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              // onClick={() => router.push('/')}
-              >
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={icon1.src}
-                />
-              </div>
-
-              <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              // onClick={() => router.push('/')}
-              >
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={setting.src}
-                />
-              </div>
-
-              <div className='flex relative transition duration-150 ease-out cursor-pointer '>
-                <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
-                <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
-                </div>
-              </div>
-
-              {theme === 'light'
-                ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-500'
-                  onClick={() => setTheme('dark')} />
-                : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
-                  onClick={() => setTheme('light')} />
-              }
-
-            </div>
-
-
-
-          </div>
-          : null}
-
-
-        {/* drawer */}
-        <div className="drawer md:hidden bg-black overflow-hidden">
-          <input id="my-drawer" type="checkbox" className="drawer-toggle overflow-hidden" />
-          <div className="drawer-content bg-white dark:bg-primary overflow-hidden">
-
-
-
-            {/* drawer button */}
-            <label htmlFor="my-drawer" className="drawer-button m-5 md:hidden w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none ">
-              <p className='ml-1  text-white text-md font-semibold font-poppins'>NETWORK</p>
-              <ChevronRightIcon className=' text-white h-6 w-6 ml-6  ' />
-            </label>
-
-
-            {/* balance */}
-            <div className='relative flex m-5 flex-col dark:bg-[#292d36] flex-grow rounded-[30px] '>
-              <div className='w-[300px] h-[80px] bg-[#353B4D] rounded-lg m-5 md:m-10 md:ml-16 p-3 px-5'>
-                <p className='text-2xl text-gray-700 dark:text-white font-poppins font-semibold'> $793.32 USD </p>
-                <p className='text-md text-white cursor-pointer font-poppins'>Your Balance. </p>
-              </div>
-
-              <div className="flex items-center justify-evenly ">
-                <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
-                  <Button Icon={PaperAirplaneIcon} title='Send' />
-                </div>
-                <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
-                  <Button Icon={DownloadIcon} title='Receive' />
-                </div>
-              </div>
-
-              <div className='flex flex-col scrollbar-thin max-h-[500px] overflow-y-scroll m-1 md:m-5'>
-                {cryptoArr.map((item) => (
-                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
-                ))}
-                {cryptoArr.map((item) => (
-                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
-                ))}
-
-              </div>
-
-
-
-            </div >
-
-
-          </div>
-
-          <div className="drawer-side dark:bg-primary   ">
-            <label htmlFor="my-drawer" className="drawer-overlay"></label>
-            <ul className="menu overflow-y-auto w-80  text-base-content dark: bg-[#22262f] dark:border-r dark:border-[#435474] ">
-
-
-              <div className='flex items-center justify-between ml-10 z-50 mx-5 mt-3 dark:bg-[#22262f] '>
-                <p className='text-lg  font-semibold  text-white font-poppins'>Change Network</p>
-                <label htmlFor="my-drawer" className="drawer-button ">
-
-                  <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
-
-                </label>
-              </div>
-
-              <div className="flex md:flex-col items-center md:h-full " >
-                <div className='shadow-xl rounded-xl  w-full h-full min-h-[700px]  dark:bg-[#22262f] px-5'>
-
-                  <div className='scrollbar-thin max-h-[400px] overflow-y-scroll  mt-5 '>
-
-
-                    <RadioGroup onChange={setNetworkSelection}
-                      value={networkSelection || network}>
-                      {Object.entries(knownNetworks).map(([hash, network], index) => {
-                        const { defaultProvider, text } = network;
-
-                        return <RadioGroup.Option
-                          className={({ active, checked }) =>
-                            `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                          }
-                          key={hash}
-                          value={hash}
-                        >
-                          {({ active, checked }) => (
-                            <div className='flex w-full items-center justify-between'>
-                              <div className='flex items-center'>
-                                <div className='text-sm'>
-                                  <RadioGroup.Label
-                                    as='p'
-                                    // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                  >
-                                    {text.substring(0, text.length - 8)}
-                                  </RadioGroup.Label>
-                                  <RadioGroup.Description
-                                    as='span'
-                                    className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                  // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                  >
-                                    <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                    {/* {defaultProvider} */}
-                                  </RadioGroup.Description>
-                                </div>
-                              </div>
-                              {checked && (
-                                <div className=''>
-                                  <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                    <Image
-                                      layout='fill'
-                                      objectFit='contain'
-                                      src={check.src}
-                                    />
-                                    <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                  </div>
-
-
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </RadioGroup.Option>;
-                      })}
-                    </RadioGroup>
-                    <RadioGroup onChange={setNetworkSelection}
-                      value={networkSelection || network}>
-                      {Object.entries(knownNetworks).map(([hash, network], index) => {
-                        const { defaultProvider, text } = network;
-
-                        return <RadioGroup.Option
-                          className={({ active, checked }) =>
-                            `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                          }
-                          key={hash}
-                          value={hash}
-                        >
-                          {({ active, checked }) => (
-                            <div className='flex w-full items-center justify-between'>
-                              <div className='flex items-center'>
-                                <div className='text-sm'>
-                                  <RadioGroup.Label
-                                    as='p'
-                                    // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                  >
-                                    {text.substring(0, text.length - 8)}
-                                  </RadioGroup.Label>
-                                  <RadioGroup.Description
-                                    as='span'
-                                    className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                  // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                  >
-                                    <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                    {/* {defaultProvider} */}
-                                  </RadioGroup.Description>
-                                </div>
-                              </div>
-                              {checked && (
-                                <div className=''>
-                                  <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                    <Image
-                                      layout='fill'
-                                      objectFit='contain'
-                                      src={check.src}
-                                    />
-                                    <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                  </div>
-
-
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </RadioGroup.Option>;
-                      })}
-                    </RadioGroup>
-                    <RadioGroup onChange={setNetworkSelection}
-                      value={networkSelection || network}>
-                      {Object.entries(knownNetworks).map(([hash, network], index) => {
-                        const { defaultProvider, text } = network;
-
-                        return <RadioGroup.Option
-                          className={({ active, checked }) =>
-                            `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                          }
-                          key={hash}
-                          value={hash}
-                        >
-                          {({ active, checked }) => (
-                            <div className='flex w-full items-center justify-between'>
-                              <div className='flex items-center'>
-                                <div className='text-sm'>
-                                  <RadioGroup.Label
-                                    as='p'
-                                    // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                  >
-                                    {text.substring(0, text.length - 8)}
-                                  </RadioGroup.Label>
-                                  <RadioGroup.Description
-                                    as='span'
-                                    className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                  // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                  >
-                                    <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                    {/* {defaultProvider} */}
-                                  </RadioGroup.Description>
-                                </div>
-                              </div>
-                              {checked && (
-                                <div className=''>
-                                  <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                    <Image
-                                      layout='fill'
-                                      objectFit='contain'
-                                      src={check.src}
-                                    />
-                                    <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                  </div>
-
-
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </RadioGroup.Option>;
-                      })}
-                    </RadioGroup>
-
-
-
-
-
-
-
-                  </div>
-
-                  <div className='cursor-pointer mx-auto rounded-lg my-3 w-[200px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
-                    <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer'
-                    // onClick={() => router.push('/')}
-                    >
-                      <Image
-                        layout='fill'
-                        objectFit='contain'
-                        src={addNetworkButton.src}
-                      />
-
-                      <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
-                    </div>
-
-                  </div>
-
-
-                  <div className='flex justify-center mt-6'>
-                    {network == networkSelection
-                      ?
-                      <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
-                      :
-                      <button
-                        // disabled={network == networkSelection}
-                        className='flex w-[260px] h-[65px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#363E52] rounded-[10px] outline-none z-50'
-                        onClick={async () => {
-                          await changeNetwork();
-                        }}
+        {/* new drawer */}
+        <CSSTransition in={drawerOpen} timeout={500} unmountOnExit
+          classNames="drawer"
+          className='md:hidden z-50 p-6 w-[340px] h-full bg-[#22262f] absolute top-0 '
+        >
+
+          <div className=''>
+            <p className='text-lg flex  w-full font-semibold justify-between text-white font-poppins  '>Change Network
+              <XIcon onClick={() => setDrawerOpen(!drawerOpen)} className=' text-white h-8 w-8 cursor-pointer ' />
+            </p>
+
+            <div className="flex md:flex-col items-center md:h-full bg-white" >
+              <div className='  w-full h-full min-h-[700px]  dark:bg-[#22262f] pr-2'>
+                <div className='scrollbar-thin max-h-[400px] overflow-y-scroll mt-5 '>
+
+                  <RadioGroup onChange={setNetworkSelection}
+                    value={networkSelection || network}>
+                    {Object.entries(knownNetworks).map(([hash, network], index) => {
+                      const { defaultProvider, text } = network;
+
+                      return <RadioGroup.Option
+                        className={({ active, checked }) =>
+                          `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                        }
+                        key={hash}
+                        value={hash}
                       >
-                        <p className='text-white text-lg font-semibold font-poppins'>Switch Network</p>
+                        {({ active, checked }) => (
+                          <div className='flex w-full items-center justify-between'>
+                            <div className='flex items-center'>
+                              <div className='text-sm'>
+                                <RadioGroup.Label
+                                  as='p'
+                                  // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                                  className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
 
-                      </button>}
+                                >
+                                  {text.substring(0, text.length - 8)}
+                                </RadioGroup.Label>
+                                <RadioGroup.Description
+                                  as='span'
+                                  className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
+
+                                // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                >
+                                  <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
+
+                                  {/* {defaultProvider} */}
+                                </RadioGroup.Description>
+                              </div>
+                            </div>
+                            {checked && (
+                              <div className=''>
+                                <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
+                                  <Image
+                                    layout='fill'
+                                    objectFit='contain'
+                                    src={check.src}
+                                  />
+                                  <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
+                                </div>
 
 
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </RadioGroup.Option>;
+                    })}
+                  </RadioGroup>
+
+
+                </div>
+
+                <div className='cursor-pointer mx-auto rounded-lg my-3 w-[200px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
+                  <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer'
+                  // onClick={() => router.push('/')}
+                  >
+                    <Image
+                      layout='fill'
+                      objectFit='contain'
+                      src={addNetworkButton.src}
+                    />
+
+                    <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
                   </div>
 
                 </div>
+
+
+                <div className='flex justify-center mt-6'>
+                  {network == networkSelection
+                    ?
+                    <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                    :
+                    <button
+                      // disabled={network == networkSelection}
+                      className='flex w-[260px] h-[65px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#363E52] rounded-[10px] outline-none z-50'
+                      onClick={async () => {
+                        await changeNetwork();
+                      }}
+                    >
+                      <p className='text-white text-lg font-semibold font-poppins'>Switch Network</p>
+
+                    </button>}
+
+                </div>
+
               </div>
-
-
-
-
-
-            </ul>
+            </div>
           </div>
-        </div>
 
-        < main className='hidden md:grid md:grid-cols-12 bg-gray-100 dark:bg-[#22262f] max-w-7xl mx-auto' >
 
-          {/* under header  */}
+
+        </CSSTransition>
+
+        < main className='grid grid-cols-12 bg-gray-100 dark:bg-[#22262f] max-w-7xl mx-auto' >
           <div className='col-span-12 ' >
 
-
-            <div className='flex-col md:h-full  flex md:flex-row  m-10'>
-
+            <div className='flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
               <div>
                 <button
-                  className='hidden w-[158px] h-[40px] md:flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
-                // onClick={() => setSidebar(!sidebar)}
+                  className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
+                  onClick={() => setDrawerOpen(!drawerOpen)}
                 >
                   <p className='ml-1  text-white text-md font-semibold font-poppins'>NETWORK</p>
 
                   <ChevronRightIcon className=' text-white h-6 w-6 ml-6  ' />
                 </button>
 
-                {/* network sidebar */}
-                {sidebar ?
-                  <div className=" hidden md:inline-flex md:flex-col bg-[#22262f] items-center md:h-full mr-10" >
-                    <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
-
-                      <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
+                <p className='ml-1 hidden md:block text-white text-md font-semibold font-poppins'>NETWORK</p>
 
 
-                        <RadioGroup onChange={setNetworkSelection}
-                          value={networkSelection || network}>
-                          {Object.entries(knownNetworks).map(([hash, network], index) => {
-                            const { defaultProvider, text } = network;
+                {/* wideScreen network sidebar */}
+                <div className=" hidden md:inline-flex md:flex-col bg-[#22262f] items-center md:h-full mr-10" >
+                  <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
 
-                            return <RadioGroup.Option
-                              className={({ active, checked }) =>
-                                `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                              }
-                              key={hash}
-                              value={hash}
-                            >
-                              {({ active, checked }) => (
-                                <div className='flex w-full items-center justify-between'>
-                                  <div className='flex items-center'>
-                                    <div className='text-sm'>
-                                      <RadioGroup.Label
-                                        as='p'
-                                        // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                        className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                      >
-                                        {text.substring(0, text.length - 8)}
-                                      </RadioGroup.Label>
-                                      <RadioGroup.Description
-                                        as='span'
-                                        className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                      // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                      >
-                                        <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                        {/* {defaultProvider} */}
-                                      </RadioGroup.Description>
-                                    </div>
-                                  </div>
-                                  {checked && (
-                                    <div className=''>
-                                      <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                        <Image
-                                          layout='fill'
-                                          objectFit='contain'
-                                          src={check.src}
-                                        />
-                                        <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                      </div>
+                    <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
 
 
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </RadioGroup.Option>;
-                          })}
-                        </RadioGroup>
-                        <RadioGroup onChange={setNetworkSelection}
-                          value={networkSelection || network}>
-                          {Object.entries(knownNetworks).map(([hash, network], index) => {
-                            const { defaultProvider, text } = network;
+                      <RadioGroup onChange={setNetworkSelection}
+                        value={networkSelection || network}>
+                        {Object.entries(knownNetworks).map(([hash, network], index) => {
+                          const { defaultProvider, text } = network;
 
-                            return <RadioGroup.Option
-                              className={({ active, checked }) =>
-                                `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                              }
-                              key={hash}
-                              value={hash}
-                            >
-                              {({ active, checked }) => (
-                                <div className='flex w-full items-center justify-between'>
-                                  <div className='flex items-center'>
-                                    <div className='text-sm'>
-                                      <RadioGroup.Label
-                                        as='p'
-                                        // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                        className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                      >
-                                        {text.substring(0, text.length - 8)}
-                                      </RadioGroup.Label>
-                                      <RadioGroup.Description
-                                        as='span'
-                                        className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                      // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                      >
-                                        <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                        {/* {defaultProvider} */}
-                                      </RadioGroup.Description>
-                                    </div>
-                                  </div>
-                                  {checked && (
-                                    <div className=''>
-                                      <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                        <Image
-                                          layout='fill'
-                                          objectFit='contain'
-                                          src={check.src}
-                                        />
-                                        <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                      </div>
-
-
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </RadioGroup.Option>;
-                          })}
-                        </RadioGroup>
-                        <RadioGroup onChange={setNetworkSelection}
-                          value={networkSelection || network}>
-                          {Object.entries(knownNetworks).map(([hash, network], index) => {
-                            const { defaultProvider, text } = network;
-
-                            return <RadioGroup.Option
-                              className={({ active, checked }) =>
-                                `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                              }
-                              key={hash}
-                              value={hash}
-                            >
-                              {({ active, checked }) => (
-                                <div className='flex w-full items-center justify-between'>
-                                  <div className='flex items-center'>
-                                    <div className='text-sm'>
-                                      <RadioGroup.Label
-                                        as='p'
-                                        // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                        className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                      >
-                                        {text.substring(0, text.length - 8)}
-                                      </RadioGroup.Label>
-                                      <RadioGroup.Description
-                                        as='span'
-                                        className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                      // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                      >
-                                        <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                        {/* {defaultProvider} */}
-                                      </RadioGroup.Description>
-                                    </div>
-                                  </div>
-                                  {checked && (
-                                    <div className=''>
-                                      <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                        <Image
-                                          layout='fill'
-                                          objectFit='contain'
-                                          src={check.src}
-                                        />
-                                        <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                      </div>
-
-
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </RadioGroup.Option>;
-                          })}
-                        </RadioGroup>
-
-
-
-
-
-                      </div>
-
-                      <div className='cursor-pointer mx-auto rounded-lg my-3 w-[200px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
-                        <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer'
-                        // onClick={() => router.push('/')}
-                        >
-                          <Image
-                            layout='fill'
-                            objectFit='contain'
-                            src={addNetworkButton.src}
-                          />
-                          <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
-                        </div>
-
-                      </div>
-
-
-                      <div className='flex justify-center mt-6'>
-                        {network == networkSelection
-                          ?
-                          <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
-                          :
-                          <button
-                            // disabled={network == networkSelection}
-                            className='flex w-[260px] h-[65px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#363E52] rounded-[10px] outline-none z-50'
-                            onClick={async () => {
-                              await changeNetwork();
-                            }}
+                          return <RadioGroup.Option
+                            className={({ active, checked }) =>
+                              `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                            }
+                            key={hash}
+                            value={hash}
                           >
-                            <p className='text-white text-lg font-semibold font-poppins'>Switch Network</p>
+                            {({ active, checked }) => (
+                              <div className='flex w-full items-center justify-between'>
+                                <div className='flex items-center'>
+                                  <div className='text-sm'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
 
-                          </button>}
+                                    >
+                                      {text.substring(0, text.length - 8)}
+                                    </RadioGroup.Label>
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
+
+                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                    >
+                                      <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
+
+                                      {/* {defaultProvider} */}
+                                    </RadioGroup.Description>
+                                  </div>
+                                </div>
+                                {checked && (
+                                  <div className=''>
+                                    <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
+                                      <Image
+                                        layout='fill'
+                                        objectFit='contain'
+                                        src={check.src}
+                                      />
+                                      <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
+                                    </div>
 
 
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </RadioGroup.Option>;
+                        })}
+                      </RadioGroup>
+                      <RadioGroup onChange={setNetworkSelection}
+                        value={networkSelection || network}>
+                        {Object.entries(knownNetworks).map(([hash, network], index) => {
+                          const { defaultProvider, text } = network;
+
+                          return <RadioGroup.Option
+                            className={({ active, checked }) =>
+                              `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                            }
+                            key={hash}
+                            value={hash}
+                          >
+                            {({ active, checked }) => (
+                              <div className='flex w-full items-center justify-between'>
+                                <div className='flex items-center'>
+                                  <div className='text-sm'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
+
+                                    >
+                                      {text.substring(0, text.length - 8)}
+                                    </RadioGroup.Label>
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
+
+                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                    >
+                                      <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
+
+                                      {/* {defaultProvider} */}
+                                    </RadioGroup.Description>
+                                  </div>
+                                </div>
+                                {checked && (
+                                  <div className=''>
+                                    <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
+                                      <Image
+                                        layout='fill'
+                                        objectFit='contain'
+                                        src={check.src}
+                                      />
+                                      <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
+                                    </div>
+
+
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </RadioGroup.Option>;
+                        })}
+                      </RadioGroup>
+                      <RadioGroup onChange={setNetworkSelection}
+                        value={networkSelection || network}>
+                        {Object.entries(knownNetworks).map(([hash, network], index) => {
+                          const { defaultProvider, text } = network;
+
+                          return <RadioGroup.Option
+                            className={({ active, checked }) =>
+                              `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                            }
+                            key={hash}
+                            value={hash}
+                          >
+                            {({ active, checked }) => (
+                              <div className='flex w-full items-center justify-between'>
+                                <div className='flex items-center'>
+                                  <div className='text-sm'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
+
+                                    >
+                                      {text.substring(0, text.length - 8)}
+                                    </RadioGroup.Label>
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
+
+                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                    >
+                                      <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
+
+                                      {/* {defaultProvider} */}
+                                    </RadioGroup.Description>
+                                  </div>
+                                </div>
+                                {checked && (
+                                  <div className=''>
+                                    <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
+                                      <Image
+                                        layout='fill'
+                                        objectFit='contain'
+                                        src={check.src}
+                                      />
+                                      <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
+                                    </div>
+
+
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </RadioGroup.Option>;
+                        })}
+                      </RadioGroup>
+
+
+
+
+
+                    </div>
+
+                    <div className='cursor-pointer mx-auto rounded-lg my-3 w-[200px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
+                      <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer'
+                      // onClick={() => router.push('/')}
+                      >
+                        <Image
+                          layout='fill'
+                          objectFit='contain'
+                          src={addNetworkButton.src}
+                        />
+                        <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
                       </div>
 
                     </div>
+
+
+                    <div className='flex justify-center mt-6'>
+                      {network == networkSelection
+                        ?
+                        <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                        :
+                        <button
+                          // disabled={network == networkSelection}
+                          className='flex w-[260px] h-[65px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#363E52] rounded-[10px] outline-none z-50'
+                          onClick={async () => {
+                            await changeNetwork();
+                          }}
+                        >
+                          <p className='text-white text-lg font-semibold font-poppins'>Switch Network</p>
+
+                        </button>}
+
+
+                    </div>
+
                   </div>
-                  : null}
+                </div>
+
               </div>
 
               {/* balance */}
-              <div className='relative hidden md:flex md:flex-col dark:bg-[#292d36] flex-grow rounded-[30px] '>
+              <div className='relative flex flex-col dark:bg-[#292d36] flex-grow rounded-[30px] '>
                 <div className='w-[300px] h-[80px] bg-[#353B4D] rounded-lg m-10 ml-16 p-3 px-5'>
                   <p className='text-2xl text-gray-700 dark:text-white font-poppins font-semibold'> $793.32 USD </p>
                   <p className='text-md text-white cursor-pointer font-poppins'>Your Balance. </p>
@@ -951,19 +669,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   ))}
                 </div>
 
-
-                {/* gradient light */}
-
-                {/* <div className="absolute z-10 -left-96 top-96 w-[200px] h-[200px] rounded-full pink__gradient" />
-                <div className="absolute z-10 -right-24 top-32 w-[200px] h-[200px] rounded-full blue__gradient " /> */}
-
-
-
               </div >
 
-
             </div>
-
 
             {/* network change modal */}
             <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
