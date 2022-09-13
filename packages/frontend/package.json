@@ -25,6 +25,7 @@
     "@polkadot/util-crypto": "^10.1.1",
     "@polkadot/wasm-crypto": "^6.3.1",
     "@reduxjs/toolkit": "^1.8.3",
+    "@skyekiwi/crypto": "^0.8.3",
     "@skyekiwi/util": "0.8.4-1",
     "@types/react-transition-group": "^4.4.5",
     "daisyui": "^2.19.0",
@@ -43,7 +44,8 @@
     "react-transition-group": "^4.4.5",
     "react-typed": "^1.2.0",
     "superagent": "^8.0.0",
-    "tailwind-scrollbar": "^2.0.1"
+    "tailwind-scrollbar": "^2.0.1",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@types/react-copy-to-clipboard": "^5.0.3",

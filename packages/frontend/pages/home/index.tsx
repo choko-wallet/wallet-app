@@ -279,10 +279,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
   // console.log(knownNetworks[networkSelection].text)
-  console.log(network)
+  // console.log(network)
 
-  console.log(networkSelection)
+  // console.log(networkSelection)
 
+  // console.log(localStorage.getItem('lockedPrivateKey'))
 
 
 
@@ -815,8 +816,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
 
-                    <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee</p>
-                    <p className=' text-gray-700 dark:text-white text-sm font-poppins'>{cryptoToSend.networkFee}</p>
+                    <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p>
+                    {/* <p className=' text-gray-700 dark:text-white text-sm font-poppins'>{cryptoToSend.networkFee}</p> */}
                     <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
 
 

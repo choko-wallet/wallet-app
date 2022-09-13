@@ -1,11 +1,12 @@
 import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
+import { CheckIcon, UserCircleIcon, XIcon, SearchIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import Image from 'next/image'
 
 import btcIcon from '../images/btc.png'
+import { arrayBuffer } from 'stream/consumers';
 
 interface Crypto {
   name: string;
@@ -26,6 +27,24 @@ interface Props {
 }
 
 function Dropdown2({ arr, defaultValue, onClick }: Props) {
+  const [searchInput, setSearchInput] = useState<string>('');
+  // console.log(arr[1].name);
+  const [filterArr, setFilterArr] = useState<Crypto[]>(arr);
+
+
+  useEffect(() => {
+    function filterCoin(item: Crypto) {
+      return item.name.toLowerCase().includes(searchInput.toLowerCase());
+    }
+
+    const result = arr.filter(filterCoin);
+
+    setFilterArr(result)
+  }, [searchInput])
+
+
+
+
   return (
     <div className=" w-full  text-right">
       <Menu as="div" className="relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-blue-300">
@@ -55,7 +74,17 @@ function Dropdown2({ arr, defaultValue, onClick }: Props) {
           <Menu.Items className="z-50 absolute right-0 mt-1 w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-400 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
 
-              {arr.map((item) => (
+              <div className="flex py-1  items-center rounded-md border border-gray-600">
+                <input
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  className="flex-grow pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none "
+                  type="text"
+                  placeholder="Search for Coin" />
+                <SearchIcon className="hidden h-8 p-2 text-white bg-gray-500 rounded-full cursor-pointer md:inline md:mx-2" />
+              </div>
+
+              {filterArr.map((item) => (
                 <Menu.Item key={item.img}>
                   {({ active }) => (
                     <button onClick={() => onClick(item)}

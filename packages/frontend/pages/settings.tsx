@@ -97,8 +97,9 @@ function Settings(): JSX.Element {
     setShowMnemonic(false)
   }
 
+  const key = localStorage.getItem('lockedPrivateKey')
 
-
+  console.log(key)
 
 
 
