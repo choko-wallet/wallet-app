@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '../../features/slices/userSlice';
 
-function ImportWallet (): JSX.Element {
+function ImportWallet(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -81,13 +81,13 @@ function ImportWallet (): JSX.Element {
           <div className='col-span-12 shadow-xl rounded-lg'>
             <div className='card p-5 md:p-6 bg-white'>
               <h2 className='card-title'>
-              Import Mnemonic
+                Import Mnemonic
               </h2>
               <h3>Import a 12 words mnemonic.</h3>
 
               <div className='grid grid-cols-12 gap-5 m-6 select-none'>
                 {seeds.map((_, index) => {
-                // console.error(seeds)
+                  // console.error(seeds)
                   return <div className='col-span-6 md:col-span-3 p-2 text-center rounded-lg border border-netrual-200'
                     key={index}>
                     <input className='input input-bordered w-full max-w-xs'
@@ -126,60 +126,60 @@ function ImportWallet (): JSX.Element {
       }
 
       {step === 2 &&
-      <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-        <div className=' col-span-12 shadow-xl rounded-lg'>
-          <div className='card p-5 md:p-6 bg-white'>
-            <h2 className='card-title'>
+        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
+          <div className=' col-span-12 shadow-xl rounded-lg'>
+            <div className='card p-5 md:p-6 bg-white'>
+              <h2 className='card-title'>
                 Set a Password
-            </h2>
-            <h3>Set a local password for you walelt. </h3>
-
-            <div className='grid grid-cols-12 gap-5 m-6'>
-              {/* TODO: Should not use this pt-2, but some vertical-align instead */}
-              <h2 className='col-span-5 pt-2'>
-                <span className=''>Set a good password</span>
               </h2>
-              <div className='col-span-7'>
-                <input className='input input-bordered w-full max-w-xs'
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder='Set a Password'
+              <h3>Set a local password for you walelt. </h3>
 
-                  type='password'
-                  value={password}
-                />
+              <div className='grid grid-cols-12 gap-5 m-6'>
+                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+                <h2 className='col-span-5 pt-2'>
+                  <span className=''>Set a good password</span>
+                </h2>
+                <div className='col-span-7'>
+                  <input className='input input-bordered w-full max-w-xs'
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder='Set a Password'
+
+                    type='password'
+                    value={password}
+                  />
+                </div>
               </div>
-            </div>
-            <div className='grid grid-cols-12 gap-5 m-6'>
-              {/* TODO: Should not use this pt-2, but some vertical-align instead */}
-              <h2 className='col-span-5 pt-2'>
-                <span className=''>Repeat Password</span>
-              </h2>
-              <div className='col-span-7'>
-                <input className='input input-bordered w-full max-w-xs'
-                  onChange={(e) => setRepeatPassword(e.target.value)}
-                  placeholder='Repeat the Password'
-                  type='password'
-                  value={repeatPassword}
-                />
+              <div className='grid grid-cols-12 gap-5 m-6'>
+                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+                <h2 className='col-span-5 pt-2'>
+                  <span className=''>Repeat Password</span>
+                </h2>
+                <div className='col-span-7'>
+                  <input className='input input-bordered w-full max-w-xs'
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                    placeholder='Repeat the Password'
+                    type='password'
+                    value={repeatPassword}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className='col-span-12 my-4'></div>
+          <div className='col-span-12 my-4'></div>
 
-        <div className='col-span-4 col-start-4'>
-          <button className='btn btn-error btn-circle btn-lg'
-            onClick={() => setStep(1)} >
-            <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
+          <div className='col-span-4 col-start-4'>
+            <button className='btn btn-error btn-circle btn-lg'
+              onClick={() => setStep(1)} >
+              <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
+          <div className='col-span-4 '>
+            <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
+              onClick={() => handleSetPassword()}>
+              <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
         </div>
-        <div className='col-span-4 '>
-          <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
-            onClick={() => handleSetPassword()}>
-            <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
-        </div>
-      </div>
       }
     </main>
   );
