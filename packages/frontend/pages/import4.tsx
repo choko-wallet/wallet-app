@@ -18,7 +18,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Dropdown from '../components/Dropdown';
 
 import { AsymmetricEncryption, SymmetricEncryption } from '@skyekiwi/crypto';
-import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -27,10 +27,15 @@ import { loadUserAccount } from '../features/slices/userSlice';
 import DropdownHeader from '../components/DropdownHeader';
 import SuperButton from '../components/SuperButton';
 import CopyToClipboard from 'react-copy-to-clipboard';
+
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { decompressParameters, compressParameters } from '@choko-wallet/core/util';
 // import { xxhashAsHex } from '@polkadot/util-crypto';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { LockedPrivateKey, UserAccount } from '@choko-wallet/core';
+import { unlockUserAccount } from '../features/slices/userSlice';
+import Modal from '../components/Modal'
+
 
 
 /* eslint-disable sort-keys */
@@ -61,95 +66,54 @@ function Import3(): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
   const [copied, setCopied] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+  const [exportUrl, setExportUrl] = useState<string>('');
 
-  const handleCopy = async () => {
-    console.log('first')
-    setShowCheck(true);
-    setTimeout(() => {
-      setShowCheck(false);
-    }, 1000);
+
+  function closeModal() {
+    setSuccess(false);
+    setModalOpen(false);
+    setInput('')
+  }
+
+  function closeExportModal() {
+    setExportModalOpen(false);
+    setExportUrl('');
+
   }
 
 
-  // console.log(payload)
-  // 0063b69fde26c15b5f91daa03ab7f7611ef6da9ae170991b23b3fa265f6b471ff4fbef1f5d9424cccbe555c4593a0ad1c330048862bfb73e012d42f24edfcb2f0e77d8ef503328ad8700000000
+  function UnlockAccount() {
+    console.log(input);
+    const payload = router.query.payload as string;
+    const u8aKey = decompressParameters(hexToU8a(payload));
+    const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);
+    // console.log(lockedPrivateKey)//是个object 
 
-  // const lockedPrivateKey = localStorage.getItem('lockedPrivateKey')//有账户状态才能取
-  // e510404d97c9450ae2078aa86d14ca17ac177a30bb32175a202ba361d3a795447ce07ae75c57d4ba2804001d1388e597fbdd528295a923e595e05516205cf50cb5867d64935f10c700000000
+    async function unlockUserAccountFunc() {
+      const userAccount = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(input));
+      await userAccount.init();
+      console.log('userAccount1')
+      console.log(userAccount.address)
 
-  // payload 和lockedPrivateKey 互转
-  // 通过payload 得到lockedPrivateKey
-  // const u8aKey = decompressParameters(hexToU8a(payload));
-  // const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);
-  // 通过lockedPrivateKey 得到payload 
-  // const key = hexToU8a(localStorage.getItem('lockedPrivateKey'));
-  // const comporessedKey = compressParameters(key);
-  // const payload = u8aToHex(comporessedKey);
+      dispatch(unlockUserAccount({ address: userAccount.address, password: input }));
+      setSuccess(true);
+    }
+    unlockUserAccountFunc();
 
+  }
 
-
-  // console.log(u8aKey)
-  // 报错啊Property 'serialize' does not exist on type 'typeof LockedPrivateKey'. Did you mean 'deserialize'?ts(2551)
-  // const payload = u8aToHex(compressParameters(u8aKey));
-
-  // lockedPrivateKey和seeds互转 
 
   useEffect(() => {
     if (!router.isReady) return;
-    const payload = router.query.payload as string;
 
-
-    const u8aKey = decompressParameters(hexToU8a(payload));
-    const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);
-    console.log(lockedPrivateKey)//是个object 
-    // popup 拿密码 暂时设定123
-    const password = '123';
-    // const passwordHash = blake2AsU8a(password);
-    console.log(blake2AsU8a(password))
-
-    async function unlockUserAccountFunc() {
-      const userAccount = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(password));
-      // 这个函数挂不上？ 无法调用 解密失败
-      await userAccount.init();
-      console.log(userAccount)
-
-      return userAccount;
-    }
-
-    const res = unlockUserAccountFunc()
-
-    // 通过redux生成账户的seeds怎么来 通过什么方法把lockedPrivateKey 变成seeds
-    // dispatch(addUserAccount({ password: password, seeds: seeds.join(' ') }));
-
-
-
-    // const u8aKey = decompressParameters(hexToU8a(payload));
-    // // loop across the u8aKey to split if multiple imports 
-
-    // const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);
-    // Now we haev all options and need to rebuild the accounts
-
-    //   encryptedPrivateKey: Uint8Array; // fixed size = 32 bytes + 24 bytes nonce + 16 bytes overhead
-    // keyType: KeypairType; // 'sr25519' | 'ed25519' | 'secp256k1';
-    // localKeyEncryptionStrategy: number; // 'password-v0' | 'webauthn';
-    // hasEncryptedPrivateKeyExported: boolean;
-
-    // version: Version;
-
-    // rebuild all UserAccount from keys and popup the password request model to unlock
-
-    // /account/import  /account/create 用的redux函数和原始password和seeds生成账户 
-    // 问题3 passwordHash   (blake2AsU8a(password);
-    // USE: UserAccount.unlockUserAccount 
-    //   public static unlockUserAccount (lockedPrivateKey: LockedPrivateKey, passwordHash: Uint8Array): UserAccount {
-
-
-    // after building all userAccount - call redux to have everything stored in localStorage. 
-    // Be aware of cases when the account is already in localStorage
-
-    // dispatch(addUserAccount({ password: password, seeds: seeds.join(' ') }));
+    setModalOpen(true);//获取密码 
 
   }, [router.isReady, router.query]);
+
 
   useEffect(() => {
 
@@ -176,22 +140,22 @@ function Import3(): JSX.Element {
 
   // 可以有多个登录账户 但是只有一个当前账户？其他账户如何拿key？
   // 只有当前账户key = hexToU8a(localStorage.getItem('lockedPrivateKey')); 
-  const key = hexToU8a(localStorage.getItem('lockedPrivateKey'));//先暂时弄一个账户 逻辑跑通
-  const comporessedKey = compressParameters(key);
-  const payload = u8aToHex(comporessedKey);
 
 
+  function GenerateAccountUrl() {
+    const key = hexToU8a(localStorage.getItem('lockedPrivateKey'));//先弄一个账户 逻辑跑通
+    const comporessedKey = compressParameters(key);
+    const payload = u8aToHex(comporessedKey);
 
+    // console.log('key')
+    // console.log(payload)
 
+    const superUrl = 'https://wallet.app/import?payload=' + payload;
+    console.log(superUrl);
+    setExportUrl(superUrl);
+    setExportModalOpen(true);
 
-  // const lockedPrivateKeyUnit8 = new TextEncoder().encode(localStorage.getItem('lockedPrivateKey'));
-  // const seeds = 'detail farm install vintage buddy myself adapt tomato bind time toast gospel' as string;//76
-  // const seedsUint8 = new TextEncoder().encode(seeds);//76的arr
-  // const encrypt = SymmetricEncryption.encrypt(hexToU8a(key), seedsUint8)//需要32位的key 
-  // console.log(seeds.length)
-
-  // console.log(seedsUint8)
-
+  }
 
 
 
@@ -199,12 +163,82 @@ function Import3(): JSX.Element {
     <div className={theme}>
 
 
+      <button
+        className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+        onClick={GenerateAccountUrl}
+        type='button'
+      >
+        Generate Account Url
+      </button>
 
+      {/* 引入弹框输入密码 */}
+      <Modal closeModal={closeModal} isOpen={modalOpen} >
 
+        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-black dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
+          <Dialog.Title
+            as='h3'
+            className='text-lg font-medium leading-6 text-gradient '
+          >
+            Please input your password
+          </Dialog.Title>
+          <div className='mt-2'>
+            <input value={input} onChange={(e) => setInput(e.target.value)} type="text" placeholder="password" className=" input input-bordered input-info w-full " />
+          </div>
+          {success
+            ?
+            <Dialog.Title
+              as='h3'
+              className='text-lg font-medium leading-6 text-gradient '
+            >
+              Unlock Account Success
+            </Dialog.Title>
+            : null}
 
+          <div className='mt-4 flex justify-between'>
+            <button
+              className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+              onClick={UnlockAccount}
+              type='button'
+            >
+              UnlockAccount
+            </button>
+            <button
+              className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+              onClick={closeModal}
+              type='button'
+            >
+              Close
+            </button>
+          </div>
+        </Dialog.Panel>
 
+      </Modal>
 
+      {/* 导出弹框显示url */}
+      <Modal closeModal={closeExportModal} isOpen={exportModalOpen} >
 
+        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-black dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
+          <Dialog.Title
+            as='h3'
+            className='text-lg font-medium leading-6 text-gradient '
+          >
+            Account Url
+          </Dialog.Title>
+
+          <div className='w-72 h-64 stringWrap mt-3'>{exportUrl}</div>
+          <div className='mt-4 flex justify-between'>
+
+            <button
+              className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+              onClick={closeExportModal}
+              type='button'
+            >
+              Close
+            </button>
+          </div>
+        </Dialog.Panel>
+
+      </Modal>
 
     </div >
 

@@ -53,7 +53,8 @@ import Header from '../../components/Header';
 
 import { CSSTransition } from 'react-transition-group';
 
-
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+import { decompressParameters, compressParameters } from '@choko-wallet/core/util';
 
 
 
@@ -282,8 +283,14 @@ function Home({ coinPriceData }: Props): JSX.Element {
   // console.log(network)
 
   // console.log(networkSelection)
-
-  // console.log(localStorage.getItem('lockedPrivateKey'))
+  console.log('localStorage.getItem')
+  console.log(localStorage.getItem('lockedPrivateKey'))
+  const keykey = hexToU8a(localStorage.getItem('lockedPrivateKey'));
+  const comporessedKeyKey = compressParameters(keykey);
+  const payloadpayload = u8aToHex(comporessedKeyKey);
+  console.log('payload')
+  console.log(payloadpayload)
+  // 在home页面获得当前账户的payload 和localStorage.getItem('lockedPrivateKey')
 
 
 
