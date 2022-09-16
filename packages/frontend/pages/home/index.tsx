@@ -181,6 +181,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
       setCurrentAccount(allAddrs[0]);
       setAllAccounts(allAddrs);
     }
+    console.log('setCurrentAccount')
     // }, [dispatch, router, userAccount]);//userAccount will always fire useEffect and refresh
   }, [dispatch, router]);
 
@@ -291,8 +292,10 @@ function Home({ coinPriceData }: Props): JSX.Element {
   console.log('payload')
   console.log(payloadpayload)
   // 在home页面获得当前账户的payload 和localStorage.getItem('lockedPrivateKey')
-
-
+  console.log('userAccount')
+  console.log(userAccount)
+  console.log('allAccountsAddr')
+  console.log(Object.keys(userAccount))//得到地址array
 
   return (
     <div className={theme}>

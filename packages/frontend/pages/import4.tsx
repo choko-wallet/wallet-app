@@ -23,7 +23,7 @@ import { AsymmetricEncryption, SymmetricEncryption } from '@skyekiwi/crypto';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUserAccount } from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/userSlice';
+
 import DropdownHeader from '../components/DropdownHeader';
 import SuperButton from '../components/SuperButton';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -33,7 +33,9 @@ import { decompressParameters, compressParameters } from '@choko-wallet/core/uti
 // import { xxhashAsHex } from '@polkadot/util-crypto';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { LockedPrivateKey, UserAccount } from '@choko-wallet/core';
-import { unlockUserAccount } from '../features/slices/userSlice';
+import { unlockUserAccount, loadUserAccount } from '../features/slices/userSlice';
+// import { addUserAccount2 } from '../features/slices/userSlice';
+
 import Modal from '../components/Modal'
 
 
@@ -44,6 +46,7 @@ function Import3(): JSX.Element {
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
+
 
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
@@ -71,6 +74,8 @@ function Import3(): JSX.Element {
   const [success, setSuccess] = useState<boolean>(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [exportUrl, setExportUrl] = useState<string>('');
+  const [keyForExport, setKeyForExport] = useState<string>('');
+
 
 
   function closeModal() {
@@ -87,19 +92,50 @@ function Import3(): JSX.Element {
 
 
   function UnlockAccount() {
-    console.log(input);
     const payload = router.query.payload as string;
     const u8aKey = decompressParameters(hexToU8a(payload));
-    const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);
-    // console.log(lockedPrivateKey)//是个object 
+    const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);//是个object 
+    console.log('u8aKey')
+    console.log(u8aKey)//76位arr
+    console.log(hexToU8a(payload))//77位arr
+    console.log(lockedPrivateKey)//object 里面有72位的encryptedPrivateKey 
+
+    // 用privateKeyToUserAccount 写个新的redux函数addUserAccount2 需要32位的key
+    // dispatch(addUserAccount2({ password: input, privateKey: hexToU8a(payload) }));//需要32位的key
 
     async function unlockUserAccountFunc() {
-      const userAccount = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(input));
-      await userAccount.init();
-      console.log('userAccount1')
-      console.log(userAccount.address)
+      const userAccountForImport = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(input));
+      await userAccountForImport.init();
+      console.log('addressForImport')
+      console.log(userAccountForImport.address)
 
-      dispatch(unlockUserAccount({ address: userAccount.address, password: input }));
+      const allAddressArray = Object.keys(userAccount)//得到已经登录的地址array 判断是否存在 
+      console.log('allAddressArray')
+      console.log(allAddressArray)
+      console.log('check if already exists')
+      // console.log('yyy')
+      // console.log(localStorage.getItem('lockedPrivateKey'))
+      // console.log(userAccount)
+      if (allAddressArray.includes(userAccountForImport.address)) {
+        console.log('already exists')
+        return
+      }
+
+      // dispatch(addUserAccount2({ password: input, privateKey: hexToU8a(payload) }));//需要32位的key
+
+      // const alredyImportedKeys = localStorage.getItem('lockedPrivateKey')//已登录账户的keys 追加
+      // localStorage.setItem('lockedPrivateKey', alredyImportedKeys + payload.slice(2));
+      // dispatch(unlockUserAccount({ address: userAccountForImport.address, password: input }))
+      // 如果成功 不动lockedPrivateKey 如果密码错误解锁失败 应该删除lockedPrivateKey
+
+      // const alredyImportedKeys2 = localStorage.getItem('lockedPrivateKey')//已登录账户的keys 再删除
+      // localStorage.setItem('lockedPrivateKey', alredyImportedKeys.slice(0, localStorage.getItem('lockedPrivateKey').length - payload.slice(2).length));
+
+      console.log('xxx')
+      console.log(localStorage.getItem('lockedPrivateKey'))
+      console.log(userAccount)
+
+      // 这个位置需要判断 不报错再给true
       setSuccess(true);
     }
     unlockUserAccountFunc();
@@ -109,14 +145,16 @@ function Import3(): JSX.Element {
 
   useEffect(() => {
     if (!router.isReady) return;
+    dispatch(loadUserAccount());//加载已经登录的账户 账户信息在userAccount
 
-    setModalOpen(true);//获取密码 
+    if (router.query.payload !== undefined) {
+      setModalOpen(true);//有payload 弹框获取密码 
+    }
 
   }, [router.isReady, router.query]);
 
 
   useEffect(() => {
-
     setMounted(true);
   }, []);
 
@@ -138,22 +176,37 @@ function Import3(): JSX.Element {
   // const comporessedKey = compressParameters(exported);
   // alert( u8aToHex(comporessedKey) ); >> this is the payload in the URL
 
-  // 可以有多个登录账户 但是只有一个当前账户？其他账户如何拿key？
-  // 只有当前账户key = hexToU8a(localStorage.getItem('lockedPrivateKey')); 
 
 
-  function GenerateAccountUrl() {
-    const key = hexToU8a(localStorage.getItem('lockedPrivateKey'));//先弄一个账户 逻辑跑通
-    const comporessedKey = compressParameters(key);
-    const payload = u8aToHex(comporessedKey);
+  function GenerateAccountUrl(address: string) {
+    // 还是有点小bug 确认下是用这种方法么 
+    // 找到选择的账户在userAccount中是第几个 截取localStorage.getItem('lockedPrivateKey') 
+    // 还是用其他方法通过address 获取该账户的localStorage.getItem('lockedPrivateKey')
+    for (let i = 0; i < Object.values(userAccount).length; i++) {
+      if (Object.values(userAccount)[i].address == address) {
+        console.log('xxx')
+        console.log(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
+        setKeyForExport(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
+        console.log(keyForExport)
 
-    // console.log('key')
+      }
+    }
+
+    // const key = hexToU8a(localStorage.getItem('lockedPrivateKey'));
+    const comporessedKeyForExport = compressParameters(hexToU8a(keyForExport));
+    const payloadForExport = u8aToHex(comporessedKeyForExport);
+
+    console.log(localStorage.getItem('lockedPrivateKey').length)//152位
     // console.log(payload)
 
-    const superUrl = 'https://wallet.app/import?payload=' + payload;
+    const superUrl = 'https://wallet.app/import?payload=' + payloadForExport;
     console.log(superUrl);
     setExportUrl(superUrl);
     setExportModalOpen(true);
+
+    // 如何获取账户balance  
+    // 通过什么参数获取账户的coin balance?  
+    // 通过api查询的币价 进行计算 得到金额balance? 
 
   }
 
@@ -162,14 +215,22 @@ function Import3(): JSX.Element {
   return (
     <div className={theme}>
 
+      {Object.values(userAccount).map(({ address }) => (
+        <div key={address} className='bg-gray-600 m-5 p-3 rounded-md text-center'>
+          <p className='text-sm text-white '>Account Address: {address}</p>
+          <button
+            className='m-2 py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+            onClick={() => GenerateAccountUrl(address)}
+            type='button'
+          >
+            Generate Account Url
+          </button>
+        </div>
+      ))}
 
-      <button
-        className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-        onClick={GenerateAccountUrl}
-        type='button'
-      >
-        Generate Account Url
-      </button>
+
+
+
 
       {/* 引入弹框输入密码 */}
       <Modal closeModal={closeModal} isOpen={modalOpen} >

@@ -12,6 +12,11 @@ interface AddAccountPayload {
   password: string;
 }
 
+interface AddAccountPayload2 {
+  privateKey: Uint8Array;
+  password: string;
+}
+
 interface UnlockAccountPayload {
   address: string;
   password: string;
@@ -42,12 +47,42 @@ export const addUserAccount = createAsyncThunk(
   }
 );
 
+export const addUserAccount2 = createAsyncThunk(
+  'users/add2',
+  async (payload: AddAccountPayload2) => {
+    const { password, privateKey } = payload;
+
+    const userAccount = UserAccount.privateKeyToUserAccount(privateKey, {
+      hasEncryptedPrivateKeyExported: false,
+      keyType: 'sr25519',
+      localKeyEncryptionStrategy: 0
+    });
+
+    await userAccount.init();
+
+    const serialized = userAccount.serialize();
+    const lockedUserAccount = userAccount.lockUserAccount(blake2AsU8a(password));
+
+    const serializedLockedUserAccount = lockedUserAccount.serialize();
+
+    return {
+      lockedPrivateKey: u8aToHex(serializedLockedUserAccount),
+      serializedUserAccount: u8aToHex(serialized)
+    };
+  }
+);
+
 export const unlockUserAccount = createAsyncThunk(
   'users/unlock',
   async (payload: UnlockAccountPayload, { rejectWithValue }) => {
+
+
     const { address, password } = payload;
+    console.log('address4')
+    console.log(localStorage.getItem('lockedPrivateKey'))//null 没有不能用unlockUserAccount
 
     const serializedLockedPrivateKey = hexToU8a(localStorage.getItem('lockedPrivateKey'));
+
 
     let offsetLockedKey = 0;
     const perLockedPrivateKeyLength = LockedPrivateKey.serializedLength();
@@ -58,10 +93,10 @@ export const unlockUserAccount = createAsyncThunk(
 
       try {
         const userAccount = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(password));
-
         await userAccount.init();
 
         if (userAccount.address === address) {
+          console.log('address')
           return userAccount;
         }
       } catch (e) {
@@ -113,6 +148,20 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addUserAccount.fulfilled, (state, action) => {
+        const { lockedPrivateKey,
+          serializedUserAccount } = action.payload;
+
+        const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
+        const maybeCurrentlockedPrivateKey = localStorage.getItem('lockedPrivateKey');
+
+        const currentSerializedAccount = maybeCurrentSerializedAccount || '';
+        const currentlockedPrivateKey = maybeCurrentlockedPrivateKey || '';
+
+        localStorage.setItem('serialziedUserAccount', currentSerializedAccount + serializedUserAccount);
+        localStorage.setItem('lockedPrivateKey', currentlockedPrivateKey + lockedPrivateKey);
+      })
+
+      .addCase(addUserAccount2.fulfilled, (state, action) => {
         const { lockedPrivateKey,
           serializedUserAccount } = action.payload;
 
