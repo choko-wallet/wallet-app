@@ -17,14 +17,17 @@ import DropdownHeader2 from './DropdownHeader2'
 import logo from '../images/logo.png'
 import icon1 from '../images/icon1.png'
 import setting from '../images/setting.png'
+import { UserAccount } from '@choko-wallet/core';
 
-interface Props {
+// interface Props {
+//   currentUserAccount: { [key: string]: UserAccount }
+//   userAccount: { [key: string]: UserAccount };
+// }
 
-  currentAccount: string;
-}
 
+// function Header({ currentUserAccount, userAccount }: Props): JSX.Element {
+function Header(): JSX.Element {
 
-function Header({ currentAccount }: Props): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
   const { setTheme, theme } = useTheme();
@@ -94,7 +97,7 @@ function Header({ currentAccount }: Props): JSX.Element {
 
           <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500" />
 
-          <DropdownHeader2 currentAccount={currentAccount} />
+          <DropdownHeader2 />
 
         </div>
       </div>

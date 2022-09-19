@@ -104,6 +104,8 @@ function Import3(): JSX.Element {
     // dispatch(addUserAccount2({ password: input, privateKey: hexToU8a(payload) }));//需要32位的key
 
     async function unlockUserAccountFunc() {
+      // privateKeyToUserAccount
+
       const userAccountForImport = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(input));
       await userAccountForImport.init();
       console.log('addressForImport')
@@ -145,7 +147,9 @@ function Import3(): JSX.Element {
 
   useEffect(() => {
     if (!router.isReady) return;
-    dispatch(loadUserAccount());//加载已经登录的账户 账户信息在userAccount
+    dispatch(loadUserAccount());//加载已经登录的账户 给到redux 
+    console.log('userAccount')
+    console.log(userAccount)
 
     if (router.query.payload !== undefined) {
       setModalOpen(true);//有payload 弹框获取密码 
@@ -188,7 +192,11 @@ function Import3(): JSX.Element {
         console.log(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
         setKeyForExport(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
         console.log(keyForExport)
-
+        // 这种的建议弄成u8a之后处理
+        // 之后可以用LockedPrivateKey.serializedLength 因为后续又可能改这个长度
+        // for循环改成redux的while循环
+        // 之后每一个是u8a.slice(offset, offset + ...serializedLength )
+        // 外面一个while循环offset < u8a.length
       }
     }
 

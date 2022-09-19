@@ -7,7 +7,7 @@ import { UserAccount } from '@choko-wallet/core';
 
 /* eslint-disable */
 // userAccount selectors
-export const selectSeeds = (state: RootState): string => state.user.seeds;
-export const selectUserAccount = (state: RootState): {[key: string]: UserAccount} => state.user.userAccount;
+export const selectCurrentUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.currentUserAccount;
+export const selectUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.userAccount;
 export const selectError = (state: RootState): string => state.user.error;
 /* eslint-enable */

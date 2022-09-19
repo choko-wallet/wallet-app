@@ -44,8 +44,12 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
 
     dispatch(addUserAccount({ password: password, seeds: seeds }));
-    //异步生成localStorage.getItem('serialziedUserAccount')
-
+    // 异步生成localStorage.getItem('serialziedUserAccount')
+    console.log('localStorage')
+    console.log(localStorage)//里面就有了这两个变量
+    // serialziedUserAccount → "3e082ced8b973899c592c6db823f0767752562d49f23ed76a8f9c0b06811605600000000"
+    // ​​
+    // lockedPrivateKey → "8f8a8ce8b41221b7c5c2ed271e9588f836197b0f58d818273f14806556bfbe44d02f8a7b589dd6cab1764fed1d6174605852ff6e6eb005eee30c73f44252c99a1c6ea669e9a1288b00000000"
 
 
 

@@ -16,8 +16,9 @@ import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 import { knownNetworks } from '@choko-wallet/known-networks';
-import { selectUserAccount } from '../../features/redux/selectors';
+import { selectUserAccount, selectCurrentUserAccount, selectError } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
+import { store } from '../../features/redux/store';
 
 import type { NextPage } from 'next';
 import { GetServerSideProps } from 'next';
@@ -89,7 +90,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const userAccount = useSelector(selectUserAccount);
+  const userAccount = useSelector(selectUserAccount);//所有账户 
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const reduxError = useSelector(selectError);
+
+
+
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
   const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');//初始化设置默认网络skyekiwi
@@ -134,6 +140,27 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
 
+  useEffect(() => {
+    // console.log('2')
+    // console.log(localStorage.getItem('serialziedUserAccount'))
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      void router.push('/account');
+    } else {
+      dispatch(loadUserAccount());
+    }
+
+    if (userAccount && Object.keys(userAccount).length > 0) {
+      const allAddrs = Object.keys(userAccount);
+
+      setCurrentAccount(allAddrs[0]);
+      setAllAccounts(allAddrs);
+      console.log('setCurrentAccount')
+      console.log(currentAccount)
+      console.log(allAccounts)
+    }//这个初始时挂载不上 上面dispatch开了异步 要用useSelctor取值
+
+    // }, [dispatch, router, userAccount]);//userAccount will always fire useEffect and refresh
+  }, [dispatch, router]);
 
 
   useEffect(() => {
@@ -166,24 +193,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
   }, [network, currentAccount]);
 
 
-  useEffect(() => {
-    // console.log('2')
-    // console.log(localStorage.getItem('serialziedUserAccount'))
-    if (!localStorage.getItem('serialziedUserAccount')) {
-      void router.push('/account');
-    } else {
-      dispatch(loadUserAccount());
-    }
-
-    if (userAccount && Object.keys(userAccount).length > 0) {
-      const allAddrs = Object.keys(userAccount);
-
-      setCurrentAccount(allAddrs[0]);
-      setAllAccounts(allAddrs);
-    }
-    console.log('setCurrentAccount')
-    // }, [dispatch, router, userAccount]);//userAccount will always fire useEffect and refresh
-  }, [dispatch, router]);
 
 
   useEffect(() => {
@@ -282,24 +291,30 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   // console.log(knownNetworks[networkSelection].text)
   // console.log(network)
-
   // console.log(networkSelection)
-  console.log('localStorage.getItem')
-  console.log(localStorage.getItem('lockedPrivateKey'))
-  const keykey = hexToU8a(localStorage.getItem('lockedPrivateKey'));
-  const comporessedKeyKey = compressParameters(keykey);
-  const payloadpayload = u8aToHex(comporessedKeyKey);
-  console.log('payload')
-  console.log(payloadpayload)
-  // 在home页面获得当前账户的payload 和localStorage.getItem('lockedPrivateKey')
-  console.log('userAccount')
-  console.log(userAccount)
-  console.log('allAccountsAddr')
-  console.log(Object.keys(userAccount))//得到地址array
+
+  // console.log('localStorage.getItem')
+  // console.log(localStorage.getItem('lockedPrivateKey'))
+  // const keykey = hexToU8a(localStorage.getItem('lockedPrivateKey'));
+  // const comporessedKeyKey = compressParameters(keykey);
+  // const payloadpayload = u8aToHex(comporessedKeyKey);
+  // console.log('payload')
+  // console.log(payloadpayload)
+  // // 在home页面获得当前账户的payload 和localStorage.getItem('lockedPrivateKey')
+  // console.log('userAccount')
+  // console.log(userAccount)
+  // console.log('allAccountsAddr')
+  // console.log(Object.keys(userAccount))//得到地址array
+
+
+  // console.log('store', store.getState());
+  // console.log('currentUserAccount', currentUserAccount);
+  // console.log('reduxError', reduxError);
+
 
   return (
     <div className={theme}>
-      <Header currentAccount={currentAccount} />
+      <Header />
 
       <div className='bg-gray-100 relative dark:bg-[#22262f] min-h-screen overflow-hidden'>
         {/* <Toaster /> */}

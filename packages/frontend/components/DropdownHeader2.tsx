@@ -8,38 +8,59 @@ import Image from 'next/image'
 import btcIcon from '../images/btc.png'
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-interface Crypto {
-  name: string;
-  img: string;
-  price: number;
-  shortName: string;
-  networkFee: string;
-  estimatedTime: string;
-  arrival: string;
-  MinDeposit: string;
-};
+import { useDispatch, useSelector } from 'react-redux';
+import { knownNetworks } from '@choko-wallet/known-networks';
+import { selectUserAccount, selectCurrentUserAccount, selectError } from '../features/redux/selectors';
+import { loadUserAccount, removeAllAccounts } from '../features/slices/userSlice';
+import { store } from '../features/redux/store';
+import DropdownHeaderRow from './DropdownHeaderRow';
 
 
-interface Props {
-  // arr: Crypto[];
-  // defaultValue: Crypto;
-  // onClick?: (value: Crypto) => void;
-  currentAccount: string;
-}
 
-function DropdownHeader({ currentAccount }: Props) {
+
+function DropdownHeader2() {
+
+  const dispatch = useDispatch();
+  const userAccount = useSelector(selectUserAccount);//所有账户 
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const reduxError = useSelector(selectError);
+  // const currentUserAccountAdd = Object.keys(currentUserAccount)[0];//拿add
+  // const currentUserAccountObj = Object.entries(currentUserAccount)[0][1];//拿到obj 容易报错
+  const userAccountArr = Object.entries(userAccount);//可以map
+
+
+
+  const router = useRouter();
+
+
 
   const [showCheck, setShowCheck] = useState<boolean>(false);
-
   const [copied, setCopied] = useState<boolean>(false);
+
   const handleCopy = async () => {
     console.log('first')
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);
     }, 1000);
-
   }
+
+  const removeAccounts = () => {
+    router.push('/')
+    dispatch(removeAllAccounts());
+  }
+
+  // console.log('store', store.getState());
+  // console.log('currentUserAccount', currentUserAccount);
+  // console.log('reduxError', reduxError);
+  // console.log('userAccount', userAccount);
+  // console.log('userAccountArr', userAccountArr);
+
+  // console.log('currentUserAccountAdd', currentUserAccountAdd);
+  // // console.log('userAccountadd', userAccountArr[0][1].address);
+  // // console.log('userAccountadd', userAccountArr[1][1].address);
+
+  // console.log('currentUserAccountObj', Object.entries(currentUserAccount));
 
 
 
@@ -55,9 +76,9 @@ function DropdownHeader({ currentAccount }: Props) {
             </div>
 
             <p className='font-poppins text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
-              {currentAccount.substring(0, 7)}
+              {Object.keys(currentUserAccount)[0].substring(0, 7)}
               <DotsHorizontalIcon className='dark:text-white h-6 w-6 mx-1' />
-              {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}
+              {Object.keys(currentUserAccount)[0].substring(Object.keys(currentUserAccount)[0].length - 7, Object.keys(currentUserAccount)[0].length)}
             </p>
             <ChevronDownIcon className="dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-700 " />
           </Menu.Button>
@@ -75,28 +96,13 @@ function DropdownHeader({ currentAccount }: Props) {
             <div className="px-1 py-1 ">
 
 
+              {/* 直接map */}
 
-              <div className='h-12'>
-                <button className='flex w-full items-center rounded-md px-2 py-2 text-sm'>
 
-                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 7)}
-                    <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
+              {userAccountArr.map((accountObj) => (
+                <DropdownHeaderRow key={accountObj[1].address} accountObj={accountObj[1]} />
+              ))}
 
-                    {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}</p>
-
-                  <CopyToClipboard text={currentAccount}
-                    onCopy={() => { setCopied(true) }}>
-                    <div onClick={handleCopy}>
-                      {showCheck
-                        ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                        : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
-
-                    </div>
-                  </CopyToClipboard>
-
-                </button>
-
-              </div>
 
 
               <Menu.Item >
@@ -104,6 +110,7 @@ function DropdownHeader({ currentAccount }: Props) {
                   <button
                     className={`${active ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white' : 'font-poppins text-gray-900'
                       } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => router.push('/account')}
                   >
 
                     <p className='text-gradient '>Add New Account</p>
@@ -117,11 +124,10 @@ function DropdownHeader({ currentAccount }: Props) {
                   <button
                     className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
                       } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                    onClick={removeAccounts}
+
                   >
-
-                    <p className='font-poppins text-gradient text-center'>Remove Account</p>
-
-
+                    <p className='font-poppins text-gradient text-center'>Remove All Accounts</p>
                   </button>
                 )}
               </Menu.Item>
@@ -135,4 +141,4 @@ function DropdownHeader({ currentAccount }: Props) {
   )
 }
 
-export default DropdownHeader
+export default DropdownHeader2
