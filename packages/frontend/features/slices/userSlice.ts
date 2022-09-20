@@ -12,6 +12,11 @@ interface AddAccountPayload {
   password: string;
 }
 
+interface AddAccountFromUrlPayload {
+  privateKey: Uint8Array;
+  password: string;
+}
+
 interface UnlockAccountPayload {
   address: string;
   password: string;
@@ -63,6 +68,54 @@ export const addUserAccount = createAsyncThunk(
     };
   }
 );
+
+export const addUserAccountFromUrl = createAsyncThunk(
+  'users/addFromUrl',
+  async (payload: AddAccountFromUrlPayload) => {
+    const { privateKey, password } = payload;
+
+    const userAccount = UserAccount.privateKeyToUserAccount(privateKey, {
+      hasEncryptedPrivateKeyExported: false,
+      keyType: 'sr25519',
+      localKeyEncryptionStrategy: 0
+    });
+
+    await userAccount.init();
+
+    console.log('redux-userAccount', userAccount.address)
+
+    const serialized = userAccount.serialize();
+    const lockedUserAccount = userAccount.lockUserAccount(blake2AsU8a(password));
+    const serializedLockedUserAccount = lockedUserAccount.serialize();
+
+
+    // 存在账户 且和导入的地址一致 返回空值 
+    if (localStorage.getItem('serialziedUserAccount') !== null) {
+      const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
+      let offset = 0;
+      const serializedLength = UserAccount.serializedLength();
+      while (offset < serializedUserAccount.length) {
+        const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
+        offset += serializedLength;
+        const account = UserAccount.deserialize(currentSerializedUserAccount);
+        if (account.address == userAccount.address) {
+          console.log('account already exists');
+          return {
+            lockedPrivateKey: '',
+            serializedUserAccount: ''
+          };
+        }
+      }
+    }
+
+
+    return {
+      lockedPrivateKey: u8aToHex(serializedLockedUserAccount),
+      serializedUserAccount: u8aToHex(serialized)
+    };
+  }
+);
+
 
 export const unlockUserAccount = createAsyncThunk(
   'users/unlock',
@@ -156,6 +209,20 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addUserAccount.fulfilled, (state, action) => {
+        const { lockedPrivateKey,
+          serializedUserAccount } = action.payload;
+
+        const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
+        const maybeCurrentlockedPrivateKey = localStorage.getItem('lockedPrivateKey');
+
+        const currentSerializedAccount = maybeCurrentSerializedAccount || '';
+        const currentlockedPrivateKey = maybeCurrentlockedPrivateKey || '';
+
+        localStorage.setItem('serialziedUserAccount', currentSerializedAccount + serializedUserAccount);
+        localStorage.setItem('lockedPrivateKey', currentlockedPrivateKey + lockedPrivateKey);
+      })
+
+      .addCase(addUserAccountFromUrl.fulfilled, (state, action) => {
         const { lockedPrivateKey,
           serializedUserAccount } = action.payload;
 

@@ -69,7 +69,7 @@ function Header(): JSX.Element {
             </div>
 
             <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-            // onClick={() => router.push('/')}
+              onClick={() => router.push('/settings')}
             >
               <Image
                 layout='fill'

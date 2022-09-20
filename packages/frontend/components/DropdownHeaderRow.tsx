@@ -34,15 +34,15 @@ function DropdownHeaderRow({ accountObj }: Props): JSX.Element {
 
 
   const handleCopy = async () => {
-    console.log('first')
+    // console.log('first')
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);
     }, 1000);
 
   }
-  console.log('accountObj', accountObj)
-  console.log('currentUserAccount', currentUserAccount)
+  // console.log('accountObj', accountObj)
+  // console.log('currentUserAccount', currentUserAccount)
 
   // Object.keys(currentUserAccount)[0] == accountObj.address
 
