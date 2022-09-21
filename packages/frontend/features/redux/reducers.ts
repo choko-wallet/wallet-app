@@ -4,9 +4,13 @@
 import { combineReducers, Reducer } from '@reduxjs/toolkit';
 
 import userSlice from '../slices/userSlice';
+import coinSlice from '../slices/coinSlice';
+
 
 export const rootReducer: Reducer = combineReducers({
-  user: userSlice
+  user: userSlice,
+  coin: coinSlice
+
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

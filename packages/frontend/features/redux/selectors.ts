@@ -10,4 +10,6 @@ import { UserAccount } from '@choko-wallet/core';
 export const selectCurrentUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.currentUserAccount;
 export const selectUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.userAccount;
 export const selectError = (state: RootState): string => state.user.error;
+export const selectMarketPriceTop30 = (state: RootState): string => state.coin.marketPriceTop30;
+
 /* eslint-enable */

@@ -17,10 +17,13 @@ interface AddAccountFromUrlPayload {
   password: string;
 }
 
+
+
 interface UnlockAccountPayload {
   address: string;
   password: string;
 }
+
 
 export const addUserAccount = createAsyncThunk(
   'users/add',
@@ -71,50 +74,64 @@ export const addUserAccount = createAsyncThunk(
 
 export const addUserAccountFromUrl = createAsyncThunk(
   'users/addFromUrl',
-  async (payload: AddAccountFromUrlPayload) => {
+  async (payload: AddAccountFromUrlPayload, { rejectWithValue }) => {
     const { privateKey, password } = payload;
 
-    const userAccount = UserAccount.privateKeyToUserAccount(privateKey, {
-      hasEncryptedPrivateKeyExported: false,
-      keyType: 'sr25519',
-      localKeyEncryptionStrategy: 0
-    });
+    try {
+      const userAccount = UserAccount.privateKeyToUserAccount(privateKey, {
+        hasEncryptedPrivateKeyExported: false,
+        keyType: 'sr25519',
+        localKeyEncryptionStrategy: 0
+      });
 
-    await userAccount.init();
+      await userAccount.init();
 
-    console.log('redux-userAccount', userAccount.address)
+      console.log('redux-userAccount', userAccount.address)
 
-    const serialized = userAccount.serialize();
-    const lockedUserAccount = userAccount.lockUserAccount(blake2AsU8a(password));
-    const serializedLockedUserAccount = lockedUserAccount.serialize();
+      const serialized = userAccount.serialize();
+      const lockedUserAccount = userAccount.lockUserAccount(blake2AsU8a(password));
+      const serializedLockedUserAccount = lockedUserAccount.serialize();
 
 
-    // 存在账户 且和导入的地址一致 返回空值 
-    if (localStorage.getItem('serialziedUserAccount') !== null) {
-      const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
-      let offset = 0;
-      const serializedLength = UserAccount.serializedLength();
-      while (offset < serializedUserAccount.length) {
-        const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
-        offset += serializedLength;
-        const account = UserAccount.deserialize(currentSerializedUserAccount);
-        if (account.address == userAccount.address) {
-          console.log('account already exists');
-          return {
-            lockedPrivateKey: '',
-            serializedUserAccount: ''
-          };
+      // 存在账户 且和导入的地址一致 返回空值 
+      if (localStorage.getItem('serialziedUserAccount') !== null) {
+        const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
+        let offset = 0;
+        const serializedLength = UserAccount.serializedLength();
+        while (offset < serializedUserAccount.length) {
+          const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
+          offset += serializedLength;
+          const account = UserAccount.deserialize(currentSerializedUserAccount);
+          if (account.address == userAccount.address) {
+            console.log('account already exists');
+            return {
+              lockedPrivateKey: '',
+              serializedUserAccount: ''
+            };
+          }
         }
       }
+
+
+      return {
+        lockedPrivateKey: u8aToHex(serializedLockedUserAccount),
+        serializedUserAccount: u8aToHex(serialized)
+      };
+
+
+    } catch (err) {
+      console.log('redux-err', err);//控制台显示具体报错
+      return rejectWithValue('Account and password do not match');//给用户的报错提示
     }
 
 
-    return {
-      lockedPrivateKey: u8aToHex(serializedLockedUserAccount),
-      serializedUserAccount: u8aToHex(serialized)
-    };
+
   }
 );
+
+
+
+
 
 
 export const unlockUserAccount = createAsyncThunk(
@@ -123,19 +140,15 @@ export const unlockUserAccount = createAsyncThunk(
     const { address, password } = payload;
 
     const serializedLockedPrivateKey = hexToU8a(localStorage.getItem('lockedPrivateKey'));
-
     let offsetLockedKey = 0;
     const perLockedPrivateKeyLength = LockedPrivateKey.serializedLength();
 
     while (offsetLockedKey < serializedLockedPrivateKey.length) {
       const lockedKey = serializedLockedPrivateKey.slice(offsetLockedKey, offsetLockedKey + perLockedPrivateKeyLength);
       const lockedPrivateKey = LockedPrivateKey.deserialize(lockedKey);
-
       try {
         const userAccount = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(password));
-
         await userAccount.init();
-
         if (userAccount.address === address) {
           return userAccount;
         }
@@ -143,7 +156,6 @@ export const unlockUserAccount = createAsyncThunk(
         // wrong key tried
         // pass
       }
-
       offsetLockedKey += perLockedPrivateKeyLength;
     }
 
@@ -205,7 +217,7 @@ export const userSlice = createSlice({
 
     },
   },
-
+  // thunk 函数的return 是extraReducers addCase函数的action.payload
   extraReducers: (builder) => {
     builder
       .addCase(addUserAccount.fulfilled, (state, action) => {
@@ -234,7 +246,15 @@ export const userSlice = createSlice({
 
         localStorage.setItem('serialziedUserAccount', currentSerializedAccount + serializedUserAccount);
         localStorage.setItem('lockedPrivateKey', currentlockedPrivateKey + lockedPrivateKey);
+        state.error = '';
       })
+
+      .addCase(addUserAccountFromUrl.rejected, (state, action) => {
+        // console.log('type', typeof (action.payload))
+        state.error = action.payload as string;
+      })
+
+
 
       .addCase(unlockUserAccount.fulfilled, (state, action) => {
         console.log('fulfiled');
@@ -246,6 +266,8 @@ export const userSlice = createSlice({
         console.log('rejected');
         state.error = 'Invalid password!';
       });
+
+
   }
 });
 

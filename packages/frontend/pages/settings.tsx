@@ -23,7 +23,7 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectUserAccount, selectCurrentUserAccount } from '../features/redux/selectors';
+import { selectUserAccount, selectCurrentUserAccount, selectMarketPriceTop30 } from '../features/redux/selectors';
 import { loadUserAccount } from '../features/slices/userSlice';
 import DropdownHeader from '../components/DropdownHeader';
 import SuperButton from '../components/SuperButton';
@@ -33,6 +33,7 @@ import { compressParameters } from '@choko-wallet/core/util';
 import Modal from '../components/Modal';
 import QRCode from 'react-qr-code';
 import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
+import { fetchMarketPrice } from '../features/slices/coinSlice';
 
 /* eslint-disable sort-keys */
 function Settings(): JSX.Element {
@@ -40,6 +41,8 @@ function Settings(): JSX.Element {
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const userAccount = useSelector(selectUserAccount);
+  const marketPriceTop30 = useSelector(selectMarketPriceTop30);
+
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -70,16 +73,7 @@ function Settings(): JSX.Element {
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
-      dispatch(loadUserAccount())//async 异步拿到数据 
-      //   .then(() => {
-      //     console.log('ooo')
-
-      //   })
-      //   .catch(() => {
-      //     console.log('ppp')
-      //   })//async 
-      // console.log('iii')
-
+      dispatch(loadUserAccount())
     }
   }, [dispatch, router]);
 
@@ -94,6 +88,8 @@ function Settings(): JSX.Element {
   useEffect(() => {
     generateKey();
     setMounted(true);
+    dispatch(fetchMarketPrice({ currency: 'usd' }))
+
   }, [userAccount, currentUserAccount]);
 
 
@@ -111,7 +107,7 @@ function Settings(): JSX.Element {
     setExportUrl('');
 
   }
-  console.log('keyForExport', keyForExport);
+  console.log('marketPriceTop30', marketPriceTop30);
 
   const generateAccountUrl = () => {
     console.log(keyForExport);

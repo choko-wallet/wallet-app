@@ -23,7 +23,7 @@ import { SymmetricEncryption } from '@skyekiwi/crypto';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectUserAccount } from '../features/redux/selectors';
+import { selectUserAccount, selectError } from '../features/redux/selectors';
 
 import DropdownHeader from '../components/DropdownHeader';
 import SuperButton from '../components/SuperButton';
@@ -38,13 +38,18 @@ import { unlockUserAccount, loadUserAccount, addUserAccountFromUrl } from '../fe
 // import { addUserAccount2 } from '../features/slices/userSlice';
 
 import Modal from '../components/Modal'
+import { useAppThunkDispatch } from '../features/redux/store';
+import Loading from '../components/Loading';
 
 
 /* eslint-disable sort-keys */
 function Import4(): JSX.Element {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppThunkDispatch();
+
   const userAccount = useSelector(selectUserAccount);
+  const reduxError = useSelector(selectError);
+
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [theme, setTheme] = useState<string>('dark');//暂时先这样配置 没有light
@@ -52,6 +57,7 @@ function Import4(): JSX.Element {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);
+  const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
 
 
   function closeModal() {
@@ -72,78 +78,34 @@ function Import4(): JSX.Element {
     // const privateKey = SymmetricEncryption.decrypt(blake2AsU8a(input), lockedPrivateKey.encryptedPrivateKey);
     // 72行解码有报错 node包里面 
 
-    dispatch(addUserAccountFromUrl({ privateKey: new Uint8Array([29, 82, 8, 156, 159, 77, 234, 239, 124, 162, 225, 156, 16, 137, 11, 97, 26, 64, 47, 224, 132, 211, 182, 124, 60, 122, 236, 16, 180, 190, 72, 123]), password: input }));
+    dispatch(addUserAccountFromUrl({ privateKey: new Uint8Array([29, 82, 8, 156, 159, 77, 234, 239, 124, 162, 225, 156, 16, 137, 11, 97, 26, 64, 47, 224, 132, 211, 182, 124, 60, 122, 236, 16, 180, 190, 72, 123]), password: input }))
+      .unwrap()
+      .then((result) => {
+        setSuccess(true);
+        closeModal();
+        setIsLoadingOpen(true);
+
+        setTimeout(() => {
+          setIsLoadingOpen(false);
+          router.push('/home')
+        }, 3000);
+
+      }).catch((rejectedValueOrSerializedError) => {
+        console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError)
+        setSuccess(false);
+      })
 
     // dispatch(addUserAccountFromUrl({ privateKey: privateKey, password: input }));
-
-    setSuccess(true);
 
 
   }
 
 
-  // function UnlockAccount2() {
-  //   const payload = router.query.payload as string;
-  //   const u8aKey = decompressParameters(hexToU8a(payload));
-  //   const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);//是个object 
-  //   console.log('u8aKey')
-  //   console.log(u8aKey)//76位arr
-  //   console.log(hexToU8a(payload))//77位arr
-  //   console.log(lockedPrivateKey)//object 里面有72位的encryptedPrivateKey 
-
-  //   // 用privateKeyToUserAccount 写个新的redux函数addUserAccount2 需要32位的key
-  //   // dispatch(addUserAccount2({ password: input, privateKey: hexToU8a(payload) }));//需要32位的key
-
-  //   async function unlockUserAccountFunc() {
-  //     // privateKeyToUserAccount
-
-  //     const userAccountForImport = UserAccount.unlockUserAccount(lockedPrivateKey, blake2AsU8a(input));
-  //     await userAccountForImport.init();
-  //     console.log('addressForImport')
-  //     console.log(userAccountForImport.address)
-
-  //     const allAddressArray = Object.keys(userAccount)//得到已经登录的地址array 判断是否存在 
-  //     console.log('allAddressArray')
-  //     console.log(allAddressArray)
-  //     console.log('check if already exists')
-  //     // console.log('yyy')
-  //     // console.log(localStorage.getItem('lockedPrivateKey'))
-  //     // console.log(userAccount)
-  //     if (allAddressArray.includes(userAccountForImport.address)) {
-  //       console.log('already exists')
-  //       return
-  //     }
-
-  //     // dispatch(addUserAccount2({ password: input, privateKey: hexToU8a(payload) }));//需要32位的key
-
-  //     // const alredyImportedKeys = localStorage.getItem('lockedPrivateKey')//已登录账户的keys 追加
-  //     // localStorage.setItem('lockedPrivateKey', alredyImportedKeys + payload.slice(2));
-  //     // dispatch(unlockUserAccount({ address: userAccountForImport.address, password: input }))
-  //     // 如果成功 不动lockedPrivateKey 如果密码错误解锁失败 应该删除lockedPrivateKey
-
-  //     // const alredyImportedKeys2 = localStorage.getItem('lockedPrivateKey')//已登录账户的keys 再删除
-  //     // localStorage.setItem('lockedPrivateKey', alredyImportedKeys.slice(0, localStorage.getItem('lockedPrivateKey').length - payload.slice(2).length));
-
-  //     console.log('xxx')
-  //     console.log(localStorage.getItem('lockedPrivateKey'))
-  //     console.log(userAccount)
-
-  //     // 这个位置需要判断 不报错再给true
-  //     setSuccess(true);
-  //   }
-  //   unlockUserAccountFunc();
-
-  // }
-
 
   useEffect(() => {
-    // if (!router.isReady) return;
-    // dispatch(loadUserAccount());//加载已经登录的账户 给到redux 
-
     if (router.query.payload !== undefined) {
       setModalOpen(true);//有payload 弹框获取密码 
     }
-
   }, [router.isReady, router.query]);
 
 
@@ -152,11 +114,9 @@ function Import4(): JSX.Element {
   }, []);
 
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null
 
-
+  if (isLoadingOpen) return <Loading title='Successfully Imported Account, Redirecting To Home' />
 
   return (
     <div className={theme}>
@@ -181,6 +141,17 @@ function Import4(): JSX.Element {
               className='text-lg font-medium leading-6 text-gradient '
             >
               Unlock Account Success
+            </Dialog.Title>
+            : null}
+
+          {reduxError
+            ?
+            <Dialog.Title
+              as='h3'
+              className='text-lg font-medium leading-6 text-gradient '
+            >
+              {reduxError}
+
             </Dialog.Title>
             : null}
 
