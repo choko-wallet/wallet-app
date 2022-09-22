@@ -11,5 +11,7 @@ export const selectCurrentUserAccount = (state: RootState): { [key: string]: Use
 export const selectUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.userAccount;
 export const selectError = (state: RootState): string => state.user.error;
 export const selectMarketPriceTop30 = (state: RootState): string => state.coin.marketPriceTop30;
+export const selectCoinApiLoading = (state: RootState): string => state.coin.loading;
+
 
 /* eslint-enable */

@@ -16,7 +16,7 @@ import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 import { knownNetworks } from '@choko-wallet/known-networks';
-import { selectUserAccount, selectCurrentUserAccount, selectError } from '../../features/redux/selectors';
+import { selectUserAccount, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectCoinApiLoading } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
 import { store } from '../../features/redux/store';
 
@@ -56,8 +56,9 @@ import { CSSTransition } from 'react-transition-group';
 
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { decompressParameters, compressParameters } from '@choko-wallet/core/util';
+import { fetchCoinPrice, fetchMarketPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 
-
+import { useAppThunkDispatch } from '../../features/redux/store';
 
 interface Props {
   coinPriceData: CoinPrice,
@@ -89,7 +90,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const { theme, setTheme } = useTheme();
 
   const router = useRouter();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  const dispatch = useAppThunkDispatch();
   const userAccount = useSelector(selectUserAccount);//所有账户 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const reduxError = useSelector(selectError);
@@ -137,8 +139,10 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [drawerTrue, setDrawerTrue] = useState<boolean>(false);
 
   const [activeMenu, setActiveMenu] = useState<boolean>(false);
+  const marketPriceTop30 = useSelector(selectMarketPriceTop30);
+  const coinApiLoading = useSelector(selectCoinApiLoading);
 
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // console.log('2')
@@ -197,9 +201,23 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   useEffect(() => {
     setMounted(true);
+
+    //用useState控制 api太快了 还是会发两个 跟区块链交互时可能要用这个  
+    // const fetchData = async () => {
+    //   if (loading) return;
+    //   setLoading(true);
+    //   dispatch(fetchMarketPrice({ currency: 'usd' }))//这个位置在then catch里面设置loading false
+    //   setLoading(false);
+    // }
+    // fetchData();
+
+    dispatch(fetchMarketPrice({ currency: 'usd' }))//在redux中用pending控制 防止re-fetch
+
+
+
   }, []);
 
-
+  // console.log('marketPriceTop30', marketPriceTop30);
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) {
     return null;
@@ -229,8 +247,14 @@ function Home({ coinPriceData }: Props): JSX.Element {
   }
 
 
-
   const changeNetwork = async () => {
+    dispatch(fetchCoinPrice({ currency: 'usd', coinArray: ['bitcoin', 'ethereum', 'dogecoin'] }))
+      .unwrap()
+      .then((result) => {
+        console.log('result', result);//直接给回组件 没传给redux 也可以给redux保存 
+      }).catch((rejectedValueOrSerializedError) => {
+        console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
+      });
 
     setIsLoadingOpen(true);
     setNetwork(networkSelection);

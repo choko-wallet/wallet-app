@@ -23,7 +23,9 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectUserAccount, selectCurrentUserAccount, selectMarketPriceTop30 } from '../features/redux/selectors';
+import {
+  selectUserAccount, selectCurrentUserAccount, selectMarketPriceTop30, selectCoinApiLoading
+} from '../features/redux/selectors';
 import { loadUserAccount } from '../features/slices/userSlice';
 import DropdownHeader from '../components/DropdownHeader';
 import SuperButton from '../components/SuperButton';
@@ -42,7 +44,7 @@ function Settings(): JSX.Element {
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const userAccount = useSelector(selectUserAccount);
   const marketPriceTop30 = useSelector(selectMarketPriceTop30);
-
+  const coinApiLoading = useSelector(selectCoinApiLoading);
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -86,11 +88,13 @@ function Settings(): JSX.Element {
   }
 
   useEffect(() => {
+
     generateKey();
     setMounted(true);
-    dispatch(fetchMarketPrice({ currency: 'usd' }))
 
   }, [userAccount, currentUserAccount]);
+
+
 
 
   if (!mounted) {
@@ -107,7 +111,7 @@ function Settings(): JSX.Element {
     setExportUrl('');
 
   }
-  console.log('marketPriceTop30', marketPriceTop30);
+  // console.log('marketPriceTop30', marketPriceTop30);
 
   const generateAccountUrl = () => {
     console.log(keyForExport);
@@ -120,7 +124,6 @@ function Settings(): JSX.Element {
     setExportUrl(superUrl);
     setExportModalOpen(true);
   }
-
 
   // console.log(Object.keys(userAccount)[0])
   // const addr = Object.values(userAccount)[0].address
@@ -201,7 +204,7 @@ function Settings(): JSX.Element {
               <div className='md:w-40 w-32 flex justify-end'>
                 <button
                   className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                // onClick={closeModal2}
+                // onClick={xxx}
 
                 >
                   Mnemonic
