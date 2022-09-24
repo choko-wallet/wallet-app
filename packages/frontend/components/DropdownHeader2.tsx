@@ -76,9 +76,9 @@ function DropdownHeader2() {
             </div>
 
             <p className='font-poppins text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
-              {Object.keys(currentUserAccount)[0].substring(0, 7)}
+              {currentUserAccount.address.substring(0, 7)}
               <DotsHorizontalIcon className='dark:text-white h-6 w-6 mx-1' />
-              {Object.keys(currentUserAccount)[0].substring(Object.keys(currentUserAccount)[0].length - 7, Object.keys(currentUserAccount)[0].length)}
+              {currentUserAccount.address.substring(Object.keys(currentUserAccount)[0].length - 7, Object.keys(currentUserAccount)[0].length)}
             </p>
             <ChevronDownIcon className="dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-700 " />
           </Menu.Button>

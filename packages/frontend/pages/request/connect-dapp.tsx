@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { loadUserAccount, unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { loadUserAccount, decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 
@@ -92,10 +92,7 @@ function ConnectDappHandler (): JSX.Element {
     setOpenPasswordModal(false);
 
     if (request) {
-      dispatch(unlockUserAccount({
-        address: currentAccount,
-        password: password
-      }));
+      dispatch(decryptCurrentUserAccount(password));
     } else {
       alert('unexpected!');
     }

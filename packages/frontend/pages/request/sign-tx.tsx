@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 // http://localhost:3000/request?requestType=signTx&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da806b5292c2c0c0c7cc7b4cf1871efdffebbfc9f77cffd1b85d76e08fab13afd60ae8bcb9d2d5de49dc642a1bf46c1a00600ab7d2aa6&callbackUrl=https://localhost:3001/callback
@@ -76,10 +76,7 @@ function SignTxHandler (): JSX.Element {
     setOpenPasswordModal(false);
 
     if (request) {
-      dispatch(unlockUserAccount({
-        address: request.userOrigin.address,
-        password: password
-      }));
+      dispatch(decryptCurrentUserAccount(password));
     } else {
       alert('unexpected!');
     }

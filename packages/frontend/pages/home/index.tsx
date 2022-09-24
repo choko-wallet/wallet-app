@@ -156,7 +156,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
     if (userAccount && Object.keys(userAccount).length > 0) {
       const allAddrs = Object.keys(userAccount);
 
-      setCurrentAccount(allAddrs[0]);
+      setCurrentAccount(currentUserAccount.address);
       setAllAccounts(allAddrs);
       console.log('setCurrentAccount')
       console.log(currentAccount)
