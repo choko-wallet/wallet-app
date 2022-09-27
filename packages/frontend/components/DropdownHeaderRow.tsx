@@ -50,7 +50,7 @@ function DropdownHeaderRow({ accountObj }: Props): JSX.Element {
 
     <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${Object.keys(currentUserAccount)[0] == accountObj.address ? 'bg-blue-gradient' : ''} `}>
       <p
-        onClick={() => dispatch(switchUserAccount(accountObj))}
+        onClick={() => dispatch(switchUserAccount(accountObj.address))}
         className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${Object.keys(currentUserAccount)[0] == accountObj.address ? 'text-black' : 'text-gradient'} `}>
         {accountObj.address.substring(0, 7)}
         <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${Object.keys(currentUserAccount)[0] == accountObj.address ? 'text-black' : 'text-gradient'} `} />

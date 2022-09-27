@@ -1,4 +1,4 @@
-import { faToiletPaperSlash } from '@fortawesome/free-solid-svg-icons';
+
 import React, { SVGProps } from 'react'
 
 
@@ -6,14 +6,15 @@ interface Props {
   Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   title: string;
   onClick?: () => void;
+  rotate?: boolean;
 }
 
-function SuperButton({ Icon, title, onClick }: Props) {
+function SuperButton({ Icon, title, onClick, rotate }: Props) {
   return (
-    <div className="flex justify-center items-center w-[140px] h-[76px] bg-[#22262F] rounded-full border-4 border-[#4797B5] p-[2px] cursor-pointer">
-
-      <p className="text-[18px] leading-[23px]">
-        <span className="text-white font-poppins">{title}</span>
+    <div className="flex flex-col justify-center items-center w-[140px] h-[76px] bg-[#4797B5] opacity-30 hover:opacity-100 rounded-2xl   cursor-pointer space-y-1">
+      <Icon className={`h-6 w-6 text-white  ${rotate ? 'rotate-45 ml-1' : 'rotate-0'} `} />
+      <p className="text-[20px] ">
+        <span className="text-white font-semibold font-poppins">{title}</span>
       </p>
 
     </div>

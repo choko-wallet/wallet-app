@@ -33,8 +33,8 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { decompressParameters, compressParameters } from '@choko-wallet/core/util';
 // import { xxhashAsHex } from '@polkadot/util-crypto';
 import { blake2AsU8a } from '@polkadot/util-crypto';
-import { LockedPrivateKey, UserAccount } from '@choko-wallet/core';
-import { unlockUserAccount, loadUserAccount, addUserAccountFromUrl } from '../features/slices/userSlice';
+import { UserAccount } from '@choko-wallet/core';
+import { addUserAccount, loadUserAccount } from '../features/slices/userSlice';
 // import { addUserAccount2 } from '../features/slices/userSlice';
 
 import Modal from '../components/Modal'
@@ -67,33 +67,34 @@ function Import4(): JSX.Element {
   }
 
 
-  const UnlockAccount = () => {
+  const unlockAccount = () => {
     const payload = router.query.payload as string;
-    const u8aKey = decompressParameters(hexToU8a(payload));
-    const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);//是个object 
-    console.log('u8aKey')
-    console.log(u8aKey)//76位arr
-    console.log(hexToU8a(payload))//77位arr
-    console.log(lockedPrivateKey)//object 里面有72位的encryptedPrivateKey 
-    // const privateKey = SymmetricEncryption.decrypt(blake2AsU8a(input), lockedPrivateKey.encryptedPrivateKey);
-    // 72行解码有报错 node包里面 
+    // const u8aKey = decompressParameters(hexToU8a(payload));
+    // const lockedPrivateKey = LockedPrivateKey.deserialize(u8aKey);//是个object 
+    // console.log('u8aKey')
+    // console.log('u8aKey', u8aKey)//76位arr
+    console.log(hexToU8a(payload))//109位arr 
+    dispatch(addUserAccount({ password: input, importKey: hexToU8a(payload) }));
 
-    dispatch(addUserAccountFromUrl({ privateKey: new Uint8Array([29, 82, 8, 156, 159, 77, 234, 239, 124, 162, 225, 156, 16, 137, 11, 97, 26, 64, 47, 224, 132, 211, 182, 124, 60, 122, 236, 16, 180, 190, 72, 123]), password: input }))
-      .unwrap()
-      .then((result) => {
-        setSuccess(true);
-        closeModal();
-        setIsLoadingOpen(true);
+    console.log('local', localStorage.getItem('serialziedUserAccount'))
 
-        setTimeout(() => {
-          setIsLoadingOpen(false);
-          router.push('/home')
-        }, 3000);
 
-      }).catch((rejectedValueOrSerializedError) => {
-        console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError)
-        setSuccess(false);
-      })
+    // dispatch(addUserAccountFromUrl({ privateKey: new Uint8Array([29, 82, 8, 156, 159, 77, 234, 239, 124, 162, 225, 156, 16, 137, 11, 97, 26, 64, 47, 224, 132, 211, 182, 124, 60, 122, 236, 16, 180, 190, 72, 123]), password: input }))
+    //   .unwrap()
+    //   .then((result) => {
+    //     setSuccess(true);
+    //     closeModal();
+    //     setIsLoadingOpen(true);
+
+    //     setTimeout(() => {
+    //       setIsLoadingOpen(false);
+    //       router.push('/home')
+    //     }, 3000);
+
+    //   }).catch((rejectedValueOrSerializedError) => {
+    //     console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError)
+    //     setSuccess(false);
+    //   })
 
     // dispatch(addUserAccountFromUrl({ privateKey: privateKey, password: input }));
 
@@ -116,7 +117,7 @@ function Import4(): JSX.Element {
 
   if (!mounted) return null
 
-  if (isLoadingOpen) return <Loading title='Successfully Imported Account, Redirecting To Home' />
+  // if (isLoadingOpen) return <Loading title='Successfully Imported Account, Redirecting To Home' />
 
   return (
     <div className={theme}>
@@ -158,7 +159,7 @@ function Import4(): JSX.Element {
           <div className='mt-4 flex justify-between'>
             <button
               className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-              onClick={UnlockAccount}
+              onClick={unlockAccount}
               type='button'
             >
               UnlockAccount

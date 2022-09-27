@@ -5,7 +5,8 @@
 
 export default {
   images: {
-    domains: ["cdn.jsdelivr.net"],
+    domains: ["cdn.jsdelivr.net", "avatars.githubusercontent.com", "media-exp1.licdn.com", "firebasestorage.googleapis.com"],
+
   },
   distDir: 'build',
   eslint: {

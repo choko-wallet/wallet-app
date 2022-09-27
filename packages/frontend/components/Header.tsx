@@ -13,10 +13,14 @@ import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import DropdownHeader2 from './DropdownHeader2'
+import { loadUserAccount, removeAllAccounts } from '../features/slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 import logo from '../images/logo.png'
 import icon1 from '../images/icon1.png'
 import setting from '../images/setting.png'
+import logout from '../images/logout.png'
+
 import { UserAccount } from '@choko-wallet/core';
 
 // interface Props {
@@ -27,7 +31,7 @@ import { UserAccount } from '@choko-wallet/core';
 
 // function Header({ currentUserAccount, userAccount }: Props): JSX.Element {
 function Header(): JSX.Element {
-
+  const dispatch = useDispatch();
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
   const { setTheme, theme } = useTheme();
@@ -39,6 +43,12 @@ function Header(): JSX.Element {
 
   if (!mounted) {
     return null;
+  }
+
+  const removeAccounts = () => {
+
+    dispatch(removeAllAccounts());
+    router.push('/');
   }
 
   return (
@@ -99,50 +109,62 @@ function Header(): JSX.Element {
 
           <DropdownHeader2 />
 
-        </div>
-      </div>
-      {menuIcon ?
-        <div className='flex bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
-          <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-            <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-            // onClick={() => router.push('/')}
-            >
-              <Image
-                layout='fill'
-                objectFit='contain'
-                src={icon1.src}
-              />
-            </div>
-
-            <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-            // onClick={() => router.push('/')}
-            >
-              <Image
-                layout='fill'
-                objectFit='contain'
-                src={setting.src}
-              />
-            </div>
-
-            <div className='flex relative transition duration-150 ease-out cursor-pointer '>
-              <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
-              <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
-              </div>
-            </div>
-
-            {theme === 'light'
-              ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-500'
-                onClick={() => setTheme('dark')} />
-              : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
-                onClick={() => setTheme('light')} />
-            }
-
+          <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
+            onClick={removeAccounts}
+          >
+            <Image
+              layout='fill'
+              objectFit='contain'
+              src={logout.src}
+            />
           </div>
 
-
-
         </div>
-        : null}
+      </div>
+      {
+        menuIcon ?
+          <div className='flex bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
+            <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
+              <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
+              // onClick={() => router.push('/')}
+              >
+                <Image
+                  layout='fill'
+                  objectFit='contain'
+                  src={icon1.src}
+                />
+              </div>
+
+              <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
+              // onClick={() => router.push('/')}
+              >
+                <Image
+                  layout='fill'
+                  objectFit='contain'
+                  src={setting.src}
+                />
+              </div>
+
+              <div className='flex relative transition duration-150 ease-out cursor-pointer '>
+                <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
+                <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
+                </div>
+              </div>
+
+              {theme === 'light'
+                ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-500'
+                  onClick={() => setTheme('dark')} />
+                : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
+                  onClick={() => setTheme('light')} />
+              }
+
+            </div>
+
+
+
+          </div>
+          : null
+      }
     </div >
 
 

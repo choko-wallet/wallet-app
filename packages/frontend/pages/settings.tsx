@@ -79,17 +79,17 @@ function Settings(): JSX.Element {
     }
   }, [dispatch, router]);
 
-  const generateKey = () => {
-    for (let i = 0; i < Object.values(userAccount).length; i++) {
-      if (Object.values(userAccount)[i].address == Object.keys(currentUserAccount)[0]) {
-        setKeyForExport(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
-      }
-    }
-  }
+  // const generateKey = () => {
+  //   for (let i = 0; i < Object.values(userAccount).length; i++) {
+  //     if (Object.values(userAccount)[i].address == Object.keys(currentUserAccount)[0]) {
+  //       setKeyForExport(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
 
-    generateKey();
+    // generateKey();
     setMounted(true);
 
   }, [userAccount, currentUserAccount]);
@@ -111,13 +111,13 @@ function Settings(): JSX.Element {
     setExportUrl('');
 
   }
-  // console.log('marketPriceTop30', marketPriceTop30);
+  console.log('serializeWithEncryptedKey', currentUserAccount.serializeWithEncryptedKey());//109位arr
 
   const generateAccountUrl = () => {
-    console.log(keyForExport);
+    // console.log(keyForExport);
+    // const comporessedKeyForExport = compressParameters(hexToU8a(keyForExport));
 
-    const comporessedKeyForExport = compressParameters(hexToU8a(keyForExport));
-    const payloadForExport = u8aToHex(comporessedKeyForExport);
+    const payloadForExport = u8aToHex(currentUserAccount.serializeWithEncryptedKey());
 
     const superUrl = 'https://wallet.app/import?payload=' + payloadForExport;
     console.log(superUrl);
@@ -164,17 +164,17 @@ function Settings(): JSX.Element {
 
                   <p className='font-poppins whitespace-nowrap flex md:hidden text-center items-center justify-certer flex-grow  ml-2 text-gradient'>
                     {/* {currentAccount} */}
-                    {Object.keys(currentUserAccount)[0].substring(0, 6)}
+                    {currentUserAccount.address.substring(0, 6)}
                     <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
-                    {Object.keys(currentUserAccount)[0].substring(Object.keys(currentUserAccount)[0].length - 6, Object.keys(currentUserAccount)[0].length)}
+                    {currentUserAccount.address.substring(currentUserAccount.address.length - 6, currentUserAccount.address.length)}
                   </p>
 
                   <p className='font-poppins whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>
-                    {Object.keys(currentUserAccount)[0]}
+                    {currentUserAccount.address}
 
                   </p>
 
-                  <CopyToClipboard text={Object.keys(currentUserAccount)[0]}
+                  <CopyToClipboard text={currentUserAccount.address}
                     onCopy={() => { setCopied(true) }}>
                     <div onClick={handleCopy}>
                       {showCheck

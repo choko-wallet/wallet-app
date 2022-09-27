@@ -151,6 +151,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
       void router.push('/account');
     } else {
       dispatch(loadUserAccount());
+      console.log('serialziedUserAccount', localStorage.getItem('serialziedUserAccount'))
     }
 
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -194,6 +195,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
     void getBalance();
     // }, []);
+
+    // if (!currentUserAccount) {//自动跳转 初始登录有问题 addUserAccount不能用异步 
+    //   router.push('/')
+    // }
+
   }, [network, currentAccount]);
 
 
@@ -222,6 +228,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) {
     return null;
   }
+
+  if (isLoadingOpen) return <Loading title='Changing Network' />
+
+  // if (!currentUserAccount) {
+  //   router.push('/')
+  // }
+
+  // if (!localStorage.getItem('serialziedUserAccount')) {
+  //   void router.push('/account');
+  // }
 
   const allNetworks = [{
     name: 'Polkadot',
@@ -310,7 +326,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
   // console.log(coinPriceData)
   // console.log(theme)
 
-  if (isLoadingOpen) return <Loading title='Changing Network' />
 
 
   // console.log(knownNetworks[networkSelection].text)
@@ -703,7 +718,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                 <div className="flex items-center justify-evenly ">
                   <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
-                    <Button Icon={PaperAirplaneIcon} title='Send' />
+                    <Button Icon={PaperAirplaneIcon} title='Send' rotate={true} />
                   </div>
                   <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
                     <Button Icon={DownloadIcon} title='Receive' />

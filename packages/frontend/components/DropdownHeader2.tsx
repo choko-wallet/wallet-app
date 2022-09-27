@@ -29,7 +29,6 @@ function DropdownHeader2() {
   const userAccountArr = Object.entries(userAccount);//可以map
 
 
-
   const router = useRouter();
 
 
@@ -46,14 +45,15 @@ function DropdownHeader2() {
   }
 
   const removeAccounts = () => {
-    router.push('/')
+
     dispatch(removeAllAccounts());
+    router.push('/');
   }
 
   // console.log('store', store.getState());
-  // console.log('currentUserAccount', currentUserAccount);
+  // console.log('currentUserAccount1', currentUserAccount.address);
   // console.log('reduxError', reduxError);
-  // console.log('userAccount', userAccount);
+  // console.log('userAccount1', userAccount);
   // console.log('userAccountArr', userAccountArr);
 
   // console.log('currentUserAccountAdd', currentUserAccountAdd);
@@ -76,9 +76,10 @@ function DropdownHeader2() {
             </div>
 
             <p className='font-poppins text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
-              {currentUserAccount.address.substring(0, 7)}
+              {currentUserAccount?.address.substring(0, 7)}
               <DotsHorizontalIcon className='dark:text-white h-6 w-6 mx-1' />
-              {currentUserAccount.address.substring(Object.keys(currentUserAccount)[0].length - 7, Object.keys(currentUserAccount)[0].length)}
+              {currentUserAccount?.address.substring(currentUserAccount?.address.length - 7,
+                currentUserAccount?.address.length)}
             </p>
             <ChevronDownIcon className="dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-700 " />
           </Menu.Button>
