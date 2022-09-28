@@ -68,20 +68,20 @@ function DropdownHeader2() {
     <div className="w-24 md:w-64 text-right">
       <Menu as="div" className="relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-[#4797B5]">
         <div>
-          <Menu.Button className="inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          <Menu.Button className="inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 
             <div className="relative h-6 w-6">
-              <UserCircleIcon className='h-6 w-6 dark:text-white ' />
+              <UserCircleIcon className='h-6 w-6 dark:text-white text-gray-800' />
 
             </div>
 
-            <p className='font-poppins text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
+            <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
               {currentUserAccount?.address.substring(0, 7)}
-              <DotsHorizontalIcon className='dark:text-white h-6 w-6 mx-1' />
+              <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
               {currentUserAccount?.address.substring(currentUserAccount?.address.length - 7,
                 currentUserAccount?.address.length)}
             </p>
-            <ChevronDownIcon className="dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-700 " />
+            <ChevronDownIcon className="dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-800 " />
           </Menu.Button>
         </div>
         <Transition
@@ -93,7 +93,7 @@ function DropdownHeader2() {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]">
+          <Menu.Items className="z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]">
             <div className="px-1 py-1 ">
 
 
@@ -114,7 +114,7 @@ function DropdownHeader2() {
                     onClick={() => router.push('/account')}
                   >
 
-                    <p className='text-gradient '>Add New Account</p>
+                    <p className='text-black dark:text-gradient '>Add New Account</p>
 
                   </button>
                 )}
@@ -128,7 +128,7 @@ function DropdownHeader2() {
                     onClick={removeAccounts}
 
                   >
-                    <p className='font-poppins text-gradient text-center'>Remove All Accounts</p>
+                    <p className='font-poppins text-black dark:text-gradient text-center'>Remove All Accounts</p>
                   </button>
                 )}
               </Menu.Item>

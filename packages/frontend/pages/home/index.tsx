@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon, PlusCircleIcon } from '@heroicons/react/outline';
+import { CheckIcon, UserCircleIcon, XIcon, PlusCircleIcon, PlusSmIcon } from '@heroicons/react/outline';
 import {
   HomeIcon, BellIcon, CogIcon, MoonIcon, SunIcon, TranslateIcon,
   PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
@@ -12,6 +12,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { shuffle } from "lodash";
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -59,6 +60,7 @@ import { decompressParameters, compressParameters } from '@choko-wallet/core/uti
 import { fetchCoinPrice, fetchMarketPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 
 import { useAppThunkDispatch } from '../../features/redux/store';
+import Footer from '@choko-wallet/frontend/components/Footer';
 
 interface Props {
   coinPriceData: CoinPrice,
@@ -83,6 +85,15 @@ interface PriceUsd {
   usd: number;
 }
 
+const colors = [
+  'bg-indigo-500',
+  'bg-blue-500',
+  'bg-red-500',
+  'bg-green-500',
+  'bg-yellow-500',
+  'bg-pink-500',
+  'bg-purple-500',
+];
 
 
 /* eslint-disable sort-keys */
@@ -143,6 +154,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const coinApiLoading = useSelector(selectCoinApiLoading);
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [color, setColor] = useState<string>('');
+
+  useEffect(() => {
+    setColor(shuffle(colors).pop());
+  }, [networkSelection]);
+
 
   useEffect(() => {
     // console.log('2')
@@ -207,7 +224,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   useEffect(() => {
     setMounted(true);
-
+    setTheme('light');
     //用useState控制 api太快了 还是会发两个 跟区块链交互时可能要用这个  
     // const fetchData = async () => {
     //   if (loading) return;
@@ -349,29 +366,32 @@ function Home({ coinPriceData }: Props): JSX.Element {
   // console.log('store', store.getState());
   // console.log('currentUserAccount', currentUserAccount);
   // console.log('reduxError', reduxError);
-
+  // #DEE8F1
+  // #E4DEE8
 
   return (
     <div className={theme}>
-      <Header />
 
-      <div className='bg-gray-100 relative dark:bg-[#22262f] min-h-screen overflow-hidden'>
+      <div className='bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
         {/* <Toaster /> */}
+        <Header />
 
         {/* new drawer */}
         <CSSTransition in={drawerOpen} timeout={500} unmountOnExit
           classNames="drawer"
-          className='md:hidden z-50 p-6 w-[340px] h-full bg-[#22262f] absolute top-0 '
+          className='md:hidden z-50 p-6 w-[340px] h-full bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 '
         >
 
           <div className=''>
-            <p className='text-lg flex  w-full font-semibold justify-between text-white font-poppins  '>Change Network
-              <XIcon onClick={() => setDrawerOpen(!drawerOpen)} className=' text-white h-8 w-8 cursor-pointer ' />
+            <p className='text-lg flex  w-full font-semibold justify-between text-black dark:text-white font-poppins  '>Change Network
+              <XIcon onClick={() => setDrawerOpen(!drawerOpen)} className=' text-black dark:text-white h-8 w-8 cursor-pointer ' />
             </p>
 
-            <div className="flex md:flex-col items-center md:h-full bg-white" >
-              <div className='  w-full h-full min-h-[700px]  dark:bg-[#22262f] pr-2'>
-                <div className='scrollbar-thin max-h-[400px] overflow-y-scroll mt-5 '>
+            <div className="flex md:flex-col items-center md:h-full bg-transparent" >
+              <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
+
+                <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
+
 
                   <RadioGroup onChange={setNetworkSelection}
                     value={networkSelection || network}>
@@ -380,7 +400,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                       return <RadioGroup.Option
                         className={({ active, checked }) =>
-                          `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                          `${checked ? `${color}` : 'bg-white dark:bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
                         }
                         key={hash}
                         value={hash}
@@ -392,7 +412,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                 <RadioGroup.Label
                                   as='p'
                                   // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                  className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
+                                  className={`text-lg font-semibold font-poppins  ${checked ? 'text-black dark:text-white' : 'text-[#B6B7BC]'}`}
 
                                 >
                                   {text.substring(0, text.length - 8)}
@@ -403,21 +423,22 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                                 // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
                                 >
-                                  <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
+                                  <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
 
                                   {/* {defaultProvider} */}
                                 </RadioGroup.Description>
                               </div>
                             </div>
+                            {/* {network ==  */}
                             {checked && (
                               <div className=''>
-                                <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                  <Image
-                                    layout='fill'
-                                    objectFit='contain'
-                                    src={check.src}
-                                  />
-                                  <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
+                                <div className='bg-white rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center '>
+                                  {/* <Image
+                      layout='fill'
+                      objectFit='contain'
+                      src={check.src}
+                    /> */}
+                                  <ChevronDownIcon className='absolute -top-1 text-[#B186D2] z-50 h-8 w-8 ' />
                                 </div>
 
 
@@ -430,19 +451,25 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   </RadioGroup>
 
 
+
+
+
+
                 </div>
 
-                <div className='cursor-pointer mx-auto rounded-lg my-3 w-[200px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
-                  <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer'
+                <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
+                  <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
                   // onClick={() => router.push('/')}
                   >
-                    <Image
-                      layout='fill'
-                      objectFit='contain'
-                      src={addNetworkButton.src}
-                    />
-
-                    <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
+                    {/* <Image
+        layout='fill'
+        objectFit='contain'
+        src={addNetworkButton.src}
+      /> */}
+                    <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
+                      <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
+                    </div>
+                    <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-black dark:text-white'>Add Network</p>
                   </div>
 
                 </div>
@@ -455,14 +482,15 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     :
                     <button
                       // disabled={network == networkSelection}
-                      className='flex w-[260px] h-[65px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#363E52] rounded-[10px] outline-none z-50'
+                      className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
                       onClick={async () => {
                         await changeNetwork();
                       }}
                     >
-                      <p className='text-white text-lg font-semibold font-poppins'>Switch Network</p>
+                      <p className='text-black dark:text-white text-md whitespace-nowrap font-semibold font-poppins'>Switch Network</p>
 
                     </button>}
+
 
                 </div>
 
@@ -474,421 +502,327 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
         </CSSTransition>
 
-        < main className='grid grid-cols-12 bg-gray-100 dark:bg-[#22262f] max-w-7xl mx-auto' >
-          <div className='col-span-12 ' >
+        < main className='bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
+          {/* <div className='col-span-12 ' > */}
 
-            <div className='flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
-              <div>
-                <button
-                  className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
-                  onClick={() => setDrawerOpen(!drawerOpen)}
-                >
-                  <p className='ml-1  text-white text-md font-semibold font-poppins'>NETWORK</p>
+          <div className='bg-transparent flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
+            <div className='bg-transparent'>
+              <button
+                className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
+                onClick={() => setDrawerOpen(!drawerOpen)}
+              >
+                <p className='ml-1  text-white text-md font-semibold font-poppins'>NETWORK</p>
 
-                  <ChevronRightIcon className=' text-white h-6 w-6 ml-6  ' />
-                </button>
+                <ChevronRightIcon className=' text-white h-6 w-6 ml-6  ' />
+              </button>
 
-                <p className='ml-1 hidden md:block text-white text-md font-semibold font-poppins'>NETWORK</p>
-
-
-                {/* wideScreen network sidebar */}
-                <div className=" hidden md:inline-flex md:flex-col bg-[#22262f] items-center md:h-full mr-10" >
-                  <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
-
-                    <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
+              <p className='ml-1 hidden md:block text-gray-800 dark:text-white text-md font-semibold font-poppins'>NETWORK</p>
 
 
-                      <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network}>
-                        {Object.entries(knownNetworks).map(([hash, network], index) => {
-                          const { defaultProvider, text } = network;
+              {/* wideScreen network sidebar */}
+              <div className=" hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f] items-center md:h-full mr-10" >
+                <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
 
-                          return <RadioGroup.Option
-                            className={({ active, checked }) =>
-                              `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                            }
-                            key={hash}
-                            value={hash}
-                          >
-                            {({ active, checked }) => (
-                              <div className='flex w-full items-center justify-between'>
-                                <div className='flex items-center'>
-                                  <div className='text-sm'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
+                  <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
 
-                                    >
-                                      {text.substring(0, text.length - 8)}
-                                    </RadioGroup.Label>
-                                    <RadioGroup.Description
-                                      as='span'
-                                      className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
 
-                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                    >
-                                      <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
+                    <RadioGroup onChange={setNetworkSelection}
+                      value={networkSelection || network}>
+                      {Object.entries(knownNetworks).map(([hash, network], index) => {
+                        const { defaultProvider, text } = network;
 
-                                      {/* {defaultProvider} */}
-                                    </RadioGroup.Description>
-                                  </div>
+                        return <RadioGroup.Option
+                          className={({ active, checked }) =>
+                            `${checked ? `${color}` : 'bg-white dark:bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                          }
+                          key={hash}
+                          value={hash}
+                        >
+                          {({ active, checked }) => (
+                            <div className='flex w-full items-center justify-between'>
+                              <div className='flex items-center'>
+                                <div className='text-sm'>
+                                  <RadioGroup.Label
+                                    as='p'
+                                    // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-black dark:text-white' : 'text-[#B6B7BC]'}`}
+
+                                  >
+                                    {text.substring(0, text.length - 8)}
+                                  </RadioGroup.Label>
+                                  <RadioGroup.Description
+                                    as='span'
+                                    className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
+
+                                  // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
+                                  >
+                                    <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
+
+                                    {/* {defaultProvider} */}
+                                  </RadioGroup.Description>
                                 </div>
-                                {checked && (
-                                  <div className=''>
-                                    <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                      <Image
+                              </div>
+                              {/* {network ==  */}
+                              {checked && (
+                                <div className=''>
+                                  <div className='bg-white rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center '>
+                                    {/* <Image
                                         layout='fill'
                                         objectFit='contain'
                                         src={check.src}
-                                      />
-                                      <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                    </div>
-
-
+                                      /> */}
+                                    <ChevronDownIcon className='absolute -top-1 text-[#B186D2] z-50 h-8 w-8 ' />
                                   </div>
-                                )}
-                              </div>
-                            )}
-                          </RadioGroup.Option>;
-                        })}
-                      </RadioGroup>
-                      <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network}>
-                        {Object.entries(knownNetworks).map(([hash, network], index) => {
-                          const { defaultProvider, text } = network;
 
-                          return <RadioGroup.Option
-                            className={({ active, checked }) =>
-                              `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                            }
-                            key={hash}
-                            value={hash}
-                          >
-                            {({ active, checked }) => (
-                              <div className='flex w-full items-center justify-between'>
-                                <div className='flex items-center'>
-                                  <div className='text-sm'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
 
-                                    >
-                                      {text.substring(0, text.length - 8)}
-                                    </RadioGroup.Label>
-                                    <RadioGroup.Description
-                                      as='span'
-                                      className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                    >
-                                      <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                      {/* {defaultProvider} */}
-                                    </RadioGroup.Description>
-                                  </div>
                                 </div>
-                                {checked && (
-                                  <div className=''>
-                                    <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                      <Image
-                                        layout='fill'
-                                        objectFit='contain'
-                                        src={check.src}
-                                      />
-                                      <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                    </div>
-
-
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </RadioGroup.Option>;
-                        })}
-                      </RadioGroup>
-                      <RadioGroup onChange={setNetworkSelection}
-                        value={networkSelection || network}>
-                        {Object.entries(knownNetworks).map(([hash, network], index) => {
-                          const { defaultProvider, text } = network;
-
-                          return <RadioGroup.Option
-                            className={({ active, checked }) =>
-                              `${checked ? 'bg-[#B186D2] ' : 'bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                            }
-                            key={hash}
-                            value={hash}
-                          >
-                            {({ active, checked }) => (
-                              <div className='flex w-full items-center justify-between'>
-                                <div className='flex items-center'>
-                                  <div className='text-sm'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                      className={`text-lg font-semibold font-poppins  ${checked ? 'text-white' : 'text-[#B6B7BC]'}`}
-
-                                    >
-                                      {text.substring(0, text.length - 8)}
-                                    </RadioGroup.Label>
-                                    <RadioGroup.Description
-                                      as='span'
-                                      className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                    // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                                    >
-                                      <p className='w-44 truncate'>{':' + ' ' + defaultProvider.slice(6)}</p>
-
-                                      {/* {defaultProvider} */}
-                                    </RadioGroup.Description>
-                                  </div>
-                                </div>
-                                {checked && (
-                                  <div className=''>
-                                    <div className='relative items-center w-[52px] h-[52px] my-auto cursor-pointer '>
-                                      <Image
-                                        layout='fill'
-                                        objectFit='contain'
-                                        src={check.src}
-                                      />
-                                      <ChevronDownIcon className='absolute top-[13px] left-[12px] z-50 h-7 w-7 text-[#B186D2]' />
-                                    </div>
-
-
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </RadioGroup.Option>;
-                        })}
-                      </RadioGroup>
+                              )}
+                            </div>
+                          )}
+                        </RadioGroup.Option>;
+                      })}
+                    </RadioGroup>
 
 
 
 
 
-                    </div>
 
-                    <div className='cursor-pointer mx-auto rounded-lg my-3 w-[200px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
-                      <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer'
-                      // onClick={() => router.push('/')}
-                      >
-                        <Image
+                  </div>
+
+                  <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
+                    <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
+                    // onClick={() => router.push('/')}
+                    >
+                      {/* <Image
                           layout='fill'
                           objectFit='contain'
                           src={addNetworkButton.src}
-                        />
-                        <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-white'>Add Network</p>
+                        /> */}
+                      <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
+                        <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
                       </div>
-
-                    </div>
-
-
-                    <div className='flex justify-center mt-6'>
-                      {network == networkSelection
-                        ?
-                        <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
-                        :
-                        <button
-                          // disabled={network == networkSelection}
-                          className='flex w-[260px] h-[65px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#363E52] rounded-[10px] outline-none z-50'
-                          onClick={async () => {
-                            await changeNetwork();
-                          }}
-                        >
-                          <p className='text-white text-lg font-semibold font-poppins'>Switch Network</p>
-
-                        </button>}
-
-
+                      <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-semibold font-poppins text-black dark:text-white'>Add Network</p>
                     </div>
 
                   </div>
-                </div>
 
+
+                  <div className='flex justify-center mt-6'>
+                    {network == networkSelection
+                      ?
+                      <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                      :
+                      <button
+                        // disabled={network == networkSelection}
+                        className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
+                        onClick={async () => {
+                          await changeNetwork();
+                        }}
+                      >
+                        <p className='text-black dark:text-white text-md whitespace-nowrap font-semibold font-poppins'>Switch Network</p>
+
+                      </button>}
+
+
+                  </div>
+
+                </div>
               </div>
-
-              {/* balance */}
-              <div className='relative flex flex-col dark:bg-[#292d36] flex-grow rounded-[30px] '>
-                <div className='w-[300px] h-[80px] bg-[#353B4D] rounded-lg m-10 ml-16 p-3 px-5'>
-                  <p className='text-2xl text-gray-700 dark:text-white font-poppins font-semibold'> $793.32 USD </p>
-                  <p className='text-md text-white cursor-pointer font-poppins'>Your Balance. </p>
-                </div>
-
-                <div className="flex items-center justify-evenly ">
-                  <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
-                    <Button Icon={PaperAirplaneIcon} title='Send' rotate={true} />
-                  </div>
-                  <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
-                    <Button Icon={DownloadIcon} title='Receive' />
-                  </div>
-                </div>
-
-                <div className='flex flex-col scrollbar-thin max-h-[500px] overflow-y-scroll m-5'>
-                  {cryptoArr.map((item) => (
-                    <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
-                  ))}
-                  {cryptoArr.map((item) => (
-                    <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} />
-                  ))}
-                </div>
-
-              </div >
 
             </div>
 
-            {/* network change modal */}
-            <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
-              <div className={theme}>
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
-                  <Dialog.Title
-                    as='h3'
-                    className='font-poppins text-lg font-medium leading-6 text-gradient w-72'
-                  >
-                    Changed successfully
-                  </Dialog.Title>
-                  <div className='mt-2'>
-                    <p className='text-sm font-poppins text-gray-500 dark:text-white'>
-                      {`Network changed to ${knownNetworks[networkSelection].text}`}
-                    </p>
-                  </div>
-
-                  <div className='mt-4'>
-                    <button
-                      className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                      onClick={closeModal}
-                      type='button'
-                    >
-                      OK
-                    </button>
-                  </div>
-                </Dialog.Panel>
+            {/* balance */}
+            <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
+              <div className='bg-[#F5F5F5] w-[300px] h-[100px] md:w-[500px] dark:bg-[#353B4D] rounded-lg m-10 md:ml-16 p-3 px-5'>
+                <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'> $793.32 USD </p>
+                <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on the current network ...... </p>
               </div>
-            </Modal>
 
-            {/* send modal */}
-            <Modal closeModal={closeModal2} isOpen={isSendOpen}>
-              <div className={theme}>
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
-                  <Dialog.Title
-                    as='h3'
-                    className='text-lg  font-medium leading-6 flex items-center mb-6 '
+              <div className="flex items-center justify-evenly ">
+                <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
+                  <Button Icon={PaperAirplaneIcon} title='Send' rotate={true} />
+                </div>
+                <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
+                  <Button Icon={DownloadIcon} title='Receive' />
+                </div>
+              </div>
+
+              <div className='flex items-center justify-between  pt-5 px-16'>
+                <p className='text-black dark:text-gray-400'>Your Portfolio</p>
+                <p className='text-black dark:text-gray-400'>Total Balance</p>
+              </div>
+
+              <div className='flex flex-col scrollbar-thin max-h-[500px] overflow-y-scroll m-5 mt-0'>
+
+                {cryptoArr.map((item) => (
+                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} shortName={item.shortName} />
+                ))}
+                {cryptoArr.map((item) => (
+                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} shortName={item.shortName} />
+                ))}
+              </div>
+
+            </div >
+
+
+
+
+          </div>
+
+
+
+          {/* network change modal */}
+          <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
+            <div className={theme}>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
+                <Dialog.Title
+                  as='h3'
+                  className='font-poppins text-lg font-medium leading-6 text-gradient w-72'
+                >
+                  Changed successfully
+                </Dialog.Title>
+                <div className='mt-2'>
+                  <p className='text-sm font-poppins text-gray-500 dark:text-white'>
+                    {`Network changed to ${knownNetworks[networkSelection].text}`}
+                  </p>
+                </div>
+
+                <div className='mt-4'>
+                  <button
+                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                    onClick={closeModal}
+                    type='button'
                   >
-                    <div className='flex items-center  flex-grow'>
-                      <PaperAirplaneIcon className='rotate-45 text-gray-700 h-8 w-8 dark:text-[#03F3FF]' />
-                      {theme === 'dark'
-                        ?
-                        <p className=' text-gradient font-poppins'>Send Crypto</p>
-                        :
-                        <p className=' text-gray-700 font-poppins'>Send Crypto</p>
-                      }
-                    </div>
-                    <div onClick={closeModal2}>
-                      <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
-                    </div>
-                  </Dialog.Title>
-                  <div className='mt-2 '>
+                    OK
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </div>
+          </Modal>
+
+          {/* send modal */}
+          <Modal closeModal={closeModal2} isOpen={isSendOpen}>
+            <div className={theme}>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg  font-medium leading-6 flex items-center mb-6 '
+                >
+                  <div className='flex items-center  flex-grow'>
+                    <PaperAirplaneIcon className='rotate-45 text-gray-700 h-8 w-8 dark:text-[#03F3FF]' />
+                    {theme === 'dark'
+                      ?
+                      <p className=' text-gradient font-poppins'>Send Crypto</p>
+                      :
+                      <p className=' text-gray-700 font-poppins'>Send Crypto</p>
+                    }
+                  </div>
+                  <div onClick={closeModal2}>
+                    <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+                  </div>
+                </Dialog.Title>
+                <div className='mt-2 '>
 
 
-                    <Dropdown2 arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} />
+                  <Dropdown2 arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} />
 
-                    <p className=' text-gray-700 dark:text-white '>From</p>
-                    <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
-                      <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-                      {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
-                      <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
-                        onCopy={() => { setCopied(true) }}>
-                        <div onClick={handleCopy}>
-                          {showCheck
-                            ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                            : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+                  <p className=' text-gray-700 dark:text-white '>From</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
+                    <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+                    {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
+                    <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
+                      onCopy={() => { setCopied(true) }}>
+                      <div onClick={handleCopy}>
+                        {showCheck
+                          ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
 
-                        </div>
-                      </CopyToClipboard>
-                    </div>
+                      </div>
+                    </CopyToClipboard>
+                  </div>
 
-                    <div className='relative'>
+                  <div className='relative'>
 
-                      <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-                      <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className="font-poppins input input-bordered input-info w-full " />
-                      <CameraIcon
-                        onClick={() => setOpenScan(!openScan)}
-                        className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
+                    <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className="font-poppins input input-bordered input-info w-full " />
+                    <CameraIcon
+                      onClick={() => setOpenScan(!openScan)}
+                      className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
 
-                    </div>
+                  </div>
 
-                    {openScan &&
-                      <div>
-                        <QrReader
-                          constraints={{ facingMode: 'user' }}
-                          className='absolute top-0 right-5 left-5 bottom-0 z-40'
-                          onResult={(result, error) => {
-                            if (!!result) {
-                              // setAddressToSend(result?.text);//这个位置官方写法还报错 不行就换插件
-                              setOpenScan(false);
-                            }
+                  {openScan &&
+                    <div>
+                      <QrReader
+                        constraints={{ facingMode: 'user' }}
+                        className='absolute top-0 right-5 left-5 bottom-0 z-40'
+                        onResult={(result, error) => {
+                          if (!!result) {
+                            // setAddressToSend(result?.text);//这个位置官方写法还报错 不行就换插件
+                            setOpenScan(false);
+                          }
 
-                            if (!!error) {
-                              console.info(error);
-                            }
-                          }}
-                        />
-                        <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
-                          <XIcon onClick={() => setOpenScan(false)} className='h-5 w-5' />
-                        </div>
+                          if (!!error) {
+                            console.info(error);
+                          }
+                        }}
+                      />
+                      <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
+                        <XIcon onClick={() => setOpenScan(false)} className='h-5 w-5' />
+                      </div>
 
-                        {/* <div className='absolute top-24 right-24 z-50 left-24 bottom-64 border-2 border-yellow-200'>
+                      {/* <div className='absolute top-24 right-24 z-50 left-24 bottom-64 border-2 border-yellow-200'>
                     </div> */}
 
-                      </div>}
+                    </div>}
 
-                    <div className='flex items-end'>
-                      <div className='relative'>
-                        <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
+                  <div className='flex items-end'>
+                    <div className='relative'>
+                      <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
-                        <input
+                      <input
 
-                          value={amountToCurrency ? amount : null}
-                          onChange={(e) => {
-                            setAmount(parseFloat(e.target.value));
-                            setAmountToCurrency(
-                              parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
-                          }}
-                          type="number" placeholder="0.0" min="0" max="10000000"
-                          className="font-poppins pr-12 input input-bordered input-info w-full " />
-                        <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
-                      </div>
-
-                      <p className='mx-1 pb-3'>=</p>
-                      <div className='relative'>
-                        <p className=' text-gray-700'></p>
-                        <input
-                          value={amount ? amountToCurrency : null}
-                          onChange={(e) => {
-                            setAmountToCurrency(parseFloat(e.target.value));
-                            setAmount(
-                              parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
-                          }}
-                          type="number" placeholder="0.0" min="0" max="10000000"
-                          className="font-poppins pr-12  input input-bordered input-info w-full " />
-                        <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
-                      </div>
-
+                        value={amountToCurrency ? amount : null}
+                        onChange={(e) => {
+                          setAmount(parseFloat(e.target.value));
+                          setAmountToCurrency(
+                            parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
+                        }}
+                        type="number" placeholder="0.0" min="0" max="10000000"
+                        className="font-poppins pr-12 input input-bordered input-info w-full " />
+                      <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
                     </div>
-                    <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
-
-                    <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p>
-                    {/* <p className=' text-gray-700 dark:text-white text-sm font-poppins'>{cryptoToSend.networkFee}</p> */}
-                    <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
-
+                    <p className='mx-1 pb-3'>=</p>
+                    <div className='relative'>
+                      <p className=' text-gray-700'></p>
+                      <input
+                        value={amount ? amountToCurrency : null}
+                        onChange={(e) => {
+                          setAmountToCurrency(parseFloat(e.target.value));
+                          setAmount(
+                            parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
+                        }}
+                        type="number" placeholder="0.0" min="0" max="10000000"
+                        className="font-poppins pr-12  input input-bordered input-info w-full " />
+                      <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
+                    </div>
 
                   </div>
+                  <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
-                  <div className='mt-4'>
-                    {/* <button
+
+                  <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p>
+                  {/* <p className=' text-gray-700 dark:text-white text-sm font-poppins'>{cryptoToSend.networkFee}</p> */}
+                  <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
+
+
+                </div>
+
+                <div className='mt-4'>
+                  {/* <button
                       className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       onClick={closeModal2}
                       type='button'
@@ -896,170 +830,134 @@ function Home({ coinPriceData }: Props): JSX.Element {
                       Send
                     </button> */}
 
-                    <button
-                      className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                      onClick={closeModal2}
+                  <button
+                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                    onClick={closeModal2}
 
-                      type='button'
-                    >
-                      Send
-                    </button>
-
-                  </div>
-                </Dialog.Panel>
-              </div>
-            </Modal>
-
-            {/* receive modal */}
-            <Modal closeModal={closeModal3} isOpen={isReceiveOpen}>
-              <div className={theme}>
-
-                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
-                  <Dialog.Title
-                    as='h3'
-                    className='text-lg font-medium leading-6 flex items-center mb-6'
+                    type='button'
                   >
+                    Send
+                  </button>
 
-                    <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
-                    {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
+                </div>
+              </Dialog.Panel>
+            </div>
+          </Modal>
 
+          {/* receive modal */}
+          <Modal closeModal={closeModal3} isOpen={isReceiveOpen}>
+            <div className={theme}>
 
-                    <div onClick={closeModal3}>
-                      <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
-                    </div>
-
-                  </Dialog.Title>
-                  <div className='mt-2 '>
-                    <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
-
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
-
-                    <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
-
-
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
-
-                    <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
-                      <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-
-                      {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
-                      <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
-                        onCopy={() => { setCopied(true) }}>
-                        <div onClick={handleCopy}>
-                          {showCheck
-                            ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                            : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
-
-                        </div>
-                      </CopyToClipboard>
-                    </div>
-
-                    <div className="relative h-64 w-64 mx-auto m-3 ">
-                      <QRCode
-                        size={256}
-                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                        value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
-                    </div>
-
-                    <div className='flex space-x-5'>
-                      <div>
-                        <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Expected arrival</p>
-                        <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.arrival}</p>
-                      </div>
-                      <div>
-                        <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Minimum deposit</p>
-                        <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.MinDeposit}</p>
-                      </div>
-                    </div>
-                    <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p>
-                    <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {" "}
-                      <span className='text-red-400'>{networkToReceive}</span>.</p>
-
-
-                  </div>
-
-
-                </Dialog.Panel>
-              </div>
-            </Modal>
-
-            {/* add network modal */}
-            {/* <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
-              <div className={theme}>
-                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'><Dialog.Title
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
+                <Dialog.Title
                   as='h3'
-                  className='text-lg font-medium leading-6 text-gradient '
+                  className='text-lg font-medium leading-6 flex items-center mb-6'
                 >
-                  Add Network
+
+                  <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
+                  {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
+
+
+                  <div onClick={closeModal3}>
+                    <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+                  </div>
+
                 </Dialog.Title>
-                  <div className='mt-2'>
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
-                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input input-bordered input-info w-full " />
+                <div className='mt-2 '>
+                  <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
 
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
-                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input input-bordered input-info w-full " />
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
 
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
-                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input input-bordered input-info w-full " />
+                  <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
 
 
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
+                    <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+
+                    {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
+                    <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
+                      onCopy={() => { setCopied(true) }}>
+                      <div onClick={handleCopy}>
+                        {showCheck
+                          ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+
+                      </div>
+                    </CopyToClipboard>
                   </div>
 
-                  <div className='mt-4'>
-                    <button
-                      className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                      onClick={closeAddNetworkModal}
-                      type='button'
-                    >
-                      OK
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </div >
-
-            </Modal> */}
-
-            {/* add network modal pink */}
-
-            <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
-              <div className={theme}>
-                <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#c67391]'><Dialog.Title
-                  as='h3'
-                  className='text-lg font-medium leading-6 text-gradient '
-                >
-                  Add Network
-                </Dialog.Title>
-                  <div className='mt-2'>
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
-                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input dark:border dark:border-[#c67391] w-full  " />
-
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
-                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input dark:border dark:border-[#c67391] w-full " />
-
-                    <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
-                    <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input dark:border dark:border-[#c67391] w-full " />
-
-
-
+                  <div className="relative h-64 w-64 mx-auto m-3 ">
+                    <QRCode
+                      size={256}
+                      style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                      value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
                   </div>
 
-                  <div className='mt-4'>
-                    <button
-                      className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
-                      onClick={closeAddNetworkModal}
-                      type='button'
-                    >
-                      OK
-                    </button>
+                  <div className='flex space-x-5'>
+                    <div>
+                      <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Expected arrival</p>
+                      <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.arrival}</p>
+                    </div>
+                    <div>
+                      <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Minimum deposit</p>
+                      <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.MinDeposit}</p>
+                    </div>
                   </div>
-                </Dialog.Panel>
-              </div >
+                  <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p>
+                  <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {" "}
+                    <span className='text-red-400'>{networkToReceive}</span>.</p>
 
-            </Modal>
-          </div >
+
+                </div>
+
+
+              </Dialog.Panel>
+            </div>
+          </Modal>
+
+          {/* add network modal pink */}
+          <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
+            <div className={theme}>
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#c67391]'><Dialog.Title
+                as='h3'
+                className='text-lg font-medium leading-6 text-gradient '
+              >
+                Add Network
+              </Dialog.Title>
+                <div className='mt-2'>
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
+                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input dark:border dark:border-[#c67391] w-full  " />
+
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
+                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input dark:border dark:border-[#c67391] w-full " />
+
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
+                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input dark:border dark:border-[#c67391] w-full " />
+
+
+
+                </div>
+
+                <div className='mt-4'>
+                  <button
+                    className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
+                    onClick={closeAddNetworkModal}
+                    type='button'
+                  >
+                    OK
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </div >
+
+          </Modal>
+
 
         </main >
+        <Footer />
+
       </div >
     </div >
   );

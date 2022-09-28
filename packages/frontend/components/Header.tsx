@@ -17,9 +17,13 @@ import { loadUserAccount, removeAllAccounts } from '../features/slices/userSlice
 import { useDispatch, useSelector } from 'react-redux';
 
 import logo from '../images/logo.png'
+import logo2 from '../images/logo2.png'
+
 import icon1 from '../images/icon1.png'
 import setting from '../images/setting.png'
 import logout from '../images/logout.png'
+import logout2 from '../images/logout2.png'
+
 
 import { UserAccount } from '@choko-wallet/core';
 
@@ -52,17 +56,33 @@ function Header(): JSX.Element {
   }
 
   return (
-
-    <div className='sticky top-0 z-20 bg-white dark:bg-[#22262f] border-b border-[#435474]'>
+    <div className='sticky top-0 z-20 bg-[#DEE8F1] dark:bg-[#22262f] border-b border-[#C5CEDE]'>
       <div className='flex justify-between p-2 '>
         <div className='flex items-center justify-center ' >
           <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
-            <Image
+            {theme == 'dark' ?
+              <Image
+                layout='fill'
+                objectFit='contain'
+                src={logo.src}
+              />
+              : <Image
+                layout='fill'
+                objectFit='contain'
+                src={logo2.src}
+              />
+            }
+            {/* <Image
               layout='fill'
               objectFit='contain'
               src={logo.src}
             />
+            <Image
+              layout='fill'
+              objectFit='contain'
+              src={logo.src}
+            /> */}
           </div>
         </div>
 
@@ -81,24 +101,25 @@ function Header(): JSX.Element {
             <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
               onClick={() => router.push('/settings')}
             >
-              <Image
+              {/* <Image
                 layout='fill'
                 objectFit='contain'
                 src={setting.src}
-              />
+              /> */}
+              <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
             </div>
 
             {/* <CogIcon className='hidden h-6 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' /> */}
             <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
-              <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
+              <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
               <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
               </div>
             </div>
 
             {theme === 'light'
-              ? <SunIcon className='hidden h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 text-gray-500'
+              ? <SunIcon className='hidden h-7 transition text-gray-800 duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 '
                 onClick={() => setTheme('dark')} />
-              : <MoonIcon className='hidden h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500'
+              : <MoonIcon className='hidden h-7  transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500'
                 onClick={() => setTheme('light')} />
             }
 
@@ -112,18 +133,26 @@ function Header(): JSX.Element {
           <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}
           >
-            <Image
-              layout='fill'
-              objectFit='contain'
-              src={logout.src}
-            />
+            {theme === 'light'
+              ? <Image
+                layout='fill'
+                objectFit='contain'
+                src={logout2.src}
+              />
+              : <Image
+                layout='fill'
+                objectFit='contain'
+                src={logout.src}
+              />
+            }
+
           </div>
 
         </div>
       </div>
       {
         menuIcon ?
-          <div className='flex bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
+          <div className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
             <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
               <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
               // onClick={() => router.push('/')}
