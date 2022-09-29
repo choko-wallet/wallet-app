@@ -22,7 +22,7 @@ function CryptoRow({ name, img, price, shortName }: Props) {
 
   return (
     <div className=" w-full text-right p-1 ">
-      <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] hover:bg-[#4797B5]'>
+      <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#4797B5]  hover:bg-[#4797B5]'>
         <div className='flex justify-between flex-grow'>
           <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent dark:bg-gray-700'>
             <img src={img} alt="star" className="w-[70%] h-[70%] object-contain" />

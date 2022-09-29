@@ -1,10 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon, PlusCircleIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { Dialog, RadioGroup } from '@headlessui/react';
+import { CheckIcon, XIcon, PlusSmIcon, LinkIcon } from '@heroicons/react/outline';
 import {
-  HomeIcon, BellIcon, CogIcon, MoonIcon, SunIcon, TranslateIcon,
   PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
   DownloadIcon, CheckCircleIcon
 } from '@heroicons/react/solid';
@@ -21,42 +20,30 @@ import { selectUserAccount, selectCurrentUserAccount, selectError, selectMarketP
 import { loadUserAccount } from '../../features/slices/userSlice';
 import { store } from '../../features/redux/store';
 
-import type { NextPage } from 'next';
+
 import { GetServerSideProps } from 'next';
 
 import QRCode from "react-qr-code";
 import { QrReader } from 'react-qr-reader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
-  ChevronRightIcon, MenuIcon,
-  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  UserIcon, CameraIcon,
+  ChevronRightIcon, CameraIcon,
 } from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
 
 import Image from 'next/image'
 import Modal from '../../components/Modal'
 import Dropdown2 from '../../components/Dropdown2'
-import DropdownHeader2 from '../../components/DropdownHeader2'
 
 import DropdownForNetwork from '../../components/DropdownForNetwork'
-import SuperButton from '../../components/SuperButton'
+
 import Button from '../../components/Button'
 
 import CryptoRow from '../../components/CryptoRow'
 import Loading from '../../components/Loading'
-import logo from '../../images/logo.png'
-import icon1 from '../../images/icon1.png'
-import setting from '../../images/setting.png'
-import check from '../../images/check.png'
-import addNetworkButton from '../../images/addNetworkButton.png'
+
 import Header from '../../components/Header';
-
-
 import { CSSTransition } from 'react-transition-group';
-
-import { hexToU8a, u8aToHex } from '@skyekiwi/util';
-import { decompressParameters, compressParameters } from '@choko-wallet/core/util';
 import { fetchCoinPrice, fetchMarketPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 
 import { useAppThunkDispatch } from '../../features/redux/store';
@@ -107,11 +94,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const reduxError = useSelector(selectError);
 
-
-
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
-  const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');//初始化设置默认网络skyekiwi
+  const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');
   const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
   const [mounted, setMounted] = useState<boolean>(false);
   // const [isOpen, setIsOpen] = useState<boolean>(false);//网络切换原始modal弹框
@@ -120,8 +105,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
-  const [languageArr, setLanguageArr] = useState<string[]>(['ENG', '中文']);
-  const [language, setLanguage] = useState<string>('ENG');
 
   const [cryptoArr, setCryptoArr] = useState<Crypto[]>(
     [
@@ -145,15 +128,10 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [sidebar, setSidebar] = useState<boolean>(true);//默认打开sidebar
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
-  const [menuIcon, setMenuIcon] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [drawerTrue, setDrawerTrue] = useState<boolean>(false);
-
-  const [activeMenu, setActiveMenu] = useState<boolean>(false);
   const marketPriceTop30 = useSelector(selectMarketPriceTop30);
   const coinApiLoading = useSelector(selectCoinApiLoading);
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [color, setColor] = useState<string>('');
 
   useEffect(() => {
@@ -162,8 +140,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
   useEffect(() => {
-    // console.log('2')
-    // console.log(localStorage.getItem('serialziedUserAccount'))
+
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
@@ -176,10 +153,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
       setCurrentAccount(currentUserAccount.address);
       setAllAccounts(allAddrs);
-      console.log('setCurrentAccount')
-      console.log(currentAccount)
-      console.log(allAccounts)
-    }//这个初始时挂载不上 上面dispatch开了异步 要用useSelctor取值
+
+    }
 
     // }, [dispatch, router, userAccount]);//userAccount will always fire useEffect and refresh
   }, [dispatch, router]);
@@ -211,68 +186,26 @@ function Home({ coinPriceData }: Props): JSX.Element {
     };
 
     void getBalance();
-    // }, []);
 
-    // if (!currentUserAccount) {//自动跳转 初始登录有问题 addUserAccount不能用异步 
-    //   router.push('/')
-    // }
 
   }, [network, currentAccount]);
 
-
-
-
   useEffect(() => {
     setMounted(true);
-    setTheme('light');
-    //用useState控制 api太快了 还是会发两个 跟区块链交互时可能要用这个  
-    // const fetchData = async () => {
-    //   if (loading) return;
-    //   setLoading(true);
-    //   dispatch(fetchMarketPrice({ currency: 'usd' }))//这个位置在then catch里面设置loading false
-    //   setLoading(false);
-    // }
-    // fetchData();
+    if (theme !== 'dark' && theme !== 'light') {
+      setTheme('light');
+    }
 
-    dispatch(fetchMarketPrice({ currency: 'usd' }))//在redux中用pending控制 防止re-fetch
-
-
+    dispatch(fetchMarketPrice({ currency: 'usd' }))
 
   }, []);
 
-  // console.log('marketPriceTop30', marketPriceTop30);
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) {
     return null;
   }
 
   if (isLoadingOpen) return <Loading title='Changing Network' />
-
-  // if (!currentUserAccount) {
-  //   router.push('/')
-  // }
-
-  // if (!localStorage.getItem('serialziedUserAccount')) {
-  //   void router.push('/account');
-  // }
-
-  const allNetworks = [{
-    name: 'Polkadot',
-    info: 'polkadot',
-    rpc: 'wss://polkadot.parity.io/ws',
-    color: 'red-500'
-  }, {
-    name: 'Kusama',
-    info: 'kusama',
-    rpc: 'wss://kusama.parity.io/ws',
-    color: 'gray-500'
-  }, {
-    name: 'SkyeKiwi',
-    info: 'skyekiwi',
-    rpc: 'wss://rpc.skye.kiwi',
-    color: 'blue-500'
-  }];
-
 
   function closeModal() {
     setIsNetworkChangeOpen(false);
@@ -292,23 +225,10 @@ function Home({ coinPriceData }: Props): JSX.Element {
     setIsLoadingOpen(true);
     setNetwork(networkSelection);
 
-    // const notification = toast.loading('Changing Network...', {
-    //   style: {
-    //     background: 'green',
-    //     color: 'white',
-    //     // fontWeight: "bolder",
-    //     // fontFamily: "Poppins",
-    //     fontSize: '17px',
-    //     padding: '20px'
-    //   }
-    // });
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
-        console.log('changeNetwork');
-        // toast.dismiss(notification);
         setIsLoadingOpen(false);
-
         setIsNetworkChangeOpen(true);
 
         resolve();
@@ -332,7 +252,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
   }
 
   const handleCopy = async () => {
-    console.log('first')
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);
@@ -340,34 +259,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   }
 
-  // console.log(coinPriceData)
-  // console.log(theme)
 
-
-
-  // console.log(knownNetworks[networkSelection].text)
-  // console.log(network)
-  // console.log(networkSelection)
-
-  // console.log('localStorage.getItem')
-  // console.log(localStorage.getItem('lockedPrivateKey'))
-  // const keykey = hexToU8a(localStorage.getItem('lockedPrivateKey'));
-  // const comporessedKeyKey = compressParameters(keykey);
-  // const payloadpayload = u8aToHex(comporessedKeyKey);
-  // console.log('payload')
-  // console.log(payloadpayload)
-  // // 在home页面获得当前账户的payload 和localStorage.getItem('lockedPrivateKey')
-  // console.log('userAccount')
-  // console.log(userAccount)
-  // console.log('allAccountsAddr')
-  // console.log(Object.keys(userAccount))//得到地址array
-
-
-  // console.log('store', store.getState());
-  // console.log('currentUserAccount', currentUserAccount);
-  // console.log('reduxError', reduxError);
-  // #DEE8F1
-  // #E4DEE8
 
   return (
     <div className={theme}>
@@ -395,8 +287,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                   <RadioGroup onChange={setNetworkSelection}
                     value={networkSelection || network}>
-                    {Object.entries(knownNetworks).map(([hash, network], index) => {
-                      const { defaultProvider, text } = network;
+                    {Object.entries(knownNetworks).map(([hash, network1], index) => {
+                      const { defaultProvider, text } = network1;
 
                       return <RadioGroup.Option
                         className={({ active, checked }) =>
@@ -425,23 +317,24 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                 >
                                   <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
 
+
+
                                   {/* {defaultProvider} */}
                                 </RadioGroup.Description>
                               </div>
                             </div>
-                            {/* {network ==  */}
-                            {checked && (
+
+                            {knownNetworks[network].text !== text
+                              ? null
+                              : <div className=' rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center bg-green-300'>
+                                <LinkIcon className=' text-red-600 z-50 w-[18px] h-[18px]' />
+                              </div>}
+
+                            {checked && knownNetworks[network].text !== text && (
                               <div className=''>
                                 <div className='bg-white rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center '>
-                                  {/* <Image
-                      layout='fill'
-                      objectFit='contain'
-                      src={check.src}
-                    /> */}
                                   <ChevronDownIcon className='absolute -top-1 text-[#B186D2] z-50 h-8 w-8 ' />
                                 </div>
-
-
                               </div>
                             )}
                           </div>
@@ -459,13 +352,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                 <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
                   <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
-                  // onClick={() => router.push('/')}
                   >
-                    {/* <Image
-        layout='fill'
-        objectFit='contain'
-        src={addNetworkButton.src}
-      /> */}
                     <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
                       <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
                     </div>
@@ -481,7 +368,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
                     :
                     <button
-                      // disabled={network == networkSelection}
+
                       className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
                       onClick={async () => {
                         await changeNetwork();
@@ -503,7 +390,6 @@ function Home({ coinPriceData }: Props): JSX.Element {
         </CSSTransition>
 
         < main className='bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
-          {/* <div className='col-span-12 ' > */}
 
           <div className='bg-transparent flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
             <div className='bg-transparent'>
@@ -528,8 +414,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <RadioGroup onChange={setNetworkSelection}
                       value={networkSelection || network}>
-                      {Object.entries(knownNetworks).map(([hash, network], index) => {
-                        const { defaultProvider, text } = network;
+                      {Object.entries(knownNetworks).map(([hash, network1], index) => {
+                        const { defaultProvider, text } = network1;
 
                         return <RadioGroup.Option
                           className={({ active, checked }) =>
@@ -553,30 +439,28 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <RadioGroup.Description
                                     as='span'
                                     className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-
-                                  // className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
                                   >
                                     <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
 
-                                    {/* {defaultProvider} */}
+
                                   </RadioGroup.Description>
                                 </div>
                               </div>
-                              {/* {network ==  */}
-                              {checked && (
+                              {knownNetworks[network].text !== text
+                                ? null
+                                : <div className=' rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center bg-green-300'>
+                                  <LinkIcon className=' text-red-600 z-50 w-[18px] h-[18px]' />
+                                </div>}
+
+                              {checked && knownNetworks[network].text !== text && (
                                 <div className=''>
                                   <div className='bg-white rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center '>
-                                    {/* <Image
-                                        layout='fill'
-                                        objectFit='contain'
-                                        src={check.src}
-                                      /> */}
+
                                     <ChevronDownIcon className='absolute -top-1 text-[#B186D2] z-50 h-8 w-8 ' />
                                   </div>
-
-
                                 </div>
                               )}
+
                             </div>
                           )}
                         </RadioGroup.Option>;
@@ -592,13 +476,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                   <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
                     <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
-                    // onClick={() => router.push('/')}
                     >
-                      {/* <Image
-                          layout='fill'
-                          objectFit='contain'
-                          src={addNetworkButton.src}
-                        /> */}
+
                       <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
                         <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
                       </div>
@@ -614,7 +493,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                       <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
                       :
                       <button
-                        // disabled={network == networkSelection}
+
                         className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
                         onClick={async () => {
                           await changeNetwork();
@@ -636,7 +515,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
             <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
               <div className='bg-[#F5F5F5] w-[300px] h-[100px] md:w-[500px] dark:bg-[#353B4D] rounded-lg m-10 md:ml-16 p-3 px-5'>
                 <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'> $793.32 USD </p>
-                <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on the current network ...... </p>
+                <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[network].text} </p>
               </div>
 
               <div className="flex items-center justify-evenly ">
@@ -675,10 +554,10 @@ function Home({ coinPriceData }: Props): JSX.Element {
           {/* network change modal */}
           <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
             <div className={theme}>
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border  border-[#00f6ff] dark:border-[#00f6ff]'>
                 <Dialog.Title
                   as='h3'
-                  className='font-poppins text-lg font-medium leading-6 text-gradient w-72'
+                  className='font-poppins text-lg font-medium leading-6 text-black dark:text-white w-72'
                 >
                   Changed successfully
                 </Dialog.Title>
@@ -704,7 +583,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
           {/* send modal */}
           <Modal closeModal={closeModal2} isOpen={isSendOpen}>
             <div className={theme}>
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
                   as='h3'
                   className='text-lg  font-medium leading-6 flex items-center mb-6 '
@@ -719,7 +598,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     }
                   </div>
                   <div onClick={closeModal2}>
-                    <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+                    <XIcon className='  h-8 w-8 cursor-pointer text-black dark:text-white' />
                   </div>
                 </Dialog.Title>
                 <div className='mt-2 '>
@@ -730,13 +609,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <p className=' text-gray-700 dark:text-white '>From</p>
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
                     <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
-                    {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
+
                     <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
                       onCopy={() => { setCopied(true) }}>
                       <div onClick={handleCopy}>
                         {showCheck
-                          ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+                          ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
 
                       </div>
                     </CopyToClipboard>
@@ -749,7 +628,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                     <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className="font-poppins input input-bordered input-info w-full " />
                     <CameraIcon
                       onClick={() => setOpenScan(!openScan)}
-                      className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
+                      className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
 
                   </div>
 
@@ -773,8 +652,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                         <XIcon onClick={() => setOpenScan(false)} className='h-5 w-5' />
                       </div>
 
-                      {/* <div className='absolute top-24 right-24 z-50 left-24 bottom-64 border-2 border-yellow-200'>
-                    </div> */}
+
 
                     </div>}
 
@@ -815,20 +693,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
                   <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p>
-                  {/* <p className=' text-gray-700 dark:text-white text-sm font-poppins'>{cryptoToSend.networkFee}</p> */}
+
                   <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
 
 
                 </div>
 
                 <div className='mt-4'>
-                  {/* <button
-                      className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={closeModal2}
-                      type='button'
-                    >
-                      Send
-                    </button> */}
 
                   <button
                     className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
@@ -848,7 +719,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
           <Modal closeModal={closeModal3} isOpen={isReceiveOpen}>
             <div className={theme}>
 
-              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#00f6ff]'>
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
                   as='h3'
                   className='text-lg font-medium leading-6 flex items-center mb-6'
@@ -859,7 +730,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 
                   <div onClick={closeModal3}>
-                    <XIcon className=' text-white h-8 w-8 cursor-pointer dark:text-white' />
+                    <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
 
                 </Dialog.Title>
@@ -876,13 +747,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
                     <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
-                    {/* {copied ? <span className="text-xs text-blue-500 " >Copied</span> : <div className="h-2 "></div>} */}
                     <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
                       onCopy={() => { setCopied(true) }}>
                       <div onClick={handleCopy}>
                         {showCheck
-                          ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
+                          ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
 
                       </div>
                     </CopyToClipboard>
@@ -920,21 +790,30 @@ function Home({ coinPriceData }: Props): JSX.Element {
           {/* add network modal pink */}
           <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
             <div className={theme}>
-              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-[#c67391]'><Dialog.Title
-                as='h3'
-                className='text-lg font-medium leading-6 text-gradient '
-              >
-                Add Network
-              </Dialog.Title>
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 flex items-center mb-6'
+                >
+                  <p className=' text-gray-700 flex flex-grow font-poppins'>Add Network</p>
+
+                  <div onClick={closeAddNetworkModal}>
+                    <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
+                  </div>
+
+
+                </Dialog.Title>
+
+
                 <div className='mt-2'>
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
-                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input dark:border dark:border-[#c67391] w-full  " />
+                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input border border-[#c67391] w-full  " />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
-                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input dark:border dark:border-[#c67391] w-full " />
+                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input border border-[#c67391] w-full " />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
-                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input dark:border dark:border-[#c67391] w-full " />
+                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input border border-[#c67391] w-full " />
 
 
 

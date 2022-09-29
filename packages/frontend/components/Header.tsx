@@ -112,7 +112,7 @@ function Header(): JSX.Element {
             {/* <CogIcon className='hidden h-6 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' /> */}
             <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
               <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
-              <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
+              <div className="absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0">
               </div>
             </div>
 
