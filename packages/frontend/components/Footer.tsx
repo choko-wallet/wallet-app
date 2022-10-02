@@ -14,7 +14,7 @@ function Footer(): JSX.Element {
       <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
       {theme == 'light' ? <div>
         <SocialIcon
-          url='https://github.com/thebase666'
+          url='https://github.com/choko-wallet'
           fgColor='black'
           bgColor='transparent'
           target='_blank'
@@ -39,7 +39,7 @@ function Footer(): JSX.Element {
         />
       </div> : <div>
         <SocialIcon
-          url='https://github.com/thebase666'
+          url='https://github.com/choko-wallet'
           fgColor='white'
           bgColor='transparent'
           target='_blank'

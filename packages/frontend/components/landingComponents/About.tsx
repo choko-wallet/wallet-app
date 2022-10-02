@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-// import icon from '../images/hero-image.jpeg'
+import icon from '../../images/logo2.png'
+import icon2 from '../../images/logo2.svg'
+
 
 type Props = {};
 
@@ -27,8 +29,8 @@ const About = (props: Props) => {
           //   once: true,
           // }}
           className='w-48 h-48 mt-10 mb-5 flex-shrink-0 rounded-full object-cover md:mb-0 md:rounded-lg md:w-64 md:h-64 md:mt-0 2xl:w-[500px] 2xl:h-[500px]'
-          src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
-          // src={icon.src}
+          // src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
+          src={icon2.src}
           alt='my portrait'
         />
 

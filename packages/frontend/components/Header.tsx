@@ -56,7 +56,9 @@ function Header(): JSX.Element {
   }
 
   return (
-    <div className='sticky top-0 z-20 bg-[#DEE8F1] dark:bg-[#22262f] border-b border-[#C5CEDE]'>
+    // <div className='sticky top-0 z-20 bg-[#DEE8F1] dark:bg-[#22262f] border-b border-[#C5CEDE]'>
+    <div className='sticky top-0 z-20 backdrop-blur-lg border-b border-[#C5CEDE]'>
+
       <div className='flex justify-between p-2 '>
         <div className='flex items-center justify-center ' >
           <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'

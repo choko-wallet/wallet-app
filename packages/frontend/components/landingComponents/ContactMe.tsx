@@ -1,4 +1,5 @@
 // import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md';
+import { SocialIcon } from 'react-social-icons';
 
 type Inputs = {
   name: string;
@@ -26,14 +27,39 @@ const ContactMe = (props: Props) => {
           </h4>
           <div className='flex items-center justify-center space-x-4'>
             {/* <MdEmail className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
-
+            <SocialIcon
+              className='cursor-pointer'
+              network='email'
+              fgColor='white'
+              bgColor='transparent'
+            />
             <p className='text-2xl'>contact@choko.app</p>
           </div>
           <div className='flex items-center justify-center space-x-4'>
             {/* <MdPhone className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
             {/* <p className='text-2xl'>+66-0966712286</p> */}
           </div>
+          <div>
+            <SocialIcon
+              url='https://github.com/choko-wallet'
+              fgColor='white'
+              bgColor='transparent'
+              target='_blank'
+            />
+            <SocialIcon
+              url='https://telegram'
+              fgColor='white'
+              bgColor='transparent'
+              target='_blank'
+            />
+            <SocialIcon
+              url='https://twitter'
+              fgColor='white'
+              bgColor='transparent'
+              target='_blank'
+            />
 
+          </div>
 
 
         </div>

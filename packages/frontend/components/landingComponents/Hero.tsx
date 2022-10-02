@@ -3,6 +3,10 @@ import Image from 'next/image';
 import Typed from 'react-typed';
 import BackgroundCircle from './BackgroundCircle';
 import { useRouter } from 'next/router';
+import icon from '../../images/logo2.png'
+import icon2 from '../../images/logo2.svg'
+import icon1 from '../../images/logo1.svg'
+
 
 type Props = {};
 
@@ -15,7 +19,8 @@ const Hero = (props: Props) => {
         <BackgroundCircle />
         <Image
           className='relative object-cover mx-auto rounded-full'
-          src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
+          // src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
+          src={icon1.src}
           alt='choko wallet'
           width={180}
           height={180}

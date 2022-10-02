@@ -135,8 +135,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [color, setColor] = useState<string>('');
 
   useEffect(() => {
-    setColor(shuffle(colors).pop());
+    if (knownNetworks[networkSelection].color !== undefined) {
+      setColor(`bg-${knownNetworks[networkSelection].color}-500`);
+    } else {
+      setColor(shuffle(colors).pop());
+    }
   }, [networkSelection]);
+
 
 
   useEffect(() => {
@@ -259,6 +264,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   }
 
+  // console.log('knownNetworks[network]', knownNetworks[network])
+  // console.log('knownNetworks', knownNetworks)
+  console.log('knownNetworks[networkSelection].color', knownNetworks[networkSelection].color)
+
+  // console.log('networkSelection', networkSelection)
 
 
   return (
@@ -326,15 +336,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                             {knownNetworks[network].text !== text
                               ? null
-                              : <div className=' rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center bg-green-300'>
-                                <LinkIcon className=' text-red-600 z-50 w-[18px] h-[18px]' />
+                              : <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                                <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
                               </div>}
 
                             {checked && knownNetworks[network].text !== text && (
-                              <div className=''>
-                                <div className='bg-white rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center '>
-                                  <ChevronDownIcon className='absolute -top-1 text-[#B186D2] z-50 h-8 w-8 ' />
-                                </div>
+                              <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                                <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
                               </div>
                             )}
                           </div>
@@ -389,7 +397,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
         </CSSTransition>
 
-        < main className='min-h-[750px] h-85v bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
+        < main className='min-h-[750px] sm:h-85v bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
 
           <div className='bg-transparent flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
             <div className='bg-transparent'>
@@ -448,16 +456,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
                               </div>
                               {knownNetworks[network].text !== text
                                 ? null
-                                : <div className=' rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center bg-green-300'>
-                                  <LinkIcon className=' text-red-600 z-50 w-[18px] h-[18px]' />
+                                : <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                                  <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
                                 </div>}
 
                               {checked && knownNetworks[network].text !== text && (
-                                <div className=''>
-                                  <div className='bg-white rounded-full relative items-center w-[20px] h-[20px] cursor-pointer flex justify-center '>
-
-                                    <ChevronDownIcon className='absolute -top-1 text-[#B186D2] z-50 h-8 w-8 ' />
-                                  </div>
+                                <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                                  <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
                                 </div>
                               )}
 
