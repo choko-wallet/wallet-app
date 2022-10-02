@@ -389,7 +389,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
         </CSSTransition>
 
-        < main className='bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
+        < main className='min-h-[750px] h-85v bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
 
           <div className='bg-transparent flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
             <div className='bg-transparent'>
@@ -532,7 +532,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 <p className='text-black dark:text-gray-400'>Total Balance</p>
               </div>
 
-              <div className='flex flex-col scrollbar-thin max-h-[500px] overflow-y-scroll m-5 mt-0'>
+              <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll m-5 mt-0'>
 
                 {cryptoArr.map((item) => (
                   <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} shortName={item.shortName} />
