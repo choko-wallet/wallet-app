@@ -25,17 +25,11 @@ const Header = (props: Props) => {
         className='flex items-center'
       >
         <SocialIcon
-          url='https://github.com/thebase666'
+          url='https://github.com/choko-wallet'
           fgColor='gray'
           bgColor='transparent'
           target='_blank'
         />
-        {/* <SocialIcon
-          url='https://www.linkedin.com/in/zhuyao-li-594368179/'
-          fgColor='gray'
-          bgColor='transparent'
-          target='_blank'
-        /> */}
       </motion.div>
 
       <Link href='#contact'>

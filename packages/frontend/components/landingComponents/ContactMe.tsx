@@ -27,7 +27,7 @@ const ContactMe = (props: Props) => {
           <div className='flex items-center justify-center space-x-4'>
             {/* <MdEmail className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
 
-            <p className='text-2xl'>hello@skye.kiwi</p>
+            <p className='text-2xl'>contact@choko.app</p>
           </div>
           <div className='flex items-center justify-center space-x-4'>
             {/* <MdPhone className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
