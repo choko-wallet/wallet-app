@@ -119,7 +119,7 @@ function Settings(): JSX.Element {
 
     const payloadForExport = u8aToHex(currentUserAccount.serializeWithEncryptedKey());
 
-    const superUrl = 'https://wallet.app/import?payload=' + payloadForExport;
+    const superUrl = 'http://localhost:3000/import?payload=' + payloadForExport;
     console.log(superUrl);
     setExportUrl(superUrl);
     setExportModalOpen(true);

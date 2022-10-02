@@ -136,7 +136,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   useEffect(() => {
     if (knownNetworks[networkSelection].color !== undefined) {
-      setColor(`bg-${knownNetworks[networkSelection].color}-500`);
+      setColor(`bg-[${knownNetworks[networkSelection].color}]`);
     } else {
       setColor(shuffle(colors).pop());
     }

@@ -12,7 +12,7 @@ export const addUserAccount = createAsyncThunk(//必须有seeds和password, impo
   async (payload: {
     option?: AccountOption;
     seeds?: string;//seeds 是可选
-    password: string;
+    password?: string;
     importKey?: Uint8Array;
   }, { rejectWithValue }) => {
     const { password, seeds, option, importKey } = payload;
@@ -36,11 +36,7 @@ export const addUserAccount = createAsyncThunk(//必须有seeds和password, impo
       return userAccount;
     } else if (importKey) {//不用password啊
       try {
-        console.log('redux01')
         const userAccount = UserAccount.deserializeWithEncryptedKey(importKey);
-        console.log('redux02')
-        await userAccount.init();
-        console.log('redux03')
         userAccount.option.hasEncryptedPrivateKeyExported = true;
 
         return userAccount;
@@ -137,6 +133,7 @@ export const userSlice = createSlice({
     builder
       .addCase(addUserAccount.fulfilled, (state, action) => {//判断在fullfilled
         const userAccount = action.payload;
+
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
         if (maybeCurrentSerializedAccount) {
           console.log('maybeCurrentSerializedAccount', maybeCurrentSerializedAccount)
@@ -144,8 +141,6 @@ export const userSlice = createSlice({
 
           let offset = 0;
           const len = UserAccount.serializedLengthWithEncryptedKey() * 2;//109  * 2
-          console.log('len', len)
-
           while (offset < maybeCurrentSerializedAccount.length) {
 
             const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
@@ -162,6 +157,7 @@ export const userSlice = createSlice({
         }
         const localStorageContent = maybeCurrentSerializedAccount || '';
         localStorage.setItem('serialziedUserAccount', localStorageContent + u8aToHex(userAccount.serializeWithEncryptedKey()));
+        state.error = 'none';
       })
       .addCase(addUserAccount.rejected, (state, action) => {
         state.error = (action.error ? action.error : 'Invalid password!') as string;

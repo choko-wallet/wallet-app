@@ -1470,26 +1470,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/abi@npm:0.1.7":
-  version: 0.1.7
-  resolution: "@choko-wallet/abi@npm:0.1.7"
+"@choko-wallet/abi@npm:0.1.8-0":
+  version: 0.1.8-0
+  resolution: "@choko-wallet/abi@npm:0.1.8-0"
   dependencies:
-    "@choko-wallet/core": 0.1.7
+    "@choko-wallet/core": 0.1.8-0
     ethers: ^5.7.0
-  checksum: 9675bb1d229a5844a4f1ee49858b3b28fdf28c5d086b87426391ac9ef55bdf75283298eec7012057191a1b3d13d4c28e477d7281bc659461018af575bb8d78b8
+  checksum: 5658eef7a7f16791d61187d2461915dee55218331dae5870f6fece5c627ea187a6bc54a885fb9330ca5ec13f3e987ee42e182210f7cd9d969961f52ed2b3ad9a
   languageName: node
   linkType: hard
 
-"@choko-wallet/core@npm:0.1.7":
-  version: 0.1.7
-  resolution: "@choko-wallet/core@npm:0.1.7"
+"@choko-wallet/core@npm:0.1.8-0":
+  version: 0.1.8-0
+  resolution: "@choko-wallet/core@npm:0.1.8-0"
   dependencies:
-    "@choko-wallet/known-networks": 0.1.7
+    "@choko-wallet/known-networks": 0.1.8-0
     "@polkadot/util-crypto": ^10.1.1
     "@skyekiwi/crypto": 0.8.4-1
     "@skyekiwi/util": 0.8.4-1
     pako: ^2.0.4
-  checksum: a574834753f8342d0cf65cda949b44d5ecbb2af5f2a95f341c33b522281b8fd4c21d01b39a5f34e2040bb367fbad0a4ec6ec8fb560fee26d3b7fd2243f799edd
+  checksum: 08ef789e6cb8d4fde1fa4c21aa50d3c2a1b48d78e6fa3164ec09b6a5461ba97088b2675e07bc0c846e955a2655311e2bb7edea9cef277250e975d431c38b0ac0
   languageName: node
   linkType: hard
 
@@ -1498,10 +1498,10 @@ __metadata:
   resolution: "@choko-wallet/frontend@workspace:packages/frontend"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
-    "@choko-wallet/core": 0.1.7
-    "@choko-wallet/known-networks": 0.1.7
-    "@choko-wallet/request-handler": 0.1.7
-    "@choko-wallet/sdk": 0.1.7
+    "@choko-wallet/core": 0.1.8-0
+    "@choko-wallet/known-networks": 0.1.8-0
+    "@choko-wallet/request-handler": 0.1.8-0
+    "@choko-wallet/sdk": 0.1.8-0
     "@fortawesome/fontawesome-svg-core": ^6.1.2
     "@fortawesome/free-brands-svg-icons": ^6.1.2
     "@fortawesome/free-regular-svg-icons": ^6.1.2
@@ -1546,36 +1546,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/known-networks@npm:0.1.7":
-  version: 0.1.7
-  resolution: "@choko-wallet/known-networks@npm:0.1.7"
+"@choko-wallet/known-networks@npm:0.1.8-0":
+  version: 0.1.8-0
+  resolution: "@choko-wallet/known-networks@npm:0.1.8-0"
   dependencies:
-    "@choko-wallet/core": 0.1.7
+    "@choko-wallet/core": 0.1.8-0
     "@skyekiwi/util": 0.8.4-1
-  checksum: fb5748ed3371f2e5e42cac272e63c5acae4f6af147bc07370f989ea02333822d4d71246f3ec27cb741c17392b078364529929e34a13618aee54bb65d52b9490c
+  checksum: b304f7e571fe44420b762313a08bbe34b70ce25d5c5c9b1c4fccffa858e20965c0c8fb502f8d7161a48f84483c6adf7dcfa87221839f2af50517a8a017c6aeed
   languageName: node
   linkType: hard
 
-"@choko-wallet/request-handler@npm:0.1.7":
-  version: 0.1.7
-  resolution: "@choko-wallet/request-handler@npm:0.1.7"
+"@choko-wallet/request-handler@npm:0.1.8-0":
+  version: 0.1.8-0
+  resolution: "@choko-wallet/request-handler@npm:0.1.8-0"
   dependencies:
-    "@choko-wallet/abi": 0.1.7
-    "@choko-wallet/core": 0.1.7
+    "@choko-wallet/abi": 0.1.8-0
+    "@choko-wallet/core": 0.1.8-0
     "@polkadot/keyring": ^10.1.2
     "@polkadot/util-crypto": ^10.1.2
     "@skyekiwi/util": 0.8.4-1
     ethers: ^5.7.0
-  checksum: 4efadc8b8d1b2b86db1c35507da8bf3f1c87ce8076828fec025be99b02f9d015a32ffa25028b566cbc6b3cb8fd51f91b54bb3744f469713d661a5061e0ee74e8
+  checksum: 8096f77d82ee3026e818d3f10fcede91ae2c376cabb617c1ccfc137d44ed2d16738c8fc6e4a37d04dfb6d52ab15de22d73203416997008fa9d417ed22c80fccc
   languageName: node
   linkType: hard
 
-"@choko-wallet/sdk@npm:0.1.7":
-  version: 0.1.7
-  resolution: "@choko-wallet/sdk@npm:0.1.7"
+"@choko-wallet/sdk@npm:0.1.8-0":
+  version: 0.1.8-0
+  resolution: "@choko-wallet/sdk@npm:0.1.8-0"
   dependencies:
-    "@choko-wallet/core": 0.1.7
-  checksum: d7270720a3f82c1b51cc615d907d695dbf68ecb37605a8605d85e0564fa012e49f0366cebe01121a7b3e353c50cb004641536029995dfa14d15b7f7cc07b8e94
+    "@choko-wallet/core": 0.1.8-0
+  checksum: 023b63609aab82426550046a0df6795fe37c94dc5bb24bc86332887dae991f2ed98dcfe5a188603ec8f69db52f33ef88bdcf7490b5adc6d85e09df47463f6439
   languageName: node
   linkType: hard
 
