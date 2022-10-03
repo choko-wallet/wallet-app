@@ -1,5 +1,7 @@
 // import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md';
 import { SocialIcon } from 'react-social-icons';
+import discIcon2 from '../../images/discord2.svg'
+import Image from 'next/image';
 
 type Inputs = {
   name: string;
@@ -39,7 +41,7 @@ const ContactMe = (props: Props) => {
             {/* <MdPhone className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
             {/* <p className='text-2xl'>+66-0966712286</p> */}
           </div>
-          <div>
+          <div className='flex items-center justify-center'>
             <SocialIcon
               url='https://github.com/choko-wallet'
               fgColor='white'
@@ -59,6 +61,13 @@ const ContactMe = (props: Props) => {
               target='_blank'
             />
 
+            <div className='inline-flex relative h-7 w-7 m-3'>
+              <Image
+                layout='fill'
+                objectFit='contain'
+                src={discIcon2}
+              />
+            </div>
           </div>
 
 

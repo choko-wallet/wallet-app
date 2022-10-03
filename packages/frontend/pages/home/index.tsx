@@ -72,6 +72,11 @@ interface PriceUsd {
   usd: number;
 }
 
+interface ColorBg {
+  [index: number]: string;
+}
+
+
 const colors = [
   'bg-indigo-500',
   'bg-blue-500',
@@ -134,13 +139,31 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   const [color, setColor] = useState<string>('');
 
+  const colors2: ColorBg[] = [];
+
+  Object.entries(knownNetworks).map(([hash, network2], index) => {
+    const { color } = network2;
+    colors2.push([hash, `bg-[${color}]`])
+  })
+
+  // console.log(colors2)
+
   useEffect(() => {
     if (knownNetworks[networkSelection].color !== undefined) {
-      setColor(`bg-[${knownNetworks[networkSelection].color}]`);
+      for (let i = 0; i < colors2.length; i++) {
+        if (colors2[i][0] === networkSelection) {
+          setColor(colors2[i][1]);
+        }
+      }
     } else {
       setColor(shuffle(colors).pop());
     }
   }, [networkSelection]);
+
+
+  // console.log(Object.entries(knownNetworks))
+  // console.log(color)
+  // console.log('networkSelection', networkSelection)
 
 
 

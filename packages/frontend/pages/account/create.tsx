@@ -86,14 +86,14 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
       <div className='md:hidden col-span-12'></div>
 
       <ul className='steps steps-horizontal col-span-10 col-start-2 md:col-span-6 md:col-start-4'>
-        <li className={`step ${step > 0 ? 'step-neutral' : ''}`}>
-          Generate Mnemonic
+        <li className={`text-black step ${step > 0 ? 'step-neutral  ' : ' '}`}>
+          <p>Generate Mnemonic</p>
         </li>
         <li className={`step ${step > 1 ? 'step-neutral' : ''}`}>
-          Verify
+          <p>Verify</p>
         </li>
         <li className={`step ${step > 2 ? 'step-neutral' : ''}`}>
-          Set a Password
+          <p>Set a Password</p>
         </li>
       </ul>
 
