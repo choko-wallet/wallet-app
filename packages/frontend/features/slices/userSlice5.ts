@@ -31,7 +31,7 @@ export const addUserAccount = createAsyncThunk(//必须有seeds和password, impo
       await userAccount.init();
       // console.log('userAccount', userAccount)
       userAccount.encryptUserAccount(blake2AsU8a(password));//增加encryptedPrivateKey属性
-      // console.log('userAccount1', userAccount)
+      console.log('userAccount1', userAccount)
 
       return userAccount;
     } else if (importKey) {//不用password啊
@@ -49,6 +49,31 @@ export const addUserAccount = createAsyncThunk(//必须有seeds和password, impo
     }
   }
 );
+
+
+
+
+interface SwitchAccountPayload {
+  address: string;
+}
+
+export const switchUserAccount = createAsyncThunk(
+  'users/switch',
+  async (payload: SwitchAccountPayload) => {
+    const { address } = payload;
+    console.log('address11', address)
+
+
+    // state.currentUserAccount = state.userAccount[action.payload];
+
+
+    return {
+      address: address
+    };
+  }
+);
+
+
 
 export const changeCurrentAccountType = createAsyncThunk(
   'users/changeCurrentAccountType',
@@ -69,16 +94,14 @@ export const changeCurrentAccountType = createAsyncThunk(
 interface UserSliceItem {
   error: string;
   userAccount: { [key: string]: UserAccount };
+  //这个位置打印错误 需要改 应该是 [key: string]: UserAccount 的array 
   currentUserAccount: UserAccount | null;//type没有 [key: string]:
-  changeCurrentAccountLoading: boolean;
-
 }
 
 const initialState: UserSliceItem = {
   error: '',
   userAccount: {},
   currentUserAccount: null,
-  changeCurrentAccountLoading: false,
 };
 
 /* eslint-disable sort-keys */
@@ -88,7 +111,6 @@ export const userSlice = createSlice({
   reducers: {
     loadUserAccount: (state, _: PayloadAction<string>) => {
       const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
-
       let offset = 0;
       const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
 
@@ -98,9 +120,11 @@ export const userSlice = createSlice({
         const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
 
         state.userAccount[account.address] = account;
+
       }
       // set the first account 应该是last吧 最新引入的在最后 这个位置可改成引入账户时 把useraccount放到初始 localstorage也是
       state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
+
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
@@ -115,18 +139,12 @@ export const userSlice = createSlice({
       }
     },
 
-    switchUserAccount: (state, action: PayloadAction<string>) => {
-      console.log('action.payload', action.payload)
-      // console.log('action.payload',action.payload)
-      // state.changeCurrentAccountLoading = true;
-      // setTimeout(() => {
-      // state.changeCurrentAccountLoading = !state.changeCurrentAccountLoading;
-      state.currentUserAccount = state.userAccount[action.payload];
-      // }, 3000);
-      // state.changeCurrentAccountLoading = false;
+    // switchUserAccount: (state, action: PayloadAction<string>) => {
+    //   console.log('action.payload', action.payload)
+    //   // console.log('action.payload',action.payload)
 
-      // state.currentUserAccount = state.userAccount[action.payload];
-    },
+    //   state.currentUserAccount = state.userAccount[action.payload];
+    // },
 
     removeAllAccounts: (state, _: PayloadAction<null>) => {
       // localStorage.removeItem('serializedUserAccount');//清除不掉
@@ -199,8 +217,27 @@ export const userSlice = createSlice({
         // unexpected;
         state.error = (action.error ? action.error : 'unexpected!') as string;
       })
+
+
+      .addCase(switchUserAccount.pending, (state, action) => {
+        // if (state.loading === 'idle') {
+        //   state.loading = 'pending'
+        // }
+      })
+      .addCase(switchUserAccount.fulfilled, (state, action) => {
+        const address = action.payload;
+        console.log('currentUserAccount', state.currentUserAccount)
+        console.log('userAccount', state.userAccount)
+
+        state.currentUserAccount = state.userAccount[address];
+
+      })
+      .addCase(switchUserAccount.rejected, (state, action) => {
+        // unexpected;
+        state.error = (action.error ? action.error : 'unexpected!') as string;
+      })
   }
 });
 
-export const { loadUserAccount, decryptCurrentUserAccount, lockCurrentUserAccount, switchUserAccount, removeAllAccounts } = userSlice.actions;
+export const { loadUserAccount, decryptCurrentUserAccount, lockCurrentUserAccount, removeAllAccounts } = userSlice.actions;
 export default userSlice.reducer;

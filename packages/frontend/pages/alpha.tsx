@@ -10,10 +10,12 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import superagent from 'superagent';
 
-import { UserAccount } from '@choko-wallet/core';
+
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { ConnectDappResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignTxUrl, configSDKAndStore, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
+
+import { AccountOption, UserAccount } from '@choko-wallet/core';
 
 const AlphaTest: NextPage = () => {
   const router = useRouter();
@@ -168,26 +170,26 @@ const AlphaTest: NextPage = () => {
         {
           validToken === 'Authenticated' && <div className='col-span-12 px-5'>
             <div className='divider'></div>
-            <h2>Welcome To the Choko Wallet Alpha Test Program.</h2><br />
+            <h2 className='text-black'>Welcome To the Choko Wallet Alpha Test Program.</h2><br />
 
-            <h2>Things To Note: this test program is intent for those who had experience working with wallets. Please use your usual caution when working with Choko Wallet. Beaware of <b>FISHING WEBSITES</b> and <b>ALWAYS SAFEGUARD YOUR PRIVATE KEY</b>. Like any wallets, we <b>WILL NOT ABLE TO RECOVER YOUR PRIVATE KEY</b>, as we <b>DO NOT HAVE ACCESS TO YOUR PRIVATE KEY</b></h2>
+            <h2 className='text-black'>Things To Note: this test program is intent for those who had experience working with wallets. Please use your usual caution when working with Choko Wallet. Beaware of <b>FISHING WEBSITES</b> and <b>ALWAYS SAFEGUARD YOUR PRIVATE KEY</b>. Like any wallets, we <b>WILL NOT ABLE TO RECOVER YOUR PRIVATE KEY</b>, as we <b>DO NOT HAVE ACCESS TO YOUR PRIVATE KEY</b></h2>
             <br />
-            <h2>Any DMs requesting recovering wallet private keys <b>WILL BE IGNORED</b> as there is nothing we can do about it.</h2>
+            <h2 className='text-black'>Any DMs requesting recovering wallet private keys <b>WILL BE IGNORED</b> as there is nothing we can do about it.</h2>
             <br />
-            <h2>Also, our team will <b>NEVER DM FOR YOUR PRIVATE KEY</b> or <b>NEVER ASK FOR FUNDS</b>.</h2>
+            <h2 className='text-black'>Also, our team will <b>NEVER DM FOR YOUR PRIVATE KEY</b> or <b>NEVER ASK FOR FUNDS</b>.</h2>
 
             <button className='btn m-5'
               onClick={() => {
                 setTOSAgreed(true);
-              }}>Read & Acknowledged. Let me Proceeed!</button>
+              }}>Read & Acknowledged. Let me Proceeed! </button>
           </div>
         }
         {
           tosAgreed && <div className='col-span-12 px-5'>
             <div className='divider'></div>
-            <h2>There are three things you need to do:</h2><br />
+            <h2 className='text-black'>There are three things you need to do:</h2><br />
 
-            <h2>1. Generate or Import a walelt address on the home page. Switch network to SkyeKiwi Network and connect this page to the wallet. </h2>
+            <h2 className='text-black'>1. Generate or Import a walelt address on the home page. Switch network to SkyeKiwi Network and connect this page to the wallet. </h2>
             <button className='btn m-5 btn-error'
               onClick={() => {
                 const x = buildConnectDappUrl();
@@ -198,13 +200,13 @@ const AlphaTest: NextPage = () => {
 
             {
               account && <>
-                <h2>2. Claim some faucet token so that you could send a transaction on the next step.  </h2><br />
-                <h3 style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
-                <h3>Follow SkyeKiwi on their <a className='text-sky-400'
+                <h2 className='text-black'>2. Claim some faucet token so that you could send a transaction on the next step.  </h2><br />
+                <h3 className='text-black' style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
+                <h3 className='text-black'>Follow SkyeKiwi on their <a className='text-sky-400'
                   href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.</h3>
                 <br />
 
-                <h2>3. Click on the button below to sign a transaction. And keep the generated response hex string.</h2><br />
+                <h2 className='text-black'>3. Click on the button below to sign a transaction. And keep the generated response hex string.</h2><br />
                 <button className='btn m-5 btn-error'
                   onClick={async () => {
                     const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
@@ -218,7 +220,7 @@ const AlphaTest: NextPage = () => {
                   }}>Take me there</button><br />
 
                 {response && <>
-                  <h1 style={{ overflowWrap: 'break-word' }}>
+                  <h1 className='text-black' style={{ overflowWrap: 'break-word' }}>
                     Finally, keep this response hex string. Most likely it will be recorded automatically... but just in case. <b>0x{response}</b>. <br />Then you are all done!
                   </h1>
 

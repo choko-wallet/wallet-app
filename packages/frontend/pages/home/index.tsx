@@ -16,7 +16,7 @@ import { shuffle } from "lodash";
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 import { knownNetworks } from '@choko-wallet/known-networks';
-import { selectUserAccount, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectCoinApiLoading } from '../../features/redux/selectors';
+import { selectUserAccount, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectChangeCurrentAccountLoading, selectCoinApiLoading } from '../../features/redux/selectors';
 import { loadUserAccount } from '../../features/slices/userSlice';
 import { store } from '../../features/redux/store';
 
@@ -98,6 +98,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const userAccount = useSelector(selectUserAccount);//所有账户 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const reduxError = useSelector(selectError);
+  const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
+
 
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
@@ -155,7 +157,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
     // console.log('colors0', colors0)
 
   }, []);
-  console.log('colorArr', colorArr)
+  // console.log('colorArr', colorArr)
 
   useEffect(() => {
 
@@ -246,6 +248,9 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   if (isLoadingOpen) return <Loading title='Changing Network' />
 
+  if (changeAccountLoading) return <Loading title='Changing Account' />
+
+
   function closeModal() {
     setIsNetworkChangeOpen(false);
 
@@ -300,7 +305,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   // console.log('knownNetworks[network]', knownNetworks[network])
   // console.log('knownNetworks', knownNetworks)
-  console.log('knownNetworks[networkSelection].color', knownNetworks[networkSelection].color)
+  // console.log('knownNetworks[networkSelection].color', knownNetworks[networkSelection].color)
 
   // console.log('networkSelection', networkSelection)
 
