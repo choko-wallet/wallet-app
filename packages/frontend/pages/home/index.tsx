@@ -68,6 +68,8 @@ interface CoinPrice {
   [key: string]: PriceUsd
 };
 
+const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } }
+
 interface PriceUsd {
   usd: number;
 }
@@ -88,8 +90,9 @@ const colors = [
 ];
 
 
+
 /* eslint-disable sort-keys */
-function Home({ coinPriceData }: Props): JSX.Element {
+function Home(): JSX.Element {
   const { theme, setTheme } = useTheme();
 
   const router = useRouter();
@@ -353,7 +356,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                 <RadioGroup.Label
                                   as='p'
                                   // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                  className={`text-lg font-semibold font-poppins  ${checked ? 'text-black dark:text-white' : 'text-[#B6B7BC]'}`}
+                                  className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
 
                                 >
                                   {text.substring(0, text.length - 8)}
@@ -478,7 +481,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                                   <RadioGroup.Label
                                     as='p'
                                     // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-black dark:text-white' : 'text-[#B6B7BC]'}`}
+                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
 
                                   >
                                     {text.substring(0, text.length - 8)}
@@ -889,16 +892,16 @@ function Home({ coinPriceData }: Props): JSX.Element {
 export default Home;
 
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
-  const toCurrency = 'usd';
-  const coinPriceData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${toCurrency}`).
-    then((res) => res.json());
-
-  return {
-    props: {
-      coinPriceData,
-    }
-  }
-}
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
+//   const toCurrency = 'usd';
+//   const coinPriceData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${toCurrency}`).
+//     then((res) => res.json());
+//     // https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cdogecoin&vs_currencies=usd
+//   return {
+//     props: {
+//       coinPriceData,
+//     }
+//   }
+// }
 
