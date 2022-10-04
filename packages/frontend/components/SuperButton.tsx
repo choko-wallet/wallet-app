@@ -1,6 +1,8 @@
-import { faToiletPaperSlash } from '@fortawesome/free-solid-svg-icons';
-import React, { SVGProps } from 'react'
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
 
+import { faToiletPaperSlash } from '@fortawesome/free-solid-svg-icons';
+import React, { SVGProps } from 'react';
 
 interface Props {
   Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
@@ -8,22 +10,22 @@ interface Props {
   onClick?: () => void;
 }
 
-function SuperButton({ Icon, title, onClick }: Props) {
+function SuperButton ({ Icon, onClick, title }: Props) {
   return (
-    <div className="flex justify-center items-center w-[90px] h-[90px] rounded-full bg-blue-gradient p-[2px] cursor-pointer">
-      <div className="flex justify-center items-center flex-col dark:bg-primary w-[100%] h-[100%] rounded-full">
-        <div className="flex justify-center items-start flex-row">
-          <p className="text-[18px] leading-[23px]">
-            <Icon className="h-6 w-6 text-white dark:text-[#03F3FF] " />
+    <div className='flex justify-center items-center w-[90px] h-[90px] rounded-full bg-blue-gradient p-[2px] cursor-pointer'>
+      <div className='flex justify-center items-center flex-col dark:bg-primary w-[100%] h-[100%] rounded-full'>
+        <div className='flex justify-center items-start flex-row'>
+          <p className='text-[18px] leading-[23px]'>
+            <Icon className='h-6 w-6 text-white dark:text-[#03F3FF] ' />
           </p>
         </div>
 
-        <p className="text-[18px] leading-[23px]">
-          <span className="text-gradient font-poppins">{title}</span>
+        <p className='text-[18px] leading-[23px]'>
+          <span className='text-gradient font-poppins'>{title}</span>
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 export default SuperButton;

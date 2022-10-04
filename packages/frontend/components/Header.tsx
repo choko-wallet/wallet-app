@@ -1,40 +1,35 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {
-  BellIcon,
-  ChevronDownIcon, CogIcon, MenuIcon,
-  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  HomeIcon, MoonIcon, SunIcon, TranslateIcon, UserIcon
-} from '@heroicons/react/outline';
+import { BellIcon,
+  ChevronDownIcon, CogIcon, CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
+  HomeIcon, MenuIcon,
+  MoonIcon, SunIcon, TranslateIcon, UserIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import DropdownHeader2 from './DropdownHeader2'
-import { loadUserAccount, removeAllAccounts } from '../features/slices/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
-import logo from '../images/logo.png'
-import logo2 from '../images/logo2.png'
-
-import icon1 from '../images/icon1.png'
-import setting from '../images/setting.png'
-import logout from '../images/logout.png'
-import logout2 from '../images/logout2.png'
-
-
 import { UserAccount } from '@choko-wallet/core';
+
+import { loadUserAccount, removeAllAccounts } from '../features/slices/userSlice';
+import icon1 from '../images/icon1.png';
+import logo from '../images/logo.png';
+import logo2 from '../images/logo2.png';
+import logout from '../images/logout.png';
+import logout2 from '../images/logout2.png';
+import setting from '../images/setting.png';
+import DropdownHeader2 from './DropdownHeader2';
 
 // interface Props {
 //   currentUserAccount: { [key: string]: UserAccount }
 //   userAccount: { [key: string]: UserAccount };
 // }
 
-
 // function Header({ currentUserAccount, userAccount }: Props): JSX.Element {
-function Header(): JSX.Element {
+function Header (): JSX.Element {
   const dispatch = useDispatch();
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -50,10 +45,9 @@ function Header(): JSX.Element {
   }
 
   const removeAccounts = () => {
-
     dispatch(removeAllAccounts());
     router.push('/');
-  }
+  };
 
   return (
     // <div className='sticky top-0 z-20 bg-[#DEE8F1] dark:bg-[#22262f] border-b border-[#C5CEDE]'>
@@ -63,8 +57,8 @@ function Header(): JSX.Element {
         <div className='flex items-center justify-center ' >
           <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
-            {theme == 'dark' ?
-              <Image
+            {theme == 'dark'
+              ? <Image
                 layout='fill'
                 objectFit='contain'
                 src={logo.src}
@@ -114,7 +108,7 @@ function Header(): JSX.Element {
             {/* <CogIcon className='hidden h-6 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' /> */}
             <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
               <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
-              <div className="absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0">
+              <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'>
               </div>
             </div>
 
@@ -127,8 +121,8 @@ function Header(): JSX.Element {
 
           </div>
 
-
-          <MenuIcon onClick={() => setMenuIcon(!menuIcon)} className="transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500" />
+          <MenuIcon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500'
+            onClick={() => setMenuIcon(!menuIcon)} />
 
           <DropdownHeader2 />
 
@@ -153,8 +147,8 @@ function Header(): JSX.Element {
         </div>
       </div>
       {
-        menuIcon ?
-          <div className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
+        menuIcon
+          ? <div className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
             <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
               <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
               // onClick={() => router.push('/')}
@@ -178,7 +172,7 @@ function Header(): JSX.Element {
 
               <div className='flex relative transition duration-150 ease-out cursor-pointer '>
                 <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
-                <div className="absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0">
+                <div className='absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0'>
                 </div>
               </div>
 
@@ -191,14 +185,10 @@ function Header(): JSX.Element {
 
             </div>
 
-
-
           </div>
           : null
       }
     </div >
-
-
 
   );
 }

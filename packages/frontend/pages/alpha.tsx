@@ -10,12 +10,10 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import superagent from 'superagent';
 
-
+import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { ConnectDappResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignTxUrl, configSDKAndStore, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
-
-import { AccountOption, UserAccount } from '@choko-wallet/core';
 
 const AlphaTest: NextPage = () => {
   const router = useRouter();
@@ -33,10 +31,10 @@ const AlphaTest: NextPage = () => {
   // http://localhost:3000/alpha?response=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c454795571588dc65b5ea49fa75764ef9b4c9ace29fceaed86fca62bbcdf5ea26375e90eae93e337d0e6ee6507cee3de16d59d4f259fd4d9b7364b9d3b8a66cdf7d8b5dfb611ec44c001c3d2cc3&responseType=signTx
 
   useEffect(() => {
-
     if (response && submit) {
       const u = decompressParameters(hexToU8a(response));
       const resp = SignTxResponse.deserialize(u);
+
       console.error(resp);
 
       (async () => {
@@ -46,15 +44,15 @@ const AlphaTest: NextPage = () => {
             accessToken: accessToken,
             address: resp.userOrigin.address,
             txSent: u8aToHex(resp.payload.txHash),
-            faucetClaimed: true,
+            faucetClaimed: true
           });
-        if (r.body.error === "None") {
-          alert("All Done! Data is recorded to our database.")
+
+        if (r.body.error === 'None') {
+          alert('All Done! Data is recorded to our database.');
         }
       })();
     }
-
-  }, [submit, response])
+  }, [submit, response]);
 
   useEffect(() => {
     if (router.query && router.query.response && router.query.responseType) {
@@ -75,6 +73,7 @@ const AlphaTest: NextPage = () => {
     } else {
       try {
         const a = getUserAccount();
+
         if (a) setAccount(a);
       } catch (e) {
         console.error(e);
@@ -91,9 +90,9 @@ const AlphaTest: NextPage = () => {
       keyType: 'sr25519',
       localKeyEncryptionStrategy: 0
     });
+
     try {
       const a = getUserAccount();
-
 
       configSDKAndStore({
         accountOption: accountOption,
@@ -201,7 +200,8 @@ const AlphaTest: NextPage = () => {
             {
               account && <>
                 <h2 className='text-black'>2. Claim some faucet token so that you could send a transaction on the next step.  </h2><br />
-                <h3 className='text-black' style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
+                <h3 className='text-black'
+                  style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
                 <h3 className='text-black'>Follow SkyeKiwi on their <a className='text-sky-400'
                   href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.</h3>
                 <br />
@@ -220,7 +220,8 @@ const AlphaTest: NextPage = () => {
                   }}>Take me there</button><br />
 
                 {response && <>
-                  <h1 className='text-black' style={{ overflowWrap: 'break-word' }}>
+                  <h1 className='text-black'
+                    style={{ overflowWrap: 'break-word' }}>
                     Finally, keep this response hex string. Most likely it will be recorded automatically... but just in case. <b>0x{response}</b>. <br />Then you are all done!
                   </h1>
 

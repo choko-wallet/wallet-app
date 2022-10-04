@@ -1,6 +1,7 @@
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 type Props = {
   direction?: boolean;
@@ -8,7 +9,7 @@ type Props = {
   text: string;
 };
 
-const Skill = ({ iconUrl, text, direction }: Props) => {
+const Skill = ({ direction, iconUrl, text }: Props) => {
   return (
     <div className='relative cursor-pointer'>
       <div
@@ -30,8 +31,8 @@ const Skill = ({ iconUrl, text, direction }: Props) => {
       >
 
         <Icon
-          icon={iconUrl}
           className='w-24 h-24 p-3 border border-gray-500 rounded-full md:w-28 md:h-28 '
+          icon={iconUrl}
         />
         {/* <div className='relative w-24 h-24 p-3 border border-gray-500 rounded-full md:w-28 md:h-28 '>
           <Image

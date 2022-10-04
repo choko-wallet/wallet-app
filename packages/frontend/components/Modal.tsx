@@ -1,9 +1,12 @@
-import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
+import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { useTheme } from 'next-themes';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 interface Props {
   closeModal: () => void;
@@ -11,10 +14,7 @@ interface Props {
   children: JSX.Element
 }
 
-function Dropdown({ closeModal, isOpen, children }: Props) {
-
-
-
+function Dropdown ({ children, closeModal, isOpen }: Props) {
   return (
 
     <Transition appear
@@ -49,14 +49,13 @@ function Dropdown({ closeModal, isOpen, children }: Props) {
 
               {children}
 
-
             </Transition.Child>
           </div>
         </div>
       </Dialog>
     </Transition>
 
-  )
+  );
 }
 
-export default Dropdown
+export default Dropdown;

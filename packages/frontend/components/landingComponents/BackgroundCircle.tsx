@@ -1,3 +1,6 @@
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
 import { motion } from 'framer-motion';
 
 type Props = {};
@@ -5,19 +8,19 @@ type Props = {};
 const BackgroundCircle = (props: Props) => {
   return (
     <motion.div
-      initial={{
-        scale: 0,
-        opacity: 0,
-      }}
       animate={{
         scale: [1, 1.3, 3, 1],
-        opacity: [0.2, 0.4, 0.8, 1.0],
+        opacity: [0.2, 0.4, 0.8, 1.0]
         // borderRadius: ['20%', '50%', '80%', '20%'],
       }}
-      transition={{
-        duration: 2.5,
-      }}
       className='relative flex items-center justify-center'
+      initial={{
+        scale: 0,
+        opacity: 0
+      }}
+      transition={{
+        duration: 2.5
+      }}
     >
       {/* 这个定位很倔 同心 给absolute 外面给relative flex items-center justify-center */}
       <div className='absolute border border-[#333333] rounded-full h-[200px] w-[200px] mt-52 animate-ping' />

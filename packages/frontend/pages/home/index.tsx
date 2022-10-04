@@ -2,56 +2,41 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Dialog, RadioGroup } from '@headlessui/react';
-import { CheckIcon, XIcon, PlusSmIcon, LinkIcon } from '@heroicons/react/outline';
-import {
-  PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon,
-  DownloadIcon, CheckCircleIcon
-} from '@heroicons/react/solid';
+import { CameraIcon,
+  CheckIcon, ChevronRightIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
+import { DocumentDuplicateIcon,
+  DownloadIcon,
+  PaperAirplaneIcon } from '@heroicons/react/solid';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { shuffle } from 'lodash';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import { shuffle } from "lodash";
-
-// redux
-import { useDispatch, useSelector } from 'react-redux';
-import { knownNetworks } from '@choko-wallet/known-networks';
-import { selectUserAccount, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectChangeCurrentAccountLoading, selectCoinApiLoading } from '../../features/redux/selectors';
-import { loadUserAccount } from '../../features/slices/userSlice';
-import { store } from '../../features/redux/store';
-
-
-import { GetServerSideProps } from 'next';
-
-import QRCode from "react-qr-code";
-import { QrReader } from 'react-qr-reader';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import {
-  ChevronRightIcon, CameraIcon,
-} from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
-
-import Image from 'next/image'
-import Modal from '../../components/Modal'
-import Dropdown2 from '../../components/Dropdown2'
-
-import DropdownForNetwork from '../../components/DropdownForNetwork'
-
-import Button from '../../components/Button'
-
-import CryptoRow from '../../components/CryptoRow'
-import Loading from '../../components/Loading'
-
-import Header from '../../components/Header';
+import React, { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import QRCode from 'react-qr-code';
+import { QrReader } from 'react-qr-reader';
+// redux
+import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
-import { fetchCoinPrice, fetchMarketPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 
-import { useAppThunkDispatch } from '../../features/redux/store';
 import Footer from '@choko-wallet/frontend/components/Footer';
+import { fetchCoinPrice, fetchMarketPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
+import { knownNetworks } from '@choko-wallet/known-networks';
 
-interface Props {
-  coinPriceData: CoinPrice,
-};
+import Button from '../../components/Button';
+import CryptoRow from '../../components/CryptoRow';
+import Dropdown2 from '../../components/Dropdown2';
+import DropdownForNetwork from '../../components/DropdownForNetwork';
+import Header from '../../components/Header';
+import Loading from '../../components/Loading';
+import Modal from '../../components/Modal';
+import { selectChangeCurrentAccountLoading, selectCoinApiLoading, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectUserAccount } from '../../features/redux/selectors';
+import { useAppThunkDispatch } from '../../features/redux/store';
+import { loadUserAccount } from '../../features/slices/userSlice';
+
+// interface Props {
+//   coinPriceData: CoinPrice,
+// };
 
 interface Crypto {
   name: string;
@@ -62,13 +47,13 @@ interface Crypto {
   estimatedTime: string;
   arrival: string;
   MinDeposit: string;
-};
+}
 
-interface CoinPrice {
-  [key: string]: PriceUsd
-};
+// interface CoinPrice {
+//   [key: string]: PriceUsd
+// };
 
-const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } }
+const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } };
 
 interface PriceUsd {
   usd: number;
@@ -78,7 +63,6 @@ interface ColorBg {
   [index: number]: string;
 }
 
-
 const colors = [
   'bg-indigo-500',
   'bg-blue-500',
@@ -86,23 +70,20 @@ const colors = [
   'bg-green-500',
   'bg-yellow-500',
   'bg-pink-500',
-  'bg-purple-500',
+  'bg-purple-500'
 ];
 
-
-
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
-  const { theme, setTheme } = useTheme();
+function Home (): JSX.Element {
+  const { setTheme, theme } = useTheme();
 
   const router = useRouter();
   // const dispatch = useDispatch();
   const dispatch = useAppThunkDispatch();
-  const userAccount = useSelector(selectUserAccount);//所有账户 
+  const userAccount = useSelector(selectUserAccount);// 所有账户
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const reduxError = useSelector(selectError);
   const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
-
 
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
@@ -120,12 +101,12 @@ function Home(): JSX.Element {
     [
       { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
       { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
-      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' },
+      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
     ]
   );
-  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },);
-  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },);
-  const [networkToReceive, setNetworkToReceive] = useState<string>("");
+  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [networkToReceive, setNetworkToReceive] = useState<string>('');
   const [networkArr, setNetworkArr] = useState<string[]>(
     ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)']
   );
@@ -135,7 +116,7 @@ function Home(): JSX.Element {
   const [openScan, setOpenScan] = useState<boolean>(false);
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [sidebar, setSidebar] = useState<boolean>(true);//默认打开sidebar
+  const [sidebar, setSidebar] = useState<boolean>(true);// 默认打开sidebar
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -145,25 +126,25 @@ function Home(): JSX.Element {
   const [color, setColor] = useState<string>('');
   const [colorArr, setColorArr] = useState<ColorBg[]>([]);
 
-
   // const colors2: ColorBg[] = [['847e7b7fa160d85f', 'bg-[#6667ab]'], ['e658ad422326d7f7', 'bg-[#e6007a]'], ['0018a49f151bcb20', 'bg-[#000000]'], ['e4954477095c7d9a', 'bg-[#627FE5]']];
 
   useEffect(() => {
     const colors0: ColorBg[] = [];
+
     if (colors0.length == 0) {
       Object.entries(knownNetworks).map(([hash, network2], index) => {
         const { color } = network2;
-        colors0.push([hash, `bg-[${color}]`])
-      })
-    }
-    setColorArr(colors0)
-    // console.log('colors0', colors0)
 
+        colors0.push([hash, `bg-[${color}]`]);
+      });
+    }
+
+    setColorArr(colors0);
+    // console.log('colors0', colors0)
   }, []);
   // console.log('colorArr', colorArr)
 
   useEffect(() => {
-
     if (knownNetworks[networkSelection].color !== undefined) {
       for (let i = 0; i < colorArr.length; i++) {
         if (colorArr[i][0] === networkSelection) {
@@ -176,20 +157,16 @@ function Home(): JSX.Element {
     }
   }, [networkSelection, colorArr]);
 
-
   // console.log(Object.entries(knownNetworks))
   // console.log(color)
   // console.log('networkSelection', networkSelection)
 
-
-
   useEffect(() => {
-
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
       dispatch(loadUserAccount());
-      console.log('serialziedUserAccount', localStorage.getItem('serialziedUserAccount'))
+      console.log('serialziedUserAccount', localStorage.getItem('serialziedUserAccount'));
     }
 
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -197,12 +174,10 @@ function Home(): JSX.Element {
 
       setCurrentAccount(currentUserAccount.address);
       setAllAccounts(allAddrs);
-
     }
 
     // }, [dispatch, router, userAccount]);//userAccount will always fire useEffect and refresh
   }, [dispatch, router]);
-
 
   useEffect(() => {
     const getBalance = async () => {
@@ -230,48 +205,41 @@ function Home(): JSX.Element {
     };
 
     void getBalance();
-
-
   }, [network, currentAccount]);
 
   useEffect(() => {
     setMounted(true);
+
     if (theme !== 'dark' && theme !== 'light') {
       setTheme('light');
     }
 
-    dispatch(fetchMarketPrice({ currency: 'usd' }))
-
+    dispatch(fetchMarketPrice({ currency: 'usd' }));
   }, []);
-
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) {
     return null;
   }
 
-  if (isLoadingOpen) return <Loading title='Changing Network' />
+  if (isLoadingOpen) return <Loading title='Changing Network' />;
 
-  if (changeAccountLoading) return <Loading title='Changing Account' />
+  if (changeAccountLoading) return <Loading title='Changing Account' />;
 
-
-  function closeModal() {
+  function closeModal () {
     setIsNetworkChangeOpen(false);
-
   }
-
 
   const changeNetwork = async () => {
     dispatch(fetchCoinPrice({ currency: 'usd', coinArray: ['bitcoin', 'ethereum', 'dogecoin'] }))
       .unwrap()
       .then((result) => {
-        console.log('result', result);//直接给回组件 没传给redux 也可以给redux保存 
+        console.log('result', result);// 直接给回组件 没传给redux 也可以给redux保存
       }).catch((rejectedValueOrSerializedError) => {
         console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
       });
 
     setIsLoadingOpen(true);
     setNetwork(networkSelection);
-
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -283,19 +251,18 @@ function Home(): JSX.Element {
     });
   };
 
-  function closeModal2() {
-    setIsSendOpen(false)
-    setCopied(false)
+  function closeModal2 () {
+    setIsSendOpen(false);
+    setCopied(false);
   }
 
-  function closeModal3() {
-    setIsReceiveOpen(false)
-
+  function closeModal3 () {
+    setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal() {
+  function closeAddNetworkModal () {
     setAddNetworkModalOpen(false);
-    setNetworkInput('')
+    setNetworkInput('');
   }
 
   const handleCopy = async () => {
@@ -303,15 +270,13 @@ function Home(): JSX.Element {
     setTimeout(() => {
       setShowCheck(false);
     }, 1000);
-
-  }
+  };
 
   // console.log('knownNetworks[network]', knownNetworks[network])
   // console.log('knownNetworks', knownNetworks)
   // console.log('knownNetworks[networkSelection].color', knownNetworks[networkSelection].color)
 
   // console.log('networkSelection', networkSelection)
-
 
   return (
     <div className={theme}>
@@ -321,21 +286,23 @@ function Home(): JSX.Element {
         <Header />
 
         {/* new drawer */}
-        <CSSTransition in={drawerOpen} timeout={500} unmountOnExit
-          classNames="drawer"
-          className='md:hidden z-50 p-6 w-[340px] h-full bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 '
+        <CSSTransition className='md:hidden z-50 p-6 w-[340px] h-full bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 '
+          classNames='drawer'
+          in={drawerOpen}
+          timeout={500}
+          unmountOnExit
         >
 
           <div className=''>
             <p className='text-lg flex  w-full font-semibold justify-between text-black dark:text-white font-poppins  '>Change Network
-              <XIcon onClick={() => setDrawerOpen(!drawerOpen)} className=' text-black dark:text-white h-8 w-8 cursor-pointer ' />
+              <XIcon className=' text-black dark:text-white h-8 w-8 cursor-pointer '
+                onClick={() => setDrawerOpen(!drawerOpen)} />
             </p>
 
-            <div className="flex md:flex-col items-center md:h-full bg-transparent" >
+            <div className='flex md:flex-col items-center md:h-full bg-transparent' >
               <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
 
                 <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
-
 
                   <RadioGroup onChange={setNetworkSelection}
                     value={networkSelection || network}>
@@ -369,8 +336,6 @@ function Home(): JSX.Element {
                                 >
                                   <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
 
-
-
                                   {/* {defaultProvider} */}
                                 </RadioGroup.Description>
                               </div>
@@ -393,14 +358,10 @@ function Home(): JSX.Element {
                     })}
                   </RadioGroup>
 
-
-
-
-
-
                 </div>
 
-                <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
+                <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
+                  onClick={() => setAddNetworkModalOpen(true)}>
                   <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
                   >
                     <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
@@ -411,13 +372,10 @@ function Home(): JSX.Element {
 
                 </div>
 
-
                 <div className='flex justify-center mt-6'>
                   {network == networkSelection
-                    ?
-                    <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
-                    :
-                    <button
+                    ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                    : <button
 
                       className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
                       onClick={async () => {
@@ -428,14 +386,11 @@ function Home(): JSX.Element {
 
                     </button>}
 
-
                 </div>
 
               </div>
             </div>
           </div>
-
-
 
         </CSSTransition>
 
@@ -454,13 +409,11 @@ function Home(): JSX.Element {
 
               <p className='ml-1 hidden md:block text-gray-800 dark:text-white text-md font-semibold font-poppins'>NETWORK</p>
 
-
               {/* wideScreen network sidebar */}
-              <div className=" hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f] items-center md:h-full mr-10" >
+              <div className=' hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f] items-center md:h-full mr-10' >
                 <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
 
                   <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
-
 
                     <RadioGroup onChange={setNetworkSelection}
                       value={networkSelection || network}>
@@ -492,7 +445,6 @@ function Home(): JSX.Element {
                                   >
                                     <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
 
-
                                   </RadioGroup.Description>
                                 </div>
                               </div>
@@ -514,14 +466,10 @@ function Home(): JSX.Element {
                       })}
                     </RadioGroup>
 
-
-
-
-
-
                   </div>
 
-                  <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed ' onClick={() => setAddNetworkModalOpen(true)}>
+                  <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
+                    onClick={() => setAddNetworkModalOpen(true)}>
                     <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
                     >
 
@@ -533,13 +481,10 @@ function Home(): JSX.Element {
 
                   </div>
 
-
                   <div className='flex justify-center mt-6'>
                     {network == networkSelection
-                      ?
-                      <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
-                      :
-                      <button
+                      ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+                      : <button
 
                         className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
                         onClick={async () => {
@@ -549,7 +494,6 @@ function Home(): JSX.Element {
                         <p className='text-black dark:text-white text-md whitespace-nowrap font-semibold font-poppins'>Switch Network</p>
 
                       </button>}
-
 
                   </div>
 
@@ -565,12 +509,17 @@ function Home(): JSX.Element {
                 <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[network].text} </p>
               </div>
 
-              <div className="flex items-center justify-evenly ">
-                <div className="flex items-center justify-center " onClick={() => setIsSendOpen(true)} >
-                  <Button Icon={PaperAirplaneIcon} title='Send' rotate={true} />
+              <div className='flex items-center justify-evenly '>
+                <div className='flex items-center justify-center '
+                  onClick={() => setIsSendOpen(true)} >
+                  <Button Icon={PaperAirplaneIcon}
+                    rotate={true}
+                    title='Send' />
                 </div>
-                <div className="flex items-center justify-center " onClick={() => setIsReceiveOpen(true)}>
-                  <Button Icon={DownloadIcon} title='Receive' />
+                <div className='flex items-center justify-center '
+                  onClick={() => setIsReceiveOpen(true)}>
+                  <Button Icon={DownloadIcon}
+                    title='Receive' />
                 </div>
               </div>
 
@@ -582,24 +531,28 @@ function Home(): JSX.Element {
               <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll m-5 mt-0'>
 
                 {cryptoArr.map((item) => (
-                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} shortName={item.shortName} />
+                  <CryptoRow img={item.img}
+                    key={item.img}
+                    name={item.name}
+                    price={item.price}
+                    shortName={item.shortName} />
                 ))}
                 {cryptoArr.map((item) => (
-                  <CryptoRow key={item.img} name={item.name} img={item.img} price={item.price} shortName={item.shortName} />
+                  <CryptoRow img={item.img}
+                    key={item.img}
+                    name={item.name}
+                    price={item.price}
+                    shortName={item.shortName} />
                 ))}
               </div>
 
             </div >
 
-
-
-
           </div>
 
-
-
           {/* network change modal */}
-          <Modal closeModal={closeModal} isOpen={isNetworkChangeOpen} >
+          <Modal closeModal={closeModal}
+            isOpen={isNetworkChangeOpen} >
             <div className={theme}>
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border  border-[#00f6ff] dark:border-[#00f6ff]'>
                 <Dialog.Title
@@ -628,7 +581,8 @@ function Home(): JSX.Element {
           </Modal>
 
           {/* send modal */}
-          <Modal closeModal={closeModal2} isOpen={isSendOpen}>
+          <Modal closeModal={closeModal2}
+            isOpen={isSendOpen}>
             <div className={theme}>
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
@@ -638,10 +592,8 @@ function Home(): JSX.Element {
                   <div className='flex items-center  flex-grow'>
                     <PaperAirplaneIcon className='rotate-45 text-gray-700 h-8 w-8 dark:text-[#03F3FF]' />
                     {theme === 'dark'
-                      ?
-                      <p className=' text-gradient font-poppins'>Send Crypto</p>
-                      :
-                      <p className=' text-gray-700 font-poppins'>Send Crypto</p>
+                      ? <p className=' text-gradient font-poppins'>Send Crypto</p>
+                      : <p className=' text-gray-700 font-poppins'>Send Crypto</p>
                     }
                   </div>
                   <div onClick={closeModal2}>
@@ -650,15 +602,16 @@ function Home(): JSX.Element {
                 </Dialog.Title>
                 <div className='mt-2 '>
 
-
-                  <Dropdown2 arr={cryptoArr} defaultValue={cryptoToSend} onClick={setCryptoToSend} />
+                  <Dropdown2 arr={cryptoArr}
+                    defaultValue={cryptoToSend}
+                    onClick={setCryptoToSend} />
 
                   <p className=' text-gray-700 dark:text-white '>From</p>
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
                     <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
-                    <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
-                      onCopy={() => { setCopied(true) }}>
+                    <CopyToClipboard onCopy={() => { setCopied(true); }}
+                      text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
                       <div onClick={handleCopy}>
                         {showCheck
                           ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -672,34 +625,37 @@ function Home(): JSX.Element {
 
                     <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-                    <input value={addressToSend} onChange={(e) => setAddressToSend(e.target.value)} type="text" placeholder="Destination Address" className="font-poppins input input-bordered input-info w-full " />
+                    <input className='font-poppins input input-bordered input-info w-full '
+                      onChange={(e) => setAddressToSend(e.target.value)}
+                      placeholder='Destination Address'
+                      type='text'
+                      value={addressToSend} />
                     <CameraIcon
-                      onClick={() => setOpenScan(!openScan)}
-                      className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]' />
+                      className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
+                      onClick={() => setOpenScan(!openScan)} />
 
                   </div>
 
                   {openScan &&
                     <div>
                       <QrReader
-                        constraints={{ facingMode: 'user' }}
                         className='absolute top-0 right-5 left-5 bottom-0 z-40'
+                        constraints={{ facingMode: 'user' }}
                         onResult={(result, error) => {
-                          if (!!result) {
+                          if (result) {
                             // setAddressToSend(result?.text);//这个位置官方写法还报错 不行就换插件
                             setOpenScan(false);
                           }
 
-                          if (!!error) {
+                          if (error) {
                             console.info(error);
                           }
                         }}
                       />
                       <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
-                        <XIcon onClick={() => setOpenScan(false)} className='h-5 w-5' />
+                        <XIcon className='h-5 w-5'
+                          onClick={() => setOpenScan(false)} />
                       </div>
-
-
 
                     </div>}
 
@@ -709,14 +665,17 @@ function Home(): JSX.Element {
 
                       <input
 
-                        value={amountToCurrency ? amount : null}
+                        className='font-poppins pr-12 input input-bordered input-info w-full '
+                        max='10000000'
+                        min='0'
                         onChange={(e) => {
                           setAmount(parseFloat(e.target.value));
                           setAmountToCurrency(
                             parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
                         }}
-                        type="number" placeholder="0.0" min="0" max="10000000"
-                        className="font-poppins pr-12 input input-bordered input-info w-full " />
+                        placeholder='0.0'
+                        type='number'
+                        value={amountToCurrency ? amount : null} />
                       <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
                     </div>
 
@@ -724,25 +683,26 @@ function Home(): JSX.Element {
                     <div className='relative'>
                       <p className=' text-gray-700'></p>
                       <input
-                        value={amount ? amountToCurrency : null}
+                        className='font-poppins pr-12  input input-bordered input-info w-full '
+                        max='10000000'
+                        min='0'
                         onChange={(e) => {
                           setAmountToCurrency(parseFloat(e.target.value));
                           setAmount(
                             parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
                         }}
-                        type="number" placeholder="0.0" min="0" max="10000000"
-                        className="font-poppins pr-12  input input-bordered input-info w-full " />
+                        placeholder='0.0'
+                        type='number'
+                        value={amount ? amountToCurrency : null} />
                       <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
                     </div>
 
                   </div>
                   <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
-
                   <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p>
 
                   <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
-
 
                 </div>
 
@@ -763,7 +723,8 @@ function Home(): JSX.Element {
           </Modal>
 
           {/* receive modal */}
-          <Modal closeModal={closeModal3} isOpen={isReceiveOpen}>
+          <Modal closeModal={closeModal3}
+            isOpen={isReceiveOpen}>
             <div className={theme}>
 
               <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
@@ -775,27 +736,29 @@ function Home(): JSX.Element {
                   <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
                   {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
 
-
                   <div onClick={closeModal3}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
 
                 </Dialog.Title>
                 <div className='mt-2 '>
-                  <Dropdown2 arr={cryptoArr} defaultValue={cryptoToReceive} onClick={setCryptoToReceive} />
+                  <Dropdown2 arr={cryptoArr}
+                    defaultValue={cryptoToReceive}
+                    onClick={setCryptoToReceive} />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
 
-                  <DropdownForNetwork arr={networkArr} defaultValue={networkToReceive} onClick={setNetworkToReceive} />
-
+                  <DropdownForNetwork arr={networkArr}
+                    defaultValue={networkToReceive}
+                    onClick={setNetworkToReceive} />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
                     <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
-                    <CopyToClipboard text={'5G16tBnZEmtnL6A5nxZJpJtUw'}
-                      onCopy={() => { setCopied(true) }}>
+                    <CopyToClipboard onCopy={() => { setCopied(true); }}
+                      text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
                       <div onClick={handleCopy}>
                         {showCheck
                           ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -805,10 +768,10 @@ function Home(): JSX.Element {
                     </CopyToClipboard>
                   </div>
 
-                  <div className="relative h-64 w-64 mx-auto m-3 ">
+                  <div className='relative h-64 w-64 mx-auto m-3 '>
                     <QRCode
                       size={256}
-                      style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                      style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
                       value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
                   </div>
 
@@ -823,19 +786,18 @@ function Home(): JSX.Element {
                     </div>
                   </div>
                   <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p>
-                  <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {" "}
+                  <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {' '}
                     <span className='text-red-400'>{networkToReceive}</span>.</p>
 
-
                 </div>
-
 
               </Dialog.Panel>
             </div>
           </Modal>
 
           {/* add network modal pink */}
-          <Modal closeModal={closeAddNetworkModal} isOpen={addNetworkModalOpen} >
+          <Modal closeModal={closeAddNetworkModal}
+            isOpen={addNetworkModalOpen} >
             <div className={theme}>
               <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
                 <Dialog.Title
@@ -848,21 +810,29 @@ function Home(): JSX.Element {
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
 
-
                 </Dialog.Title>
-
 
                 <div className='mt-2'>
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
-                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="Polkadot" className=" input border border-[#c67391] w-full  " />
+                  <input className=' input border border-[#c67391] w-full  '
+                    onChange={(e) => setNetworkInput(e.target.value)}
+                    placeholder='Polkadot'
+                    type='text'
+                    value={networkInput} />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
-                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="polkadot" className=" input border border-[#c67391] w-full " />
+                  <input className=' input border border-[#c67391] w-full '
+                    onChange={(e) => setNetworkInput(e.target.value)}
+                    placeholder='polkadot'
+                    type='text'
+                    value={networkInput} />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
-                  <input value={networkInput} onChange={(e) => setNetworkInput(e.target.value)} type="text" placeholder="wss://polkadot.parity.io/ws" className=" input border border-[#c67391] w-full " />
-
-
+                  <input className=' input border border-[#c67391] w-full '
+                    onChange={(e) => setNetworkInput(e.target.value)}
+                    placeholder='wss://polkadot.parity.io/ws'
+                    type='text'
+                    value={networkInput} />
 
                 </div>
 
@@ -880,7 +850,6 @@ function Home(): JSX.Element {
 
           </Modal>
 
-
         </main >
         <Footer />
 
@@ -890,7 +859,6 @@ function Home(): JSX.Element {
 }
 
 export default Home;
-
 
 // export const getServerSideProps: GetServerSideProps = async () => {
 //   const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
@@ -904,4 +872,3 @@ export default Home;
 //     }
 //   }
 // }
-

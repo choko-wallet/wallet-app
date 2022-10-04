@@ -1,7 +1,8 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+import type { RootState } from '../redux/store';
+
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { RootState, store } from '../redux/store';
 
 interface fetchMarketPricePayload {
   currency: string;
@@ -23,7 +24,6 @@ interface coinData {
 //   [key: string]: PriceUsd
 // };
 
-
 export const fetchMarketPrice = createAsyncThunk<marketData, fetchMarketPricePayload, { state: RootState }>(
   'users/fetchMarketPrice',
   async (payload: fetchMarketPricePayload, { getState, rejectWithValue }) => {
@@ -33,67 +33,55 @@ export const fetchMarketPrice = createAsyncThunk<marketData, fetchMarketPricePay
       const marketData = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=30&page=1&sparkline=false`)
         .then((res) => res.json());
 
-      console.log('marketData', marketData)
-      return marketData;
+      console.log('marketData', marketData);
 
+      return marketData;
     } catch (err) {
       // console.log('redux-err', err);//控制台显示具体报错
-      return rejectWithValue('Api not work');//给用户的报错提示
-
+      return rejectWithValue('Api not work');// 给用户的报错提示
     }
-
   },
   {
     condition: (payload, { getState }) => {
       const loading = getState().coin.loading;
-      if (loading === 'pending') {
-        return false
-      }
-    },
-  }
 
+      if (loading === 'pending') {
+        return false;
+      }
+    }
+  }
 
 );
 
 export const fetchCoinPrice = createAsyncThunk<coinData, fetchCoinPricePayload, { state: RootState }>(
   'users/fetchCoinPrice',
   async (payload: fetchCoinPricePayload, { getState, rejectWithValue }) => {
-    const { currency, coinArray } = payload;
+    const { coinArray, currency } = payload;
     const coins = coinArray.join('%2C');
     // const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
 
     try {
-      const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${currency}`).
-        then((res) => res.json());
+      const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${currency}`)
+        .then((res) => res.json());
 
       // console.log('coinData', coinData)
       return coinData;
-
     } catch (err) {
       // console.log('redux-err', err);//控制台显示具体报错
-      return rejectWithValue('Api not work');//给用户的报错提示
-
+      return rejectWithValue('Api not work');// 给用户的报错提示
     }
-
   },
   {
     condition: (payload, { getState }) => {
       const loading = getState().coin.loading;
+
       if (loading === 'pending') {
-        return false
+        return false;
       }
-    },
+    }
   }
 
-
 );
-
-
-
-
-
-
-
 
 interface CoinSliceItem {
   error: string;
@@ -104,7 +92,7 @@ interface CoinSliceItem {
 const initialState: CoinSliceItem = {
   error: '',
   marketPriceTop30: {},
-  loading: 'idle',
+  loading: 'idle'
 };
 
 /* eslint-disable sort-keys */
@@ -115,8 +103,8 @@ export const coinSlice = createSlice({
     clearAll: (state, _: PayloadAction<string>) => {
       state.marketPriceTop30 = {};
       state.error = '';
-      state.loading = 'idle'
-    },
+      state.loading = 'idle';
+    }
 
   },
   // thunk 函数的return 是extraReducers addCase函数的action.payload
@@ -124,36 +112,35 @@ export const coinSlice = createSlice({
     builder
       .addCase(fetchMarketPrice.pending, (state, action) => {
         if (state.loading === 'idle') {
-          state.loading = 'pending'
+          state.loading = 'pending';
         }
       })
       .addCase(fetchMarketPrice.fulfilled, (state, action) => {
         // console.log('fulfiled');
         state.marketPriceTop30 = action.payload;
-        state.loading = 'idle'
+        state.loading = 'idle';
       })
       .addCase(fetchMarketPrice.rejected, (state, action) => {
         // console.log('type', typeof (action.payload))
-        state.loading = 'idle'
+        state.loading = 'idle';
         state.error = action.payload as string;
       })
 
       .addCase(fetchCoinPrice.pending, (state, action) => {
         if (state.loading === 'idle') {
-          state.loading = 'pending'
+          state.loading = 'pending';
         }
       })
       .addCase(fetchCoinPrice.fulfilled, (state, action) => {
         // console.log('fulfiled');
         // state.marketPriceTop30 = action.payload;
-        state.loading = 'idle'
+        state.loading = 'idle';
       })
       .addCase(fetchCoinPrice.rejected, (state, action) => {
         // console.log('type', typeof (action.payload))
-        state.loading = 'idle'
+        state.loading = 'idle';
         state.error = action.payload as string;
-      })
-
+      });
   }
 });
 

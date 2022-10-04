@@ -1,21 +1,22 @@
 // import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md';
-import { SocialIcon } from 'react-social-icons';
-import discIcon2 from '../../images/discord2.svg'
 import Image from 'next/image';
+import { SocialIcon } from 'react-social-icons';
 
-type Inputs = {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-};
+import discIcon2 from '../../images/discord2.svg';
+
+// type Inputs = {
+//   name: string;
+//   email: string;
+//   subject: string;
+//   message: string;
+// };
 
 type Props = {};
 
 const ContactMe = (props: Props) => {
-
   return (
-    <section id='contact' className='snap-start'>
+    <section className='snap-start'
+      id='contact'>
       <div className='relative flex items-center justify-center h-screen text-center'>
         <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
           Contact
@@ -30,10 +31,10 @@ const ContactMe = (props: Props) => {
           <div className='flex items-center justify-center space-x-4'>
             {/* <MdEmail className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
             <SocialIcon
-              className='cursor-pointer'
-              network='email'
-              fgColor='white'
               bgColor='transparent'
+              className='cursor-pointer'
+              fgColor='white'
+              network='email'
             />
             <p className='text-2xl'>contact@choko.app</p>
           </div>
@@ -43,22 +44,22 @@ const ContactMe = (props: Props) => {
           </div>
           <div className='flex items-center justify-center'>
             <SocialIcon
+              bgColor='transparent'
+              fgColor='white'
+              target='_blank'
               url='https://github.com/choko-wallet'
-              fgColor='white'
-              bgColor='transparent'
-              target='_blank'
             />
             <SocialIcon
+              bgColor='transparent'
+              fgColor='white'
+              target='_blank'
               url='https://telegram'
-              fgColor='white'
-              bgColor='transparent'
-              target='_blank'
             />
             <SocialIcon
-              url='https://twitter'
-              fgColor='white'
               bgColor='transparent'
+              fgColor='white'
               target='_blank'
+              url='https://twitter'
             />
 
             <div className='inline-flex relative h-7 w-7 m-3'>
@@ -69,7 +70,6 @@ const ContactMe = (props: Props) => {
               />
             </div>
           </div>
-
 
         </div>
       </div>

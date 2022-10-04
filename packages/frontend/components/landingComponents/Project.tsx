@@ -1,3 +1,6 @@
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
 import { motion } from 'framer-motion';
 
 type Props = {
@@ -8,28 +11,30 @@ type Props = {
   description: string;
 };
 
-const Project = ({ demoUrl, src, alt, title, description }: Props) => {
+const Project = ({ alt, demoUrl, description, src, title }: Props) => {
   return (
     <div className='flex flex-col items-center justify-center flex-shrink-0 w-full h-full pt-24 space-y-5 snap-center'>
-      <a href={demoUrl} target='_blank' rel='noreferrer'>
+      <a href={demoUrl}
+        rel='noreferrer'
+        target='_blank'>
         <motion.img
+          alt={alt}
+          className='w-64 h-56 rounded-lg border-2 border-[#F7AB0A] object-cover cursor-pointer md:w-[700px] md:h-[400px]'
           initial={{
             y: -300,
-            opacity: 0,
-          }}
-          transition={{
-            duration: 1,
-          }}
-          whileInView={{
-            y: 0,
-            opacity: 1,
+            opacity: 0
           }}
           // viewport={{
           //   once: true,
           // }}
           src={src}
-          alt={alt}
-          className='w-64 h-56 rounded-lg border-2 border-[#F7AB0A] object-cover cursor-pointer md:w-[700px] md:h-[400px]'
+          transition={{
+            duration: 1
+          }}
+          whileInView={{
+            y: 0,
+            opacity: 1
+          }}
         />
       </a>
 

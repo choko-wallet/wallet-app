@@ -7,45 +7,48 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 
-export const addUserAccount = createAsyncThunk(//必须有seeds和password, importKey是可选
+export const addUserAccount = createAsyncThunk(// 必须有seeds和password, importKey是可选
   'users/add',
   async (payload: {
     option?: AccountOption;
-    seeds?: string;//seeds 是可选
+    seeds?: string;// seeds 是可选
     password?: string;
     importKey?: Uint8Array;
   }, { rejectWithValue }) => {
-    const { password, seeds, option, importKey } = payload;
+    const { importKey, option, password, seeds } = payload;
 
     if (seeds) {
       let accountOption = option;
+
       if (!accountOption) {
         accountOption = new AccountOption({
           keyType: 'sr25519',
           localKeyEncryptionStrategy: 1,
-          hasEncryptedPrivateKeyExported: false,
-        })
+          hasEncryptedPrivateKeyExported: false
+        });
       }
 
       const userAccount = UserAccount.seedToUserAccount(seeds, accountOption);
+
       await userAccount.init();
       // console.log('userAccount', userAccount)
-      userAccount.encryptUserAccount(blake2AsU8a(password));//增加encryptedPrivateKey属性
+      userAccount.encryptUserAccount(blake2AsU8a(password));// 增加encryptedPrivateKey属性
       // console.log('userAccount1', userAccount)
 
       return userAccount;
-    } else if (importKey) {//不用password啊
+    } else if (importKey) { // 不用password啊
       try {
         const userAccount = UserAccount.deserializeWithEncryptedKey(importKey);
+
         userAccount.option.hasEncryptedPrivateKeyExported = true;
 
         return userAccount;
       } catch (e) {
-        return rejectWithValue("invalid serialized userAccount with encrypted key");
+        return rejectWithValue('invalid serialized userAccount with encrypted key');
       }
     } else {
       // unreachable!
-      return rejectWithValue("at least pass on either seeds or importKey");
+      return rejectWithValue('at least pass on either seeds or importKey');
     }
   }
 );
@@ -56,8 +59,8 @@ export const changeCurrentAccountType = createAsyncThunk(
     option: AccountOption,
     userAccount: UserAccount,
   }) => {
-
     const { option, userAccount } = payload;
+
     userAccount.option = option;
     await userAccount.init();
 
@@ -69,7 +72,7 @@ export const changeCurrentAccountType = createAsyncThunk(
 interface UserSliceItem {
   error: string;
   userAccount: { [key: string]: UserAccount };
-  currentUserAccount: UserAccount | null;//type没有 [key: string]:
+  currentUserAccount: UserAccount | null;// type没有 [key: string]:
   changeCurrentAccountLoading: boolean;
 
 }
@@ -78,7 +81,7 @@ const initialState: UserSliceItem = {
   error: '',
   userAccount: {},
   currentUserAccount: null,
-  changeCurrentAccountLoading: false,
+  changeCurrentAccountLoading: false
 };
 
 /* eslint-disable sort-keys */
@@ -94,11 +97,13 @@ export const userSlice = createSlice({
 
       while (offset < serializedUserAccount.length) {
         const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
+
         offset += serializedLength;
         const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
 
         state.userAccount[account.address] = account;
       }
+
       // set the first account 应该是last吧 最新引入的在最后 这个位置可改成引入账户时 把useraccount放到初始 localstorage也是
       state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
     },
@@ -116,7 +121,7 @@ export const userSlice = createSlice({
     },
 
     switchUserAccount: (state, action: PayloadAction<string>) => {
-      console.log('action.payload', action.payload)
+      console.log('action.payload', action.payload);
       // console.log('action.payload',action.payload)
       // state.changeCurrentAccountLoading = true;
       // setTimeout(() => {
@@ -132,39 +137,45 @@ export const userSlice = createSlice({
       // localStorage.removeItem('serializedUserAccount');//清除不掉
       localStorage.clear();
 
-      console.log('local', localStorage.getItem('serialziedUserAccount'))
+      console.log('local', localStorage.getItem('serialziedUserAccount'));
       state.currentUserAccount = null;
       state.userAccount = {};
       state.error = '';
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addUserAccount.fulfilled, (state, action) => {//判断在fullfilled
+      .addCase(addUserAccount.fulfilled, (state, action) => { // 判断在fullfilled
         const userAccount = action.payload;
 
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
+
         if (maybeCurrentSerializedAccount) {
-          console.log('maybeCurrentSerializedAccount', maybeCurrentSerializedAccount)
-          console.log('maybeCurrentSerializedAccount.length', maybeCurrentSerializedAccount.length)//218
+          console.log('maybeCurrentSerializedAccount', maybeCurrentSerializedAccount);
+          console.log('maybeCurrentSerializedAccount.length', maybeCurrentSerializedAccount.length);// 218
 
           let offset = 0;
-          const len = UserAccount.serializedLengthWithEncryptedKey() * 2;//109  * 2
-          while (offset < maybeCurrentSerializedAccount.length) {
+          const len = UserAccount.serializedLengthWithEncryptedKey() * 2;// 109  * 2
 
+          while (offset < maybeCurrentSerializedAccount.length) {
             const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
-            console.log('currentSerializedAccount', currentSerializedAccount)
+
+            console.log('currentSerializedAccount', currentSerializedAccount);
 
             const account = UserAccount.deserializeWithEncryptedKey(hexToU8a(currentSerializedAccount));
 
             offset += len;
+
             if (account.address === userAccount.address) {
               state.error = 'account already existed';
+
               return;
             }
           }
         }
+
         const localStorageContent = maybeCurrentSerializedAccount || '';
+
         localStorage.setItem('serialziedUserAccount', localStorageContent + u8aToHex(userAccount.serializeWithEncryptedKey()));
         state.error = 'none';
       })
@@ -180,11 +191,13 @@ export const userSlice = createSlice({
         if (maybeCurrentSerializedAccount) {
           let offset = 0;
           const len = UserAccount.serializedLengthWithEncryptedKey();
+
           while (offset < maybeCurrentSerializedAccount.length) {
             const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
             const account = UserAccount.deserializeWithEncryptedKey(hexToU8a(currentSerializedAccount));
 
             offset += len;
+
             if (account.address === userAccount.address) {
               newLocalStorageContent += u8aToHex(userAccount.serializeWithEncryptedKey());
             } else {
@@ -192,15 +205,16 @@ export const userSlice = createSlice({
             }
           }
         }
+
         state.currentUserAccount = userAccount;
         localStorage.setItem('serialziedUserAccount', newLocalStorageContent);
       })
       .addCase(changeCurrentAccountType.rejected, (state, action) => {
         // unexpected;
         state.error = (action.error ? action.error : 'unexpected!') as string;
-      })
+      });
   }
 });
 
-export const { loadUserAccount, decryptCurrentUserAccount, lockCurrentUserAccount, switchUserAccount, removeAllAccounts } = userSlice.actions;
+export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
 export default userSlice.reducer;

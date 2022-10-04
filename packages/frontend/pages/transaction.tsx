@@ -1,13 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon, ChevronRightIcon, DocumentDuplicateIcon } from '@heroicons/react/outline';
+import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronRightIcon, DocumentDuplicateIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState, useRef } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,7 +14,7 @@ import { selectUserAccount } from '../features/redux/selectors';
 import { loadUserAccount } from '../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
-function Transaction(): JSX.Element {
+function Transaction (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -45,23 +44,19 @@ function Transaction(): JSX.Element {
       setCurrentAccount(allAddrs[0]);
       setAllAccounts(allAddrs);
     }
-  }, [userAccount])
+  }, [userAccount]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-
-
   if (!mounted) {
     return null;
   }
 
-  function closeDetail() {
-    setIsDetailOpen(false)
-
+  function closeDetail () {
+    setIsDetailOpen(false);
   }
-
 
   return (
     <main className='grid grid-cols-12 min-h-screen bg-gray-400'>
@@ -161,9 +156,9 @@ function Transaction(): JSX.Element {
 
         {/* transition */}
         <div className='col-span-12  min-h-screen '>
-          <div className="p-5 overflow-x-auto">
-            <p className="text-xl font-semibold">Transaction History</p>
-            <table className="table table-compact w-full">
+          <div className='p-5 overflow-x-auto'>
+            <p className='text-xl font-semibold'>Transaction History</p>
+            <table className='table table-compact w-full'>
               <thead>
                 <tr>
                   <th></th>
@@ -199,7 +194,6 @@ function Transaction(): JSX.Element {
                   <td>Pending</td>
                   <td onClick={() => setIsDetailOpen(true)}><ChevronRightIcon className='cursor-pointer h-5 w-5' /></td>
 
-
                 </tr>
 
               </tbody>
@@ -207,9 +201,7 @@ function Transaction(): JSX.Element {
             </table>
           </div>
 
-
         </div>
-
 
         <Transition appear
           as={Fragment}
@@ -258,7 +250,6 @@ function Transaction(): JSX.Element {
                     </Dialog.Title>
                     <div className='mt-2 flex-col space-y-3'>
 
-
                       <div className='flex text-sm justify-between items-center'>
                         <p className='text-gray-500'>Status</p>
                         <p className='font-semibold text-green-500'>Completed</p>
@@ -296,9 +287,7 @@ function Transaction(): JSX.Element {
                           <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' /></p>
                       </div>
 
-
                     </div>
-
 
                   </Dialog.Panel>
                 </Transition.Child>
@@ -306,7 +295,6 @@ function Transaction(): JSX.Element {
             </div>
           </Dialog>
         </Transition>
-
 
       </div>
     </main>

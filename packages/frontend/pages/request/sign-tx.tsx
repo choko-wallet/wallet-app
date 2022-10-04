@@ -53,15 +53,16 @@ function SignTxHandler (): JSX.Element {
         if (!userAccount[account].isLocked) {
           void (async () => {
             const signTx = new SignTxDescriptor();
+
             try {
               const response = await signTx.requestHandler(request, userAccount[account]);
               const s = response.serialize();
+
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-            } catch(err) {
-              alert(err)
+            } catch (err) {
+              alert(err);
               console.error(err);
             }
-          
           })();
         }
       }

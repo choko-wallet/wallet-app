@@ -12,7 +12,7 @@ module.exports = {
   daisyui: {
     darkTheme: 'light'
   },
-  plugins: [require('daisyui'), require('tailwind-scrollbar'),],
+  plugins: [require('daisyui'), require('tailwind-scrollbar')],
   variants: {
     // ...
     scrollbar: ['dark']
@@ -20,13 +20,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#00040f",
-        dimBlue: "rgba(9, 151, 124, 0.1)",
+        primary: '#00040f',
+        dimBlue: 'rgba(9, 151, 124, 0.1)',
         footerBg: '#d8c9d8' // bg-footerBg
       },
       fontFamily: {
-        'poppins': ["Poppins", "sans-serif"],
-        "Josefin": ["Josefin Sans", "sans-serif"],
+        poppins: ['Poppins', 'sans-serif'],
+        Josefin: ['Josefin Sans', 'sans-serif']
       },
       height: {
         //   "10v": "10vh",
@@ -36,11 +36,11 @@ module.exports = {
         //   "50v": "50vh",
         //   "60v": "60vh",
         //   "70v": "70vh",
-        "85v": "85vh",
+        '85v': '85vh'
         //   "90v": "90vh",
         //   "100v": "100vh",
-      },
-    },
+      }
+    }
 
   }
 };

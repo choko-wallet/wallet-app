@@ -8,12 +8,11 @@ import type { AppProps } from 'next/app';
 import ProgressBar from '@badrap/bar-of-progress';
 import Head from 'next/head';
 import Router from 'next/router';
+import { ThemeProvider } from 'next-themes';
 import React from 'react';
 import { Provider } from 'react-redux';
 
 import { store } from '../features/redux/store';
-
-import { ThemeProvider } from 'next-themes';
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -26,7 +25,7 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function Root({ Component, pageProps }: AppProps): JSX.Element {
+function Root ({ Component, pageProps }: AppProps): JSX.Element {
   // console.error(process.env);
 
   return (
@@ -39,8 +38,10 @@ function Root({ Component, pageProps }: AppProps): JSX.Element {
             defer
             src='https://analytics.skye.kiwi/umami.js'></script>
         }
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
+        <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap'
+          rel='stylesheet' />
+        <link href='https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap'
+          rel='stylesheet' />
       </Head>
       <ThemeProvider>
         <Component {...pageProps} />

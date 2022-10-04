@@ -1,45 +1,41 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Menu, Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import {
-  CheckIcon, UserCircleIcon, XIcon, DocumentDuplicateIcon, ChevronRightIcon, MenuIcon,
-  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  UserIcon, CameraIcon,
-} from '@heroicons/react/outline';
-import {
-  BellIcon, CheckCircleIcon,
-  PaperAirplaneIcon, DownloadIcon,
-  ChevronDownIcon, CogIcon, HomeIcon, MoonIcon, SunIcon, TranslateIcon
-} from '@heroicons/react/solid';
-import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState, useRef } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import Dropdown from '../components/Dropdown';
+import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
+import { CameraIcon,
+  CheckIcon, ChevronRightIcon, CreditCardIcon, CurrencyDollarIcon, DocumentDuplicateIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
+  MenuIcon,
+  UserCircleIcon, UserIcon, XIcon } from '@heroicons/react/outline';
+import { BellIcon, CheckCircleIcon,
+  ChevronDownIcon, CogIcon, DownloadIcon,
+  HomeIcon, MoonIcon, PaperAirplaneIcon, SunIcon, TranslateIcon } from '@heroicons/react/solid';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
-
+import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import toast, { Toaster } from 'react-hot-toast';
+import QRCode from 'react-qr-code';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  selectUserAccount, selectCurrentUserAccount, selectMarketPriceTop30, selectCoinApiLoading
-} from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/userSlice';
-import DropdownHeader from '../components/DropdownHeader';
-import SuperButton from '../components/SuperButton';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import Header from '../components/Header';
 import { compressParameters } from '@choko-wallet/core/util';
-import Modal from '../components/Modal';
-import QRCode from 'react-qr-code';
+
+import Dropdown from '../components/Dropdown';
+import DropdownHeader from '../components/DropdownHeader';
 import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
+import Header from '../components/Header';
+import Modal from '../components/Modal';
+import SuperButton from '../components/SuperButton';
+import { selectCoinApiLoading,
+  selectCurrentUserAccount, selectMarketPriceTop30, selectUserAccount } from '../features/redux/selectors';
 import { fetchMarketPrice } from '../features/slices/coinSlice';
-import { useTheme } from 'next-themes';
+import { loadUserAccount } from '../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
-function Settings(): JSX.Element {
+function Settings (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
@@ -66,18 +62,18 @@ function Settings(): JSX.Element {
   const [keyForExport, setKeyForExport] = useState<string>('');
 
   const handleCopy = async () => {
-    console.log('first')
+    console.log('first');
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);
     }, 1000);
-  }
+  };
 
   useEffect(() => {
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
-      dispatch(loadUserAccount())
+      dispatch(loadUserAccount());
     }
   }, [dispatch, router]);
 
@@ -90,30 +86,25 @@ function Settings(): JSX.Element {
   // }
 
   useEffect(() => {
-
     // generateKey();
     setMounted(true);
-
   }, [userAccount, currentUserAccount]);
-
-
-
 
   if (!mounted) {
     return null;
   }
 
-  function closeMnemonic() {
-    setIsMnemonicOpen(false)
-    setShowMnemonic(false)
+  function closeMnemonic () {
+    setIsMnemonicOpen(false);
+    setShowMnemonic(false);
   }
 
-  function closeExportModal() {
+  function closeExportModal () {
     setExportModalOpen(false);
     setExportUrl('');
-
   }
-  console.log('serializeWithEncryptedKey', currentUserAccount.serializeWithEncryptedKey());//109位arr
+
+  console.log('serializeWithEncryptedKey', currentUserAccount.serializeWithEncryptedKey());// 109位arr
 
   const generateAccountUrl = () => {
     // console.log(keyForExport);
@@ -122,10 +113,11 @@ function Settings(): JSX.Element {
     const payloadForExport = u8aToHex(currentUserAccount.serializeWithEncryptedKey());
 
     const superUrl = 'http://localhost:3000/import?payload=' + payloadForExport;
+
     console.log(superUrl);
     setExportUrl(superUrl);
     setExportModalOpen(true);
-  }
+  };
 
   // console.log(Object.keys(userAccount)[0])
   // const addr = Object.values(userAccount)[0].address
@@ -151,7 +143,6 @@ function Settings(): JSX.Element {
 
               </div>
 
-
               <div className='flex justify-between m-1'>
                 <div className='my-auto'>
                   <p className='text-lg dark:text-[#03F3FF]'>Wallet ID</p>
@@ -173,8 +164,8 @@ function Settings(): JSX.Element {
 
                     </p>
 
-                    <CopyToClipboard text={currentUserAccount.address}
-                      onCopy={() => { setCopied(true) }}>
+                    <CopyToClipboard onCopy={() => { setCopied(true); }}
+                      text={currentUserAccount.address}>
                       <div onClick={handleCopy}>
                         {showCheck
                           ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
@@ -185,13 +176,8 @@ function Settings(): JSX.Element {
 
                   </div>
 
-
-
                 </div>
               </div>
-
-
-
 
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
@@ -199,11 +185,10 @@ function Settings(): JSX.Element {
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Do not share your private keys with anyone.</p>
                 </div>
 
-
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={xxx}
+                    // onClick={xxx}
 
                   >
                     Mnemonic
@@ -211,19 +196,16 @@ function Settings(): JSX.Element {
                 </div>
               </div>
 
-
-
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>Change Password</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Password is your unique password.</p>
                 </div>
 
-
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={closeModal2}
+                    // onClick={closeModal2}
 
                   >
                     Password
@@ -237,7 +219,6 @@ function Settings(): JSX.Element {
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Export Account Url For Import.</p>
                 </div>
 
-
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
@@ -249,22 +230,16 @@ function Settings(): JSX.Element {
                 </div>
               </div>
 
-
-
-
-
-
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>Select Language</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Set your preferred language</p>
                 </div>
 
-
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={closeModal2}
+                    // onClick={closeModal2}
 
                   >
                     Language
@@ -272,18 +247,16 @@ function Settings(): JSX.Element {
                 </div>
               </div>
 
-
               <div className='flex justify-between m-1 '>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>Trading Currency</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Select your trading currency</p>
                 </div>
 
-
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={closeModal2}
+                    // onClick={closeModal2}
 
                   >
                     Currency
@@ -291,21 +264,12 @@ function Settings(): JSX.Element {
                 </div>
               </div>
 
-
-
-
-
-
-
-
-
-
             </div >
           </div>
 
-
           {/* 导出弹框显示url */}
-          <Modal closeModal={closeExportModal} isOpen={exportModalOpen} >
+          <Modal closeModal={closeExportModal}
+            isOpen={exportModalOpen} >
 
             <Dialog.Panel className='border border-[#00f6ff] w-full max-w-md transform overflow-hidden rounded-2xl bg-black dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
               <Dialog.Title
@@ -332,8 +296,6 @@ function Settings(): JSX.Element {
             </Dialog.Panel>
 
           </Modal>
-
-
 
         </div>
       </div>

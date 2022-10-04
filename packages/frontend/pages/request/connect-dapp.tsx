@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { loadUserAccount, decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { decryptCurrentUserAccount, loadUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 
@@ -147,7 +147,8 @@ function ConnectDappHandler (): JSX.Element {
                             as='div'
                             className={`font-medium ${checked ? 'text-white' : 'text-gray-900'}`}
                           >
-                            <div className="w-1/2 md:w-full" style={{ overflowWrap: 'break-word' }}>{name}</div>
+                            <div className='w-1/2 md:w-full'
+                              style={{ overflowWrap: 'break-word' }}>{name}</div>
                           </RadioGroup.Label>
                         </div>
                       </div>

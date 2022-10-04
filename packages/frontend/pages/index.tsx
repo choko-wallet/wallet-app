@@ -1,14 +1,17 @@
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
 import type { NextPage } from 'next';
+
 import Head from 'next/head';
 
+import About from '../components/landingComponents/About';
+import ContactMe from '../components/landingComponents/ContactMe';
+import Experience from '../components/landingComponents/Experience';
 import Header from '../components/landingComponents/Header';
 import Hero from '../components/landingComponents/Hero';
-import About from '../components/landingComponents/About';
-import Experience from '../components/landingComponents/Experience';
-import Skills from '../components/landingComponents/Skills';
 import Projects from '../components/landingComponents/Projects';
-import ContactMe from '../components/landingComponents/ContactMe';
-
+import Skills from '../components/landingComponents/Skills';
 
 const Home: NextPage = () => {
   // console.log('local1', localStorage.getItem('serialziedUserAccount'))

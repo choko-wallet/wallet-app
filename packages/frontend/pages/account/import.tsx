@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '../../features/slices/userSlice';
 
-function ImportWallet(): JSX.Element {
+function ImportWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
