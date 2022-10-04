@@ -62,10 +62,10 @@ function ImportWallet(): JSX.Element {
       <div className='md:hidden col-span-12'></div>
       <ul className='steps steps-horizontal col-span-10 col-start-2 md:col-span-6 md:col-start-4'>
         <li className={`text-black step ${step > 0 ? 'step-neutral' : ''}`}>
-          <p>Type In Your Mnemonic</p>
+          <p className='text-black'>Type In Your Mnemonic</p>
         </li>
         <li className={`text-black step ${step > 1 ? 'step-neutral' : ''}`}>
-          <p>Set a Password</p>
+          <p className='text-black'>Set a Password</p>
         </li>
       </ul>
 

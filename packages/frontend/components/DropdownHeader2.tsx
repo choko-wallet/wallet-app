@@ -66,9 +66,9 @@ function DropdownHeader2() {
 
   return (
     <div className="w-24 md:w-64 text-right">
-      <Menu as="div" className="relative h-12 text-left w-full dark:border dark:border-[#00f6ff] rounded-lg ">
+      <Menu as="div" className="relative h-12 text-left w-full border border-gray-300  dark:border-[#00f6ff] rounded-lg ">
 
-        <Menu.Button className="flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 h-full text-sm font-medium text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="flex items-center justify-center rounded-md w-full bg-white  dark:bg-transparent px-4 py-2 h-full text-sm font-medium text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
 
           <div className="relative h-6 w-6">
             <UserCircleIcon className='h-6 w-6 dark:text-white text-gray-800' />

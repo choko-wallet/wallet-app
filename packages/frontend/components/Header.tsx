@@ -90,8 +90,8 @@ function Header(): JSX.Element {
 
         <div className='flex items-center text-gray-500  '>
           <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-            <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-            // onClick={() => router.push('/')}
+            <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer transition duration-150 ease-out active:scale-125'
+              onClick={() => router.push('/home')}
             >
               <Image
                 layout='fill'

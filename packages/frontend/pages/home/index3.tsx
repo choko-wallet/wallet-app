@@ -137,42 +137,46 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const marketPriceTop30 = useSelector(selectMarketPriceTop30);
   const coinApiLoading = useSelector(selectCoinApiLoading);
 
-  const [color, setColor] = useState<string>('');
-  const [colorArr, setColorArr] = useState<ColorBg[]>([]);
+  const [colorx, setColorx] = useState<string>('');
+  // const [colorBg, setColorBg] = useState<ColorBg[]>([]);
 
 
-  // const colors2: ColorBg[] = [['847e7b7fa160d85f', 'bg-[#6667ab]'], ['e658ad422326d7f7', 'bg-[#e6007a]'], ['0018a49f151bcb20', 'bg-[#000000]'], ['e4954477095c7d9a', 'bg-[#627FE5]']];
+  // const colors2: ColorBg[] = [];
 
-  useEffect(() => {
-    const colors0: ColorBg[] = [];
-    if (colors0.length == 0) {
-      Object.entries(knownNetworks).map(([hash, network2], index) => {
-        const { color } = network2;
-        colors0.push([hash, `bg-[${color}]`])
-      })
-    }
-    setColorArr(colors0)
-    // console.log('colors0', colors0)
+  // useEffect(() => {
+  //   Object.entries(knownNetworks).map(([hash, network2], index) => {
+  //     const { color } = network2;
+  //     // setColors(...colors,[hash, `bg-[${color}]`])
 
-  }, []);
-  console.log('colorArr', colorArr)
+  //     colorBg.push([hash, `bg-[${color}]`])
+  //   })
+  //   console.log('colorBg', colorBg)
 
-  useEffect(() => {
+  // }, []);
 
-    if (knownNetworks[networkSelection].color !== undefined) {
-      for (let i = 0; i < colorArr.length; i++) {
-        if (colorArr[i][0] === networkSelection) {
-          // console.log('colorArr22', colorArr[i][1])
-          setColor(colorArr[i][1]);
-        }
-      }
-    } else {
-      setColor(shuffle(colors).pop());
-    }
-  }, [networkSelection, colorArr]);
+  // console.log('i3', colorBg)
+
+  // useEffect(() => {
+  //   if (knownNetworks[networkSelection].color !== undefined) {
+  //     console.log('first2')
+  //     console.log('i2', colorBg)
+
+  //     for (let i = 0; i < colorBg.length; i++) {
+  //       console.log('i', i)
+  //       console.log('i', colorBg)
+
+  //       if (colorBg[i][0] === networkSelection) {
+  //         setColor(colorBg[i][1]);
+  //         console.log('first')
+  //       }
+  //     }
+  //   } else {
+  //     setColor(shuffle(colors).pop());
+  //   }
+  // }, [networkSelection]);
 
 
-  // console.log(Object.entries(knownNetworks))
+  // // console.log(Object.entries(knownNetworks))
   // console.log(color)
   // console.log('networkSelection', networkSelection)
 
@@ -300,10 +304,21 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   // console.log('knownNetworks[network]', knownNetworks[network])
   // console.log('knownNetworks', knownNetworks)
-  console.log('knownNetworks[networkSelection].color', knownNetworks[networkSelection].color)
+  // console.log('knownNetworks[networkSelection].color', knownNetworks[networkSelection].color)
 
   // console.log('networkSelection', networkSelection)
-
+  const bgColor = {
+    name: '847e7b7fa160d85f',
+    bgColor: 'bg-white'
+  }
+  const bgArr = [{
+    name: '847e7b7fa160d85f',
+    bgColor: 'bg-white'
+  },
+  {
+    name: 'e658ad422326d7f7',
+    bgColor: 'bg-black'
+  }]
 
   return (
     <div className={theme}>
@@ -332,7 +347,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <RadioGroup onChange={setNetworkSelection}
                     value={networkSelection || network}>
                     {Object.entries(knownNetworks).map(([hash, network1], index) => {
-                      const { defaultProvider, text } = network1;
+                      const { defaultProvider, text, color } = network1;
 
                       return <RadioGroup.Option
                         className={({ active, checked }) =>
@@ -454,57 +469,78 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
 
 
-                    <RadioGroup onChange={setNetworkSelection}
-                      value={networkSelection || network}>
-                      {Object.entries(knownNetworks).map(([hash, network1], index) => {
-                        const { defaultProvider, text } = network1;
+                    {/* <RadioGroup onChange={setNetworkSelection}
+                      value={networkSelection || network}> */}
+                    {Object.entries(knownNetworks).map(([hash, { defaultProvider, text, color }], index) => {
+                      // const bgColor = `bg-[#6667ab]`//切换之前字符串就要生成好 不能点击时候拼接 
+                      // const cs = '';
+                      for (let i = 0; i < bgArr.length; i++) {
+                        if (bgArr[i].name == hash) {
+                          setColorx(bgArr[i].bgColor)
+                        }
+                      } //aray操作 进行判断 
 
-                        return <RadioGroup.Option
-                          className={({ active, checked }) =>
-                            `${checked ? `${color}` : 'bg-white dark:bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
-                          }
-                          key={hash}
-                          value={hash}
-                        >
-                          {({ active, checked }) => (
-                            <div className='flex w-full items-center justify-between'>
-                              <div className='flex items-center'>
-                                <div className='text-sm'>
-                                  <RadioGroup.Label
-                                    as='p'
-                                    // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                                    className={`text-lg font-semibold font-poppins  ${checked ? 'text-black dark:text-white' : 'text-[#B6B7BC]'}`}
+                      return <div className=
+                        {
+                          `${bgColor.name == hash ? `${colorx}` : 'bg-white dark:bg-[#2E323C]'} w-[260px] h-[75px]`
+                        }
+                      // {`flex ${bgColor.bgColor} w-full h-5`}  
+                      >
+                        {hash}{text}</div>
+                      // const { defaultProvider, text, color } = network1;
+                      // console.log('color,', color)// 换其他ui 或者自己写checkbox 试试普通div颜色能传过去不
+                      // <RadioGroup.Option
+                      //   className={({ active, checked }) =>
+                      //     `${checked ? `bg-[${color}]` : 'bg-white dark:bg-[#2E323C]'} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
+                      //   }
 
-                                  >
-                                    {text.substring(0, text.length - 8)}
-                                  </RadioGroup.Label>
-                                  <RadioGroup.Description
-                                    as='span'
-                                    className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-                                  >
-                                    <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
+                      //   // style={{background-color: 'lightblue' }}
+                      //   // style="background-color:aliceblue"
+                      //   // className={styles.color-bg}
+
+                      //   key={hash}
+                      //   value={hash}
+                      // >
+                      //   {({ active, checked }) => (
+                      //     <div className='flex w-full items-center justify-between'>
+                      //       <div className='flex items-center'>
+                      //         <div className='text-sm'>
+                      //           <RadioGroup.Label
+                      //             as='p'
+                      //             // className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                      //             className={`text-lg font-semibold font-poppins  ${checked ? 'text-black dark:text-white' : 'text-[#B6B7BC]'}`}
+
+                      //           >
+                      //             {text.substring(0, text.length - 8)}
+                      //           </RadioGroup.Label>
+                      //           <RadioGroup.Description
+                      //             as='span'
+                      //             className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
+                      //           >
+                      //             <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
 
 
-                                  </RadioGroup.Description>
-                                </div>
-                              </div>
-                              {knownNetworks[network].text !== text
-                                ? null
-                                : <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
-                                  <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
-                                </div>}
+                      //           </RadioGroup.Description>
+                      //         </div>
+                      //       </div>
+                      //       {knownNetworks[network].text !== text
+                      //         ? null
+                      //         : <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                      //           <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
+                      //         </div>}
 
-                              {checked && knownNetworks[network].text !== text && (
-                                <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
-                                  <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
-                                </div>
-                              )}
+                      //       {checked && knownNetworks[network].text !== text && (
+                      //         <div className=' rounded-full relative items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                      //           <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
+                      //         </div>
+                      //       )}
 
-                            </div>
-                          )}
-                        </RadioGroup.Option>;
-                      })}
-                    </RadioGroup>
+                      //     </div>
+                      //   )}
+                      // </RadioGroup.Option>
+                    }
+                    )}
+                    {/* </RadioGroup> */}
 
 
 

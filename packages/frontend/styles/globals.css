@@ -135,3 +135,8 @@ input[type="number"] {
 .stringWrap {
   overflow-wrap: break-word;
 }
+
+
+.colorx {
+  background: #fb37ff;
+}

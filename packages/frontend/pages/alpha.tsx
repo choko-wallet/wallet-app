@@ -24,36 +24,36 @@ const AlphaTest: NextPage = () => {
   const [tosAgreed, setTOSAgreed] = useState<boolean>(false);
 
   const [account, setAccount] = useState<UserAccount>(null);
-  
+
   const [response, setResponse] = useState<string>('');
   const [submit, setSubmit] = useState<boolean>(false);
 
   // http://localhost:3000/alpha?response=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c454795571588dc65b5ea49fa75764ef9b4c9ace29fceaed86fca62bbcdf5ea26375e90eae93e337d0e6ee6507cee3de16d59d4f259fd4d9b7364b9d3b8a66cdf7d8b5dfb611ec44c001c3d2cc3&responseType=signTx
-  
+
   useEffect(() => {
 
     if (response && submit) {
-      const u = decompressParameters ( hexToU8a(response) );
+      const u = decompressParameters(hexToU8a(response));
       const resp = SignTxResponse.deserialize(u);
       console.error(resp);
 
-      (async() => {
+      (async () => {
         const r = await superagent
           .post('https://formapi.skye.kiwi/choko/alpha/update')
-          .send({ 
+          .send({
             accessToken: accessToken,
             address: resp.userOrigin.address,
-            txSent: u8aToHex( resp.payload.txHash ),
+            txSent: u8aToHex(resp.payload.txHash),
             faucetClaimed: true,
           });
-        if (r.body.error === "None" ) {
+        if (r.body.error === "None") {
           alert("All Done! Data is recorded to our database.")
         }
       })();
     }
 
   }, [submit, response])
-  
+
   useEffect(() => {
     if (router.query && router.query.response && router.query.responseType) {
       const u8aResponse = decompressParameters(hexToU8a(router.query.response as string));
@@ -74,7 +74,7 @@ const AlphaTest: NextPage = () => {
       try {
         const a = getUserAccount();
         if (a) setAccount(a);
-      } catch(e) {
+      } catch (e) {
         console.error(e);
         // pass
       }
@@ -84,20 +84,22 @@ const AlphaTest: NextPage = () => {
   useEffect(() => {
     const lsValidToken = localStorage.getItem('validToken');
     const lsAccessToken = localStorage.getItem('accessToken');
-
+    const accountOption = new AccountOption({
+      hasEncryptedPrivateKeyExported: false,
+      keyType: 'sr25519',
+      localKeyEncryptionStrategy: 0
+    });
     try {
       const a = getUserAccount();
 
-      configSDKAndStore({
-        accountCreationOption: {
-          hasEncryptedPrivateKeyExported: false,
-          keyType: 'sr25519',
-          localKeyEncryptionStrategy: 0
-        },
 
+      configSDKAndStore({
+        accountOption: accountOption,
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'https://choko.app/alpha',
+        callbackUrlBase: 'http://localhost:3000/alpha',
+
+        // callbackUrlBase: 'https://choko.app/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
@@ -108,15 +110,11 @@ const AlphaTest: NextPage = () => {
       setAccessToken(lsAccessToken === null ? '' : lsAccessToken);
     } catch (e) {
       configSDKAndStore({
-        accountCreationOption: {
-          hasEncryptedPrivateKeyExported: false,
-          keyType: 'sr25519',
-          localKeyEncryptionStrategy: 0
-        },
-
+        accountOption: accountOption,
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'https://choko.app/alpha',
+        callbackUrlBase: 'http://localhost:3000/alpha',
+        // callbackUrlBase: 'https://choko.app/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
@@ -170,12 +168,12 @@ const AlphaTest: NextPage = () => {
         {
           validToken === 'Authenticated' && <div className='col-span-12 px-5'>
             <div className='divider'></div>
-            <h2>Welcome To the Choko Wallet Alpha Test Program.</h2><br/>
+            <h2>Welcome To the Choko Wallet Alpha Test Program.</h2><br />
 
             <h2>Things To Note: this test program is intent for those who had experience working with wallets. Please use your usual caution when working with Choko Wallet. Beaware of <b>FISHING WEBSITES</b> and <b>ALWAYS SAFEGUARD YOUR PRIVATE KEY</b>. Like any wallets, we <b>WILL NOT ABLE TO RECOVER YOUR PRIVATE KEY</b>, as we <b>DO NOT HAVE ACCESS TO YOUR PRIVATE KEY</b></h2>
-            <br/>
+            <br />
             <h2>Any DMs requesting recovering wallet private keys <b>WILL BE IGNORED</b> as there is nothing we can do about it.</h2>
-            <br/>
+            <br />
             <h2>Also, our team will <b>NEVER DM FOR YOUR PRIVATE KEY</b> or <b>NEVER ASK FOR FUNDS</b>.</h2>
 
             <button className='btn m-5'
@@ -187,7 +185,7 @@ const AlphaTest: NextPage = () => {
         {
           tosAgreed && <div className='col-span-12 px-5'>
             <div className='divider'></div>
-            <h2>There are three things you need to do:</h2><br/>
+            <h2>There are three things you need to do:</h2><br />
 
             <h2>1. Generate or Import a walelt address on the home page. Switch network to SkyeKiwi Network and connect this page to the wallet. </h2>
             <button className='btn m-5 btn-error'
@@ -196,17 +194,17 @@ const AlphaTest: NextPage = () => {
 
                 window.location.href = x;
               }}>Take me there</button>
-            <br/>
+            <br />
 
             {
               account && <>
-                <h2>2. Claim some faucet token so that you could send a transaction on the next step.  </h2><br/>
-                <h3 style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br/>
+                <h2>2. Claim some faucet token so that you could send a transaction on the next step.  </h2><br />
+                <h3 style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
                 <h3>Follow SkyeKiwi on their <a className='text-sky-400'
                   href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.</h3>
-                <br/>
+                <br />
 
-                <h2>3. Click on the button below to sign a transaction. And keep the generated response hex string.</h2><br/>
+                <h2>3. Click on the button below to sign a transaction. And keep the generated response hex string.</h2><br />
                 <button className='btn m-5 btn-error'
                   onClick={async () => {
                     const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
@@ -217,17 +215,17 @@ const AlphaTest: NextPage = () => {
 
                     // await provider.disconnect();
                     window.location.href = x;
-                  }}>Take me there</button><br/>
+                  }}>Take me there</button><br />
 
                 {response && <>
                   <h1 style={{ overflowWrap: 'break-word' }}>
-                    Finally, keep this response hex string. Most likely it will be recorded automatically... but just in case. <b>0x{response}</b>. <br/>Then you are all done!
+                    Finally, keep this response hex string. Most likely it will be recorded automatically... but just in case. <b>0x{response}</b>. <br />Then you are all done!
                   </h1>
 
                   <button className='btn m-5 btn-success'
-                  onClick={() => {
-                    setSubmit(true);
-                  }}>Finish!</button><br/>
+                    onClick={() => {
+                      setSubmit(true);
+                    }}>Finish!</button><br />
                 </>
                 }
               </>

@@ -34,7 +34,7 @@ function ExportUrlWithQRcode({ exportUrl }: Props) {
 
   return (
     <div>
-      <div className='w-full stringWrap mt-3'>{exportUrl}</div>
+      <div className='w-full stringWrap mt-3 text-gray-300'>{exportUrl}</div>
       <div className='w-full flex items-center justify-center m-1'>
         <CopyToClipboard text={exportUrl}
           onCopy={() => { setCopied(true) }}>
