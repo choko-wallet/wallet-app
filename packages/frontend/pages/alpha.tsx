@@ -28,8 +28,6 @@ const AlphaTest: NextPage = () => {
   const [response, setResponse] = useState<string>('');
   const [submit, setSubmit] = useState<boolean>(false);
 
-  // http://localhost:3000/alpha?response=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c454795571588dc65b5ea49fa75764ef9b4c9ace29fceaed86fca62bbcdf5ea26375e90eae93e337d0e6ee6507cee3de16d59d4f259fd4d9b7364b9d3b8a66cdf7d8b5dfb611ec44c001c3d2cc3&responseType=signTx
-
   useEffect(() => {
     if (response && submit) {
       const u = decompressParameters(hexToU8a(response));
@@ -37,22 +35,23 @@ const AlphaTest: NextPage = () => {
 
       console.error(resp);
 
-      (async () => {
+      void (async () => {
         const r = await superagent
           .post('https://formapi.skye.kiwi/choko/alpha/update')
           .send({
             accessToken: accessToken,
             address: resp.userOrigin.address,
-            txSent: u8aToHex(resp.payload.txHash),
-            faucetClaimed: true
+            faucetClaimed: true,
+            txSent: u8aToHex(resp.payload.txHash)
           });
 
+        // eslint-disable-next-line
         if (r.body.error === 'None') {
           alert('All Done! Data is recorded to our database.');
         }
       })();
     }
-  }, [submit, response]);
+  }, [submit, response, accessToken]);
 
   useEffect(() => {
     if (router.query && router.query.response && router.query.responseType) {

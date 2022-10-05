@@ -1,12 +1,8 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment } from 'react';
 
 interface Props {
   closeModal: () => void;
@@ -14,7 +10,7 @@ interface Props {
   children: JSX.Element
 }
 
-function Dropdown ({ children, closeModal, isOpen }: Props) {
+function Modal ({ children, closeModal, isOpen }: Props): JSX.Element {
   return (
 
     <Transition appear
@@ -58,4 +54,4 @@ function Dropdown ({ children, closeModal, isOpen }: Props) {
   );
 }
 
-export default Dropdown;
+export default Modal;

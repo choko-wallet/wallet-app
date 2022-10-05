@@ -2,11 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Dialog, RadioGroup } from '@headlessui/react';
-import { CameraIcon,
-  CheckIcon, ChevronRightIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
-import { DocumentDuplicateIcon,
+import {
+  CameraIcon,
+  CheckIcon, ChevronRightIcon, PlusSmIcon, XIcon
+} from '@heroicons/react/outline';
+import {
+  DocumentDuplicateIcon,
   DownloadIcon,
-  PaperAirplaneIcon } from '@heroicons/react/solid';
+  PaperAirplaneIcon
+} from '@heroicons/react/solid';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { shuffle } from 'lodash';
 import { useRouter } from 'next/router';
@@ -25,7 +29,7 @@ import { knownNetworks } from '@choko-wallet/known-networks';
 
 import Button from '../../components/Button';
 import CryptoRow from '../../components/CryptoRow';
-import Dropdown2 from '../../components/Dropdown2';
+import DropdownForSend from '../../components/DropdownForSend';
 import DropdownForNetwork from '../../components/DropdownForNetwork';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
@@ -33,10 +37,9 @@ import Modal from '../../components/Modal';
 import { selectChangeCurrentAccountLoading, selectCoinApiLoading, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectUserAccount } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
+import { GetServerSideProps } from 'next';
 
-// interface Props {
-//   coinPriceData: CoinPrice,
-// };
+
 
 interface Crypto {
   name: string;
@@ -49,11 +52,14 @@ interface Crypto {
   MinDeposit: string;
 }
 
-// interface CoinPrice {
-//   [key: string]: PriceUsd
-// };
+interface CoinPrice {
+  [key: string]: PriceUsd
+};
 
-const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } };
+interface Props {
+  coinPriceData: CoinPrice,
+};
+// const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } };
 
 interface PriceUsd {
   usd: number;
@@ -74,7 +80,7 @@ const colors = [
 ];
 
 /* eslint-disable sort-keys */
-function Home (): JSX.Element {
+function Home({ coinPriceData }: Props): JSX.Element {
   const { setTheme, theme } = useTheme();
 
   const router = useRouter();
@@ -97,17 +103,17 @@ function Home (): JSX.Element {
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
 
-  const [cryptoArr, setCryptoArr] = useState<Crypto[]>(
+  const [cryptoInfo, setCryptoInfo] = useState<Crypto[]>(
     [
-      { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
-      { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
-      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
+      { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
+      { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData?.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
+      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
     ]
   );
-  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
-  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
-  const [networkArr, setNetworkArr] = useState<string[]>(
+  const [networks, setNetworks] = useState<string[]>(
     ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)']
   );
   const [copied, setCopied] = useState<boolean>(false);
@@ -124,7 +130,7 @@ function Home (): JSX.Element {
   const coinApiLoading = useSelector(selectCoinApiLoading);
 
   const [color, setColor] = useState<string>('');
-  const [colorArr, setColorArr] = useState<ColorBg[]>([]);
+  const [colorsForNetwork, setColorsForNetwork] = useState<ColorBg[]>([]);
 
   // const colors2: ColorBg[] = [['847e7b7fa160d85f', 'bg-[#6667ab]'], ['e658ad422326d7f7', 'bg-[#e6007a]'], ['0018a49f151bcb20', 'bg-[#000000]'], ['e4954477095c7d9a', 'bg-[#627FE5]']];
 
@@ -139,23 +145,23 @@ function Home (): JSX.Element {
       });
     }
 
-    setColorArr(colors0);
+    setColorsForNetwork(colors0);
     // console.log('colors0', colors0)
   }, []);
   // console.log('colorArr', colorArr)
 
   useEffect(() => {
     if (knownNetworks[networkSelection].color !== undefined) {
-      for (let i = 0; i < colorArr.length; i++) {
-        if (colorArr[i][0] === networkSelection) {
+      for (let i = 0; i < colorsForNetwork.length; i++) {
+        if (colorsForNetwork[i][0] === networkSelection) {
           // console.log('colorArr22', colorArr[i][1])
-          setColor(colorArr[i][1]);
+          setColor(colorsForNetwork[i][1]);
         }
       }
     } else {
       setColor(shuffle(colors).pop());
     }
-  }, [networkSelection, colorArr]);
+  }, [networkSelection, colorsForNetwork]);
 
   // console.log(Object.entries(knownNetworks))
   // console.log(color)
@@ -225,7 +231,7 @@ function Home (): JSX.Element {
 
   if (changeAccountLoading) return <Loading title='Changing Account' />;
 
-  function closeModal () {
+  function closeModal() {
     setIsNetworkChangeOpen(false);
   }
 
@@ -251,16 +257,16 @@ function Home (): JSX.Element {
     });
   };
 
-  function closeModal2 () {
+  function closeModal2() {
     setIsSendOpen(false);
     setCopied(false);
   }
 
-  function closeModal3 () {
+  function closeModal3() {
     setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal () {
+  function closeAddNetworkModal() {
     setAddNetworkModalOpen(false);
     setNetworkInput('');
   }
@@ -530,14 +536,14 @@ function Home (): JSX.Element {
 
               <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll m-5 mt-0'>
 
-                {cryptoArr.map((item) => (
+                {cryptoInfo.map((item) => (
                   <CryptoRow img={item.img}
                     key={item.img}
                     name={item.name}
                     price={item.price}
                     shortName={item.shortName} />
                 ))}
-                {cryptoArr.map((item) => (
+                {cryptoInfo.map((item) => (
                   <CryptoRow img={item.img}
                     key={item.img}
                     name={item.name}
@@ -602,7 +608,7 @@ function Home (): JSX.Element {
                 </Dialog.Title>
                 <div className='mt-2 '>
 
-                  <Dropdown2 arr={cryptoArr}
+                  <DropdownForSend Cryptos={cryptoInfo}
                     defaultValue={cryptoToSend}
                     onClick={setCryptoToSend} />
 
@@ -742,13 +748,13 @@ function Home (): JSX.Element {
 
                 </Dialog.Title>
                 <div className='mt-2 '>
-                  <Dropdown2 arr={cryptoArr}
+                  <DropdownForSend Cryptos={cryptoInfo}
                     defaultValue={cryptoToReceive}
                     onClick={setCryptoToReceive} />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
 
-                  <DropdownForNetwork arr={networkArr}
+                  <DropdownForNetwork networks={networks}
                     defaultValue={networkToReceive}
                     onClick={setNetworkToReceive} />
 
@@ -804,7 +810,7 @@ function Home (): JSX.Element {
                   as='h3'
                   className='text-lg font-medium leading-6 flex items-center mb-6'
                 >
-                  <p className=' text-gray-700 flex flex-grow font-poppins'>Add Network</p>
+                  <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Add Network</p>
 
                   <div onClick={closeAddNetworkModal}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
@@ -860,15 +866,17 @@ function Home (): JSX.Element {
 
 export default Home;
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
-//   const toCurrency = 'usd';
-//   const coinPriceData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${toCurrency}`).
-//     then((res) => res.json());
-//     // https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cdogecoin&vs_currencies=usd
-//   return {
-//     props: {
-//       coinPriceData,
-//     }
-//   }
-// }
+export const getServerSideProps: GetServerSideProps = async () => {
+  const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
+  const toCurrency = 'usd';
+  // const coinPriceData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${toCurrency}`).
+  //   then((res) => res.json());
+  const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } }
+  // console.log('getServerSideProps-coinPriceData', coinPriceData)
+  // https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cdogecoin&vs_currencies=usd
+  return {
+    props: {
+      coinPriceData,
+    }
+  }
+}

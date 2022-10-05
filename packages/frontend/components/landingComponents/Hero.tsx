@@ -1,6 +1,7 @@
 // import { Cursor, useTypewriter } from 'react-simple-typewriter';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import React from 'react';
 import Typed from 'react-typed';
 
 import icon1 from '../../images/logo1.svg';

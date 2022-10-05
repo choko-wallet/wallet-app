@@ -10,7 +10,7 @@ import discIcon1 from '../images/discord1.svg';
 import discIcon2 from '../images/discord2.svg';
 
 function Footer (): JSX.Element {
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <div className='flex justify-between items-center p-3 md:px-10' >

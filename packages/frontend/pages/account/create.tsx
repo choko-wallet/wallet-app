@@ -104,15 +104,15 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
         <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
           <div className='col-span-12 shadow-xl rounded-lg'>
             <div className='card p-5 md:p-6 bg-white'>
-              <h2 className='card-title'>
+              <h2 className='card-title text-black'>
                 Create Mnemonic
               </h2>
-              <h3>Generate a 12 words mnemonic.</h3>
+              <h3 className=' text-black'>Generate a 12 words mnemonic.</h3>
               <div className='grid grid-cols-12 gap-5 m-6 select-none'>
                 {seeds.split(' ').map((seed, index) =>
                   <div className='col-span-6 md:col-span-3 p-2 text-center rounded-lg border border-netrual-200'
                     key={index}>
-                    <p>{seed}</p>
+                    <p className=' text-black'>{seed}</p>
                   </div>
                 )}
 
@@ -164,16 +164,16 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
         <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
           <div className=' col-span-12 shadow-xl rounded-lg'>
             <div className='card p-5 md:p-6 bg-white'>
-              <h2 className='card-title'>
+              <h2 className='card-title text-black'>
                 Verify
               </h2>
-              <h3>Verify if you have securely remember these mneomic.</h3>
+              <h3 className='card-title text-black'>Verify if you have securely remember these mneomic.</h3>
 
               <div className='grid grid-cols-12 gap-5 m-6'>
 
                 {/* TODO: Should not use this pt-2, but some vertical-align instead */}
                 <h2 className='col-span-6 pt-2'>
-                  <span className=''>What is Word #{quizMnemonic}</span>
+                  <span className='text-black'>What is Word #{quizMnemonic}</span>
                 </h2>
                 <div className='col-span-6'>
                   <input className='input input-bordered w-full max-w-xs'
@@ -211,15 +211,15 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
         <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
           <div className=' col-span-12 shadow-xl rounded-lg'>
             <div className='card p-5 md:p-6 bg-white'>
-              <h2 className='card-title'>
+              <h2 className='card-title text-black'>
                 Set a Password
               </h2>
-              <h3>Set a local password for you walelt. </h3>
+              <h3 className=' text-black'>Set a local password for you wallet. </h3>
 
               <div className='grid grid-cols-12 gap-5 m-6'>
                 {/* TODO: Should not use this pt-2, but some vertical-align instead */}
                 <h2 className='col-span-5 pt-2'>
-                  <span className=''>Set a good password</span>
+                  <span className='text-black'>Set a good password</span>
                 </h2>
                 <div className='col-span-7'>
                   <input className='input input-bordered w-full max-w-xs'
@@ -234,7 +234,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
               <div className='grid grid-cols-12 gap-5 m-6'>
                 {/* TODO: Should not use this pt-2, but some vertical-align instead */}
                 <h2 className='col-span-5 pt-2'>
-                  <span className=''>Repeat Password</span>
+                  <span className='text-black'>Repeat Password</span>
                 </h2>
                 <div className='col-span-7'>
                   <input className='input input-bordered w-full max-w-xs'

@@ -46,10 +46,10 @@ function ConnectDappHandler (): JSX.Element {
     }
 
     if (userAccount && Object.keys(userAccount).length > 0) {
-      const allAddrs = Object.keys(userAccount);
+      const allAddress = Object.keys(userAccount);
 
-      setCurrentAccount(allAddrs[0]);
-      setAllAccounts(allAddrs);
+      setCurrentAccount(allAddress[0]);
+      setAllAccounts(allAddress);
     }
   }, [router, dispatch, userAccount, currentAccount, allAccounts]);
 
@@ -120,7 +120,7 @@ function ConnectDappHandler (): JSX.Element {
           <h3>Give the Dapp your public address.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
-            <br/>
+            <br />
             <div className='col-span-12'>
               DApp Origin:
             </div>
@@ -132,14 +132,14 @@ function ConnectDappHandler (): JSX.Element {
               value={currentAccount}>
               {allAccounts.map((name, index) => (
                 <RadioGroup.Option
-                  className={({ active, checked }) =>
+                  className={({ checked }) =>
                     `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                       m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
                   }
                   key={index}
                   value={name}
                 >
-                  {({ active, checked }) => (
+                  {({ checked }) => (
                     <div className='flex w-full items-center justify-between'>
                       <div className='flex items-center'>
                         <div className='text-sm'>
@@ -213,7 +213,7 @@ function ConnectDappHandler (): JSX.Element {
                     as='h3'
                     className='text-lg font-medium leading-6 text-gray-900'
                   >
-                  Unlock Wallet with Password
+                    Unlock Wallet with Password
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
@@ -233,7 +233,7 @@ function ConnectDappHandler (): JSX.Element {
                       onClick={closeModal}
                       type='button'
                     >
-                    Unlock
+                      Unlock
                     </button>
                   </div>
                 </Dialog.Panel>

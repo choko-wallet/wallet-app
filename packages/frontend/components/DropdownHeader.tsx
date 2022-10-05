@@ -1,67 +1,64 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, DotsHorizontalIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon, DocumentDuplicateIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
+import { Menu, Transition } from '@headlessui/react';
+import { DotsHorizontalIcon, UserCircleIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import React, { Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import btcIcon from '../images/btc.png';
+import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/selectors';
+import { removeAllAccounts } from '../features/slices/userSlice';
+import DropdownHeaderRow from './DropdownHeaderRow';
 
-interface Crypto {
-  name: string;
-  img: string;
-  price: number;
-  shortName: string;
-  networkFee: string;
-  estimatedTime: string;
-  arrival: string;
-  MinDeposit: string;
-}
+function DropdownHeader (): JSX.Element {
+  const dispatch = useDispatch();
+  const userAccount = useSelector(selectUserAccount);// 所有账户
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  // const reduxError = useSelector(selectError);
 
-interface Props {
-  // arr: Crypto[];
-  // defaultValue: Crypto;
-  // onClick?: (value: Crypto) => void;
-  currentAccount: string;
-}
+  const userAccountArray = Object.entries(userAccount);// 可以map
 
-function DropdownHeader ({ currentAccount }: Props) {
-  const [showCheck, setShowCheck] = useState<boolean>(false);
+  const router = useRouter();
 
-  const [copied, setCopied] = useState<boolean>(false);
+  // const [showCheck, setShowCheck] = useState<boolean>(false);
+  // const [copied, setCopied] = useState<boolean>(false);
 
-  const handleCopy = async () => {
-    console.log('first');
-    setShowCheck(true);
-    setTimeout(() => {
-      setShowCheck(false);
-    }, 1000);
+  // const handleCopy = () => {
+  //   console.log('first');
+  //   setShowCheck(true);
+  //   setTimeout(() => {
+  //     setShowCheck(false);
+  //   }, 1000);
+  // };
+
+  const removeAccounts = () => {
+    dispatch(removeAllAccounts());
+    router.push('/');
   };
 
   return (
     <div className='w-24 md:w-64 text-right'>
       <Menu as='div'
-        className='relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-[#00f6ff]'>
-        <div>
-          <Menu.Button className='inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+        className='relative h-12 text-left w-full border border-gray-300  dark:border-[#00f6ff] rounded-lg '>
 
-            <div className='relative h-6 w-6'>
-              <UserCircleIcon className='h-6 w-6 dark:text-[#03F3FF] ' />
+        <Menu.Button className='flex items-center justify-center rounded-md w-full bg-white  dark:bg-transparent px-4 py-2 h-full text-sm font-medium text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
 
-            </div>
+          <div className='relative h-6 w-6'>
+            <UserCircleIcon className='h-6 w-6 dark:text-white text-gray-800' />
 
-            <p className='font-poppins text-gradient whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
-              {currentAccount.substring(0, 7)}
-              <DotsHorizontalIcon className='dark:text-[#03F3FF] h-6 w-6 mx-1' />
-              {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}
-            </p>
-            <ChevronDownIcon className='dark:text-[#03F3FF] ml-2 -mr-1 h-6 w-6 text-gray-700 ' />
-          </Menu.Button>
-        </div>
+          </div>
+
+          <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
+            {currentUserAccount?.address.substring(0, 7)}
+            <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
+            {currentUserAccount?.address.substring(currentUserAccount?.address.length - 7,
+              currentUserAccount?.address.length)}
+          </p>
+          <ChevronDownIcon className='dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-800 ' />
+        </Menu.Button>
+
         <Transition
           as={Fragment}
           enter='transition ease-out duration-100'
@@ -71,39 +68,27 @@ function DropdownHeader ({ currentAccount }: Props) {
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
         >
-          <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]'>
+          <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]'>
             <div className='px-1 py-1 '>
 
-              <div className='h-12'>
-                <button className='flex w-full items-center rounded-md px-2 py-2 text-sm'>
+              {/* 直接map */}
 
-                  <p className='font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>{currentAccount.substring(0, 7)}
-                    <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
-
-                    {currentAccount.substring(currentAccount.length - 7, currentAccount.length)}</p>
-
-                  <CopyToClipboard onCopy={() => { setCopied(true); }}
-                    text={currentAccount}>
-                    <div onClick={handleCopy}>
-                      {showCheck
-                        ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />
-                        : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />}
-
-                    </div>
-                  </CopyToClipboard>
-
-                </button>
-
-              </div>
+              {userAccountArray.map((account) => (
+                <DropdownHeaderRow account={account[1]}
+                  key={account[1].address} />
+              ))}
 
               <Menu.Item >
                 {({ active }) => (
                   <button
-                    className={`${active ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white' : 'font-poppins text-gray-900'
+                    className={`${active
+                      ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white'
+                      : 'font-poppins text-gray-900'
                     } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => router.push('/account')}
                   >
 
-                    <p className='text-gradient '>Add New Account</p>
+                    <p className='text-black dark:text-white '>Add New Account</p>
 
                   </button>
                 )}
@@ -114,10 +99,10 @@ function DropdownHeader ({ currentAccount }: Props) {
                   <button
                     className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
                     } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                    onClick={removeAccounts}
+
                   >
-
-                    <p className='font-poppins text-gradient text-center'>Remove Account</p>
-
+                    <p className='font-poppins text-black dark:text-white text-center'>Remove All Accounts</p>
                   </button>
                 )}
               </Menu.Item>

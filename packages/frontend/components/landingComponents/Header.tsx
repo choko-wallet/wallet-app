@@ -1,8 +1,9 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import React from 'react';
 import { SocialIcon } from 'react-social-icons';
 
 type Props = {};

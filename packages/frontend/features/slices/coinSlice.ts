@@ -4,29 +4,28 @@ import type { RootState } from '../redux/store';
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface fetchMarketPricePayload {
+interface FetchMarketPricePayload {
   currency: string;
-
 }
 
-interface fetchCoinPricePayload {
+interface FetchCoinPricePayload {
   currency: string;
   coinArray: string[];
 }
 
-interface marketData {
+interface MarketData {
 }
 
-interface coinData {
+interface CoinData {
 }
 
 // interface CoinPrice {
 //   [key: string]: PriceUsd
 // };
 
-export const fetchMarketPrice = createAsyncThunk<marketData, fetchMarketPricePayload, { state: RootState }>(
+export const fetchMarketPrice = createAsyncThunk<MarketData, FetchMarketPricePayload, { state: RootState }>(
   'users/fetchMarketPrice',
-  async (payload: fetchMarketPricePayload, { getState, rejectWithValue }) => {
+  async (payload: FetchMarketPricePayload, { getState, rejectWithValue }) => {
     const { currency } = payload;
 
     try {
@@ -53,9 +52,9 @@ export const fetchMarketPrice = createAsyncThunk<marketData, fetchMarketPricePay
 
 );
 
-export const fetchCoinPrice = createAsyncThunk<coinData, fetchCoinPricePayload, { state: RootState }>(
+export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, { state: RootState }>(
   'users/fetchCoinPrice',
-  async (payload: fetchCoinPricePayload, { getState, rejectWithValue }) => {
+  async (payload: FetchCoinPricePayload, { getState, rejectWithValue }) => {
     const { coinArray, currency } = payload;
     const coins = coinArray.join('%2C');
     // const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');

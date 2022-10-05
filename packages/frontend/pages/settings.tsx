@@ -1,37 +1,19 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CameraIcon,
-  CheckIcon, ChevronRightIcon, CreditCardIcon, CurrencyDollarIcon, DocumentDuplicateIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  MenuIcon,
-  UserCircleIcon, UserIcon, XIcon } from '@heroicons/react/outline';
-import { BellIcon, CheckCircleIcon,
-  ChevronDownIcon, CogIcon, DownloadIcon,
-  HomeIcon, MoonIcon, PaperAirplaneIcon, SunIcon, TranslateIcon } from '@heroicons/react/solid';
-import { blake2AsU8a } from '@polkadot/util-crypto';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+import { Dialog } from '@headlessui/react';
+import { CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
+import { u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import toast, { Toaster } from 'react-hot-toast';
-import QRCode from 'react-qr-code';
-// redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import { compressParameters } from '@choko-wallet/core/util';
-
-import Dropdown from '../components/Dropdown';
-import DropdownHeader from '../components/DropdownHeader';
 import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
-import SuperButton from '../components/SuperButton';
-import { selectCoinApiLoading,
-  selectCurrentUserAccount, selectMarketPriceTop30, selectUserAccount } from '../features/redux/selectors';
-import { fetchMarketPrice } from '../features/slices/coinSlice';
+import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/selectors';
 import { loadUserAccount } from '../features/slices/userSlice';
 
 /* eslint-disable sort-keys */
@@ -40,28 +22,21 @@ function Settings (): JSX.Element {
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const userAccount = useSelector(selectUserAccount);
-  const marketPriceTop30 = useSelector(selectMarketPriceTop30);
-  const coinApiLoading = useSelector(selectCoinApiLoading);
-  const { setTheme, theme } = useTheme();
+
+  const { theme } = useTheme();
 
   const [mounted, setMounted] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currencyArr, setCurrencyArr] = useState<string[]>(['USD', 'EUR']);
-  const [currency, setCurrency] = useState<string>('USD');
-  const [languageArr, setLanguageArr] = useState<string[]>(['ENG', '中文']);
-  const [language, setLanguage] = useState<string>('ENG');
-  const [isMnemonicOpen, setIsMnemonicOpen] = useState<boolean>(false);
-  const [showMnemonic, setShowMnemonic] = useState<boolean>(false);
-  const [menuIcon, setMenuIcon] = useState<boolean>(false);
+
+  // const [isMnemonicOpen, setIsMnemonicOpen] = useState<boolean>(false);
+  // const [showMnemonic, setShowMnemonic] = useState<boolean>(false);
 
   // const [theme, setTheme] = useState<string>('dark');//暂时先这样配置 没有light
   const [showCheck, setShowCheck] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [exportUrl, setExportUrl] = useState<string>('');
-  const [keyForExport, setKeyForExport] = useState<string>('');
 
-  const handleCopy = async () => {
+  const handleCopy = () => {
     console.log('first');
     setShowCheck(true);
     setTimeout(() => {
@@ -77,16 +52,7 @@ function Settings (): JSX.Element {
     }
   }, [dispatch, router]);
 
-  // const generateKey = () => {
-  //   for (let i = 0; i < Object.values(userAccount).length; i++) {
-  //     if (Object.values(userAccount)[i].address == Object.keys(currentUserAccount)[0]) {
-  //       setKeyForExport(localStorage.getItem('lockedPrivateKey').slice(i * 152, i * 152 + 152))
-  //     }
-  //   }
-  // }
-
   useEffect(() => {
-    // generateKey();
     setMounted(true);
   }, [userAccount, currentUserAccount]);
 
@@ -94,10 +60,10 @@ function Settings (): JSX.Element {
     return null;
   }
 
-  function closeMnemonic () {
-    setIsMnemonicOpen(false);
-    setShowMnemonic(false);
-  }
+  // function closeMnemonic () {
+  //   setIsMnemonicOpen(false);
+  //   setShowMnemonic(false);
+  // }
 
   function closeExportModal () {
     setExportModalOpen(false);
@@ -107,9 +73,6 @@ function Settings (): JSX.Element {
   console.log('serializeWithEncryptedKey', currentUserAccount.serializeWithEncryptedKey());// 109位arr
 
   const generateAccountUrl = () => {
-    // console.log(keyForExport);
-    // const comporessedKeyForExport = compressParameters(hexToU8a(keyForExport));
-
     const payloadForExport = u8aToHex(currentUserAccount.serializeWithEncryptedKey());
 
     const superUrl = 'http://localhost:3000/import?payload=' + payloadForExport;
@@ -118,15 +81,6 @@ function Settings (): JSX.Element {
     setExportUrl(superUrl);
     setExportModalOpen(true);
   };
-
-  // console.log(Object.keys(userAccount)[0])
-  // const addr = Object.values(userAccount)[0].address
-
-  // console.log(userAccount[addr])//多个账户 就要带地址 一个账户不用带 需要判断
-  // const lockedUserAccount1 = userAccount[addr].lockUserAccount(blake2AsU8a('123'));
-  // const serializedLockedUserAccount1 = lockedUserAccount1.serialize();
-  // const lockedPrivateKey1 = u8aToHex(serializedLockedUserAccount1);
-  // console.log(lockedPrivateKey1)
 
   return (
     <div className={theme}>

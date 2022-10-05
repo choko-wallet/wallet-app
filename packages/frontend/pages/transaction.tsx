@@ -1,13 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, ChevronRightIcon, DocumentDuplicateIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import { Dialog, Popover, Transition } from '@headlessui/react';
+import { ChevronRightIcon, DocumentDuplicateIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-// redux
+import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUserAccount } from '../features/redux/selectors';
@@ -22,9 +19,6 @@ function Transaction (): JSX.Element {
 
   const [currentAccount, setCurrentAccount] = useState<string>('');
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
-
-  const [networkSelection, setNetworkSelection] = useState<string>('');
-  const [network, setNetwork] = useState<string>('polkadot');
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);

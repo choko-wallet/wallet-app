@@ -1,34 +1,24 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BellIcon,
-  ChevronDownIcon, CogIcon, CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  HomeIcon, MenuIcon,
-  MoonIcon, SunIcon, TranslateIcon, UserIcon } from '@heroicons/react/outline';
+import { BellIcon, CogIcon,
+  MenuIcon,
+  MoonIcon, SunIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { UserAccount } from '@choko-wallet/core';
-
-import { loadUserAccount, removeAllAccounts } from '../features/slices/userSlice';
+import { removeAllAccounts } from '../features/slices/userSlice';
 import icon1 from '../images/icon1.png';
 import logo from '../images/logo.png';
 import logo2 from '../images/logo2.png';
 import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
 import setting from '../images/setting.png';
-import DropdownHeader2 from './DropdownHeader2';
+import DropdownHeader from './DropdownHeader';
 
-// interface Props {
-//   currentUserAccount: { [key: string]: UserAccount }
-//   userAccount: { [key: string]: UserAccount };
-// }
-
-// function Header({ currentUserAccount, userAccount }: Props): JSX.Element {
 function Header (): JSX.Element {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -124,7 +114,7 @@ function Header (): JSX.Element {
           <MenuIcon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500'
             onClick={() => setMenuIcon(!menuIcon)} />
 
-          <DropdownHeader2 />
+          <DropdownHeader />
 
           <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}

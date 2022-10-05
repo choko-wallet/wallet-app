@@ -1,32 +1,27 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/solid';
+import React, { Fragment } from 'react';
 
-import btcIcon from '../images/btc.png';
+// interface Crypto {
+//   name: string;
+//   img: string;
+//   price: number;
+//   shortName: string;
+//   networkFee: string;
+//   estimatedTime: string;
 
-interface Crypto {
-  name: string;
-  img: string;
-  price: number;
-  shortName: string;
-  networkFee: string;
-  estimatedTime: string;
-
-}
+// }
 
 interface Props {
-  arr: string[];
+  networks: string[];
   defaultValue: string;
   onClick?: (value: string) => void;
 }
 
-function DropdownForNetwork ({ arr, defaultValue, onClick }: Props) {
+function DropdownForNetwork ({ defaultValue, networks, onClick }: Props): JSX.Element {
   return (
     <div className=' w-full  text-right'>
       <Menu as='div'
@@ -50,7 +45,7 @@ function DropdownForNetwork ({ arr, defaultValue, onClick }: Props) {
           <Menu.Items className='dark:bg-gray-600 z-50 absolute right-0 mt-1 w-full origin-top-right divide-y divide-gray-100 rounded-md bg-white  dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
             <div className='px-1 py-1 '>
 
-              {arr.map((item) => (
+              {networks.map((item) => (
                 <Menu.Item key={item}>
                   {({ active }) => (
                     <button className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-gradient font-poppins' : 'font-poppins text-gradient'

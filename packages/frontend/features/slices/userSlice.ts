@@ -7,11 +7,11 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 
-export const addUserAccount = createAsyncThunk(// 必须有seeds和password, importKey是可选
+export const addUserAccount = createAsyncThunk(
   'users/add',
   async (payload: {
     option?: AccountOption;
-    seeds?: string;// seeds 是可选
+    seeds?: string;
     password?: string;
     importKey?: Uint8Array;
   }, { rejectWithValue }) => {
@@ -22,21 +22,19 @@ export const addUserAccount = createAsyncThunk(// 必须有seeds和password, imp
 
       if (!accountOption) {
         accountOption = new AccountOption({
+          hasEncryptedPrivateKeyExported: false,
           keyType: 'sr25519',
-          localKeyEncryptionStrategy: 1,
-          hasEncryptedPrivateKeyExported: false
+          localKeyEncryptionStrategy: 1
         });
       }
 
       const userAccount = UserAccount.seedToUserAccount(seeds, accountOption);
 
       await userAccount.init();
-      // console.log('userAccount', userAccount)
-      userAccount.encryptUserAccount(blake2AsU8a(password));// 增加encryptedPrivateKey属性
-      // console.log('userAccount1', userAccount)
+      userAccount.encryptUserAccount(blake2AsU8a(password));
 
       return userAccount;
-    } else if (importKey) { // 不用password啊
+    } else if (importKey) {
       try {
         const userAccount = UserAccount.deserializeWithEncryptedKey(importKey);
 
@@ -72,16 +70,16 @@ export const changeCurrentAccountType = createAsyncThunk(
 interface UserSliceItem {
   error: string;
   userAccount: { [key: string]: UserAccount };
-  currentUserAccount: UserAccount | null;// type没有 [key: string]:
+  currentUserAccount: UserAccount | null;
   changeCurrentAccountLoading: boolean;
 
 }
 
 const initialState: UserSliceItem = {
-  error: '',
-  userAccount: {},
+  changeCurrentAccountLoading: false,
   currentUserAccount: null,
-  changeCurrentAccountLoading: false
+  error: '',
+  userAccount: {}
 };
 
 /* eslint-disable sort-keys */
@@ -145,7 +143,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addUserAccount.fulfilled, (state, action) => { // 判断在fullfilled
+      .addCase(addUserAccount.fulfilled, (state, action) => {
         const userAccount = action.payload;
 
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');

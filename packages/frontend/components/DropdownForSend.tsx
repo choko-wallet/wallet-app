@@ -1,15 +1,11 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Menu, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, SearchIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import { Menu, Transition } from '@headlessui/react';
+import { SearchIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { arrayBuffer } from 'stream/consumers';
-
-import btcIcon from '../images/btc.png';
+import React, { Fragment, useEffect, useState } from 'react';
 
 interface Crypto {
   name: string;
@@ -23,25 +19,25 @@ interface Crypto {
 }
 
 interface Props {
-  arr: Crypto[];
+  Cryptos: Crypto[];
   defaultValue: Crypto;
   onClick?: (value: Crypto) => void;
 }
 
-function Dropdown2 ({ arr, defaultValue, onClick }: Props) {
+function DropdownForSend ({ Cryptos, defaultValue, onClick }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   // console.log(arr[1].name);
-  const [filterArr, setFilterArr] = useState<Crypto[]>(arr);
+  const [filterResult, setFilterResult] = useState<Crypto[]>(Cryptos);
 
   useEffect(() => {
     function filterCoin (item: Crypto) {
       return item.name.toLowerCase().includes(searchInput.toLowerCase());
     }
 
-    const result = arr.filter(filterCoin);
+    const result = Cryptos.filter(filterCoin);
 
-    setFilterArr(result);
-  }, [searchInput]);
+    setFilterResult(result);
+  }, [searchInput, Cryptos]);
 
   return (
     <div className=' w-full  text-right'>
@@ -83,7 +79,7 @@ function Dropdown2 ({ arr, defaultValue, onClick }: Props) {
                 <SearchIcon className='hidden h-8 p-2 text-white bg-gray-500 rounded-full cursor-pointer md:inline md:mx-2' />
               </div>
 
-              {filterArr.map((item) => (
+              {filterResult.map((item) => (
                 <Menu.Item key={item.img}>
                   {({ active }) => (
                     <button className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white font-poppins' : 'font-poppins text-gray-900'
@@ -113,4 +109,4 @@ function Dropdown2 ({ arr, defaultValue, onClick }: Props) {
   );
 }
 
-export default Dropdown2;
+export default DropdownForSend;

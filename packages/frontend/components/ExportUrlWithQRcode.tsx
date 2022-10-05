@@ -1,55 +1,20 @@
-
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-//[object Object]
-// SPDX-License-Identifier: Apache-2.0
-
+import { CheckIcon, DocumentDuplicateIcon } from '@heroicons/react/outline';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
-import { CheckIcon, UserCircleIcon, XIcon, DocumentDuplicateIcon, ChevronRightIcon, MenuIcon,
-  CreditCardIcon, CurrencyDollarIcon, DotsHorizontalIcon, DuplicateIcon, EyeIcon, EyeOffIcon,
-  UserIcon, CameraIcon } from '@heroicons/react/outline';
-import { BellIcon, CheckCircleIcon,
-  PaperAirplaneIcon, DownloadIcon,
-  ChevronDownIcon, CogIcon, HomeIcon, MoonIcon, SunIcon, TranslateIcon } from '@heroicons/react/solid';
 
 interface Props {
-
   exportUrl: string;
-
 }
 
-function ExportUrlWithQRcode ({ exportUrl }: Props) {
+function ExportUrlWithQRcode ({ exportUrl }: Props): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
 
-  const handleCopy = async () => {
+  const handleCopy = () => {
     console.log('first');
     setShowCheck(true);
     setTimeout(() => {

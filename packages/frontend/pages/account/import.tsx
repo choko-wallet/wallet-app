@@ -132,7 +132,7 @@ function ImportWallet (): JSX.Element {
               <h2 className='card-title'>
                 Set a Password
               </h2>
-              <h3>Set a local password for you walelt. </h3>
+              <h3>Set a local password for you wallet. </h3>
 
               <div className='grid grid-cols-12 gap-5 m-6'>
                 {/* TODO: Should not use this pt-2, but some vertical-align instead */}

@@ -1,32 +1,4 @@
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
-
-//[object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { SVGProps } from 'react';
@@ -34,11 +6,11 @@ import React, { SVGProps } from 'react';
 interface Props {
   Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   title: string;
-  onClick?: () => void;
+  // onClick?: () => void;
   rotate?: boolean;
 }
 
-function SuperButton ({ Icon, onClick, rotate, title }: Props) {
+function Button ({ Icon, rotate, title }: Props): JSX.Element {
   return (
     <div className='flex flex-col justify-center items-center w-[140px] h-[76px] bg-gray-400 dark:bg-[#384855] hover:bg-[#4797B5] dark:hover:bg-[#4797B5] rounded-2xl   cursor-pointer space-y-1'>
       <Icon className={`h-6 w-6 text-white  ${rotate ? 'rotate-45 ml-1' : 'rotate-0'} `} />
@@ -50,4 +22,4 @@ function SuperButton ({ Icon, onClick, rotate, title }: Props) {
   );
 }
 
-export default SuperButton;
+export default Button;
