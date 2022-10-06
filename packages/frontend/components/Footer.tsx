@@ -15,12 +15,13 @@ function Footer (): JSX.Element {
   return (
     <div className='flex justify-between items-center p-3 md:px-10' >
       <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
-      {theme == 'light'
+      {theme === 'light'
         ? <div className='flex items-center justify-center'>
           <div className='relative h-7 w-7 m-3'>
             <Image
               layout='fill'
               objectFit='contain'
+
               src={discIcon1}
             />
           </div>
@@ -55,6 +56,7 @@ function Footer (): JSX.Element {
             <Image
               layout='fill'
               objectFit='contain'
+
               src={discIcon2}
             />
           </div>

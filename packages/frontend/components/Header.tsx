@@ -36,7 +36,7 @@ function Header (): JSX.Element {
 
   const removeAccounts = () => {
     dispatch(removeAllAccounts());
-    router.push('/');
+    void router.push('/');
   };
 
   return (
@@ -47,7 +47,7 @@ function Header (): JSX.Element {
         <div className='flex items-center justify-center ' >
           <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
-            {theme == 'dark'
+            {theme === 'dark'
               ? <Image
                 layout='fill'
                 objectFit='contain'

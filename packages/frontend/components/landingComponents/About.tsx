@@ -4,11 +4,9 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import icon2 from '../../images/logo2.svg';
+import logo2 from '../../images/logo2.svg';
 
-type Props = {};
-
-const About = (props: Props) => {
+const About = (): JSX.Element => {
   return (
     <section className='h-screen snap-center'
       id='about'>
@@ -21,20 +19,22 @@ const About = (props: Props) => {
           alt='my portrait'
           className='w-48 h-48 mt-10 mb-5 flex-shrink-0 rounded-full object-cover md:mb-0 md:rounded-lg md:w-64 md:h-64 md:mt-0 2xl:w-[500px] 2xl:h-[500px]'
           initial={{
-            x: -200,
-            opacity: 0
+            opacity: 0,
+            x: -200
+
           }}
           // viewport={{
           //   once: true,
           // }}
-          src={icon2.src}
+          src={logo2}
           // src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
           transition={{
             duration: 1.5
           }}
           whileInView={{
-            x: 0,
-            opacity: 1
+            opacity: 1,
+            x: 0
+
           }}
         />
 

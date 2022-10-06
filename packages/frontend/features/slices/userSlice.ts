@@ -87,7 +87,7 @@ export const userSlice = createSlice({
   initialState,
   name: 'user',
   reducers: {
-    loadUserAccount: (state, _: PayloadAction<string>) => {
+    loadUserAccount: (state) => {
       const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
 
       let offset = 0;
@@ -112,7 +112,7 @@ export const userSlice = createSlice({
       }
     },
 
-    lockCurrentUserAccount: (state, action: PayloadAction<null>) => {
+    lockCurrentUserAccount: (state) => {
       if (state.currentUserAccount) {
         state.currentUserAccount.lock();
       }
@@ -131,7 +131,7 @@ export const userSlice = createSlice({
       // state.currentUserAccount = state.userAccount[action.payload];
     },
 
-    removeAllAccounts: (state, _: PayloadAction<null>) => {
+    removeAllAccounts: (state) => {
       // localStorage.removeItem('serializedUserAccount');//清除不掉
       localStorage.clear();
 

@@ -1,20 +1,13 @@
-// import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md';
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import Image from 'next/image';
 import React from 'react';
 import { SocialIcon } from 'react-social-icons';
 
 import discIcon2 from '../../images/discord2.svg';
 
-// type Inputs = {
-//   name: string;
-//   email: string;
-//   subject: string;
-//   message: string;
-// };
-
-type Props = {};
-
-const ContactMe = (props: Props) => {
+const ContactMe = (): JSX.Element => {
   return (
     <section className='snap-start'
       id='contact'>

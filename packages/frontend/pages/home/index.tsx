@@ -2,15 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Dialog, RadioGroup } from '@headlessui/react';
-import {
-  CameraIcon,
-  CheckIcon, ChevronRightIcon, PlusSmIcon, XIcon
-} from '@heroicons/react/outline';
-import {
-  DocumentDuplicateIcon,
+import { CameraIcon,
+  CheckIcon, ChevronRightIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
+import { DocumentDuplicateIcon,
   DownloadIcon,
-  PaperAirplaneIcon
-} from '@heroicons/react/solid';
+  PaperAirplaneIcon } from '@heroicons/react/solid';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { shuffle } from 'lodash';
 import { useRouter } from 'next/router';
@@ -29,17 +25,14 @@ import { knownNetworks } from '@choko-wallet/known-networks';
 
 import Button from '../../components/Button';
 import CryptoRow from '../../components/CryptoRow';
-import DropdownForSend from '../../components/DropdownForSend';
 import DropdownForNetwork from '../../components/DropdownForNetwork';
+import DropdownForSend from '../../components/DropdownForSend';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-import { selectChangeCurrentAccountLoading, selectCoinApiLoading, selectCurrentUserAccount, selectError, selectMarketPriceTop30, selectUserAccount } from '../../features/redux/selectors';
+import { selectChangeCurrentAccountLoading } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
-import { GetServerSideProps } from 'next';
-
-
 
 interface Crypto {
   name: string;
@@ -52,18 +45,18 @@ interface Crypto {
   MinDeposit: string;
 }
 
-interface CoinPrice {
-  [key: string]: PriceUsd
-};
+// interface CoinPrice {
+//   [key: string]: PriceUsd
+// }
 
-interface Props {
-  coinPriceData: CoinPrice,
-};
-// const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } };
+// interface Props {
+//   coinPriceData: CoinPrice,
+// }
 
-interface PriceUsd {
-  usd: number;
-}
+// interface PriceUsd {
+//   usd: number;
+// }
+const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
 
 interface ColorBg {
   [index: number]: string;
@@ -80,19 +73,19 @@ const colors = [
 ];
 
 /* eslint-disable sort-keys */
-function Home({ coinPriceData }: Props): JSX.Element {
+function Home (): JSX.Element {
   const { setTheme, theme } = useTheme();
 
   const router = useRouter();
   // const dispatch = useDispatch();
   const dispatch = useAppThunkDispatch();
-  const userAccount = useSelector(selectUserAccount);// 所有账户
-  const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const reduxError = useSelector(selectError);
+  // const userAccount = useSelector(selectUserAccount);// 所有账户
+  // const currentUserAccount = useSelector(selectCurrentUserAccount);
+  // const reduxError = useSelector(selectError);
   const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
 
-  const [currentAccount, setCurrentAccount] = useState<string>('');
-  const [allAccounts, setAllAccounts] = useState<string[]>(['']);
+  const currentAccount = '';
+  // const [allAccounts, setAllAccounts] = useState<string[]>(['']);
   const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');
   const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
   const [mounted, setMounted] = useState<boolean>(false);
@@ -103,52 +96,46 @@ function Home({ coinPriceData }: Props): JSX.Element {
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
 
-  const [cryptoInfo, setCryptoInfo] = useState<Crypto[]>(
-    [
-      { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
-      { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData?.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
-      { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
-    ]
-  );
+  const cryptoInfo = [
+    { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
+    { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData?.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
+    { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
+  ];
+
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
   const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
-  const [networks, setNetworks] = useState<string[]>(
-    ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)']
-  );
-  const [copied, setCopied] = useState<boolean>(false);
+  const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
+
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
   const [openScan, setOpenScan] = useState<boolean>(false);
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [sidebar, setSidebar] = useState<boolean>(true);// 默认打开sidebar
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const marketPriceTop30 = useSelector(selectMarketPriceTop30);
-  const coinApiLoading = useSelector(selectCoinApiLoading);
 
   const [color, setColor] = useState<string>('');
   const [colorsForNetwork, setColorsForNetwork] = useState<ColorBg[]>([]);
 
-  // const colors2: ColorBg[] = [['847e7b7fa160d85f', 'bg-[#6667ab]'], ['e658ad422326d7f7', 'bg-[#e6007a]'], ['0018a49f151bcb20', 'bg-[#000000]'], ['e4954477095c7d9a', 'bg-[#627FE5]']];
-
   useEffect(() => {
     const colors0: ColorBg[] = [];
 
-    if (colors0.length == 0) {
-      Object.entries(knownNetworks).map(([hash, network2], index) => {
-        const { color } = network2;
-
-        colors0.push([hash, `bg-[${color}]`]);
-      });
+    if (colors0.length === 0) {
+      // Object.entries(knownNetworks).map(([hash, network2]) => {
+      //   const { color } = network2;
+      //   colors0.push([hash, `bg-[${color}]`]);
+      // });
+      for (let i = 0; i < Object.entries(knownNetworks).length; i++) {
+        // console.log('colorsx', Object.entries(knownNetworks)[i])
+        colors0.push([Object.entries(knownNetworks)[i][0], `bg-[${Object.entries(knownNetworks)[i][1].color}]`]);
+        // console.log('colors0', colors0)
+      }
     }
 
     setColorsForNetwork(colors0);
-    // console.log('colors0', colors0)
   }, []);
-  // console.log('colorArr', colorArr)
 
   useEffect(() => {
     if (knownNetworks[networkSelection].color !== undefined) {
@@ -175,12 +162,11 @@ function Home({ coinPriceData }: Props): JSX.Element {
       console.log('serialziedUserAccount', localStorage.getItem('serialziedUserAccount'));
     }
 
-    if (userAccount && Object.keys(userAccount).length > 0) {
-      const allAddrs = Object.keys(userAccount);
-
-      setCurrentAccount(currentUserAccount.address);
-      setAllAccounts(allAddrs);
-    }
+    // if (userAccount && Object.keys(userAccount).length > 0) {
+    //   const allAddrs = Object.keys(userAccount);
+    //   setCurrentAccount(currentUserAccount.address);
+    //   // setAllAccounts(allAddrs);
+    // }
 
     // }, [dispatch, router, userAccount]);//userAccount will always fire useEffect and refresh
   }, [dispatch, router]);
@@ -205,13 +191,13 @@ function Home({ coinPriceData }: Props): JSX.Element {
       // @ts-ignore
       setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** tokenDecimals[network]));
       /* eslint-enable */
-
+      console.log('balance', balance);
       // const chainInfo = await api.registry.getChainProperties()
       // return ( data.createdAtHash.free )
     };
 
     void getBalance();
-  }, [network, currentAccount]);
+  }, [network, currentAccount, balance]);
 
   useEffect(() => {
     setMounted(true);
@@ -220,8 +206,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
       setTheme('light');
     }
 
-    dispatch(fetchMarketPrice({ currency: 'usd' }));
-  }, []);
+    void dispatch(fetchMarketPrice({ currency: 'usd' }));
+  }, [setTheme, theme, dispatch]);// if empty, lint error
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) {
     return null;
@@ -231,12 +217,12 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
   if (changeAccountLoading) return <Loading title='Changing Account' />;
 
-  function closeModal() {
+  function closeModal () {
     setIsNetworkChangeOpen(false);
   }
 
   const changeNetwork = async () => {
-    dispatch(fetchCoinPrice({ currency: 'usd', coinArray: ['bitcoin', 'ethereum', 'dogecoin'] }))
+    dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
       .unwrap()
       .then((result) => {
         console.log('result', result);// 直接给回组件 没传给redux 也可以给redux保存
@@ -257,21 +243,21 @@ function Home({ coinPriceData }: Props): JSX.Element {
     });
   };
 
-  function closeModal2() {
+  function closeModal2 () {
     setIsSendOpen(false);
-    setCopied(false);
+    // setCopied(false);
   }
 
-  function closeModal3() {
+  function closeModal3 () {
     setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal() {
+  function closeAddNetworkModal () {
     setAddNetworkModalOpen(false);
     setNetworkInput('');
   }
 
-  const handleCopy = async () => {
+  const handleCopy = () => {
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);
@@ -312,17 +298,17 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                   <RadioGroup onChange={setNetworkSelection}
                     value={networkSelection || network}>
-                    {Object.entries(knownNetworks).map(([hash, network1], index) => {
+                    {Object.entries(knownNetworks).map(([hash, network1]) => {
                       const { defaultProvider, text } = network1;
 
                       return <RadioGroup.Option
-                        className={({ active, checked }) =>
+                        className={({ checked }) =>
                           `${checked ? `${color}` : 'bg-white dark:bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
                         }
                         key={hash}
                         value={hash}
                       >
-                        {({ active, checked }) => (
+                        {({ checked }) => (
                           <div className='flex w-full items-center justify-between'>
                             <div className='flex items-center'>
                               <div className='text-sm'>
@@ -379,7 +365,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                 </div>
 
                 <div className='flex justify-center mt-6'>
-                  {network == networkSelection
+                  {network === networkSelection
                     ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
                     : <button
 
@@ -423,17 +409,17 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                     <RadioGroup onChange={setNetworkSelection}
                       value={networkSelection || network}>
-                      {Object.entries(knownNetworks).map(([hash, network1], index) => {
+                      {Object.entries(knownNetworks).map(([hash, network1]) => {
                         const { defaultProvider, text } = network1;
 
                         return <RadioGroup.Option
-                          className={({ active, checked }) =>
+                          className={({ checked }) =>
                             `${checked ? `${color}` : 'bg-white dark:bg-[#2E323C] '} mb-3 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none w-[260px] h-[75px]`
                           }
                           key={hash}
                           value={hash}
                         >
-                          {({ active, checked }) => (
+                          {({ checked }) => (
                             <div className='flex w-full items-center justify-between'>
                               <div className='flex items-center'>
                                 <div className='text-sm'>
@@ -488,7 +474,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   </div>
 
                   <div className='flex justify-center mt-6'>
-                    {network == networkSelection
+                    {network === networkSelection
                       ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
                       : <button
 
@@ -616,7 +602,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
                     <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
-                    <CopyToClipboard onCopy={() => { setCopied(true); }}
+                    <CopyToClipboard
                       text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
                       <div onClick={handleCopy}>
                         {showCheck
@@ -754,8 +740,8 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
 
-                  <DropdownForNetwork networks={networks}
-                    defaultValue={networkToReceive}
+                  <DropdownForNetwork defaultValue={networkToReceive}
+                    networks={networks}
                     onClick={setNetworkToReceive} />
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
@@ -763,7 +749,7 @@ function Home({ coinPriceData }: Props): JSX.Element {
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
                     <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
 
-                    <CopyToClipboard onCopy={() => { setCopied(true); }}
+                    <CopyToClipboard
                       text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
                       <div onClick={handleCopy}>
                         {showCheck
@@ -866,17 +852,18 @@ function Home({ coinPriceData }: Props): JSX.Element {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
-  const toCurrency = 'usd';
-  // const coinPriceData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${toCurrency}`).
-  //   then((res) => res.json());
-  const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } }
-  // console.log('getServerSideProps-coinPriceData', coinPriceData)
-  // https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cdogecoin&vs_currencies=usd
-  return {
-    props: {
-      coinPriceData,
-    }
-  }
-}
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   // const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
+//   // const toCurrency = 'usd';
+//   // const coinPriceData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${toCurrency}`).
+//   //   then((res) => res.json());
+//   const coinPriceData = { bitcoin: { usd: 19000 }, ethereum: { usd: 1000 }, dogecoin: { usd: 0.06 } };
+
+//   // console.log('getServerSideProps-coinPriceData', coinPriceData)
+//   // https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cdogecoin&vs_currencies=usd
+//   return {
+//     props: {
+//       coinPriceData
+//     }
+//   };
+// };

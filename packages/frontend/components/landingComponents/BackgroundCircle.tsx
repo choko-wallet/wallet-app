@@ -4,20 +4,20 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-type Props = {};
-
-const BackgroundCircle = (props: Props) => {
+const BackgroundCircle = (): JSX.Element => {
   return (
     <motion.div
       animate={{
-        scale: [1, 1.3, 3, 1],
-        opacity: [0.2, 0.4, 0.8, 1.0]
+        opacity: [0.2, 0.4, 0.8, 1.0],
+        scale: [1, 1.3, 3, 1]
+
         // borderRadius: ['20%', '50%', '80%', '20%'],
       }}
       className='relative flex items-center justify-center'
       initial={{
-        scale: 0,
-        opacity: 0
+        opacity: 0,
+        scale: 0
+
       }}
       transition={{
         duration: 2.5

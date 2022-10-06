@@ -12,7 +12,6 @@ interface Props {
 
 function ExportUrlWithQRcode ({ exportUrl }: Props): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
 
   const handleCopy = () => {
     console.log('first');
@@ -26,7 +25,7 @@ function ExportUrlWithQRcode ({ exportUrl }: Props): JSX.Element {
     <div>
       <div className='w-full stringWrap mt-3 text-gray-300'>{exportUrl}</div>
       <div className='w-full flex items-center justify-center m-1'>
-        <CopyToClipboard onCopy={() => { setCopied(true); }}
+        <CopyToClipboard
           text={exportUrl}>
           <div onClick={handleCopy}>
             {showCheck

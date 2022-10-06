@@ -6,22 +6,22 @@ import Link from 'next/link';
 import React from 'react';
 import { SocialIcon } from 'react-social-icons';
 
-type Props = {};
-
-const Header = (props: Props) => {
+const Header = (): JSX.Element => {
   return (
     <div className='sticky top-0 z-20 flex items-center justify-between p-5 mx-auto max-w-7xl '>
       <motion.div
         animate={{
-          x: 0,
           opacity: 1,
-          scale: 1
+          scale: 1,
+          x: 0
+
         }}
         className='flex items-center'
         initial={{
-          x: -500,
           opacity: 0,
-          scale: 0.5
+          scale: 0.5,
+          x: -500
+
         }}
         transition={{
           duration: 1.5
@@ -38,15 +38,17 @@ const Header = (props: Props) => {
       <Link href='#contact'>
         <motion.div
           animate={{
-            x: 0,
             opacity: 1,
-            scale: 1
+            scale: 1,
+            x: 0
+
           }}
           className='flex items-center cursor-pointer'
           initial={{
-            x: 500,
             opacity: 0,
-            scale: 0.5
+            scale: 0.5,
+            x: 500
+
           }}
           transition={{
             duration: 1.5

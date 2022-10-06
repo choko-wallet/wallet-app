@@ -7,8 +7,8 @@ import coinSlice from '../slices/coinSlice';
 import userSlice from '../slices/userSlice';
 
 export const rootReducer: Reducer = combineReducers({
-  user: userSlice,
-  coin: coinSlice
+  coin: coinSlice,
+  user: userSlice
 
 });
 

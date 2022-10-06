@@ -35,7 +35,7 @@ function DropdownHeader (): JSX.Element {
 
   const removeAccounts = () => {
     dispatch(removeAllAccounts());
-    router.push('/');
+    void router.push('/');
   };
 
   return (

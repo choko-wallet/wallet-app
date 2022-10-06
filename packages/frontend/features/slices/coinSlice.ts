@@ -1,8 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
 import type { RootState } from '../redux/store';
 
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+// import { PayloadAction } from '@reduxjs/toolkit';
 
 interface FetchMarketPricePayload {
   currency: string;
@@ -13,27 +15,59 @@ interface FetchCoinPricePayload {
   coinArray: string[];
 }
 
-interface MarketData {
+interface SingelCoinData {
+  // ath: number;
+  // ath_change_percentage: number;
+  // ath_date: string; atl: number;
+  // atl_change_percentage: number;
+  // atl_date: string;
+  // circulating_supply: number;
+  // current_price: number;
+  // fully_diluted_valuation: number;
+  // high_24h: number;
+  id: string;
+  // image: string;
+  // last_updated: string;
+  // low_24h: number;
+  // market_cap: number;
+  // market_cap_change_24h: number;
+  // market_cap_change_percentage_24h: number;
+  // market_cap_rank: number;
+  // max_supply: number;
+  // name: string;
+  // price_change_24h: number;
+  // price_change_percentage_24h: number;
+  // roi: null
+  // symbol: string;
+  // total_supply: number;
+  // total_volume: number;
 }
 
-interface CoinData {
+type MarketData = Array<SingelCoinData>
+
+type CoinData = Array<CoinPrice>
+
+interface CoinPrice {
+  [key: string]: PriceUsd
 }
 
-// interface CoinPrice {
-//   [key: string]: PriceUsd
-// };
+interface PriceUsd {
+  usd: number;
+}
 
 export const fetchMarketPrice = createAsyncThunk<MarketData, FetchMarketPricePayload, { state: RootState }>(
   'users/fetchMarketPrice',
-  async (payload: FetchMarketPricePayload, { getState, rejectWithValue }) => {
+  async (payload: FetchMarketPricePayload, { rejectWithValue }) => {
     const { currency } = payload;
 
     try {
-      const marketData = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=30&page=1&sparkline=false`)
-        .then((res) => res.json());
+      const marketData =
+        await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=30&page=1&sparkline=false`)
+          .then((res) => res.json());
 
       console.log('marketData', marketData);
 
+      // 需要整理数据  data
       return marketData;
     } catch (err) {
       // console.log('redux-err', err);//控制台显示具体报错
@@ -54,7 +88,7 @@ export const fetchMarketPrice = createAsyncThunk<MarketData, FetchMarketPricePay
 
 export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, { state: RootState }>(
   'users/fetchCoinPrice',
-  async (payload: FetchCoinPricePayload, { getState, rejectWithValue }) => {
+  async (payload: FetchCoinPricePayload, { rejectWithValue }) => {
     const { coinArray, currency } = payload;
     const coins = coinArray.join('%2C');
     // const coins = ['bitcoin', 'ethereum', 'dogecoin'].join('%2C');
@@ -64,7 +98,7 @@ export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, 
         .then((res) => res.json());
 
       // console.log('coinData', coinData)
-      return coinData;
+      return coinData as CoinData;
     } catch (err) {
       // console.log('redux-err', err);//控制台显示具体报错
       return rejectWithValue('Api not work');// 给用户的报错提示
@@ -84,14 +118,15 @@ export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, 
 
 interface CoinSliceItem {
   error: string;
-  marketPriceTop30: {};
+  marketPriceTop30: MarketData;
   loading: string;
 }
 
 const initialState: CoinSliceItem = {
   error: '',
-  marketPriceTop30: {},
-  loading: 'idle'
+  loading: 'idle',
+  marketPriceTop30: []
+
 };
 
 /* eslint-disable sort-keys */
@@ -99,8 +134,8 @@ export const coinSlice = createSlice({
   initialState,
   name: 'coin',
   reducers: {
-    clearAll: (state, _: PayloadAction<string>) => {
-      state.marketPriceTop30 = {};
+    clearAll: (state) => {
+      state.marketPriceTop30 = [];
       state.error = '';
       state.loading = 'idle';
     }
@@ -109,7 +144,7 @@ export const coinSlice = createSlice({
   // thunk 函数的return 是extraReducers addCase函数的action.payload
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMarketPrice.pending, (state, action) => {
+      .addCase(fetchMarketPrice.pending, (state) => {
         if (state.loading === 'idle') {
           state.loading = 'pending';
         }
@@ -125,12 +160,12 @@ export const coinSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      .addCase(fetchCoinPrice.pending, (state, action) => {
+      .addCase(fetchCoinPrice.pending, (state) => {
         if (state.loading === 'idle') {
           state.loading = 'pending';
         }
       })
-      .addCase(fetchCoinPrice.fulfilled, (state, action) => {
+      .addCase(fetchCoinPrice.fulfilled, (state) => {
         // console.log('fulfiled');
         // state.marketPriceTop30 = action.payload;
         state.loading = 'idle';

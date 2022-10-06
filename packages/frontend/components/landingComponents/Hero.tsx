@@ -1,15 +1,17 @@
-// import { Cursor, useTypewriter } from 'react-simple-typewriter';
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Typed from 'react-typed';
 
-import icon1 from '../../images/logo1.svg';
+import logo1 from '../../images/logo1.svg';
 import BackgroundCircle from './BackgroundCircle';
 
-type Props = {};
+// type Props = {};
 
-const Hero = (props: Props) => {
+const Hero = (): JSX.Element => {
   const router = useRouter();
 
   return (
@@ -22,7 +24,7 @@ const Hero = (props: Props) => {
           // src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
           className='relative object-cover mx-auto rounded-full'
           height={180}
-          src={icon1.src}
+          src={logo1}
           width={180}
         />
         <div className='z-20'>

@@ -27,12 +27,7 @@ function Settings (): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
 
-  // const [isMnemonicOpen, setIsMnemonicOpen] = useState<boolean>(false);
-  // const [showMnemonic, setShowMnemonic] = useState<boolean>(false);
-
-  // const [theme, setTheme] = useState<string>('dark');//暂时先这样配置 没有light
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [exportUrl, setExportUrl] = useState<string>('');
 
@@ -118,7 +113,7 @@ function Settings (): JSX.Element {
 
                     </p>
 
-                    <CopyToClipboard onCopy={() => { setCopied(true); }}
+                    <CopyToClipboard
                       text={currentUserAccount.address}>
                       <div onClick={handleCopy}>
                         {showCheck

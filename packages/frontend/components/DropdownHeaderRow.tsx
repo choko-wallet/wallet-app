@@ -21,7 +21,7 @@ interface Props {
 function DropdownHeaderRow ({ account }: Props): JSX.Element {
   const dispatch = useDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
+  // const [copied, setCopied] = useState<boolean>(false);
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
@@ -35,16 +35,16 @@ function DropdownHeaderRow ({ account }: Props): JSX.Element {
 
   return (
 
-    <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${Object.keys(currentUserAccount)[0] == account.address ? 'bg-blue-gradient' : ''} `}>
+    <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${Object.keys(currentUserAccount)[0] === account.address ? 'bg-blue-gradient' : ''} `}>
       <p
-        className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${Object.keys(currentUserAccount)[0] == account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `}
+        className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${Object.keys(currentUserAccount)[0] === account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `}
         onClick={() => dispatch(switchUserAccount(account.address))}>
-        {account.address.substring(0, 7)}
-        <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${Object.keys(currentUserAccount)[0] == account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `} />
+        {account.address.substring(0, 7)}aa
+        <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${Object.keys(currentUserAccount)[0] === account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `} />
 
         {account.address.substring(account.address.length - 7, account.address.length)}
       </p>
-      <CopyToClipboard onCopy={() => { setCopied(true); }}
+      <CopyToClipboard
         text={account.address}>
         <div onClick={handleCopy}>
           {showCheck
