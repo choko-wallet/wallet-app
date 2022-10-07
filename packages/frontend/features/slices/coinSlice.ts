@@ -4,6 +4,7 @@
 import type { RootState } from '../redux/store';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+// import superagent from 'superagent';
 // import { PayloadAction } from '@reduxjs/toolkit';
 
 interface FetchMarketPricePayload {
@@ -61,29 +62,34 @@ export const fetchMarketPrice = createAsyncThunk<MarketData, FetchMarketPricePay
     const { currency } = payload;
 
     try {
+      // const marketData = await superagent
+      //   .get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=30&page=1&sparkline=false`)
+      //   .then((res) => res.body);
+
       const marketData =
         await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=30&page=1&sparkline=false`)
-          .then((res) => res.json());
+          .then((res) => res.json() as Promise<MarketData>);
 
       console.log('marketData', marketData);
 
-      // 需要整理数据  data
+      // arrange data
       return marketData;
     } catch (err) {
-      // console.log('redux-err', err);//控制台显示具体报错
-      return rejectWithValue('Api not work');// 给用户的报错提示
+      // console.log('redux-err', err);
+      return rejectWithValue('Api not work');
     }
   },
+  /* eslint-disable */
   {
     condition: (payload, { getState }) => {
-      const loading = getState().coin.loading;
+      const loading = getState().coin.loading as string;
 
       if (loading === 'pending') {
         return false;
       }
     }
   }
-
+  /* eslint-enable */
 );
 
 export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, { state: RootState }>(
@@ -95,24 +101,26 @@ export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, 
 
     try {
       const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins}&vs_currencies=${currency}`)
-        .then((res) => res.json());
+        .then((res) => res.json() as Promise<CoinData>);
 
       // console.log('coinData', coinData)
-      return coinData as CoinData;
+      return coinData;
     } catch (err) {
       // console.log('redux-err', err);//控制台显示具体报错
       return rejectWithValue('Api not work');// 给用户的报错提示
     }
   },
+  /* eslint-disable */
   {
     condition: (payload, { getState }) => {
-      const loading = getState().coin.loading;
+      const loading = getState().coin.loading as string;
 
       if (loading === 'pending') {
         return false;
       }
     }
   }
+  /* eslint-enable */
 
 );
 

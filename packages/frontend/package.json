@@ -32,7 +32,6 @@
     "@types/react-transition-group": "^4.4.5",
     "daisyui": "^2.19.0",
     "framer-motion": "^7.4.0",
-    "lodash": "^4.17.21",
     "next": "latest",
     "next-themes": "^0.2.0",
     "query-string": "^7.1.1",
