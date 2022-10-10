@@ -65,10 +65,8 @@ function Settings (): JSX.Element {
     setExportUrl('');
   }
 
-  console.log('serializeWithEncryptedKey', currentUserAccount.serializeWithEncryptedKey());// 109位arr
-
   const generateAccountUrl = () => {
-    const payloadForExport = u8aToHex(currentUserAccount.serializeWithEncryptedKey());
+    const payloadForExport = u8aToHex(currentUserAccount?.serializeWithEncryptedKey());
 
     const superUrl = 'http://localhost:3000/import?payload=' + payloadForExport;
 
@@ -103,18 +101,18 @@ function Settings (): JSX.Element {
 
                     <p className='font-poppins whitespace-nowrap flex md:hidden text-center items-center justify-certer flex-grow  ml-2 text-gradient'>
                       {/* {currentAccount} */}
-                      {currentUserAccount.address.substring(0, 6)}
+                      {currentUserAccount?.address.substring(0, 6)}
                       <DotsHorizontalIcon className='h-6 w-6 dark:text-[#03F3FF] mx-1' />
-                      {currentUserAccount.address.substring(currentUserAccount.address.length - 6, currentUserAccount.address.length)}
+                      {currentUserAccount?.address.substring(currentUserAccount?.address.length - 6, currentUserAccount?.address.length)}
                     </p>
 
                     <p className='font-poppins whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 text-gradient'>
-                      {currentUserAccount.address}
+                      {currentUserAccount?.address}
 
                     </p>
 
                     <CopyToClipboard
-                      text={currentUserAccount.address}>
+                      text={currentUserAccount?.address}>
                       <div onClick={handleCopy}>
                         {showCheck
                           ? <CheckIcon className=' text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-primary cursor-pointer rounded-full' />

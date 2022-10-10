@@ -216,8 +216,8 @@ function Home (): JSX.Element {
           </div>
         </CSSTransition>
 
-        < main className='min-h-[750px] h-85v bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
-          <div className='bg-transparent flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
+        < main className='min-h-[750px] bg-transparent h-85v  dark:bg-[#22262f] max-w-7xl mx-auto' >
+          <div className='bg-transparent flex-col h-full  flex md:flex-row m-3 md:m-10'>
             <div className='bg-transparent'>
               <button
                 className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '

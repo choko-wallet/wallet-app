@@ -16,7 +16,6 @@ import logo from '../images/logo.png';
 import logo2 from '../images/logo2.png';
 import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
-import setting from '../images/setting.png';
 import DropdownHeader from './DropdownHeader';
 
 function Header (): JSX.Element {
@@ -86,11 +85,7 @@ function Header (): JSX.Element {
             <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
               onClick={() => router.push('/settings')}
             >
-              {/* <Image
-                layout='fill'
-                objectFit='contain'
-                src={setting.src}
-              /> */}
+
               <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
             </div>
 
@@ -150,23 +145,19 @@ function Header (): JSX.Element {
               </div>
 
               <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              // onClick={() => router.push('/')}
+                onClick={() => router.push('/settings')}
               >
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={setting.src}
-                />
+                <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
               </div>
 
               <div className='flex relative transition duration-150 ease-out cursor-pointer '>
-                <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' />
-                <div className='absolute flex items-center justify-center w-2 h-2 text-xs text-white bg-white rounded-full right-1 top-0'>
+                <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
+                <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'>
                 </div>
               </div>
 
               {theme === 'light'
-                ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-500'
+                ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-800'
                   onClick={() => setTheme('dark')} />
                 : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
                   onClick={() => setTheme('light')} />

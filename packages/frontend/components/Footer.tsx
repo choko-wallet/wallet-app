@@ -13,8 +13,9 @@ function Footer (): JSX.Element {
   const { theme } = useTheme();
 
   return (
-    // <div className='nxl:absolute nxl:bottom-0 nxl:left-0 nxl:right-0 flex justify-between items-center p-3 md:px-10 ' >
-    <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
+
+    // <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
+    <div className='flex justify-between items-center p-3 md:px-10 '>
       <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>
