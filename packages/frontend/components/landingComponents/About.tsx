@@ -16,18 +16,19 @@ const About = (): JSX.Element => {
         </p>
 
         <motion.img
-          alt='my portrait'
+          alt='Choko Wallet'
           className='w-48 h-48 mt-10 mb-5 flex-shrink-0 rounded-full object-cover md:mb-0 md:rounded-lg md:w-64 md:h-64 md:mt-0 2xl:w-[500px] 2xl:h-[500px]'
           initial={{
             opacity: 0,
             x: -200
 
           }}
-          // viewport={{
-          //   once: true,
-          // }}
-          src={logo2}
-          // src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
+          /* eslint-disable */
+          // @ts-ignore
+
+          src={logo2.src}
+          /* eslint-enable */
+
           transition={{
             duration: 1.5
           }}

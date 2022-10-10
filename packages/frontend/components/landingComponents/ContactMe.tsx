@@ -23,46 +23,59 @@ const ContactMe = (): JSX.Element => {
             <span className='underline decoration-[#F7AB0A]/50'>Talk!</span>
           </h4>
           <div className='flex items-center justify-center space-x-4'>
-            {/* <MdEmail className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
+
             <SocialIcon
               bgColor='transparent'
               className='cursor-pointer'
               fgColor='white'
               network='email'
             />
+
             <p className='text-2xl'>contact@choko.app</p>
+
           </div>
-          <div className='flex items-center justify-center space-x-4'>
-            {/* <MdPhone className='w-7 h-7 text-[#F7AB0A] animate-pulse' /> */}
-            {/* <p className='text-2xl'>+66-0966712286</p> */}
-          </div>
+
           <div className='flex items-center justify-center'>
             <SocialIcon
               bgColor='transparent'
+              className='cursor-pointer'
               fgColor='white'
               target='_blank'
               url='https://github.com/choko-wallet'
             />
             <SocialIcon
               bgColor='transparent'
+              className='cursor-pointer'
               fgColor='white'
               target='_blank'
-              url='https://telegram'
+              url='https://t.me/choko_wallet'
             />
             <SocialIcon
               bgColor='transparent'
+              className='cursor-pointer'
               fgColor='white'
               target='_blank'
-              url='https://twitter'
+              url='https://twitter.com/choko_wallet'
+            />
+            <SocialIcon
+              bgColor='transparent'
+              className='cursor-pointer'
+              fgColor='white'
+              target='_blank'
+              url='https://medium.com/@choko_wallet'
             />
 
-            <div className='inline-flex relative h-7 w-7 m-3'>
+            <a className='cursor-pointer inline-flex relative h-7 w-7 m-3'
+              href={'https://discord.gg/zkp8UEQctM'}
+              rel='noreferrer'
+              target='_blank'>
               <Image
                 layout='fill'
                 objectFit='contain'
                 src={discIcon2}
               />
-            </div>
+            </a>
+
           </div>
 
         </div>

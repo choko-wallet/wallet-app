@@ -5,13 +5,15 @@ import type { RootState } from '../redux/store';
 
 import { UserAccount } from '@choko-wallet/core';
 
-interface SingelCoinData {
-  id: string;
-  // currentPrice: number;
-  // many fields
+type CoinData = Array<CoinPrice>
+
+interface CoinPrice {// 这个usd要改成变量
+  [key: string]: PriceUsd
 }
 
-type MarketData = Array<SingelCoinData>
+interface PriceUsd {// 这个usd要改成变量
+  usd: number;
+}
 
 /* eslint-disable */
 // userAccount selectors
@@ -19,7 +21,7 @@ export const selectCurrentUserAccount = (state: RootState): UserAccount => state
 export const selectUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.userAccount;
 
 export const selectError = (state: RootState): string => state.user.error;
-export const selectMarketPriceTop30 = (state: RootState): MarketData => state.coin.marketPriceTop30;
+export const selectCoinPrice = (state: RootState): CoinData => state.coin.coinPrice;
 export const selectCoinApiLoading = (state: RootState): string => state.coin.loading;
 export const selectChangeCurrentAccountLoading = (state: RootState): boolean => state.user.changeCurrentAccountLoading;
 

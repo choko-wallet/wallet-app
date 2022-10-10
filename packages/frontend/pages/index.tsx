@@ -8,11 +8,8 @@ import React from 'react';
 
 import About from '../components/landingComponents/About';
 import ContactMe from '../components/landingComponents/ContactMe';
-// import Experience from '../components/landingComponents/Experience';
 import Header from '../components/landingComponents/Header';
 import Hero from '../components/landingComponents/Hero';
-// import Projects from '../components/landingComponents/Projects';
-// import Skills from '../components/landingComponents/Skills';
 
 const Home: NextPage = () => {
   // console.log('local1', localStorage.getItem('serialziedUserAccount'))

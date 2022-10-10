@@ -13,18 +13,22 @@ function Footer (): JSX.Element {
   const { theme } = useTheme();
 
   return (
-    <div className='flex justify-between items-center p-3 md:px-10' >
+    // <div className='nxl:absolute nxl:bottom-0 nxl:left-0 nxl:right-0 flex justify-between items-center p-3 md:px-10 ' >
+    <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
       <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>
-          <div className='relative h-7 w-7 m-3'>
+          <a className='relative h-7 w-7 m-3'
+            href={'https://discord.gg/zkp8UEQctM'}
+            rel='noreferrer'
+            target='_blank'>
             <Image
               layout='fill'
               objectFit='contain'
 
               src={discIcon1}
             />
-          </div>
+          </a>
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
@@ -35,31 +39,42 @@ function Footer (): JSX.Element {
             bgColor='transparent'
             fgColor='black'
             target='_blank'
-            url='https://telegram'
+            url='https://t.me/choko_wallet'
           />
-
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
             target='_blank'
-            url='https://twitter'
+            url='https://twitter.com/choko_wallet'
           />
           <SocialIcon
             bgColor='transparent'
-            className='cursor-pointer'
             fgColor='black'
-            network='email'
+            target='_blank'
+            url='https://medium.com/@choko_wallet'
           />
+          <a href='mailto:contact@choko.app'>
+            <SocialIcon
+              bgColor='transparent'
+              className='cursor-pointer'
+              fgColor='black'
+              network='email'
+            />
+          </a>
+
         </div>
         : <div className='flex items-center justify-center'>
-          <div className='relative h-7 w-7 m-3'>
+          <a className='relative h-7 w-7 m-3'
+            href={'https://discord.gg/zkp8UEQctM'}
+            rel='noreferrer'
+            target='_blank'>
             <Image
               layout='fill'
               objectFit='contain'
 
               src={discIcon2}
             />
-          </div>
+          </a>
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
@@ -70,20 +85,28 @@ function Footer (): JSX.Element {
             bgColor='transparent'
             fgColor='white'
             target='_blank'
-            url='https://telegram'
+            url='https://t.me/choko_wallet'
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
             target='_blank'
-            url='https://twitter'
+            url='https://twitter.com/choko_wallet'
           />
           <SocialIcon
             bgColor='transparent'
-            className='cursor-pointer'
             fgColor='white'
-            network='email'
+            target='_blank'
+            url='https://medium.com/@choko_wallet'
           />
+          <a href='mailto:contact@choko.app'>
+            <SocialIcon
+              bgColor='transparent'
+              className='cursor-pointer'
+              fgColor='white'
+              network='email'
+            />
+          </a>
 
         </div>}
 

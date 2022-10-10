@@ -17,7 +17,7 @@ import { CSSTransition } from 'react-transition-group';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
-import { fetchCoinPrice, fetchMarketPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
+import { fetchCoinPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 import { knownNetworks } from '@choko-wallet/known-networks';
 
 import DropdownForNetwork from '../../components/DropdownForNetwork';
@@ -44,11 +44,12 @@ const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethe
 
 /* eslint-disable sort-keys */
 function Home (): JSX.Element {
+  const nodeRef = React.useRef(null);
   const { setTheme, theme } = useTheme();
   const router = useRouter();
   // const dispatch = useDispatch();
   const dispatch = useAppThunkDispatch();
-  // const userAccount = useSelector(selectUserAccount);// 所有账户
+  // const coinPriceFromRedux = useSelector(selectCoinPrice);
   // const currentUserAccount = useSelector(selectCurrentUserAccount);
   // const reduxError = useSelector(selectError);
   const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
@@ -107,7 +108,11 @@ function Home (): JSX.Element {
     };
 
     void getBalance();
-  }, [network, currentAccount, balance]);
+
+    void dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }));
+  }, [network, currentAccount, balance, dispatch]);
+
+  // console.log('coinPriceFromRedux', coinPriceFromRedux)
 
   useEffect(() => { // for intialization
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -120,7 +125,6 @@ function Home (): JSX.Element {
       }
 
       dispatch(loadUserAccount());
-      void dispatch(fetchMarketPrice({ currency: 'usd' }));
     }
 
     console.log('intialization');
@@ -153,15 +157,15 @@ function Home (): JSX.Element {
     });
   };
 
-  function closeModal () {
+  function closeNetworkChangeModal () {
     setIsNetworkChangeOpen(false);
   }
 
-  function closeModal2 () {
+  function closeSendModal () {
     setIsSendOpen(false);
   }
 
-  function closeModal3 () {
+  function closeReceiveModal () {
     setIsReceiveOpen(false);
   }
 
@@ -184,16 +188,16 @@ function Home (): JSX.Element {
         {/* <Toaster /> */}
         <Header />
 
-        {/* new drawer */}
+        {/* drawer */}
         <CSSTransition
           className='md:hidden z-40 p-6 w-[300px] bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 bottom-0'
           classNames='drawer'
           in={drawerOpen}
+          nodeRef={nodeRef}
           timeout={500}
           unmountOnExit
         >
-
-          <div className=''>
+          <div ref={nodeRef}>
             <p className='text-lg flex  w-full font-semibold justify-between text-black dark:text-white font-poppins  '>Change Network
               <XIcon className=' text-black dark:text-white h-8 w-8 cursor-pointer '
                 onClick={() => setDrawerOpen(!drawerOpen)} />
@@ -210,10 +214,9 @@ function Home (): JSX.Element {
 
             </div>
           </div>
-
         </CSSTransition>
 
-        < main className='min-h-[750px] sm:h-85v bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
+        < main className='min-h-[750px] h-85v bg-transparent dark:bg-[#22262f] max-w-7xl mx-auto' >
           <div className='bg-transparent flex-col md:h-full  flex md:flex-row m-3 md:m-10'>
             <div className='bg-transparent'>
               <button
@@ -245,7 +248,7 @@ function Home (): JSX.Element {
           </div>
 
           {/* network change modal */}
-          <Modal closeModal={closeModal}
+          <Modal closeModal={closeNetworkChangeModal}
             isOpen={isNetworkChangeOpen} >
             <div className={theme}>
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border  border-[#00f6ff] dark:border-[#00f6ff]'>
@@ -264,7 +267,7 @@ function Home (): JSX.Element {
                 <div className='mt-4'>
                   <button
                     className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={closeModal}
+                    onClick={closeNetworkChangeModal}
                     type='button'
                   >
                     OK
@@ -275,7 +278,7 @@ function Home (): JSX.Element {
           </Modal>
 
           {/* send modal */}
-          <Modal closeModal={closeModal2}
+          <Modal closeModal={closeSendModal}
             isOpen={isSendOpen}>
             <div className={theme}>
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
@@ -290,7 +293,7 @@ function Home (): JSX.Element {
                       : <p className=' text-gray-700 font-poppins'>Send Crypto</p>
                     }
                   </div>
-                  <div onClick={closeModal2}>
+                  <div onClick={closeSendModal}>
                     <XIcon className='  h-8 w-8 cursor-pointer text-black dark:text-white' />
                   </div>
                 </Dialog.Title>
@@ -404,7 +407,7 @@ function Home (): JSX.Element {
 
                   <button
                     className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={closeModal2}
+                    onClick={closeSendModal}
 
                     type='button'
                   >
@@ -417,7 +420,7 @@ function Home (): JSX.Element {
           </Modal>
 
           {/* receive modal */}
-          <Modal closeModal={closeModal3}
+          <Modal closeModal={closeReceiveModal}
             isOpen={isReceiveOpen}>
             <div className={theme}>
 
@@ -430,7 +433,7 @@ function Home (): JSX.Element {
                   <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
                   {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
 
-                  <div onClick={closeModal3}>
+                  <div onClick={closeReceiveModal}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
 
