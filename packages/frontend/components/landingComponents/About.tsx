@@ -62,7 +62,8 @@ const About = (): JSX.Element => {
 
           </p>
           <p className='text-sm md:text-base'>
-            SkyeKiwi is a privacy layer for blockchains.SkyeKiwi is a privacy layer for blockchains.SkyeKiwi is a privacy layer for blockchains.SkyeKiwi is a privacy layer for blockchains.SkyeKiwi is a privacy layer for blockchains.SkyeKiwi is a privacy layer for blockchains.SkyeKiwi is a privacy layer for blockchains.
+            SkyeKiwi is a privacy layer for blockchains.
+            A Substrate-based privacy-first blockchain for concealed smart contract execution with interoperability and novel economic models of data ownership.
           </p>
         </motion.div>
       </div>
