@@ -101,14 +101,17 @@ export const userSlice = createSlice({
 
         state.userAccount[account.address] = account;
       }
-
-      // set the first account 应该是last吧 最新引入的在最后 这个位置可改成引入账户时 把useraccount放到初始 localstorage也是
       state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
       if (state.currentUserAccount) {
-        state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
+        try {
+          state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
+        } catch(e) {
+          console.log(e);
+          state.error = "You have typed in a wrong password. It's the password you set when creating the wallet.";
+        }
       }
     },
 

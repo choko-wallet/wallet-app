@@ -192,7 +192,7 @@ function Home (): JSX.Element {
     dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
       .unwrap()
       .then((result) => {
-        console.log('result', result);// 直接给回组件 没传给redux 也可以给redux保存
+        console.log('result', result);
       }).catch((rejectedValueOrSerializedError) => {
         console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
       });
