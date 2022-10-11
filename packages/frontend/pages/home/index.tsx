@@ -166,7 +166,10 @@ function Home (): JSX.Element {
 
         localStorage.setItem('serialziedUserAccount', u8aToHex(se));
 
-        setMigInProcess(false);
+        setTimeout(() => {
+          setMigInProcess(false);
+        }, 3000);
+        
         // const userAccount = UserAccount.deserialize( hexToU8a(serialziedUserAccount) );
         // console.log(userAccount);
       }
