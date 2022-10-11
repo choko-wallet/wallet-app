@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 // http://localhost:3000/request?requestType=signTx&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da806b5292c2c0c0c7cc7b4cf1871efdffebbfc9f77cffd1b85d76e08fab13afd60ae8bcb9d2d5de49dc642a1bf46c1a00600ab7d2aa6&callbackUrl=https://localhost:3001/callback
@@ -30,15 +30,22 @@ function SignTxHandler (): JSX.Element {
   const [displayType, setDisplayType] = useState<string>('hex');
 
   const [request, setRequest] = useState<SignTxRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    if (!router.isReady) return;
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
 
-      setRequest(SignTxRequest.deserialize(u8aRequest));
-    }
-  }, [router.query]);
+    setRequest(SignTxRequest.deserialize(u8aRequest));
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -46,17 +53,21 @@ function SignTxHandler (): JSX.Element {
         if (!userAccount[account].isLocked) {
           void (async () => {
             const signTx = new SignTxDescriptor();
-            const response = await signTx.requestHandler(request, userAccount[account]);
 
-            console.error(response);
-            const s = response.serialize();
+            try {
+              const response = await signTx.requestHandler(request, userAccount[account]);
+              const s = response.serialize();
 
-            setResponse(compressParameters(s));
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            } catch (err) {
+              alert(err);
+              console.error(err);
+            }
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
@@ -66,10 +77,7 @@ function SignTxHandler (): JSX.Element {
     setOpenPasswordModal(false);
 
     if (request) {
-      dispatch(unlockUserAccount({
-        address: request.userOrigin.address,
-        password: password
-      }));
+      dispatch(decryptCurrentUserAccount(password));
     } else {
       alert('unexpected!');
     }
@@ -114,10 +122,6 @@ function SignTxHandler (): JSX.Element {
             </div>
 
             <div className='col-span-12'>
-              <code className='underline'
-                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
-            </div>
-            <div className='col-span-12'>
               <div className='divider'></div>
             </div>
             <div className='col-span-12'>
@@ -137,11 +141,11 @@ function SignTxHandler (): JSX.Element {
               {
                 displayType === 'hex'
                   ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400'
                       style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
                   )
                   : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400'
                       style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.encoded)}</div>
                   )
               }

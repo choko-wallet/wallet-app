@@ -29,6 +29,8 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
+  const [redirectRequest, setRedirectRequest] = useState<string>('');
+
   const refreshMnemonic = () => {
     const mnemonic = mnemonicGenerate();
 
@@ -37,13 +39,38 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   };
 
   const handleSetPassword = () => {
+    console.log('first');
+    console.log(localStorage.getItem('serialziedUserAccount'));// null
+
     dispatch(addUserAccount({ password: password, seeds: seeds }));
-    void router.push('/home');
+    // 异步生成localStorage.getItem('serialziedUserAccount')
+    console.log('localStorage');
+    console.log(localStorage);// 里面就有了这两个变量
+    // serialziedUserAccount → "3e082ced8b973899c592c6db823f0767752562d49f23ed76a8f9c0b06811605600000000"
+    //
+    // lockedPrivateKey → "8f8a8ce8b41221b7c5c2ed271e9588f836197b0f58d818273f14806556bfbe44d02f8a7b589dd6cab1764fed1d6174605852ff6e6eb005eee30c73f44252c99a1c6ea669e9a1288b00000000"
+
+    if (redirectRequest) {
+      void router.push('/request?' + redirectRequest);
+    } else {
+      void router.push('/home');
+    }
   };
 
   useEffect(() => {
+    const redirectParams = localStorage.getItem('requestParams');
+    // console.log('first')
+    // console.log(redirectParams)//null
+
+    localStorage.removeItem('requestParams');
+    // console.log(redirectParams)//null
+
+    if (redirectParams) {
+      setRedirectRequest(redirectParams);
+    }
+
     setMounted(true);
-  }, []);
+  }, [router]);
 
   if (!mounted) {
     return null;
@@ -56,14 +83,14 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
       <div className='md:hidden col-span-12'></div>
 
       <ul className='steps steps-horizontal col-span-10 col-start-2 md:col-span-6 md:col-start-4'>
-        <li className={`step ${step > 0 ? 'step-neutral' : ''}`}>
-        Generate Mnemonic
+        <li className={`text-black step ${step > 0 ? 'step-neutral  ' : ' '}`}>
+          <p className='text-black'>Generate Mnemonic</p>
         </li>
         <li className={`step ${step > 1 ? 'step-neutral' : ''}`}>
-        Verify
+          <p className='text-black'>Verify</p>
         </li>
         <li className={`step ${step > 2 ? 'step-neutral' : ''}`}>
-        Set a Password
+          <p className='text-black'>Set a Password</p>
         </li>
       </ul>
 
@@ -74,167 +101,167 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
       <div className='hidden md:block col-span-12'></div>
 
       {step === 1 &&
-      <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-        <div className='col-span-12 shadow-xl rounded-lg'>
-          <div className='card p-5 md:p-6 bg-white'>
-            <h2 className='card-title'>
-              Create Mnemonic
-            </h2>
-            <h3>Generate a 12 words mnemonic.</h3>
-            <div className='grid grid-cols-12 gap-5 m-6 select-none'>
-              {seeds.split(' ').map((seed, index) =>
-                <div className='col-span-6 md:col-span-3 p-2 text-center rounded-lg border border-netrual-200'
-                  key={index}>
-                  <p>{seed}</p>
-                </div>
-              )}
+        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
+          <div className='col-span-12 shadow-xl rounded-lg'>
+            <div className='card p-5 md:p-6 bg-white'>
+              <h2 className='card-title text-black'>
+                Create Mnemonic
+              </h2>
+              <h3 className=' text-black'>Generate a 12 words mnemonic.</h3>
+              <div className='grid grid-cols-12 gap-5 m-6 select-none'>
+                {seeds.split(' ').map((seed, index) =>
+                  <div className='col-span-6 md:col-span-3 p-2 text-center rounded-lg border border-netrual-200'
+                    key={index}>
+                    <p className=' text-black'>{seed}</p>
+                  </div>
+                )}
 
-              <button className='btn col-span-6 md:col-span-5'
-                onClick={refreshMnemonic}>
+                <button className='btn col-span-6 md:col-span-5'
+                  onClick={refreshMnemonic}>
 
-                {/* // TODO: I broke cursor-pointer-group-active. changed to Hover for now */}
-                <RefreshIcon className='h-5 duration-300 hover:rotate-180 transtion east-out' />
-                <span className='md:ml-3'>Refresh</span>
-              </button>
-
-              <CopyToClipboard onCopy={() => setCopied(true)}
-                text={seedsStringForCopy}>
-                <button className='btn btn-accent col-span-6 md:col-span-4'>
-                  <DuplicateIcon className='h-5 duration-300 hover:scale-125 transtion east-out' />
-                  <span className='md:ml-3'>Copy</span>
+                  {/* // TODO: I broke cursor-pointer-group-active. changed to Hover for now */}
+                  <RefreshIcon className='h-5 duration-300 hover:rotate-180 transtion east-out' />
+                  <span className='md:ml-3'>Refresh</span>
                 </button>
-              </CopyToClipboard>
 
-              {
-                copied && <button
-                  className='btn btn-outline btn-success col-span-2 border-none'>
-                Copied!</button>
-              }
+                <CopyToClipboard onCopy={() => setCopied(true)}
+                  text={seedsStringForCopy}>
+                  <button className='btn btn-accent col-span-6 md:col-span-4'>
+                    <DuplicateIcon className='h-5 duration-300 hover:scale-125 transtion east-out' />
+                    <span className='md:ml-3'>Copy</span>
+                  </button>
+                </CopyToClipboard>
+
+                {
+                  copied && <button
+                    className='btn btn-outline btn-success col-span-2 border-none'>
+                    Copied!</button>
+                }
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className='col-span-12 my-4'></div>
+          <div className='col-span-12 my-4'></div>
 
-        <div className='col-span-4 col-start-4'>
-          <button className='btn btn-error btn-circle btn-lg'
-            onClick={() => router.push('/')} >
-            <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
-        </div>
+          <div className='col-span-4 col-start-4'>
+            <button className='btn btn-error btn-circle btn-lg'
+              onClick={() => router.push('/')} >
+              <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
 
-        <div className='col-span-4'>
-          <button className='btn btn-accent btn-circle btn-lg'
-            onClick={() => setStep(step + 1)} >
-            <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
+          <div className='col-span-4'>
+            <button className='btn btn-accent btn-circle btn-lg'
+              onClick={() => setStep(step + 1)} >
+              <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
         </div>
-      </div>
       }
 
       {step === 2 &&
 
-      <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-        <div className=' col-span-12 shadow-xl rounded-lg'>
-          <div className='card p-5 md:p-6 bg-white'>
-            <h2 className='card-title'>
-              Verify
-            </h2>
-            <h3>Verify if you have securely remember these mneomic.</h3>
-
-            <div className='grid grid-cols-12 gap-5 m-6'>
-
-              {/* TODO: Should not use this pt-2, but some vertical-align instead */}
-              <h2 className='col-span-6 pt-2'>
-                <span className=''>What is Word #{quizMnemonic}</span>
+        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
+          <div className=' col-span-12 shadow-xl rounded-lg'>
+            <div className='card p-5 md:p-6 bg-white'>
+              <h2 className='card-title text-black'>
+                Verify
               </h2>
-              <div className='col-span-6'>
-                <input className='input input-bordered w-full max-w-xs'
-                  onChange={(e) => setVerifyMnemonic(e.target.value)}
+              <h3 className='card-title text-black'>Verify if you have securely remember these mneomic.</h3>
 
-                  placeholder='Verify'
-                  type='text'
+              <div className='grid grid-cols-12 gap-5 m-6'>
 
-                  value={verifyMnemonic}
-                />
+                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+                <h2 className='col-span-6 pt-2'>
+                  <span className='text-black'>What is Word #{quizMnemonic}</span>
+                </h2>
+                <div className='col-span-6'>
+                  <input className='input input-bordered w-full max-w-xs'
+                    onChange={(e) => setVerifyMnemonic(e.target.value)}
+
+                    placeholder='Verify'
+                    type='text'
+
+                    value={verifyMnemonic}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className='col-span-12 my-4'></div>
+          <div className='col-span-12 my-4'></div>
 
-        <div className='col-span-4 col-start-4'>
-          <button className='btn btn-error btn-circle btn-lg'
-            onClick={() => setStep(1)} >
-            <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
-        </div>
+          <div className='col-span-4 col-start-4'>
+            <button className='btn btn-error btn-circle btn-lg'
+              onClick={() => setStep(1)} >
+              <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
 
-        <div className='col-span-4'>
-          <button className={`btn btn-accent btn-circle btn-lg ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'btn-disabled'}`}
-            onClick={() => setStep(step + 1)} >
-            <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
+          <div className='col-span-4'>
+            <button className={`btn btn-accent btn-circle btn-lg ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'btn-disabled'}`}
+              onClick={() => setStep(step + 1)} >
+              <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
         </div>
-      </div>
       }
 
       {step === 3 &&
-      <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-        <div className=' col-span-12 shadow-xl rounded-lg'>
-          <div className='card p-5 md:p-6 bg-white'>
-            <h2 className='card-title'>
-              Set a Password
-            </h2>
-            <h3>Set a local password for you walelt. </h3>
-
-            <div className='grid grid-cols-12 gap-5 m-6'>
-              {/* TODO: Should not use this pt-2, but some vertical-align instead */}
-              <h2 className='col-span-5 pt-2'>
-                <span className=''>Set a good password</span>
+        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
+          <div className=' col-span-12 shadow-xl rounded-lg'>
+            <div className='card p-5 md:p-6 bg-white'>
+              <h2 className='card-title text-black'>
+                Set a Password
               </h2>
-              <div className='col-span-7'>
-                <input className='input input-bordered w-full max-w-xs'
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder='Set a Password'
+              <h3 className=' text-black'>Set a local password for you wallet. </h3>
 
-                  type='password'
-                  value={password}
-                />
+              <div className='grid grid-cols-12 gap-5 m-6'>
+                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+                <h2 className='col-span-5 pt-2'>
+                  <span className='text-black'>Set a good password</span>
+                </h2>
+                <div className='col-span-7'>
+                  <input className='input input-bordered w-full max-w-xs'
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder='Set a Password'
+
+                    type='password'
+                    value={password}
+                  />
+                </div>
               </div>
-            </div>
-            <div className='grid grid-cols-12 gap-5 m-6'>
-              {/* TODO: Should not use this pt-2, but some vertical-align instead */}
-              <h2 className='col-span-5 pt-2'>
-                <span className=''>Repeat Password</span>
-              </h2>
-              <div className='col-span-7'>
-                <input className='input input-bordered w-full max-w-xs'
-                  onChange={(e) => setRepeatPassword(e.target.value)}
-                  placeholder='Repeat the Password'
-                  type='password'
-                  value={repeatPassword}
-                />
+              <div className='grid grid-cols-12 gap-5 m-6'>
+                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+                <h2 className='col-span-5 pt-2'>
+                  <span className='text-black'>Repeat Password</span>
+                </h2>
+                <div className='col-span-7'>
+                  <input className='input input-bordered w-full max-w-xs'
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                    placeholder='Repeat the Password'
+                    type='password'
+                    value={repeatPassword}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className='col-span-12 my-4'></div>
+          <div className='col-span-12 my-4'></div>
 
-        <div className='col-span-4 col-start-4'>
-          <button className='btn btn-error btn-circle btn-lg'
-            onClick={() => setStep(1)} >
-            <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
+          <div className='col-span-4 col-start-4'>
+            <button className='btn btn-error btn-circle btn-lg'
+              onClick={() => setStep(1)} >
+              <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
+          <div className='col-span-4 '>
+            <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
+              onClick={() => handleSetPassword()}>
+              <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
         </div>
-        <div className='col-span-4 '>
-          <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
-            onClick={() => handleSetPassword()}>
-            <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-          </button>
-        </div>
-      </div>
       }
     </main>
   );

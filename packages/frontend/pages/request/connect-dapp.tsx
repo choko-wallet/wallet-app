@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { loadUserAccount, unlockUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { decryptCurrentUserAccount, loadUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 
@@ -32,10 +32,9 @@ function ConnectDappHandler (): JSX.Element {
   const [allAccounts, setAllAccounts] = useState<string[]>(['']);
 
   const [request, setRequest] = useState<ConnectDappRequest>(null);
-  const [response, setResponse] = useState<Uint8Array>(new Uint8Array());
+  const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    // TODO: is this right?
     if (allAccounts && currentAccount) {
       return;
     }
@@ -47,20 +46,27 @@ function ConnectDappHandler (): JSX.Element {
     }
 
     if (userAccount && Object.keys(userAccount).length > 0) {
-      const allAddrs = Object.keys(userAccount);
+      const allAddress = Object.keys(userAccount);
 
-      setCurrentAccount(allAddrs[0]);
-      setAllAccounts(allAddrs);
+      setCurrentAccount(allAddress[0]);
+      setAllAccounts(allAddress);
     }
   }, [router, dispatch, userAccount, currentAccount, allAccounts]);
 
   useEffect(() => {
-    if (router.query) {
-      const u8aRequest = decompressParameters(hexToU8a(router.query.payload as string));
+    if (!router.isReady) return;
+    const payload = router.query.payload as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
 
-      setRequest(ConnectDappRequest.deserialize(u8aRequest));
-    }
-  }, [router]);
+    setRequest(ConnectDappRequest.deserialize(u8aRequest));
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const callbackUrl = router.query.callbackUrl as string;
+
+    setCallback(callbackUrl);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && Object.keys(userAccount).length > 0) {
@@ -69,16 +75,14 @@ function ConnectDappHandler (): JSX.Element {
           void (async () => {
             const connectDapp = new ConnectDappDescriptor();
             const response = await connectDapp.requestHandler(request, userAccount[account]);
-
-            console.error(response);
             const s = response.serialize();
 
-            setResponse(compressParameters(s));
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
           })();
         }
       }
     }
-  }, [userAccount, request]);
+  }, [userAccount, request, callback]);
 
   useEffect(() => {
     setMounted(true);
@@ -88,10 +92,7 @@ function ConnectDappHandler (): JSX.Element {
     setOpenPasswordModal(false);
 
     if (request) {
-      dispatch(unlockUserAccount({
-        address: currentAccount,
-        password: password
-      }));
+      dispatch(decryptCurrentUserAccount(password));
     } else {
       alert('unexpected!');
     }
@@ -101,16 +102,14 @@ function ConnectDappHandler (): JSX.Element {
     return null;
   }
 
-  console.log(userAccount);
-
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
         <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
       </div>
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
@@ -121,39 +120,35 @@ function ConnectDappHandler (): JSX.Element {
           <h3>Give the Dapp your public address.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
-            <br/>
+            <br />
             <div className='col-span-12'>
               DApp Origin:
             </div>
             <div className='col-span-12'>
-              <code className='underline text-clip'>{request.dappOrigin.displayName}</code>
+              <code className='underline text-clip'>{request?.dappOrigin.displayName}</code>
             </div>
-            <div className='col-span-12'>
-              <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{u8aToHex(response)}</code>
-            </div>
-
             <RadioGroup className='col-span-12'
               onChange={setCurrentAccount}
               value={currentAccount}>
               {allAccounts.map((name, index) => (
                 <RadioGroup.Option
-                  className={({ active, checked }) =>
+                  className={({ checked }) =>
                     `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                       m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
                   }
                   key={index}
                   value={name}
                 >
-                  {({ active, checked }) => (
+                  {({ checked }) => (
                     <div className='flex w-full items-center justify-between'>
                       <div className='flex items-center'>
                         <div className='text-sm'>
                           <RadioGroup.Label
-                            as='p'
-                            className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
+                            as='div'
+                            className={`font-medium ${checked ? 'text-white' : 'text-gray-900'}`}
                           >
-                            {name}
+                            <div className='w-1/2 md:w-full'
+                              style={{ overflowWrap: 'break-word' }}>{name}</div>
                           </RadioGroup.Label>
                         </div>
                       </div>
@@ -167,33 +162,6 @@ function ConnectDappHandler (): JSX.Element {
                 </RadioGroup.Option>
               ))}
             </RadioGroup>
-            {/* <div className='col-span-12'>
-              <div className='divider'></div>
-            </div>
-            <div className='col-span-12'>
-              Message To Sign:
-            </div>
-
-            <div className='col-span-12'>
-              <div className='tabs'>
-                <a className={`tab tab-bordered ${displayType === 'hex' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('hex')}>Hex</a>
-                <a className={`tab tab-bordered ${displayType === 'ascii' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('ascii')}>Ascii</a>
-              </div>
-            </div>
-
-            <div className='col-span-12'>
-              {
-                displayType === 'hex'
-                  ? (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'>{'0x' + u8aToHex(request.payload.message)}</div>
-                  )
-                  : (
-                    <div className='textarea h-[10vh] font-mono border-gray-400'>{u8aToString(request.payload.message)}</div>
-                  )
-              }
-            </div> */}
           </div>
         </div>
       </div>
@@ -245,7 +213,7 @@ function ConnectDappHandler (): JSX.Element {
                     as='h3'
                     className='text-lg font-medium leading-6 text-gray-900'
                   >
-                  Unlock Wallet with Password
+                    Unlock Wallet with Password
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
@@ -265,7 +233,7 @@ function ConnectDappHandler (): JSX.Element {
                       onClick={closeModal}
                       type='button'
                     >
-                    Unlock
+                      Unlock
                     </button>
                   </div>
                 </Dialog.Panel>

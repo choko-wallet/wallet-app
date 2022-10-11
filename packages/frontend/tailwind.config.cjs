@@ -7,16 +7,42 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}'
   ],
-  // daisyUI config (optional)
   daisyui: {
     darkTheme: 'light'
   },
-  plugins: [require('daisyui')],
+  darkMode: 'class',
+
+  // daisyUI config (optional)
+
+  plugins: [require('daisyui'), require('tailwind-scrollbar')],
   theme: {
     extend: {
       colors: {
-        footerBg: '#d8c9d8' // bg-footerBg
+        dimBlue: 'rgba(9, 151, 124, 0.1)',
+        footerBg: '#d8c9d8', // bg-footerBg
+        primary: '#00040f'
+
+      },
+      fontFamily: {
+        Josefin: ['Josefin Sans', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif']
+
+      },
+      height: {
+        '70v': '70vh',
+        '80v': '80vh',
+        '85v': '85vh',
+        '90v': '90vh'
+      },
+      screens: {
+        nxl: '2000px'
       }
     }
+
+  },
+  variants: {
+    // ...
+    scrollbar: ['dark']
   }
+
 };

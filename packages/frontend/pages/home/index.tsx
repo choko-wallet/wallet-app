@@ -1,449 +1,558 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Popover, RadioGroup, Transition } from '@headlessui/react';
-import { CheckIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon, PaperAirplaneIcon, ChevronDownIcon, DocumentDuplicateIcon } from '@heroicons/react/solid';
+import { Dialog } from '@headlessui/react';
+import { CameraIcon, CheckIcon, ChevronRightIcon, XIcon } from '@heroicons/react/outline';
+import { DocumentDuplicateIcon, DownloadIcon, PaperAirplaneIcon } from '@heroicons/react/solid';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import { useRouter } from 'next/router';
-import Image from 'next/image'
-import React, { Fragment, useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import btcIcon from '../../images/btc.png'
-// redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import QRCode from 'react-qr-code';
+import { QrReader } from 'react-qr-reader';
+import { useSelector } from 'react-redux';
+import { CSSTransition } from 'react-transition-group';
 
-import { selectUserAccount } from '../../features/redux/selectors';
+import Balance from '@choko-wallet/frontend/components/Balance';
+import Footer from '@choko-wallet/frontend/components/Footer';
+import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
+import { fetchCoinPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
+import { knownNetworks } from '@choko-wallet/known-networks';
+
+import DropdownForNetwork from '../../components/DropdownForNetwork';
+import DropdownForSend from '../../components/DropdownForSend';
+import Header from '../../components/Header';
+import Loading from '../../components/Loading';
+import Modal from '../../components/Modal';
+import { selectChangeCurrentAccountLoading } from '../../features/redux/selectors';
+import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
 
+interface Crypto {
+  name: string;
+  img: string;
+  price: number;
+  shortName: string;
+  networkFee: string;
+  estimatedTime: string;
+  arrival: string;
+  MinDeposit: string;
+}
+
+const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
+
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
+function Home (): JSX.Element {
+  const nodeRef = React.useRef(null);
+  const { setTheme, theme } = useTheme();
   const router = useRouter();
-  const dispatch = useDispatch();
-
-  const userAccount = useSelector(selectUserAccount);
-
-  const [currentAccount, setCurrentAccount] = useState<string>('');
-  const [allAccounts, setAllAccounts] = useState<string[]>(['']);
-
-  const [networkSelection, setNetworkSelection] = useState<string>('');
-  const [network, setNetwork] = useState<string>('polkadot');
-
+  // const dispatch = useDispatch();
+  const dispatch = useAppThunkDispatch();
+  // const coinPriceFromRedux = useSelector(selectCoinPrice);
+  // const currentUserAccount = useSelector(selectCurrentUserAccount);
+  // const reduxError = useSelector(selectError);
+  const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
+  const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');
+  const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
   const [mounted, setMounted] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [balance, setBalance] = useState<number>(0);
+  const [isNetworkChangeOpen, setIsNetworkChangeOpen] = useState<boolean>(false);
+  const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
+  const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
+  const [amount, setAmount] = useState<number>(0);
+  const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
+  const [openScan, setOpenScan] = useState<boolean>(false);
+  const [addressToSend, setAddressToSend] = useState<string>('');
+  const [showCheck, setShowCheck] = useState<boolean>(false);
+  const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
+  const [networkInput, setNetworkInput] = useState<string>('');
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
+  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [networkToReceive, setNetworkToReceive] = useState<string>('');
+  const cryptoInfo = [
+    { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
+    { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData?.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
+    { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
+  ];
 
-  useEffect(() => {
+  const currentAccount = '';
+  const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
+
+  useEffect(() => { // for changing network or account
+    const getBalance = async () => {
+      const provider = new WsProvider(knownNetworks[network].defaultProvider);
+      const api = await ApiPromise.create({
+        provider: provider
+      });
+
+      const data = await api.query.system.account(currentAccount);
+      // console.error(data['data'].toHuman()['free']);
+
+      const tokenDecimals = {
+        '847e7b7fa160d85f': 12,
+        '0018a49f151bcb20': 12,
+        e658ad422326d7f7: 10
+      };
+
+      /* eslint-disable */
+      // @ts-ignore
+      setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** tokenDecimals[network]));
+      /* eslint-enable */
+      console.log('balance', balance);
+      // const chainInfo = await api.registry.getChainProperties()
+      // return ( data.createdAtHash.free )
+    };
+
+    void getBalance();
+
+    void dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }));
+  }, [network, currentAccount, balance, dispatch]);
+
+  // console.log('coinPriceFromRedux', coinPriceFromRedux)
+
+  useEffect(() => { // for intialization
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
+      setMounted(true);
+
+      if (theme !== 'dark' && theme !== 'light') {
+        setTheme('light');
+      }
+
       dispatch(loadUserAccount());
     }
 
-    if (userAccount && Object.keys(userAccount).length > 0) {
-      const allAddrs = Object.keys(userAccount);
+    console.log('intialization');
+  }, [dispatch, router, setTheme, theme]);
 
-      setCurrentAccount(allAddrs[0]);
-      setAllAccounts(allAddrs);
-    }
-  }, [dispatch, router, userAccount]);
+  if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const allNetworks = [{
-    name: 'Polkadot',
-    info: 'polkadot',
-    rpc: 'wss://polkadot.parity.io/ws',
-    color: 'red-500'
-  }, {
-    name: 'Kusama',
-    info: 'kusama',
-    rpc: 'wss://kusama.parity.io/ws',
-    color: 'gray-500'
-  }, {
-    name: 'SkyeKiwi',
-    info: 'skyekiwi',
-    rpc: 'wss://rpc.skye.kiwi',
-    color: 'blue-500'
-  }];
-
-  if (!mounted) {
-    return null;
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-    setNetworkSelection('');
-    setNetwork(networkSelection);
-    console.log('close');
-  }
+  if (isLoadingOpen) return <Loading title='Changing Network' />;
+  if (changeAccountLoading) return <Loading title='Changing Account' />;
 
   const changeNetwork = async () => {
-    const notification = toast.loading('Changing Network...', {
-      style: {
-        background: 'green',
-        color: 'white',
-        // fontWeight: "bolder",
-        // fontFamily: "Poppins",
-        fontSize: '17px',
-        padding: '20px'
-      }
-    });
+    dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
+      .unwrap()
+      .then((result) => {
+        console.log('result', result);// 直接给回组件 没传给redux 也可以给redux保存
+      }).catch((rejectedValueOrSerializedError) => {
+        console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
+      });
+
+    setIsLoadingOpen(true);
+    setNetwork(networkSelection);
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
-        console.log('changeNetwork');
-        toast.dismiss(notification);
-
-        setIsOpen(true);
+        setIsLoadingOpen(false);
+        setIsNetworkChangeOpen(true);
 
         resolve();
       }, 3000);
     });
   };
 
-  function closeModal2() {
-    setIsSendOpen(false)
+  function closeNetworkChangeModal () {
+    setIsNetworkChangeOpen(false);
   }
 
+  function closeSendModal () {
+    setIsSendOpen(false);
+  }
 
-  return (<main className='grid grid-cols-12 gap-4 min-h-screen content-between bg-gray-400'>
-    <Toaster />
-    <div className='col-span-12'>
-      <div className='navbar bg-base-100'>
+  function closeReceiveModal () {
+    setIsReceiveOpen(false);
+  }
 
-        <div className='navbar-start'>
-          {/* TODO: fix the logo */}
-          <a className='btn btn-ghost normal-case text-xl'
-            onClick={() => router.push('/')}>
-            Choko
-            {/* <Image
-                  className='relative w-10 m-0'
-                  // layout='fill'
-                  objectFit='fill'
-                  src={logo}
-                /> */}
-          </a>
-        </div>
+  function closeAddNetworkModal () {
+    setAddNetworkModalOpen(false);
+    setNetworkInput('');
+  }
 
-        <div className='navbar-center'></div>
+  const handleCopy = () => {
+    setShowCheck(true);
+    setTimeout(() => {
+      setShowCheck(false);
+    }, 1000);
+  };
 
-        <div className='navbar-end'>
-          <Popover className='relative'>
-            {({ open }) => (
-              <>
-                <Popover.Button
-                  className={`
-                    ${open ? '' : 'text-opacity-90'} btn btn-ghost bg-stone-200 normal-case`}
-                >
-                  <UserCircleIcon className='h-6 w-6 mr-5' />
-                  <span className='hidden md:block'>{currentAccount.substring(0, 13)} ... {currentAccount.substring(currentAccount.length - 13, currentAccount.length)}</span>
-                  <span className='block md:hidden'>{currentAccount.substring(0, 10)} ...</span>
-                </Popover.Button>
-                <Transition
-                  as={Fragment}
-                  enter='transition ease-out duration-200'
-                  enterFrom='opacity-0 translate-y-1'
-                  enterTo='opacity-100 translate-y-0'
-                  leave='transition ease-in duration-150'
-                  leaveFrom='opacity-100 translate-y-0'
-                  leaveTo='opacity-0 translate-y-1'
-                >
-                  <Popover.Panel className='absolute z-10 w-full max-w-sm transform sm:px-0 lg:max-w-3xl'>
-                    <div className='overflow-hidden rounded-lg shadow-lg'>
-                      <div className='relative grid grid-cols-2 gap-4 bg-white py-5'>
-                        {allAccounts.map((name, index) => (
-                          <div
-                            className='px-5 items-center col-span-2 rounded-lg py-2 transition duration-150 ease-in-out hover:bg-gray-50'
-                            key={index}
-                          >
-                            <p className='text-sm font-medium text-gray-900 normal-case'> {name.substring(0, 13)} ... {name.substring(name.length - 13, name.length)}</p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className='bg-gray-50 p-4'>
-                        <div
-                          className='flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100'
-                          onClick={() => router.push('/account')}
-                        >
-                          <span className='flex items-center'>
-                            <span className='text-sm font-medium text-gray-900'>
-                              Add New Account
-                            </span>
-                          </span>
-                          <span className='block text-sm text-gray-500'>
-                            Create or Import new Account
-                          </span>
-                        </div>
-                      </div>
+  return (
+    <div className={theme}>
 
-                      <div className='bg-gray-200 p-4'>
-                        <div
-                          className='flow-root rounded-md px-2 py-2 transition duration-200 ease-in-out hover:bg-gray-100'
-                        >
-                          <span className='flex items-center'>
-                            <span className='text-sm font-medium text-gray-900'>
-                              Remove Account
-                            </span>
-                          </span>
-                          <span className='block text-sm text-gray-500'>
-                            Remove Current Account
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Popover.Panel>
-                </Transition>
-              </>
-            )}
-          </Popover>
-        </div>
-      </div>
-    </div>
+      <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
+        {/* <Toaster /> */}
+        <Header />
 
-    <div className='col-span-12 mx-3 h-[30vh] md:h-[70vh] md:col-span-7 md:col-start-2 shadow-xl rounded-xl  bg-white'>
-      <div className='card p-10'>
-        <h2 className='card-title text-3xl'> $793.32 </h2>
-        <h3>Your avalaible token Balance on the current network. </h3>
-      </div>
-
-      <div className="flex items-center justify-center">
-        <button
-          type="button"
-          onClick={() => setIsSendOpen(true)}
-          className="rounded-md bg-black bg-opacity-60 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 flex items-center justify-center"
+        {/* drawer */}
+        <CSSTransition
+          className='md:hidden z-40 p-6 w-[300px] bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 bottom-0'
+          classNames='drawer'
+          in={drawerOpen}
+          nodeRef={nodeRef}
+          timeout={500}
+          unmountOnExit
         >
-          <PaperAirplaneIcon className='rotate-45 text-white h-5 w-5' />Send
-        </button>
-      </div>
-    </div >
+          <div ref={nodeRef}>
+            <p className='text-lg flex  w-full font-semibold justify-between text-black dark:text-white font-poppins  '>Change Network
+              <XIcon className=' text-black dark:text-white h-8 w-8 cursor-pointer '
+                onClick={() => setDrawerOpen(!drawerOpen)} />
+            </p>
 
-    <div className='col-span-12 mx-3 mb-10 md:mb-0 md:col-span-3 shadow-xl rounded-xl bg-white grid grid-col-12 content-between'>
-      <div className='col-span-12 card p-5'>
-        <RadioGroup onChange={setNetworkSelection}
-          value={networkSelection || network}>
-          {allNetworks.map(({ info, name, rpc }) => (
-            <RadioGroup.Option
-              className={({ active, checked }) =>
-                `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
-                  m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
-              }
-              key={name}
-              value={info}
-            >
-              {({ active, checked }) => (
-                <div className='flex w-full items-center justify-between'>
-                  <div className='flex items-center'>
-                    <div className='text-sm'>
-                      <RadioGroup.Label
-                        as='p'
-                        className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'}`}
-                      >
-                        {name}
-                      </RadioGroup.Label>
-                      <RadioGroup.Description
-                        as='span'
-                        className={`inline ${checked ? 'text-stone-100' : 'text-gray-500'}`}
-                      >
-                        {rpc}
-                      </RadioGroup.Description>
-                    </div>
-                  </div>
-                  {checked && (
-                    <div className='shrink-0 text-white'>
-                      <CheckCircleIcon className='h-6 w-6' />
-                    </div>
-                  )}
-                </div>
-              )}
-            </RadioGroup.Option>
-          ))}
-        </RadioGroup>
-      </div>
-      <div className='col-span-3 col-start-3 mb-5 md:mb-20'>
-        <button className='btn btn-error btn-circle btn-md'
-          onClick={() => setNetworkSelection('')} >
-          <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-        </button>
-      </div>
-      <div className='col-span-3 col-start-8'>
-        <button className={`btn btn-accent btn-circle btn-md ${networkSelection ? '' : 'btn-disabled'}`}
-          onClick={async () => {
-            await changeNetwork();
-          }} >
-          <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-        </button>
-      </div>
-    </div>
+            <div className='flex md:flex-col items-center md:h-full bg-transparent' >
 
-    <div className='col-span-12'> </div>
+              <NetworkSelection
+                changeNetwork={changeNetwork}
+                network={network}
+                networkSelection={networkSelection}
+                setAddNetworkModalOpen={setAddNetworkModalOpen}
+                setNetworkSelection={setNetworkSelection} />
 
-    <Transition appear
-      as={Fragment}
-      show={isOpen}>
-      <Dialog as='div'
-        className='relative z-10'
-        onClose={closeModal}>
-        <Transition.Child
-          as={Fragment}
-          enter='ease-out duration-300'
-          enterFrom='opacity-0'
-          enterTo='opacity-100'
-          leave='ease-in duration-200'
-          leaveFrom='opacity-100'
-          leaveTo='opacity-0'
-        >
-          <div className='fixed inset-0 bg-black bg-opacity-25' />
-        </Transition.Child>
+            </div>
+          </div>
+        </CSSTransition>
 
-        <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4 text-center'>
-            <Transition.Child
-              as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0 scale-95'
-              enterTo='opacity-100 scale-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100 scale-100'
-              leaveTo='opacity-0 scale-95'
-            >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+        < main className='min-h-[750px] bg-transparent h-85v  dark:bg-[#22262f] max-w-7xl mx-auto' >
+          <div className='bg-transparent flex-col h-full  flex md:flex-row m-3 md:m-10'>
+            <div className='bg-transparent'>
+              <button
+                className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
+                onClick={() => setDrawerOpen(!drawerOpen)}
+              >
+                <p className='ml-1  text-white text-md font-semibold font-poppins'>NETWORK</p>
+                <ChevronRightIcon className=' text-white h-6 w-6 ml-6  ' />
+              </button>
+              <p className='ml-1 hidden md:block text-gray-800 dark:text-white text-md font-semibold font-poppins'>NETWORK</p>
+
+              {/* wideScreen network */}
+              <div className=' hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f] items-center md:h-full mr-10' >
+                <NetworkSelection
+                  changeNetwork={changeNetwork}
+                  network={network}
+                  networkSelection={networkSelection}
+                  setAddNetworkModalOpen={setAddNetworkModalOpen}
+                  setNetworkSelection={setNetworkSelection} />
+              </div>
+            </div>
+
+            <Balance
+              cryptoInfo={cryptoInfo}
+              currentNetworkName={knownNetworks[network].text}
+              setIsReceiveOpen={setIsReceiveOpen}
+              setIsSendOpen={setIsSendOpen} />
+
+          </div>
+
+          {/* network change modal */}
+          <Modal closeModal={closeNetworkChangeModal}
+            isOpen={isNetworkChangeOpen} >
+            <div className={theme}>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border  border-[#00f6ff] dark:border-[#00f6ff]'>
                 <Dialog.Title
                   as='h3'
-                  className='text-lg font-medium leading-6 text-gray-900'
+                  className='font-poppins text-lg font-medium leading-6 text-black dark:text-white w-72'
                 >
                   Changed successfully
                 </Dialog.Title>
                 <div className='mt-2'>
-                  <p className='text-sm text-gray-500'>
-                    {`Network changed to ${networkSelection}`}
+                  <p className='text-sm font-poppins text-gray-500 dark:text-white'>
+                    {`Network changed to ${knownNetworks[networkSelection].text}`}
                   </p>
                 </div>
 
                 <div className='mt-4'>
                   <button
-                    className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                    onClick={closeModal}
+                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                    onClick={closeNetworkChangeModal}
                     type='button'
                   >
                     OK
                   </button>
                 </div>
               </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+            </div>
+          </Modal>
 
-
-    <Transition appear
-      as={Fragment}
-      show={isSendOpen}>
-      <Dialog as='div'
-        className='relative z-10'
-        onClose={closeModal2}>
-        <Transition.Child
-          as={Fragment}
-          enter='ease-out duration-300'
-          enterFrom='opacity-0'
-          enterTo='opacity-100'
-          leave='ease-in duration-200'
-          leaveFrom='opacity-100'
-          leaveTo='opacity-0'
-        >
-          <div className='fixed inset-0 bg-black bg-opacity-25' />
-        </Transition.Child>
-
-        <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4 text-center'>
-            <Transition.Child
-              as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0 scale-95'
-              enterTo='opacity-100 scale-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100 scale-100'
-              leaveTo='opacity-0 scale-95'
-            >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+          {/* send modal */}
+          <Modal closeModal={closeSendModal}
+            isOpen={isSendOpen}>
+            <div className={theme}>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
                   as='h3'
-                  className='text-lg font-medium leading-6 flex '
+                  className='text-lg  font-medium leading-6 flex items-center mb-6 '
                 >
-                  <PaperAirplaneIcon className='rotate-45 text-gray-700 h-5 w-5' />
-                  <p className=' text-gray-700 '>Send Crypto</p>
+                  <div className='flex items-center  flex-grow'>
+                    <PaperAirplaneIcon className='rotate-45 text-gray-700 h-8 w-8 dark:text-[#03F3FF]' />
+                    {theme === 'dark'
+                      ? <p className=' text-gradient font-poppins'>Send Crypto</p>
+                      : <p className=' text-gray-700 font-poppins'>Send Crypto</p>
+                    }
+                  </div>
+                  <div onClick={closeSendModal}>
+                    <XIcon className='  h-8 w-8 cursor-pointer text-black dark:text-white' />
+                  </div>
                 </Dialog.Title>
                 <div className='mt-2 '>
-                  <p className=' text-gray-700'>Currency</p>
-                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
 
-                    <div className="relative h-5 w-5">
-                      <Image
-                        src={btcIcon}
-                        layout="fill"
-                        objectFit="contain"
+                  <DropdownForSend Cryptos={cryptoInfo}
+                    defaultValue={cryptoToSend}
+                    onClick={setCryptoToSend} />
+
+                  <p className=' text-gray-700 dark:text-white '>From</p>
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
+                    <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+
+                    <CopyToClipboard
+                      text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
+                      <div onClick={handleCopy}>
+                        {showCheck
+                          ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
+
+                      </div>
+                    </CopyToClipboard>
+                  </div>
+
+                  <div className='relative'>
+
+                    <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
+
+                    <input className='font-poppins input input-bordered input-info w-full '
+                      onChange={(e) => setAddressToSend(e.target.value)}
+                      placeholder='Destination Address'
+                      type='text'
+                      value={addressToSend} />
+                    <CameraIcon
+                      className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
+                      onClick={() => setOpenScan(!openScan)} />
+
+                  </div>
+
+                  {openScan &&
+                    <div>
+                      <QrReader
+                        className='absolute top-0 right-5 left-5 bottom-0 z-40'
+                        constraints={{ facingMode: 'user' }}
+                        onResult={(result, error) => {
+                          if (result) {
+                            // setAddressToSend(result?.text);//这个位置官方写法还报错 不行就换插件
+                            setOpenScan(false);
+                          }
+
+                          if (error) {
+                            console.info(error);
+                          }
+                        }}
                       />
-                    </div>
-                    <p className='flex flex-grow'> BTC</p>
-                    <ChevronDownIcon className=' text-gray-500 h-5 w-5' />
+                      <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
+                        <XIcon className='h-5 w-5'
+                          onClick={() => setOpenScan(false)} />
+                      </div>
 
-                  </div>
-
-                  <p className=' '>From</p>
-                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg '>
-                    <p className='flex flex-grow'>1111.....222222</p>
-                    <DocumentDuplicateIcon className=' text-gray-500 h-5 w-5' />
-                  </div>
-
-                  <p className=' text-gray-700 mt-3 mb-1'>To</p>
-                  <input type="text" placeholder="Destination Address" className=" input input-bordered input-info w-full " />
-
+                    </div>}
 
                   <div className='flex items-end'>
                     <div className='relative'>
-                      <p className=' text-gray-700 mt-3 mb-1'>Amount</p>
-                      <input type="text" placeholder="0" className=" input input-bordered input-info w-full " />
-                      <p className='absolute bottom-3 right-3'>BTC</p>
+                      <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
+
+                      <input
+
+                        className='font-poppins pr-12 input input-bordered input-info w-full '
+                        max='10000000'
+                        min='0'
+                        onChange={(e) => {
+                          setAmount(parseFloat(e.target.value));
+                          setAmountToCurrency(
+                            parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
+                        }}
+                        placeholder='0.0'
+                        type='number'
+                        value={amountToCurrency ? amount : null} />
+                      <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p>
                     </div>
+
                     <p className='mx-1 pb-3'>=</p>
                     <div className='relative'>
                       <p className=' text-gray-700'></p>
-                      <input type="text" placeholder="0" className=" input input-bordered input-info w-full " />
-                      <p className='absolute bottom-3 right-3'>USD</p>
+                      <input
+                        className='font-poppins pr-12  input input-bordered input-info w-full '
+                        max='10000000'
+                        min='0'
+                        onChange={(e) => {
+                          setAmountToCurrency(parseFloat(e.target.value));
+                          setAmount(
+                            parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
+                        }}
+                        placeholder='0.0'
+                        type='number'
+                        value={amount ? amountToCurrency : null} />
+                      <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
                     </div>
 
                   </div>
+                  <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p>
 
-                  <p className=' text-gray-700 py-1 pt-3'>Network Fee</p>
-                  <p className=' text-gray-700 text-sm'>0.00000123BTC(US$1.6)</p>
-                  <p className=' text-gray-700 text-sm'>Estimated confirmation time 20 min</p>
+                  <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p>
 
+                  <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p>
+
+                </div>
+
+                <div className='mt-4'>
+
+                  <button
+                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                    onClick={closeSendModal}
+
+                    type='button'
+                  >
+                    Send
+                  </button>
+
+                </div>
+              </Dialog.Panel>
+            </div>
+          </Modal>
+
+          {/* receive modal */}
+          <Modal closeModal={closeReceiveModal}
+            isOpen={isReceiveOpen}>
+            <div className={theme}>
+
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 flex items-center mb-6'
+                >
+
+                  <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
+                  {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
+
+                  <div onClick={closeReceiveModal}>
+                    <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
+                  </div>
+
+                </Dialog.Title>
+                <div className='mt-2 '>
+                  <DropdownForSend Cryptos={cryptoInfo}
+                    defaultValue={cryptoToReceive}
+                    onClick={setCryptoToReceive} />
+
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
+
+                  <DropdownForNetwork defaultValue={networkToReceive}
+                    networks={networks}
+                    onClick={setNetworkToReceive} />
+
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
+
+                  <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
+                    <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+
+                    <CopyToClipboard
+                      text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
+                      <div onClick={handleCopy}>
+                        {showCheck
+                          ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
+                          : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
+
+                      </div>
+                    </CopyToClipboard>
+                  </div>
+
+                  <div className='relative h-64 w-64 mx-auto m-3 '>
+                    <QRCode
+                      size={256}
+                      style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
+                      value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
+                  </div>
+
+                  <div className='flex space-x-5'>
+                    <div>
+                      <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Expected arrival</p>
+                      <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.arrival}</p>
+                    </div>
+                    <div>
+                      <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Minimum deposit</p>
+                      <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.MinDeposit}</p>
+                    </div>
+                  </div>
+                  <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p>
+                  <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {' '}
+                    <span className='text-red-400'>{networkToReceive}</span>.</p>
+
+                </div>
+
+              </Dialog.Panel>
+            </div>
+          </Modal>
+
+          {/* add network modal pink */}
+          <Modal closeModal={closeAddNetworkModal}
+            isOpen={addNetworkModalOpen} >
+            <div className={theme}>
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 flex items-center mb-6'
+                >
+                  <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Add Network</p>
+
+                  <div onClick={closeAddNetworkModal}>
+                    <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
+                  </div>
+
+                </Dialog.Title>
+
+                <div className='mt-2'>
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
+                  <input className=' input border border-[#c67391] w-full  '
+                    onChange={(e) => setNetworkInput(e.target.value)}
+                    placeholder='Polkadot'
+                    type='text'
+                    value={networkInput} />
+
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
+                  <input className=' input border border-[#c67391] w-full '
+                    onChange={(e) => setNetworkInput(e.target.value)}
+                    placeholder='polkadot'
+                    type='text'
+                    value={networkInput} />
+
+                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
+                  <input className=' input border border-[#c67391] w-full '
+                    onChange={(e) => setNetworkInput(e.target.value)}
+                    placeholder='wss://polkadot.parity.io/ws'
+                    type='text'
+                    value={networkInput} />
 
                 </div>
 
                 <div className='mt-4'>
                   <button
-                    className='w-36 text-lg inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2  font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                    onClick={closeModal2}
+                    className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
+                    onClick={closeAddNetworkModal}
                     type='button'
                   >
-                    Send
+                    OK
                   </button>
                 </div>
               </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+            </div >
 
+          </Modal>
 
+        </main >
+        <Footer />
 
-
-  </main >);
+      </div >
+    </div >
+  );
 }
 
 export default Home;
