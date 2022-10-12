@@ -72,7 +72,11 @@ const ContactMe = (): JSX.Element => {
               <Image
                 layout='fill'
                 objectFit='contain'
+
+                /* eslint-disable */
+                // @ts-ignore
                 src={discIcon2}
+                /* eslint-enable */
               />
             </a>
 

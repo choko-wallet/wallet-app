@@ -214,6 +214,7 @@ const AlphaTest: NextPage = () => {
                     const encoded = hexToU8a(tx.toHex().substring(2));
                     const x = buildSignTxUrl(encoded);
 
+                    console.log(x);
                     // await provider.disconnect();
                     window.location.href = x;
                   }}>Take me there</button><br />

@@ -26,7 +26,10 @@ function Footer (): JSX.Element {
               layout='fill'
               objectFit='contain'
 
+              /* eslint-disable */
+              // @ts-ignore
               src={discIcon1}
+              /* eslint-enable */
             />
           </a>
           <SocialIcon
@@ -72,7 +75,10 @@ function Footer (): JSX.Element {
               layout='fill'
               objectFit='contain'
 
+              /* eslint-disable */
+              // @ts-ignore
               src={discIcon2}
+              /* eslint-enable */
             />
           </a>
           <SocialIcon

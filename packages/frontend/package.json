@@ -17,7 +17,7 @@
     "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
     "@polkadot/api": "^8.13.1",
-    "@polkadot/util-crypto": "^10.1.1",
+    "@polkadot/util-crypto": "10.1.8",
     "@polkadot/wasm-crypto": "^6.3.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/crypto": "^0.8.3",

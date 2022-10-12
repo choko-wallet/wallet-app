@@ -10,17 +10,20 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectError, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectError } from '@choko-wallet/frontend/features/redux/selectors';
+import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
+
+import Loading from '../../components/Loading';
 
 function SignMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const userAccount = useSelector(selectUserAccount);
-  const error = useSelector(selectError);
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const reduxError = useSelector(selectError);
+  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -29,68 +32,71 @@ function SignMessageHandler (): JSX.Element {
   const [displayType, setDisplayType] = useState<string>('hex');
 
   const [request, setRequest] = useState<SignMessageRequest>(null);
-  const [showError, setShowError] = useState<string>('');
   const [callback, setCallback] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
-
-    setRequest(SignMessageRequest.deserialize(u8aRequest));
-  }, [router.isReady, router.query]);
-
-  useEffect(() => {
-    if (!router.isReady) return;
     const callbackUrl = router.query.callbackUrl as string;
+    const request = SignMessageRequest.deserialize(u8aRequest);
 
+    dispatch(loadUserAccount());
+    dispatch(switchUserAccount(request.userOrigin.address));
     setCallback(callbackUrl);
-  }, [router.isReady, router.query]);
+    setRequest(request);
+  }, [dispatch, router.isReady, router.query]);
 
   useEffect(() => {
-    if (userAccount && Object.keys(userAccount).length > 0) {
-      for (const account in userAccount) {
-        if (!userAccount[account].isLocked) {
-          void (async () => {
-            const signMessasge = new SignMessageDescriptor();
-            const response = await signMessasge.requestHandler(request, userAccount[account]);
-            const s = response.serialize();
-
-            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
-          })();
-        }
-      }
+    if (reduxError) {
+      alert(reduxError);
     }
-  }, [userAccount, request, callback]);
+
+    console.log(currentUserAccount, decryptCurrentUserAccountResult);
+
+    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
+      void (async () => {
+        const signTx = new SignMessageDescriptor();
+
+        try {
+          setLoading(true);
+
+          const response = await signTx.requestHandler(request, currentUserAccount);
+          const s = response.serialize();
+
+          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
+        } catch (err) {
+          alert(err);
+          console.error(err);
+        }
+      })();
+    }
+  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  useEffect(() => {
-    if (error !== '') {
-      setShowError(error);
-    } else {
-      setOpenPasswordModal(false);
-    }
-  }, [error]);
-
-  function closeModal () {
-    setOpenPasswordModal(false);
-  }
-
-  function handleUnlock () {
+  function unlock () {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
-      setOpenPasswordModal(false);
     } else {
       alert('unexpected!');
     }
   }
 
+  function closeModal () {
+    setPassword('');
+    dispatch(decryptCurrentUserAccount(''));
+    setOpenPasswordModal(false);
+  }
+
   if (!mounted) {
     return null;
   }
+
+  if (loading) return <Loading title='Signing Messsage. You will be redirected back once done.' />;
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
@@ -209,24 +215,20 @@ function SignMessageHandler (): JSX.Element {
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
-                      <input className={`input input-bordered w-full max-w-xs ${showError && 'border-red-700 border'}`}
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                          setShowError('');
-                        }}
+                      <input className='input input-bordered w-full max-w-xs'
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder='Set a Password'
 
                         type='password'
                         value={password}
-                      /><br />
-                      {showError && <span className='text-red-600'>{showError}</span>}
+                      />
                     </p>
                   </div>
 
                   <div className='mt-4'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={handleUnlock}
+                      onClick={unlock}
                       type='button'
                     >
                       Unlock

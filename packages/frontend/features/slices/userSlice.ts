@@ -108,12 +108,14 @@ export const userSlice = createSlice({
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
+      console.log(state.currentUserAccount, action.payload);
+
       if (state.currentUserAccount && action.payload !== '') {
         try {
           state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
           state.decryptCurrentUserAccountResult = 'success';
         } catch (e) {
-          console.log(e);
+          console.error(e);
           state.decryptCurrentUserAccountResult = 'Password not correct';
         }
       } else { // password === ''
@@ -130,13 +132,15 @@ export const userSlice = createSlice({
     switchUserAccount: (state, action: PayloadAction<string>) => {
       // console.log('action.payload', action.payload);
       state.currentUserAccount = state.userAccount[action.payload];
+
+      if (!state.currentUserAccount) {
+        state.error = 'Account Not Found';
+      }
     },
 
     removeAllAccounts: (state) => {
       // localStorage.removeItem('serializedUserAccount');// cannot remove
       localStorage.clear();
-
-      console.log('local', localStorage.getItem('serialziedUserAccount'));
       state.currentUserAccount = null;
       state.userAccount = {};
       state.error = '';

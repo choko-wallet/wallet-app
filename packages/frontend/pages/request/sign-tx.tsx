@@ -10,15 +10,21 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectError } from '@choko-wallet/frontend/features/redux/selectors';
+import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
+
+import Loading from '../../components/Loading';
+
+// http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
 function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const userAccount = useSelector(selectUserAccount);
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const reduxError = useSelector(selectError);
+  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -28,51 +34,52 @@ function SignTxHandler (): JSX.Element {
 
   const [request, setRequest] = useState<SignTxRequest>(null);
   const [callback, setCallback] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
-
-    setRequest(SignTxRequest.deserialize(u8aRequest));
-  }, [router.isReady, router.query]);
-
-  useEffect(() => {
-    if (!router.isReady) return;
     const callbackUrl = router.query.callbackUrl as string;
+    const request = SignTxRequest.deserialize(u8aRequest);
 
+    dispatch(loadUserAccount());
+    dispatch(switchUserAccount(request.userOrigin.address));
     setCallback(callbackUrl);
-  }, [router.isReady, router.query]);
+    setRequest(request);
+  }, [dispatch, router.isReady, router.query]);
 
   useEffect(() => {
-    if (userAccount && Object.keys(userAccount).length > 0) {
-      for (const account in userAccount) {
-        if (!userAccount[account].isLocked) {
-          void (async () => {
-            const signTx = new SignTxDescriptor();
-
-            try {
-              const response = await signTx.requestHandler(request, userAccount[account]);
-              const s = response.serialize();
-
-              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-            } catch (err) {
-              alert(err);
-              console.error(err);
-            }
-          })();
-        }
-      }
+    if (reduxError) {
+      alert(reduxError);
     }
-  }, [userAccount, request, callback]);
+
+    console.log(currentUserAccount, decryptCurrentUserAccountResult);
+
+    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
+      void (async () => {
+        const signTx = new SignTxDescriptor();
+
+        try {
+          setLoading(true);
+
+          const response = await signTx.requestHandler(request, currentUserAccount);
+          const s = response.serialize();
+
+          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+        } catch (err) {
+          alert(err);
+          console.error(err);
+        }
+      })();
+    }
+  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function closeModal () {
-    setOpenPasswordModal(false);
-
+  function unlock () {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -80,9 +87,17 @@ function SignTxHandler (): JSX.Element {
     }
   }
 
+  function closeModal () {
+    setPassword('');
+    dispatch(decryptCurrentUserAccount(''));
+    setOpenPasswordModal(false);
+  }
+
   if (!mounted) {
     return null;
   }
+
+  if (loading) return <Loading title='Sending transaction. You will be redirected back once done.' />;
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
@@ -215,7 +230,7 @@ function SignTxHandler (): JSX.Element {
                   <div className='mt-4'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={closeModal}
+                      onClick={unlock}
                       type='button'
                     >
                       Unlock

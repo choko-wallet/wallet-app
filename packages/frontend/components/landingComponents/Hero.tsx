@@ -21,7 +21,10 @@ const Hero = (): JSX.Element => {
           alt='choko wallet'
           className='relative object-cover mx-auto rounded-full'
           height={180}
+          /* eslint-disable */
+          // @ts-ignore
           src={logo1}
+          /* eslint-enable */
           width={180}
         />
         <div className='z-20 flex flex-col items-center justify-center'>
@@ -42,14 +45,9 @@ const Hero = (): JSX.Element => {
           </p>
 
           <div className='flex flex-col '>
-            {localStorage.getItem('serialziedUserAccount') !== null
-              ? <button className='btn btn-secondary w-36 md:w-44 mb-10'
+            <button className='btn btn-secondary w-36 md:w-44 mb-10'
                 onClick={() => router.push('/home')}>Enter
               </button>
-              : <button className='btn btn-secondary w-36 md:w-44 mb-10'
-                onClick={() => router.push('/account')}>Enter
-              </button>
-            }
 
             <button className='btn btn-accent w-36 md:w-44 mb-10'
               onClick={() => router.push('/alpha')}>Alpha Test
