@@ -10,7 +10,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectUserAccount, selectCurrentUserAccount, selectError } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectUserAccount, selectCurrentUserAccount, selectDecryptCurrentUserAccountResult } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
@@ -18,13 +18,13 @@ import { UserAccount } from '@choko-wallet/core';
 
 //  http://localhost:3000/request?requestType=connectDapp&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf1c4eb0000282108a3&callbackUrl=https://localhost:3001/callback
 // http://localhost:3000/request?requestType=connectDapp&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf1c4eb0000282108a3&callbackUrl=https://localhost:3001/callback
-function ConnectDappHandler (): JSX.Element {
+function ConnectDappHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const requestError = useSelector(selectError)
+  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult)
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -36,18 +36,13 @@ function ConnectDappHandler (): JSX.Element {
   const [callback, setCallback] = useState<string>('');
 
   useEffect(() => {
-    if (userAccount && currentUserAccount) {
-
-      setSelectedUserAccount(currentUserAccount.address);
-      return;
-    }
-
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
       dispatch(loadUserAccount());
     }
-  }, [router, dispatch, userAccount, currentUserAccount ]);
+    setMounted(true);
+  }, []);//initialization
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -59,46 +54,41 @@ function ConnectDappHandler (): JSX.Element {
   }, [router.isReady, router.query]);
 
   useEffect(() => {
+    if (userAccount && currentUserAccount) {
+      setSelectedUserAccount(currentUserAccount.address);
+    }
+  }, [router, dispatch, userAccount, currentUserAccount]);
 
-    console.log('handler useEffect', currentUserAccount);
-    if (currentUserAccount && !currentUserAccount.isLocked) {
-
+  useEffect(() => {
+    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
       console.log("executing")
       void (async () => {
         const connectDapp = new ConnectDappDescriptor();
         const response = await connectDapp.requestHandler(request, currentUserAccount);
         const s = response.serialize();
-
-        console.log("respoinse", response);
-
-        // window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
+        // console.log("response", response);
+        closeModal();
+        window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
       })();
     }
-  }, [currentUserAccount, request, callback]);
+  }, [currentUserAccount, request, callback, decryptCurrentUserAccountResult]);
 
 
-  useEffect(() => {
-    if (requestError && requestError.length !== 0) {
-      alert(requestError);
-    }
-  }, [requestError]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  function closeModal () {
-    setOpenPasswordModal(false);
-
-    console.log("closeModel", selectedUserAccount, password);
+  function unlock() {
     if (request) {
-      if (currentUserAccount.address !== selectedUserAccount) {
-        dispatch(switchUserAccount(selectedUserAccount));
-      }
       dispatch(decryptCurrentUserAccount(password));
     } else {
       alert('unexpected!');
     }
+  }
+
+  console.log('selectedUserAccount', selectedUserAccount);
+  console.log('currentUserAccount', currentUserAccount);
+
+  function closeModal() {
+    setPassword('');
+    dispatch(decryptCurrentUserAccount(''));
+    setOpenPasswordModal(false);
   }
 
   if (!mounted) {
@@ -139,6 +129,7 @@ function ConnectDappHandler (): JSX.Element {
                     `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                       m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
                   }
+                  onClick={() => dispatch(switchUserAccount(name))}
                   key={index}
                   value={name}
                 >
@@ -230,14 +221,15 @@ function ConnectDappHandler (): JSX.Element {
                     </p>
                   </div>
 
-                  <div className='mt-4'>
+                  <div className='mt-4 flex justify-between'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={closeModal}
+                      onClick={unlock}
                       type='button'
                     >
                       Unlock
                     </button>
+                    {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

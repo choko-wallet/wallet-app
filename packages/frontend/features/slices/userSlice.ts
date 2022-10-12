@@ -69,6 +69,7 @@ export const changeCurrentAccountType = createAsyncThunk(
 // User slice
 interface UserSliceItem {
   error: string;
+  decryptCurrentUserAccountResult: string;
   userAccount: { [key: string]: UserAccount };
   currentUserAccount: UserAccount | null;
   changeCurrentAccountLoading: boolean;
@@ -79,6 +80,7 @@ const initialState: UserSliceItem = {
   changeCurrentAccountLoading: false,
   currentUserAccount: null,
   error: '',
+  decryptCurrentUserAccountResult: '',
   userAccount: {}
 };
 
@@ -105,14 +107,18 @@ export const userSlice = createSlice({
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
-      if (state.currentUserAccount) {
+      if (state.currentUserAccount && action.payload !== '') {
         try {
           state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
-        } catch(e) {
+          state.decryptCurrentUserAccountResult = "success";
+        } catch (e) {
           console.log(e);
-          state.error = "You have typed in a wrong password. It's the password you set when creating the wallet.";
+          state.decryptCurrentUserAccountResult = "Password not correct";
         }
+      } else {// password === '' 
+        state.decryptCurrentUserAccountResult = "";
       }
+
     },
 
     lockCurrentUserAccount: (state) => {
