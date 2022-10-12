@@ -15,7 +15,6 @@ import { decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slice
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
-// http://localhost:3000/request?requestType=signMessage&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da8065646266616560a9d3d0a8636000075931a96&callbackUrl=https://localhost:3001/callback
 function SignMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -112,7 +111,7 @@ function SignMessageHandler (): JSX.Element {
           <h3>Generate a cryptographic singature.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
-            <br/>
+            <br />
             <div className='col-span-12'>
               DApp Origin:
             </div>
@@ -206,7 +205,7 @@ function SignMessageHandler (): JSX.Element {
                     as='h3'
                     className='text-lg font-medium leading-6 text-gray-900'
                   >
-                  Unlock Wallet with Password
+                    Unlock Wallet with Password
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
@@ -219,7 +218,7 @@ function SignMessageHandler (): JSX.Element {
 
                         type='password'
                         value={password}
-                      /><br/>
+                      /><br />
                       {showError && <span className='text-red-600'>{showError}</span>}
                     </p>
                   </div>
@@ -230,7 +229,7 @@ function SignMessageHandler (): JSX.Element {
                       onClick={handleUnlock}
                       type='button'
                     >
-                    Unlock
+                      Unlock
                     </button>
                   </div>
                 </Dialog.Panel>

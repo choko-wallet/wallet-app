@@ -7,11 +7,11 @@ import { UserAccount } from '@choko-wallet/core';
 
 type CoinData = Array<CoinPrice>
 
-interface CoinPrice {// 这个usd要改成变量
+interface CoinPrice {
   [key: string]: PriceUsd
 }
 
-interface PriceUsd {// 这个usd要改成变量
+interface PriceUsd {
   usd: number;
 }
 

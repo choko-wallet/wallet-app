@@ -55,11 +55,6 @@ function Settings (): JSX.Element {
     return null;
   }
 
-  // function closeMnemonic () {
-  //   setIsMnemonicOpen(false);
-  //   setShowMnemonic(false);
-  // }
-
   function closeExportModal () {
     setExportModalOpen(false);
     setExportUrl('');
@@ -214,7 +209,6 @@ function Settings (): JSX.Element {
             </div >
           </div>
 
-          {/* 导出弹框显示url */}
           <Modal closeModal={closeExportModal}
             isOpen={exportModalOpen} >
 

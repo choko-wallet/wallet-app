@@ -5,6 +5,8 @@ import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, ChevronRightIcon, XIcon } from '@heroicons/react/outline';
 import { DocumentDuplicateIcon, DownloadIcon, PaperAirplaneIcon } from '@heroicons/react/solid';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
@@ -14,15 +16,13 @@ import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
+import { AccountOption, UserAccount } from '@choko-wallet/core';
+import { keypairTypeNumberToString } from '@choko-wallet/core/util';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
 import { fetchCoinPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 import { knownNetworks } from '@choko-wallet/known-networks';
-
-import {AccountOption, UserAccount} from '@choko-wallet/core';
-import {keypairTypeNumberToString} from '@choko-wallet/core/util';
-import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
 
 import DropdownForNetwork from '../../components/DropdownForNetwork';
 import DropdownForSend from '../../components/DropdownForSend';
@@ -32,7 +32,6 @@ import Modal from '../../components/Modal';
 import { selectChangeCurrentAccountLoading } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
-import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
 interface Crypto {
   name: string;
@@ -74,7 +73,7 @@ function Home (): JSX.Element {
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [networkInput, setNetworkInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  
+
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
 
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
@@ -131,29 +130,30 @@ function Home (): JSX.Element {
 
       // MIG
       const lockedPrivateKey = localStorage.getItem('lockedPrivateKey');
+
       if (lockedPrivateKey && lockedPrivateKey.length !== 0) {
         // DO MIGRATION
 
-        const serialziedUserAccount = hexToU8a( localStorage.getItem('serialziedUserAccount') );
+        const serialziedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
 
-        console.log("MIG", lockedPrivateKey, serialziedUserAccount);
+        console.log('MIG', lockedPrivateKey, serialziedUserAccount);
 
         setMigInProcess(true);
 
         const publicKey = serialziedUserAccount.slice(0, 32);
-        const keypairType = keypairTypeNumberToString( serialziedUserAccount[32] );
+        const keypairType = keypairTypeNumberToString(serialziedUserAccount[32]);
         const localKeyEncryption = serialziedUserAccount[33];
         const hasEncryptedPrivateKeyExported = serialziedUserAccount[34];
         const version = serialziedUserAccount[35];
-        
-        const encryptedPrivateKey = hexToU8a( lockedPrivateKey ).slice(0, 32 + 16 + 24);
+
+        const encryptedPrivateKey = hexToU8a(lockedPrivateKey).slice(0, 32 + 16 + 24);
         const address = (['ecdsa', 'ethereum'].includes(keypairType)) ? ethereumEncode(publicKey) : encodeAddress(publicKey);
 
         const newU = new UserAccount(new AccountOption({
           hasEncryptedPrivateKeyExported: hasEncryptedPrivateKeyExported === 1,
           keyType: keypairType,
           localKeyEncryptionStrategy: localKeyEncryption,
-          version: version,
+          version: version
         }));
 
         newU.publicKey = publicKey;
@@ -161,6 +161,7 @@ function Home (): JSX.Element {
         newU.address = address;
 
         const se = newU.serializeWithEncryptedKey();
+
         localStorage.removeItem('serialziedUserAccount');
         localStorage.removeItem('lockedPrivateKey');
 
@@ -169,7 +170,7 @@ function Home (): JSX.Element {
         setTimeout(() => {
           setMigInProcess(false);
         }, 3000);
-        
+
         // const userAccount = UserAccount.deserialize( hexToU8a(serialziedUserAccount) );
         // console.log(userAccount);
       }

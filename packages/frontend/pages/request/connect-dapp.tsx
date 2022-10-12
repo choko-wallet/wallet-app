@@ -10,21 +10,18 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectUserAccount, selectCurrentUserAccount, selectDecryptCurrentUserAccountResult } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
-import { UserAccount } from '@choko-wallet/core';
 
-//  http://localhost:3000/request?requestType=connectDapp&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf1c4eb0000282108a3&callbackUrl=https://localhost:3001/callback
-// http://localhost:3000/request?requestType=connectDapp&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf1c4eb0000282108a3&callbackUrl=https://localhost:3001/callback
 function ConnectDappHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult)
+  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -41,14 +38,16 @@ function ConnectDappHandler(): JSX.Element {
     } else {
       dispatch(loadUserAccount());
     }
+
     setMounted(true);
-  }, []);//initialization
+  }, [dispatch, router]);// initialization
 
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
     const callbackUrl = router.query.callbackUrl as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
+
     setCallback(callbackUrl);
     setRequest(ConnectDappRequest.deserialize(u8aRequest));
   }, [router.isReady, router.query]);
@@ -61,18 +60,21 @@ function ConnectDappHandler(): JSX.Element {
 
   useEffect(() => {
     if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      console.log("executing")
+      console.log('executing');
+
       void (async () => {
         const connectDapp = new ConnectDappDescriptor();
         const response = await connectDapp.requestHandler(request, currentUserAccount);
         const s = response.serialize();
-        // console.log("response", response);
-        closeModal();
+
+        setPassword('');
+        dispatch(decryptCurrentUserAccount(''));
+        setOpenPasswordModal(false);
+
         window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
       })();
     }
-  }, [currentUserAccount, request, callback, decryptCurrentUserAccountResult]);
-
+  }, [currentUserAccount, request, callback, decryptCurrentUserAccountResult, dispatch]);
 
   function unlock() {
     if (request) {
@@ -129,8 +131,8 @@ function ConnectDappHandler(): JSX.Element {
                     `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                       m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
                   }
-                  onClick={() => dispatch(switchUserAccount(name))}
                   key={index}
+                  onClick={() => dispatch(switchUserAccount(name))}
                   value={name}
                 >
                   {({ checked }) => (

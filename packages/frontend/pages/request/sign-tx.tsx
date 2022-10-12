@@ -14,14 +14,11 @@ import { selectUserAccount } from '@choko-wallet/frontend/features/redux/selecto
 import { decryptCurrentUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
-// http://localhost:3000/request?requestType=signTx&payload=01789c6360606029492d2e61a00c7004bb782b8450604e4b5d75fdc2841bf10c0c6e36be37fcef4c7e97df7fea4ba57b92db8f1df75d423635553dbe31df6f7df92c6da806b5292c2c0c0c7cc7b4cf1871efdffebbfc9f77cffd1b85d76e08fab13afd60ae8bcb9d2d5de49dc642a1bf46c1a00600ab7d2aa6&callbackUrl=https://localhost:3001/callback
-
 function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
-  // const requestError = useSelector(selectError);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -106,7 +103,7 @@ function SignTxHandler (): JSX.Element {
           <h3>Send a transaction on the selected blockchain network.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
-            <br/>
+            <br />
             <div className='col-span-12'>
               DApp Origin:
             </div>
@@ -201,7 +198,7 @@ function SignTxHandler (): JSX.Element {
                     as='h3'
                     className='text-lg font-medium leading-6 text-gray-900'
                   >
-                  Unlock Wallet with Password
+                    Unlock Wallet with Password
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-gray-500'>
@@ -221,7 +218,7 @@ function SignTxHandler (): JSX.Element {
                       onClick={closeModal}
                       type='button'
                     >
-                    Unlock
+                      Unlock
                     </button>
                   </div>
                 </Dialog.Panel>

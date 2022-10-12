@@ -13,20 +13,16 @@ import { selectCurrentUserAccount } from '../features/redux/selectors';
 import { switchUserAccount } from '../features/slices/userSlice';
 
 interface Props {
-  // item: string
-  // address: string;
   account: UserAccount;
 }
 
 function DropdownHeaderRow ({ account }: Props): JSX.Element {
   const dispatch = useDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  // const [copied, setCopied] = useState<boolean>(false);
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
   const handleCopy = () => {
-    // console.log('first')
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);

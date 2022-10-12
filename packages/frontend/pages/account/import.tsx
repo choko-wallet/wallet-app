@@ -69,8 +69,6 @@ function ImportWallet (): JSX.Element {
         </li>
       </ul>
 
-      {/* TODO: these are used to create more space between the steps and main content.
-    We should have a better way to deal with it  */}
       <div className='hidden md:block col-span-12'></div>
       <div className='hidden md:block col-span-12'></div>
       <div className='hidden md:block col-span-12'></div>
@@ -135,7 +133,6 @@ function ImportWallet (): JSX.Element {
               <h3>Set a local password for you wallet. </h3>
 
               <div className='grid grid-cols-12 gap-5 m-6'>
-                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
                 <h2 className='col-span-5 pt-2'>
                   <span className=''>Set a good password</span>
                 </h2>
@@ -150,7 +147,6 @@ function ImportWallet (): JSX.Element {
                 </div>
               </div>
               <div className='grid grid-cols-12 gap-5 m-6'>
-                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
                 <h2 className='col-span-5 pt-2'>
                   <span className=''>Repeat Password</span>
                 </h2>

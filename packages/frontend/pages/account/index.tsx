@@ -8,7 +8,6 @@ import React, { useEffect, useState } from 'react';
 function AccountRouter (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  // const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);

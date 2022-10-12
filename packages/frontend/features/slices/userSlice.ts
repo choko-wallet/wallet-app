@@ -79,8 +79,8 @@ interface UserSliceItem {
 const initialState: UserSliceItem = {
   changeCurrentAccountLoading: false,
   currentUserAccount: null,
-  error: '',
   decryptCurrentUserAccountResult: '',
+  error: '',
   userAccount: {}
 };
 
@@ -103,6 +103,7 @@ export const userSlice = createSlice({
 
         state.userAccount[account.address] = account;
       }
+
       state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
     },
 
@@ -110,15 +111,14 @@ export const userSlice = createSlice({
       if (state.currentUserAccount && action.payload !== '') {
         try {
           state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
-          state.decryptCurrentUserAccountResult = "success";
+          state.decryptCurrentUserAccountResult = 'success';
         } catch (e) {
           console.log(e);
-          state.decryptCurrentUserAccountResult = "Password not correct";
+          state.decryptCurrentUserAccountResult = 'Password not correct';
         }
-      } else {// password === '' 
-        state.decryptCurrentUserAccountResult = "";
+      } else { // password === ''
+        state.decryptCurrentUserAccountResult = '';
       }
-
     },
 
     lockCurrentUserAccount: (state) => {
@@ -128,20 +128,12 @@ export const userSlice = createSlice({
     },
 
     switchUserAccount: (state, action: PayloadAction<string>) => {
-      console.log('action.payload', action.payload);
-      // console.log('action.payload',action.payload)
-      // state.changeCurrentAccountLoading = true;
-      // setTimeout(() => {
-      // state.changeCurrentAccountLoading = !state.changeCurrentAccountLoading;
+      // console.log('action.payload', action.payload);
       state.currentUserAccount = state.userAccount[action.payload];
-      // }, 3000);
-      // state.changeCurrentAccountLoading = false;
-
-      // state.currentUserAccount = state.userAccount[action.payload];
     },
 
     removeAllAccounts: (state) => {
-      // localStorage.removeItem('serializedUserAccount');//清除不掉
+      // localStorage.removeItem('serializedUserAccount');// cannot remove
       localStorage.clear();
 
       console.log('local', localStorage.getItem('serialziedUserAccount'));

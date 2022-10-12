@@ -16,7 +16,7 @@ interface CoinPrice {
   [key: string]: PriceUsd
 }
 
-interface PriceUsd {// 这个key是usd
+interface PriceUsd {
   [key: string]: number;
 }
 
@@ -32,7 +32,7 @@ export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, 
 
       return coinData;
     } catch (err) {
-      return rejectWithValue('Api not work');// 给用户的报错提示
+      return rejectWithValue('Api not work');
     }
   },
   /* eslint-disable */
@@ -76,7 +76,7 @@ export const coinSlice = createSlice({
     }
 
   },
-  // thunk 函数的return 是extraReducers addCase函数的action.payload
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchCoinPrice.pending, (state) => {

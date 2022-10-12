@@ -19,8 +19,7 @@ interface Crypto {
 }
 
 interface Props {
-  // network: string;
-  currentNetworkName: string;// knownNetworks[network].text
+  currentNetworkName: string;
   cryptoInfo: Crypto[];
   setIsSendOpen: (value: boolean) => void;
   setIsReceiveOpen: (value: boolean) => void;
