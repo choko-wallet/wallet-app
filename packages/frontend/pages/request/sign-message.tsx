@@ -69,6 +69,7 @@ function SignMessageHandler (): JSX.Element {
         } catch (err) {
           alert(err);
           console.error(err);
+          window.location.href = callback;
         }
       })();
     }

@@ -69,7 +69,7 @@ function SignTxHandler (): JSX.Element {
           window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
         } catch (err) {
           alert(err);
-          console.error(err);
+          window.location.href = callback;
         }
       })();
     }
