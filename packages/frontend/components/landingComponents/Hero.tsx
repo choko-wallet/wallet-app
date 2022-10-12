@@ -46,8 +46,8 @@ const Hero = (): JSX.Element => {
 
           <div className='flex flex-col '>
             <button className='btn btn-secondary w-36 md:w-44 mb-10'
-                onClick={() => router.push('/home')}>Enter
-              </button>
+              onClick={() => router.push('/home')}>Enter
+            </button>
 
             <button className='btn btn-accent w-36 md:w-44 mb-10'
               onClick={() => router.push('/alpha')}>Alpha Test

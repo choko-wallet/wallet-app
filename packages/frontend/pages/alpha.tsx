@@ -97,9 +97,7 @@ const AlphaTest: NextPage = () => {
         accountOption: accountOption,
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'http://localhost:3000/alpha',
-
-        // callbackUrlBase: 'https://choko.app/alpha',
+        callbackUrlBase: 'https://choko.app/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
@@ -113,8 +111,7 @@ const AlphaTest: NextPage = () => {
         accountOption: accountOption,
         activeNetworkHash: '847e7b7fa160d85f',
 
-        callbackUrlBase: 'http://localhost:3000/alpha',
-        // callbackUrlBase: 'https://choko.app/alpha',
+        callbackUrlBase: 'https://choko.app/alpha',
 
         displayName: 'Choko Wallet Alpha Test',
         infoName: 'test',
