@@ -36,6 +36,12 @@ function RequestRouter (): JSX.Element {
           query: router.query
         });
         break;
+      case 'decryptMessage':
+        void router.push({
+          pathname: '/request/decrypt-message',
+          query: router.query
+        });
+        break;
       default:
         alert('unkown request');
         break;
