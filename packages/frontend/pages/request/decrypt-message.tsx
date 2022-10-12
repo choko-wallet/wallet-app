@@ -13,11 +13,11 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectError } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
-import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
+import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
 
 import Loading from '../../components/Loading';
 
-function SignMessageHandler (): JSX.Element {
+function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ function SignMessageHandler (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
 
-  const [request, setRequest] = useState<SignMessageRequest>(null);
+  const [request, setRequest] = useState<DecryptMessageRequest>(null);
   const [callback, setCallback] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -40,7 +40,7 @@ function SignMessageHandler (): JSX.Element {
     const payload = router.query.payload as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
     const callbackUrl = router.query.callbackUrl as string;
-    const request = SignMessageRequest.deserialize(u8aRequest);
+    const request = DecryptMessageRequest.deserialize(u8aRequest);
 
     dispatch(loadUserAccount());
     dispatch(switchUserAccount(request.userOrigin.address));
@@ -57,15 +57,15 @@ function SignMessageHandler (): JSX.Element {
 
     if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
       void (async () => {
-        const signMessage = new SignMessageDescriptor();
+        const decryptMessage = new DecryptMessageDescriptor();
 
         try {
           setLoading(true);
 
-          const response = await signMessage.requestHandler(request, currentUserAccount);
+          const response = await decryptMessage.requestHandler(request, currentUserAccount);
           const s = response.serialize();
 
-          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
+          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
         } catch (err) {
           alert(err);
           console.error(err);
@@ -96,7 +96,7 @@ function SignMessageHandler (): JSX.Element {
     return null;
   }
 
-  if (loading) return <Loading title='Signing Messsage. You will be redirected back once done.' />;
+  if (loading) return <Loading title='Decrypting Messsage. You will be redirected back once done.' />;
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
@@ -112,9 +112,9 @@ function SignMessageHandler (): JSX.Element {
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
         <div className='col-span-12 shadow-xl rounded-lg card p-10 bg-white'>
           <h2 className='card-title'>
-            Request to Sign a Message
+            Request to Decrypt a Message
           </h2>
-          <h3>Generate a cryptographic singature.</h3>
+          <h3>Decrypt an Encrypted Message.</h3>
 
           <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
             <br />
@@ -132,10 +132,17 @@ function SignMessageHandler (): JSX.Element {
                 style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
             </div>
             <div className='col-span-12'>
+              Client Ephemeral Key:
+            </div>
+            <div className='col-span-12'>
+              <code className='underline text-clip'
+                style={{ overflowWrap: 'break-word' }}>0x{request.payload.receiptPublicKey}</code>
+            </div>
+            <div className='col-span-12'>
               <div className='divider'></div>
             </div>
             <div className='col-span-12'>
-              Message To Sign:
+              Message To Decrypt:
             </div>
 
             <div className='col-span-12'>
@@ -244,4 +251,4 @@ function SignMessageHandler (): JSX.Element {
   );
 }
 
-export default SignMessageHandler;
+export default DecryptMessageHandler;

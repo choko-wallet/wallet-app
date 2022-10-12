@@ -47,9 +47,6 @@ const About = (): JSX.Element => {
           transition={{
             duration: 1.5
           }}
-          // viewport={{
-          //   once: true,
-          // }}
           whileInView={{
             opacity: 1
           }}

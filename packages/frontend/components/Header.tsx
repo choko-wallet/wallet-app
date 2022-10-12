@@ -57,16 +57,6 @@ function Header (): JSX.Element {
                 src={logo2.src}
               />
             }
-            {/* <Image
-              layout='fill'
-              objectFit='contain'
-              src={logo.src}
-            />
-            <Image
-              layout='fill'
-              objectFit='contain'
-              src={logo.src}
-            /> */}
           </div>
         </div>
 
@@ -89,7 +79,6 @@ function Header (): JSX.Element {
               <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
             </div>
 
-            {/* <CogIcon className='hidden h-6 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500' /> */}
             <div className='hidden md:inline-flex relative transition duration-150 ease-out cursor-pointer '>
               <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
               <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'>
@@ -135,7 +124,7 @@ function Header (): JSX.Element {
           ? <div className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
             <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
               <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              // onClick={() => router.push('/')}
+                onClick={() => router.push('/home')}
               >
                 <Image
                   layout='fill'

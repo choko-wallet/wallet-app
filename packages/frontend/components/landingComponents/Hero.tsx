@@ -9,8 +9,6 @@ import Typed from 'react-typed';
 import logo1 from '../../images/logo1.svg';
 import BackgroundCircle from './BackgroundCircle';
 
-// type Props = {};
-
 const Hero = (): JSX.Element => {
   const router = useRouter();
 
@@ -21,18 +19,18 @@ const Hero = (): JSX.Element => {
         <BackgroundCircle />
         <Image
           alt='choko wallet'
-          // src='https://avatars.githubusercontent.com/u/110252171?s=200&v=4'
           className='relative object-cover mx-auto rounded-full'
           height={180}
+          /* eslint-disable */
+          // @ts-ignore
           src={logo1}
+          /* eslint-enable */
           width={180}
         />
-        <div className='z-20'>
-          <h2 className='text-2xl uppercase text-gray-200 pb-2 tracking-[10px] '>
+        <div className='z-20 flex flex-col items-center justify-center'>
+          <p className='text-2xl uppercase text-gray-200 pb-2 tracking-[10px] '>
             CHOKO WALLET
-          </h2>
-          <h1 className='px-10 text-2xl font-semibold md:text-3xl'>
-          </h1>
+          </p>
           <p className='py-6 text-2xl text-white font-mono'>
             Your <Typed
               backSpeed={20}
@@ -45,13 +43,16 @@ const Hero = (): JSX.Element => {
                 'extensible']}
               typeSpeed={100} />crypto wallet
           </p>
-          <button className='btn btn-secondary w-36 md:w-44 mb-10'
-            onClick={() => router.push('/home')}>Enter
-          </button><br />
 
-          <button className='btn btn-accent w-36 md:w-44 mb-10'
-            onClick={() => router.push('/alpha')}>Alpha Test
-          </button>
+          <div className='flex flex-col '>
+            <button className='btn btn-secondary w-36 md:w-44 mb-10'
+              onClick={() => router.push('/home')}>Enter
+            </button>
+
+            <button className='btn btn-accent w-36 md:w-44 mb-10'
+              onClick={() => router.push('/alpha')}>Alpha Test
+            </button>
+          </div>
         </div>
       </div>
     </section>

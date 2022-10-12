@@ -26,7 +26,6 @@ interface Props {
 
 function DropdownForSend ({ Cryptos, defaultValue, onClick }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
-  // console.log(arr[1].name);
   const [filterResult, setFilterResult] = useState<Crypto[]>(Cryptos);
 
   useEffect(() => {

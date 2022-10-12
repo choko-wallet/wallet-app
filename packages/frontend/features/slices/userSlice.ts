@@ -69,6 +69,7 @@ export const changeCurrentAccountType = createAsyncThunk(
 // User slice
 interface UserSliceItem {
   error: string;
+  decryptCurrentUserAccountResult: string;
   userAccount: { [key: string]: UserAccount };
   currentUserAccount: UserAccount | null;
   changeCurrentAccountLoading: boolean;
@@ -78,6 +79,7 @@ interface UserSliceItem {
 const initialState: UserSliceItem = {
   changeCurrentAccountLoading: false,
   currentUserAccount: null,
+  decryptCurrentUserAccountResult: '',
   error: '',
   userAccount: {}
 };
@@ -102,13 +104,22 @@ export const userSlice = createSlice({
         state.userAccount[account.address] = account;
       }
 
-      // set the first account 应该是last吧 最新引入的在最后 这个位置可改成引入账户时 把useraccount放到初始 localstorage也是
       state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
-      if (state.currentUserAccount) {
-        state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
+      console.log(state.currentUserAccount, action.payload);
+
+      if (state.currentUserAccount && action.payload !== '') {
+        try {
+          state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
+          state.decryptCurrentUserAccountResult = 'success';
+        } catch (e) {
+          console.error(e);
+          state.decryptCurrentUserAccountResult = 'Password not correct';
+        }
+      } else { // password === ''
+        state.decryptCurrentUserAccountResult = '';
       }
     },
 
@@ -119,23 +130,17 @@ export const userSlice = createSlice({
     },
 
     switchUserAccount: (state, action: PayloadAction<string>) => {
-      console.log('action.payload', action.payload);
-      // console.log('action.payload',action.payload)
-      // state.changeCurrentAccountLoading = true;
-      // setTimeout(() => {
-      // state.changeCurrentAccountLoading = !state.changeCurrentAccountLoading;
+      // console.log('action.payload', action.payload);
       state.currentUserAccount = state.userAccount[action.payload];
-      // }, 3000);
-      // state.changeCurrentAccountLoading = false;
 
-      // state.currentUserAccount = state.userAccount[action.payload];
+      if (!state.currentUserAccount) {
+        state.error = 'Account Not Found';
+      }
     },
 
     removeAllAccounts: (state) => {
-      // localStorage.removeItem('serializedUserAccount');//清除不掉
+      // localStorage.removeItem('serializedUserAccount');// cannot remove
       localStorage.clear();
-
-      console.log('local', localStorage.getItem('serialziedUserAccount'));
       state.currentUserAccount = null;
       state.userAccount = {};
       state.error = '';

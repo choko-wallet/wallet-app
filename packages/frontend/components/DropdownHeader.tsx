@@ -14,24 +14,10 @@ import DropdownHeaderRow from './DropdownHeaderRow';
 
 function DropdownHeader (): JSX.Element {
   const dispatch = useDispatch();
-  const userAccount = useSelector(selectUserAccount);// 所有账户
+  const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  // const reduxError = useSelector(selectError);
-
-  const userAccountArray = Object.entries(userAccount);// 可以map
-
+  const userAccountArray = Object.entries(userAccount);
   const router = useRouter();
-
-  // const [showCheck, setShowCheck] = useState<boolean>(false);
-  // const [copied, setCopied] = useState<boolean>(false);
-
-  // const handleCopy = () => {
-  //   console.log('first');
-  //   setShowCheck(true);
-  //   setTimeout(() => {
-  //     setShowCheck(false);
-  //   }, 1000);
-  // };
 
   const removeAccounts = () => {
     dispatch(removeAllAccounts());

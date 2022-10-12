@@ -5,16 +5,6 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import React, { Fragment } from 'react';
 
-// interface Crypto {
-//   name: string;
-//   img: string;
-//   price: number;
-//   shortName: string;
-//   networkFee: string;
-//   estimatedTime: string;
-
-// }
-
 interface Props {
   networks: string[];
   defaultValue: string;

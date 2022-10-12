@@ -43,12 +43,6 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
     console.log(localStorage.getItem('serialziedUserAccount'));// null
 
     dispatch(addUserAccount({ password: password, seeds: seeds }));
-    // 异步生成localStorage.getItem('serialziedUserAccount')
-    console.log('localStorage');
-    console.log(localStorage);// 里面就有了这两个变量
-    // serialziedUserAccount → "3e082ced8b973899c592c6db823f0767752562d49f23ed76a8f9c0b06811605600000000"
-    //
-    // lockedPrivateKey → "8f8a8ce8b41221b7c5c2ed271e9588f836197b0f58d818273f14806556bfbe44d02f8a7b589dd6cab1764fed1d6174605852ff6e6eb005eee30c73f44252c99a1c6ea669e9a1288b00000000"
 
     if (redirectRequest) {
       void router.push('/request?' + redirectRequest);
@@ -59,11 +53,8 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
   useEffect(() => {
     const redirectParams = localStorage.getItem('requestParams');
-    // console.log('first')
-    // console.log(redirectParams)//null
 
     localStorage.removeItem('requestParams');
-    // console.log(redirectParams)//null
 
     if (redirectParams) {
       setRedirectRequest(redirectParams);
@@ -119,7 +110,6 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 <button className='btn col-span-6 md:col-span-5'
                   onClick={refreshMnemonic}>
 
-                  {/* // TODO: I broke cursor-pointer-group-active. changed to Hover for now */}
                   <RefreshIcon className='h-5 duration-300 hover:rotate-180 transtion east-out' />
                   <span className='md:ml-3'>Refresh</span>
                 </button>
@@ -171,7 +161,6 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
               <div className='grid grid-cols-12 gap-5 m-6'>
 
-                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
                 <h2 className='col-span-6 pt-2'>
                   <span className='text-black'>What is Word #{quizMnemonic}</span>
                 </h2>
@@ -217,7 +206,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
               <h3 className=' text-black'>Set a local password for you wallet. </h3>
 
               <div className='grid grid-cols-12 gap-5 m-6'>
-                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+
                 <h2 className='col-span-5 pt-2'>
                   <span className='text-black'>Set a good password</span>
                 </h2>
@@ -232,7 +221,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 </div>
               </div>
               <div className='grid grid-cols-12 gap-5 m-6'>
-                {/* TODO: Should not use this pt-2, but some vertical-align instead */}
+
                 <h2 className='col-span-5 pt-2'>
                   <span className='text-black'>Repeat Password</span>
                 </h2>

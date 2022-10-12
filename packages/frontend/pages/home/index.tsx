@@ -5,6 +5,8 @@ import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, ChevronRightIcon, XIcon } from '@heroicons/react/outline';
 import { DocumentDuplicateIcon, DownloadIcon, PaperAirplaneIcon } from '@heroicons/react/solid';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
@@ -14,6 +16,8 @@ import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
+import { AccountOption, UserAccount } from '@choko-wallet/core';
+import { keypairTypeNumberToString } from '@choko-wallet/core/util';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
@@ -70,6 +74,8 @@ function Home (): JSX.Element {
   const [networkInput, setNetworkInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
+  const [migInProcess, setMigInProcess] = useState<boolean>(false);
+
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
   const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
@@ -120,26 +126,74 @@ function Home (): JSX.Element {
     } else {
       setMounted(true);
 
+      // MIG 5259b734e61e1acd3e8da16ec3a7560d2611d884c99216f6256bf66105f10e4e87c1a99d5b5abdb6fb966bb8a3232291a3c08ed0525b289e20ce1cbee09261435ffe8cea6775146500000000 3a0338a9d957a061d94fe5beeb0463f540459d247d0456988c714edc93d2a91400000000
+
+      // MIG
+      const lockedPrivateKey = localStorage.getItem('lockedPrivateKey');
+
+      if (lockedPrivateKey && lockedPrivateKey.length !== 0) {
+        // DO MIGRATION
+
+        const serialziedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
+
+        console.log('MIG', lockedPrivateKey, serialziedUserAccount);
+
+        setMigInProcess(true);
+
+        const publicKey = serialziedUserAccount.slice(0, 32);
+        const keypairType = keypairTypeNumberToString(serialziedUserAccount[32]);
+        const localKeyEncryption = serialziedUserAccount[33];
+        const hasEncryptedPrivateKeyExported = serialziedUserAccount[34];
+        const version = serialziedUserAccount[35];
+
+        const encryptedPrivateKey = hexToU8a(lockedPrivateKey).slice(0, 32 + 16 + 24);
+        const address = (['ecdsa', 'ethereum'].includes(keypairType)) ? ethereumEncode(publicKey) : encodeAddress(publicKey);
+
+        const newU = new UserAccount(new AccountOption({
+          hasEncryptedPrivateKeyExported: hasEncryptedPrivateKeyExported === 1,
+          keyType: keypairType,
+          localKeyEncryptionStrategy: localKeyEncryption,
+          version: version
+        }));
+
+        newU.publicKey = publicKey;
+        newU.encryptedPrivateKey = encryptedPrivateKey;
+        newU.address = address;
+
+        const se = newU.serializeWithEncryptedKey();
+
+        localStorage.removeItem('serialziedUserAccount');
+        localStorage.removeItem('lockedPrivateKey');
+
+        localStorage.setItem('serialziedUserAccount', u8aToHex(se));
+
+        setTimeout(() => {
+          setMigInProcess(false);
+        }, 3000);
+
+        // const userAccount = UserAccount.deserialize( hexToU8a(serialziedUserAccount) );
+        // console.log(userAccount);
+      }
+
       if (theme !== 'dark' && theme !== 'light') {
         setTheme('light');
       }
 
       dispatch(loadUserAccount());
     }
-
-    console.log('intialization');
   }, [dispatch, router, setTheme, theme]);
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
   if (isLoadingOpen) return <Loading title='Changing Network' />;
   if (changeAccountLoading) return <Loading title='Changing Account' />;
+  if (migInProcess) return <Loading title='Account System Migration in process ' />;
 
   const changeNetwork = async () => {
     dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
       .unwrap()
       .then((result) => {
-        console.log('result', result);// 直接给回组件 没传给redux 也可以给redux保存
+        console.log('result', result);
       }).catch((rejectedValueOrSerializedError) => {
         console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
       });
