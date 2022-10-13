@@ -90,21 +90,24 @@ export const userSlice = createSlice({
   name: 'user',
   reducers: {
     loadUserAccount: (state) => {
-      const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
-
-      let offset = 0;
-      const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
-
-      while (offset < serializedUserAccount.length) {
-        const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
-
-        offset += serializedLength;
-        const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
-
-        state.userAccount[account.address] = account;
+      try {
+        const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
+        let offset = 0;
+        const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
+        while (offset < serializedUserAccount.length) {
+          const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
+          offset += serializedLength;
+          const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
+          state.userAccount[account.address] = account;
+        }
+        state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
+      } catch (e) {
+        localStorage.clear();
+        state.currentUserAccount = null;
+        state.userAccount = {};
+        state.error = '';
       }
 
-      state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
@@ -134,7 +137,11 @@ export const userSlice = createSlice({
       state.currentUserAccount = state.userAccount[action.payload];
 
       if (!state.currentUserAccount) {
-        state.error = 'Account Not Found';
+        // state.error = 'Account Not Found';
+        localStorage.clear();
+        state.currentUserAccount = null;
+        state.userAccount = {};
+        state.error = '';
       }
     },
 

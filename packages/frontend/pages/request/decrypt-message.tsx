@@ -17,7 +17,7 @@ import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/r
 
 import Loading from '../../components/Loading';
 
-function DecryptMessageHandler (): JSX.Element {
+function DecryptMessageHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -65,6 +65,7 @@ function DecryptMessageHandler (): JSX.Element {
           const response = await decryptMessage.requestHandler(request, currentUserAccount);
           const s = response.serialize();
 
+          dispatch(decryptCurrentUserAccount(''));
           window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
         } catch (err) {
           alert(err);
@@ -78,7 +79,7 @@ function DecryptMessageHandler (): JSX.Element {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock () {
+  function unlock() {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -86,7 +87,7 @@ function DecryptMessageHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
+  function closeModal() {
     setPassword('');
     dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);

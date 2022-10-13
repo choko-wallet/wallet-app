@@ -17,7 +17,7 @@ import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request
 
 import Loading from '../../components/Loading';
 
-function SignMessageHandler (): JSX.Element {
+function SignMessageHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -64,7 +64,7 @@ function SignMessageHandler (): JSX.Element {
 
           const response = await signMessage.requestHandler(request, currentUserAccount);
           const s = response.serialize();
-
+          dispatch(decryptCurrentUserAccount(''));
           window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
         } catch (err) {
           alert(err);
@@ -78,7 +78,7 @@ function SignMessageHandler (): JSX.Element {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock () {
+  function unlock() {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -86,7 +86,7 @@ function SignMessageHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
+  function closeModal() {
     setPassword('');
     dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
