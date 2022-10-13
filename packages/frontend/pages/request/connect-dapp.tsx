@@ -211,7 +211,7 @@ function ConnectDappHandler (): JSX.Element {
                     <p className='text-sm text-gray-500'>
                       <input className='input input-bordered w-full max-w-xs'
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder='Set a Password'
+                        placeholder='Account Password'
 
                         type='password'
                         value={password}

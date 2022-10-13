@@ -17,7 +17,7 @@ import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request
 
 import Loading from '../../components/Loading';
 
-function SignMessageHandler(): JSX.Element {
+function SignMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -64,6 +64,7 @@ function SignMessageHandler(): JSX.Element {
 
           const response = await signMessage.requestHandler(request, currentUserAccount);
           const s = response.serialize();
+
           dispatch(decryptCurrentUserAccount(''));
           window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
         } catch (err) {
@@ -72,13 +73,13 @@ function SignMessageHandler(): JSX.Element {
         }
       })();
     }
-  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
+  }, [reduxError, currentUserAccount, dispatch, decryptCurrentUserAccountResult, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -86,7 +87,7 @@ function SignMessageHandler(): JSX.Element {
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
     dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
@@ -217,7 +218,7 @@ function SignMessageHandler(): JSX.Element {
                     <p className='text-sm text-gray-500'>
                       <input className='input input-bordered w-full max-w-xs'
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder='Set a Password'
+                        placeholder='Account Password'
 
                         type='password'
                         value={password}
@@ -225,7 +226,7 @@ function SignMessageHandler(): JSX.Element {
                     </p>
                   </div>
 
-                  <div className='mt-4'>
+                  <div className='mt-4 flex justify-between'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       onClick={unlock}
@@ -233,6 +234,7 @@ function SignMessageHandler(): JSX.Element {
                     >
                       Unlock
                     </button>
+                    {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

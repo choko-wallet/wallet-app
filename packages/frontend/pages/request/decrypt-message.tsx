@@ -17,7 +17,7 @@ import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/r
 
 import Loading from '../../components/Loading';
 
-function DecryptMessageHandler(): JSX.Element {
+function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -73,13 +73,13 @@ function DecryptMessageHandler(): JSX.Element {
         }
       })();
     }
-  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
+  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, dispatch, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -87,7 +87,7 @@ function DecryptMessageHandler(): JSX.Element {
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
     dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
@@ -225,7 +225,7 @@ function DecryptMessageHandler(): JSX.Element {
                     <p className='text-sm text-gray-500'>
                       <input className='input input-bordered w-full max-w-xs'
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder='Set a Password'
+                        placeholder='Account Password'
 
                         type='password'
                         value={password}
@@ -233,7 +233,7 @@ function DecryptMessageHandler(): JSX.Element {
                     </p>
                   </div>
 
-                  <div className='mt-4'>
+                  <div className='mt-4 flex justify-between'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       onClick={unlock}
@@ -241,6 +241,7 @@ function DecryptMessageHandler(): JSX.Element {
                     >
                       Unlock
                     </button>
+                    {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

@@ -18,7 +18,7 @@ import Loading from '../../components/Loading';
 
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
-function SignTxHandler(): JSX.Element {
+function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -43,11 +43,15 @@ function SignTxHandler(): JSX.Element {
     const callbackUrl = router.query.callbackUrl as string;
     const request = SignTxRequest.deserialize(u8aRequest);
 
+    console.log('currentUserAccount1', request.userOrigin.address);
     dispatch(loadUserAccount());
+
     dispatch(switchUserAccount(request.userOrigin.address));
     setCallback(callbackUrl);
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
+
+  console.log('currentUserAccount', currentUserAccount);
 
   useEffect(() => {
     if (reduxError) {
@@ -65,6 +69,7 @@ function SignTxHandler(): JSX.Element {
 
           const response = await signTx.requestHandler(request, currentUserAccount);
           const s = response.serialize();
+
           dispatch(decryptCurrentUserAccount(''));
           window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
         } catch (err) {
@@ -73,13 +78,13 @@ function SignTxHandler(): JSX.Element {
         }
       })();
     }
-  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
+  }, [reduxError, dispatch, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
 
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -87,7 +92,7 @@ function SignTxHandler(): JSX.Element {
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
     dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
@@ -219,7 +224,7 @@ function SignTxHandler(): JSX.Element {
                     <p className='text-sm text-gray-500'>
                       <input className='input input-bordered w-full max-w-xs'
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder='Set a Password'
+                        placeholder='Account Password'
 
                         type='password'
                         value={password}
@@ -227,7 +232,7 @@ function SignTxHandler(): JSX.Element {
                     </p>
                   </div>
 
-                  <div className='mt-4'>
+                  <div className='mt-4 flex justify-between'>
                     <button
                       className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       onClick={unlock}
@@ -235,6 +240,7 @@ function SignTxHandler(): JSX.Element {
                     >
                       Unlock
                     </button>
+                    {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

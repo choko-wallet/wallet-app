@@ -47,7 +47,7 @@ interface Crypto {
 const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
 
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
+function Home (): JSX.Element {
   const nodeRef = React.useRef(null);
   const { setTheme, theme } = useTheme();
   const router = useRouter();
@@ -211,19 +211,19 @@ function Home(): JSX.Element {
     });
   };
 
-  function closeNetworkChangeModal() {
+  function closeNetworkChangeModal () {
     setIsNetworkChangeOpen(false);
   }
 
-  function closeSendModal() {
+  function closeSendModal () {
     setIsSendOpen(false);
   }
 
-  function closeReceiveModal() {
+  function closeReceiveModal () {
     setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal() {
+  function closeAddNetworkModal () {
     setAddNetworkModalOpen(false);
     setNetworkInput('');
   }
