@@ -61,12 +61,7 @@ function Settings (): JSX.Element {
   }
 
   const generateAccountUrl = () => {
-    const payloadForExport = u8aToHex(currentUserAccount?.serializeWithEncryptedKey());
-
-    const superUrl = 'http://localhost:3000/import?payload=' + payloadForExport;
-
-    console.log(superUrl);
-    setExportUrl(superUrl);
+    setExportUrl('https://choko.app/import?payload=' + u8aToHex(currentUserAccount?.serializeWithEncryptedKey()));
     setExportModalOpen(true);
   };
 
@@ -87,7 +82,7 @@ function Settings (): JSX.Element {
 
               <div className='flex justify-between m-1'>
                 <div className='my-auto'>
-                  <p className='text-lg dark:text-[#03F3FF]'>Wallet ID</p>
+                  <p className='text-lg dark:text-[#03F3FF]'>Your Address</p>
 
                 </div>
 
@@ -121,7 +116,7 @@ function Settings (): JSX.Element {
                 </div>
               </div>
 
-              <div className='flex justify-between m-1'>
+              {/* <div className='flex justify-between m-1'>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>View Your Mnemonic</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Do not share your private keys with anyone.</p>
@@ -136,12 +131,12 @@ function Settings (): JSX.Element {
                     Mnemonic
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
-                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Change Password</p>
-                  <p className='text-sm font-normal text-gray-400 font-poppins'>Password is your unique password.</p>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>(WIP) Change Password</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Password is the one you set when creating the account.</p>
                 </div>
 
                 <div className='md:w-40 w-32 flex justify-end'>
@@ -158,7 +153,7 @@ function Settings (): JSX.Element {
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>Export Account Url</p>
-                  <p className='text-sm font-normal text-gray-400 font-poppins'>Export Account Url For Import.</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Generate Account Url For Import.</p>
                 </div>
 
                 <div className='md:w-40 w-32 flex justify-end'>
@@ -174,7 +169,7 @@ function Settings (): JSX.Element {
 
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
-                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Select Language</p>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>(WIP)Select Language</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Set your preferred language</p>
                 </div>
 
@@ -191,7 +186,7 @@ function Settings (): JSX.Element {
 
               <div className='flex justify-between m-1 '>
                 <div className='flex-col'>
-                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Trading Currency</p>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>(WIP) Trading Currency</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Select your trading currency</p>
                 </div>
 

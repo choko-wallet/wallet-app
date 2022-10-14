@@ -43,37 +43,6 @@ function DecryptMessageHandler (): JSX.Element {
   }, [dispatch, router.isReady, router.query]);
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (reduxError) {
-      alert(reduxError);
-    }
-
-    console.log(currentUserAccount, decryptCurrentUserAccountResult);
-
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const decryptMessage = new DecryptMessageDescriptor();
-
-        try {
-          setLoading(true);
-
-          const response = await decryptMessage.requestHandler(request, currentUserAccount);
-          const s = response.serialize();
-
-          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
-        } catch (err) {
-          alert(err);
-
-          window.location.href = callback;
-          console.error(err);
-        }
-      })();
-    }
-  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
-
-  useEffect(() => {
-=======
->>>>>>> alpha-alpha-plus-mig
     if (request) setMounted(true);
   }, [request]);
 

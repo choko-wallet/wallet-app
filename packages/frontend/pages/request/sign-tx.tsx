@@ -46,35 +46,7 @@ function SignTxHandler (): JSX.Element {
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (reduxError) {
-      alert(reduxError);
-    }
-
-    console.log(currentUserAccount, decryptCurrentUserAccountResult);
-
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const signTx = new SignTxDescriptor();
-
-        try {
-          setLoading(true);
-
-          const response = await signTx.requestHandler(request, currentUserAccount);
-          const s = response.serialize();
-
-          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-        } catch (err) {
-          alert(err);
-          window.location.href = callback;
-        }
-      })();
-    }
-  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
-=======
   console.log('currentUserAccount', currentUserAccount);
->>>>>>> alpha-alpha-plus-mig
 
   useEffect(() => {
     if (request) setMounted(true);

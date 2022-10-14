@@ -46,36 +46,6 @@ function SignMessageHandler (): JSX.Element {
   }, [dispatch, router.isReady, router.query]);
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (reduxError) {
-      alert(reduxError);
-    }
-
-    console.log(currentUserAccount, decryptCurrentUserAccountResult);
-
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const signMessage = new SignMessageDescriptor();
-
-        try {
-          setLoading(true);
-
-          const response = await signMessage.requestHandler(request, currentUserAccount);
-          const s = response.serialize();
-
-          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
-        } catch (err) {
-          alert(err);
-          console.error(err);
-          window.location.href = callback;
-        }
-      })();
-    }
-  }, [reduxError, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
-
-  useEffect(() => {
-=======
->>>>>>> alpha-alpha-plus-mig
     if (request) setMounted(true);
   }, [request]);
 

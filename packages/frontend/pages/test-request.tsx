@@ -21,8 +21,11 @@ import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 import Loading from './../components/Loading';
 
 const localTesting = false;
-const callbackUrl = 'https://choko.app/test-request'
+const callbackUrl = 'https://choko.app/test-request';
+
+// const localTesting = true;
 // const callbackUrl = 'http://localhost:3000/test-request';
+
 const accountOption = new AccountOption({
   hasEncryptedPrivateKeyExported: false,
   keyType: 'sr25519',
