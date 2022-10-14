@@ -4,7 +4,7 @@
 import type { NextPage } from 'next';
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { encodeAddress } from '@polkadot/util-crypto';
+import { cryptoWaitReady, encodeAddress } from '@polkadot/util-crypto';
 import { AsymmetricEncryption } from '@skyekiwi/crypto';
 import { hexToU8a, stringToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 import Head from 'next/head';
@@ -13,63 +13,78 @@ import React, { useEffect, useState } from 'react';
 import tweetnacl from 'tweetnacl';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
-import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
+import { decompressParameters } from '@choko-wallet/core/util';
 import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDKAndStore, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
+
+import Loading from './../components/Loading';
+
+const localTesting = false;
+const callbackUrl = 'https://choko.app/test-request'
+// const callbackUrl = 'http://localhost:3000/test-request';
+const accountOption = new AccountOption({
+  hasEncryptedPrivateKeyExported: false,
+  keyType: 'sr25519',
+  localKeyEncryptionStrategy: 0
+});
+const sdkConfig = {
+  accountOption: accountOption,
+  activeNetworkHash: '847e7b7fa160d85f', // skyekiwi
+  callbackUrlBase: callbackUrl,
+  displayName: 'Choko Wallet Alpha Test',
+  infoName: 'test',
+  version: 0
+};
 
 const TestRequest: NextPage = () => {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [account, setAccount] = useState<UserAccount>(null);
-  const [response, setResponse] = useState<string>('');
+  const [response, setResponse] = useState<Uint8Array>(new Uint8Array(0));
 
   const [encryptedMessage, setEncryptedMessage] = useState<Uint8Array>(new Uint8Array(0));
   const [clientPrivateKey, setClientPrivateKey] = useState<Uint8Array>(new Uint8Array(32));
 
-  useEffect(() => {
-    if (response) {
-      const u = decompressParameters(hexToU8a(response));
+  const [loading, setLoading] = useState<boolean>(true);
 
+  useEffect(() => {
+    if (response && response.length > 0) {
       if (router.query.responseType === 'signTx') {
-        const resp = SignTxResponse.deserialize(u);
+        const resp = SignTxResponse.deserialize(response);
 
         console.log(resp);
 
         alert(JSON.stringify(resp.payload));
       } else if (router.query.responseType === 'signMessage') {
-        const resp = SignMessageResponse.deserialize(u);
+        const resp = SignMessageResponse.deserialize(response);
 
         console.log(resp);
 
         alert(JSON.stringify(resp.payload));
       } else if (router.query.responseType === 'decryptMessage') {
-        const resp = DecryptMessageResponse.deserialize(u);
+        const resp = DecryptMessageResponse.deserialize(response);
 
         console.log(resp);
         const decryptMsg = u8aToString(AsymmetricEncryption.decrypt(clientPrivateKey, resp.payload.message));
 
         alert('Decrypt Message: ' + decryptMsg);
+      } else if (router.query.responseType === 'connectDapp') {
+        const resp = ConnectDappResponse.deserialize(response);
+
+        console.log(resp.payload.userAccount);
+        storeUserAccount(resp.payload.userAccount);
+        setAccount(resp.payload.userAccount);
+
+        console.log(resp.payload.userAccount);
       }
     }
   }, [response, clientPrivateKey, router.query]);
 
   useEffect(() => {
-    if (router.query && router.query.response && router.query.responseType) {
-      const u8aResponse = decompressParameters(hexToU8a(router.query.response as string));
-
-      if (router.query.responseType === 'connectDapp') {
-        const response = ConnectDappResponse.deserialize(u8aResponse);
-
-        storeUserAccount(response.payload.userAccount);
-        setAccount(response.payload.userAccount);
-      } else {
-        const a = getUserAccount();
-
-        setAccount(a);
-        setResponse(u8aToHex(compressParameters(u8aResponse)));
-      }
+    if (router.query && router.query.response) {
+      setResponse(decompressParameters(hexToU8a(router.query.response as string)));
     } else {
       try {
         const a = getUserAccount();
@@ -83,48 +98,30 @@ const TestRequest: NextPage = () => {
   }, [router]);
 
   useEffect(() => {
-    const accountOption = new AccountOption({
-      hasEncryptedPrivateKeyExported: false,
-      keyType: 'sr25519',
-      localKeyEncryptionStrategy: 0
-    });
-
     try {
       const a = getUserAccount();
 
-      configSDKAndStore({
-        accountOption: accountOption,
-        activeNetworkHash: '847e7b7fa160d85f', // skyekiwi
+      configSDKAndStore(sdkConfig, a.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' ? a : null);
 
-        callbackUrlBase: 'https://choko.app/test-request',
+      if (!loading) {
+        const orignalMessage = stringToU8a('A Clear Text Message');
+        const encryptedMessage = AsymmetricEncryption.encryptWithCurveType('sr25519', orignalMessage, a.publicKey);
 
-        displayName: 'Choko Wallet Alpha Test',
-        infoName: 'test',
-
-        version: 0
-      }, a.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' ? a : null);
-
-      const orignalMessage = stringToU8a('A Clear Text Message');
-      const encryptedMessage = AsymmetricEncryption.encryptWithCurveType('sr25519', orignalMessage, a.publicKey);
-
-      setEncryptedMessage(encryptedMessage);
+        console.error(encryptedMessage);
+        setEncryptedMessage(encryptedMessage);
+      }
     } catch (e) {
-      configSDKAndStore({
-        accountOption: accountOption,
-        activeNetworkHash: '847e7b7fa160d85f', // skyekiwi
-
-        callbackUrlBase: 'https://choko.app/test-request',
-
-        displayName: 'Choko Wallet Alpha Test',
-        infoName: 'test',
-
-        version: 0
-      });
+      configSDKAndStore(sdkConfig);
       console.error(e);
     }
 
+    void (async () => {
+      await cryptoWaitReady();
+      setLoading(false);
+    })();
+
     setMounted(true);
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     const lsSK = localStorage.getItem('ephemeralKey');
@@ -145,6 +142,8 @@ const TestRequest: NextPage = () => {
     return null;
   }
 
+  if (loading) return <Loading title='Initializing ... ' />;
+
   return (<main className='grid grid-cols-12 gap-4 min-h-screen content-center color-bg py-10'>
     <Head><title>Choko Wallet</title></Head>
 
@@ -157,7 +156,7 @@ const TestRequest: NextPage = () => {
           <h1>Connect This Testing Page with an Address! </h1><br />
           <button className='btn m-2 btn-error'
             onClick={() => {
-              const x = buildConnectDappUrl();
+              const x = buildConnectDappUrl(localTesting);
 
               window.location.href = x;
             }}>Connect Wallet</button>
@@ -182,7 +181,7 @@ const TestRequest: NextPage = () => {
                   const api = await ApiPromise.create({ provider: provider });
                   const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
                   const encoded = hexToU8a(tx.toHex().substring(2));
-                  const x = buildSignTxUrl(encoded);
+                  const x = buildSignTxUrl(encoded, localTesting);
 
                   await provider.disconnect();
                   window.location.href = x;
@@ -192,7 +191,7 @@ const TestRequest: NextPage = () => {
               <h2 className='text-black'>Sign A Message</h2><br />
               <button className='btn m-5 btn-error'
                 onClick={() => {
-                  const x = buildSignMessageUrl(stringToU8a('Test Messaage'));
+                  const x = buildSignMessageUrl(stringToU8a('Test Messaage'), localTesting);
 
                   window.location.href = x;
                 }}>Sign Message</button><br />
@@ -209,7 +208,7 @@ const TestRequest: NextPage = () => {
               </h2>
               <button className='btn m-5 btn-error'
                 onClick={() => {
-                  const x = buildDecryptMessageUrl('sr25519', encryptedMessage, AsymmetricEncryption.getPublicKey(clientPrivateKey));
+                  const x = buildDecryptMessageUrl('sr25519', encryptedMessage, AsymmetricEncryption.getPublicKey(clientPrivateKey), localTesting);
 
                   window.location.href = x;
                 }}>Decrypt Message</button><br />

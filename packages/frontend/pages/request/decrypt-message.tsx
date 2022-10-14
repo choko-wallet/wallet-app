@@ -68,6 +68,8 @@ function DecryptMessageHandler (): JSX.Element {
           window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
         } catch (err) {
           alert(err);
+
+          window.location.href = callback;
           console.error(err);
         }
       })();
