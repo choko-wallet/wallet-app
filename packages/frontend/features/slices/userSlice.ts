@@ -69,7 +69,6 @@ export const changeCurrentAccountType = createAsyncThunk(
 // User slice
 interface UserSliceItem {
   error: string;
-  decryptCurrentUserAccountResult: string;
   userAccount: { [key: string]: UserAccount };
   currentUserAccount: UserAccount | null;
   changeCurrentAccountLoading: boolean;
@@ -79,7 +78,6 @@ interface UserSliceItem {
 const initialState: UserSliceItem = {
   changeCurrentAccountLoading: false,
   currentUserAccount: null,
-  decryptCurrentUserAccountResult: '',
   error: '',
   userAccount: {}
 };
@@ -106,9 +104,8 @@ export const userSlice = createSlice({
         }
 
         state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
-        console.log('111', state.currentUserAccount);
       } catch (e) {
-        console.log('222');
+        console.log('error', e);
         localStorage.clear();
         state.currentUserAccount = null;
         state.userAccount = {};
@@ -117,23 +114,6 @@ export const userSlice = createSlice({
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
-      console.log(state.currentUserAccount, action.payload);
-
-      if (state.currentUserAccount && action.payload !== '') {
-        try {
-          state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
-          state.decryptCurrentUserAccountResult = 'success';
-        } catch (e) {
-          console.error(e);
-          state.decryptCurrentUserAccountResult = 'Password not correct';
-        }
-      } else { // password === ''
-        state.decryptCurrentUserAccountResult = '';
-      }
-    },
-
-    // 外面try catch 成功了如何触发函数  同步的要么上面 要么这个 
-    decryptCurrentUserAccount2: (state, action: PayloadAction<string>) => {
       console.log(state.currentUserAccount, action.payload);
       state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
     },
@@ -231,5 +211,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const { decryptCurrentUserAccount, decryptCurrentUserAccount2, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
+export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,41 +1,35 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog } from '@headlessui/react';
 import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectError } from '@choko-wallet/frontend/features/redux/selectors';
+import Modal from '@choko-wallet/frontend/components/Modal';
+import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
-import Loading from '../../components/Loading';
-import Modal from '@choko-wallet/frontend/components/Modal';
-
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
-function SignTxHandler(): JSX.Element {
+function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const reduxError = useSelector(selectError);
-  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult);
-
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
-
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
 
   const [request, setRequest] = useState<SignTxRequest>(null);
   const [callback, setCallback] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -55,47 +49,72 @@ function SignTxHandler(): JSX.Element {
   console.log('currentUserAccount', currentUserAccount);
 
   useEffect(() => {
-    if (reduxError) {
-      alert(reduxError);
-    }
-
-    console.log(currentUserAccount, decryptCurrentUserAccountResult);
-
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const signTx = new SignTxDescriptor();
-
-        try {
-          setLoading(true);
-
-          const response = await signTx.requestHandler(request, currentUserAccount);
-          const s = response.serialize();
-
-          dispatch(decryptCurrentUserAccount(''));
-          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-        } catch (err) {
-          alert(err);
-          console.error(err);
-        }
-      })();
-    }
-  }, [reduxError, dispatch, currentUserAccount, decryptCurrentUserAccountResult, request, callback]);
-
-  useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
-      dispatch(decryptCurrentUserAccount(password));
-    } else {
-      alert('unexpected!');
+      try {
+        dispatch(decryptCurrentUserAccount(password));
+        console.log('successfully');
+        toast('Password Correct, Redirecting...', {
+          duration: 5000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+
+        if (currentUserAccount && !currentUserAccount.isLocked) {
+          console.log('first');
+          setPassword('');
+          setOpenPasswordModal(false);
+
+          void (async () => {
+            const signTx = new SignTxDescriptor();
+
+            try {
+              const response = await signTx.requestHandler(request, currentUserAccount);
+              const s = response.serialize();
+
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            } catch (err) {
+              console.log('err', err);
+              toast('Something Wrong', {
+                style: {
+                  background: 'red',
+                  color: 'white',
+                  fontFamily: 'Poppins',
+                  fontSize: '16px',
+                  fontWeight: 'bolder',
+                  padding: '20px'
+                }
+              });
+            }
+          })();
+        }
+      } catch (e) {
+        toast('Wrong Password!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
-    dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
   }
 
@@ -103,11 +122,9 @@ function SignTxHandler(): JSX.Element {
     return null;
   }
 
-  if (loading) return <Loading title='Sending transaction. You will be redirected back once done.' />;
-
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
-
+      <Toaster />
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-600'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
           {request.dappOrigin.activeNetwork.text}
@@ -215,7 +232,7 @@ function SignTxHandler(): JSX.Element {
             >
               Unlock
             </button>
-            {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
+
           </div>
         </Dialog.Panel>
       </Modal>

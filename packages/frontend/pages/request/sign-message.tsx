@@ -1,30 +1,27 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog } from '@headlessui/react';
 import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectError } from '@choko-wallet/frontend/features/redux/selectors';
+import Modal from '@choko-wallet/frontend/components/Modal';
+import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
-import Loading from '../../components/Loading';
-import Modal from '@choko-wallet/frontend/components/Modal';
-
-function SignMessageHandler(): JSX.Element {
+function SignMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const reduxError = useSelector(selectError);
-  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -34,7 +31,6 @@ function SignMessageHandler(): JSX.Element {
 
   const [request, setRequest] = useState<SignMessageRequest>(null);
   const [callback, setCallback] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -50,47 +46,70 @@ function SignMessageHandler(): JSX.Element {
   }, [dispatch, router.isReady, router.query]);
 
   useEffect(() => {
-    if (reduxError) {
-      alert(reduxError);
-    }
-
-    console.log(currentUserAccount, decryptCurrentUserAccountResult);
-
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const signMessage = new SignMessageDescriptor();
-
-        try {
-          setLoading(true);
-
-          const response = await signMessage.requestHandler(request, currentUserAccount);
-          const s = response.serialize();
-
-          dispatch(decryptCurrentUserAccount(''));
-          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
-        } catch (err) {
-          alert(err);
-          console.error(err);
-        }
-      })();
-    }
-  }, [reduxError, currentUserAccount, dispatch, decryptCurrentUserAccountResult, request, callback]);
-
-  useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
-      dispatch(decryptCurrentUserAccount(password));
-    } else {
-      alert('unexpected!');
+      try {
+        dispatch(decryptCurrentUserAccount(password));
+        console.log('successfully');
+        toast('Password Correct, Redirecting...', {
+          duration: 5000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+
+        if (currentUserAccount && !currentUserAccount.isLocked) {
+          void (async () => {
+            setPassword('');
+            setOpenPasswordModal(false);
+            const signMessage = new SignMessageDescriptor();
+
+            try {
+              const response = await signMessage.requestHandler(request, currentUserAccount);
+              const s = response.serialize();
+
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
+            } catch (err) {
+              console.log('err', err);
+              toast('Something Wrong', {
+                style: {
+                  background: 'red',
+                  color: 'white',
+                  fontFamily: 'Poppins',
+                  fontSize: '16px',
+                  fontWeight: 'bolder',
+                  padding: '20px'
+                }
+              });
+            }
+          })();
+        }
+      } catch (e) {
+        toast('Wrong Password!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
-    dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
   }
 
@@ -98,11 +117,9 @@ function SignMessageHandler(): JSX.Element {
     return null;
   }
 
-  if (loading) return <Loading title='Signing Messsage. You will be redirected back once done.' />;
-
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
-
+      <Toaster />
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-gray-600'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
           General Request
@@ -180,7 +197,6 @@ function SignMessageHandler(): JSX.Element {
         </button>
       </div>
 
-
       <Modal closeModal={closeModal}
         isOpen={openPasswordModal} >
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
@@ -210,7 +226,7 @@ function SignMessageHandler(): JSX.Element {
             >
               Unlock
             </button>
-            {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
+
           </div>
         </Dialog.Panel>
 

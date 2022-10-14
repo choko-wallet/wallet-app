@@ -1,29 +1,29 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog, RadioGroup, Transition } from '@headlessui/react';
+import { Dialog, RadioGroup } from '@headlessui/react';
 import { CheckCircleIcon, CheckIcon, XIcon } from '@heroicons/react/outline';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
-import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import Modal from '@choko-wallet/frontend/components/Modal';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
-import Modal from '@choko-wallet/frontend/components/Modal';
 
 // http://localhost:3000/request/connect-dapp?requestType=connectDapp&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf124d809006db70e53&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
-function ConnectDappHandler(): JSX.Element {
+function ConnectDappHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const decryptCurrentUserAccountResult = useSelector(selectDecryptCurrentUserAccountResult);
 
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -60,33 +60,53 @@ function ConnectDappHandler(): JSX.Element {
     }
   }, [router, dispatch, userAccount, currentUserAccount]);
 
-  useEffect(() => {
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const connectDapp = new ConnectDappDescriptor();
-        const response = await connectDapp.requestHandler(request, currentUserAccount);
-        const s = response.serialize();
-
-        setPassword('');
-        dispatch(decryptCurrentUserAccount(''));
-        setOpenPasswordModal(false);
-
-        window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
-      })();
-    }
-  }, [currentUserAccount, request, callback, decryptCurrentUserAccountResult, dispatch]);
-
-  function unlock() {
+  function unlock () {
     if (request) {
-      dispatch(decryptCurrentUserAccount(password));
-    } else {
-      alert('unexpected!');
+      try {
+        dispatch(decryptCurrentUserAccount(password));
+        console.log('successfully');
+        toast('Password Correct, Redirecting...', {
+          duration: 5000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+
+        if (currentUserAccount && !currentUserAccount.isLocked) {
+          void (async () => {
+            const connectDapp = new ConnectDappDescriptor();
+            const response = await connectDapp.requestHandler(request, currentUserAccount);
+            const s = response.serialize();
+
+            setPassword('');
+            setOpenPasswordModal(false);
+
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
+          })();
+        }
+      } catch (e) {
+        toast('Wrong Password!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
-    dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
   }
 
@@ -96,6 +116,7 @@ function ConnectDappHandler(): JSX.Element {
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
+      <Toaster />
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
           {request?.dappOrigin.activeNetwork.text}
@@ -173,7 +194,6 @@ function ConnectDappHandler(): JSX.Element {
         </button>
       </div>
 
-
       <Modal closeModal={closeModal}
         isOpen={openPasswordModal} >
 
@@ -204,7 +224,7 @@ function ConnectDappHandler(): JSX.Element {
             >
               Unlock
             </button>
-            {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
+
           </div>
         </Dialog.Panel>
 
