@@ -506,10 +506,10 @@ function Home (): JSX.Element {
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
-                    <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+                    <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'></p>
 
                     <CopyToClipboard
-                      text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
+                      text={' '}>
                       <div onClick={handleCopy}>
                         {showCheck
                           ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -523,7 +523,7 @@ function Home (): JSX.Element {
                     <QRCode
                       size={256}
                       style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-                      value={'5G16tBnZEmtnL6A5nxZJpJtUw'} />
+                      value={' '} />
                   </div>
 
                   <div className='flex space-x-5'>

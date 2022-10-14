@@ -69,7 +69,6 @@ export const changeCurrentAccountType = createAsyncThunk(
 // User slice
 interface UserSliceItem {
   error: string;
-  decryptCurrentUserAccountResult: string;
   userAccount: { [key: string]: UserAccount };
   currentUserAccount: UserAccount | null;
   changeCurrentAccountLoading: boolean;
@@ -79,7 +78,6 @@ interface UserSliceItem {
 const initialState: UserSliceItem = {
   changeCurrentAccountLoading: false,
   currentUserAccount: null,
-  decryptCurrentUserAccountResult: '',
   error: '',
   userAccount: {}
 };
@@ -90,37 +88,34 @@ export const userSlice = createSlice({
   name: 'user',
   reducers: {
     loadUserAccount: (state) => {
-      const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
+      try {
+        const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
 
-      let offset = 0;
-      const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
+        let offset = 0;
+        const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
 
-      while (offset < serializedUserAccount.length) {
-        const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
+        while (offset < serializedUserAccount.length) {
+          const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
 
-        offset += serializedLength;
-        const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
+          offset += serializedLength;
+          const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
 
-        state.userAccount[account.address] = account;
+          state.userAccount[account.address] = account;
+        }
+
+        state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
+      } catch (e) {
+        console.log('error', e);
+        localStorage.clear();
+        state.currentUserAccount = null;
+        state.userAccount = {};
+        state.error = '';
       }
-
-      state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
       console.log(state.currentUserAccount, action.payload);
-
-      if (state.currentUserAccount && action.payload !== '') {
-        try {
-          state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
-          state.decryptCurrentUserAccountResult = 'success';
-        } catch (e) {
-          console.error(e);
-          state.decryptCurrentUserAccountResult = 'Password not correct';
-        }
-      } else { // password === ''
-        state.decryptCurrentUserAccountResult = '';
-      }
+      state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
     },
 
     lockCurrentUserAccount: (state) => {
@@ -130,11 +125,8 @@ export const userSlice = createSlice({
     },
 
     switchUserAccount: (state, action: PayloadAction<string>) => {
-      // console.log('action.payload', action.payload);
-      state.currentUserAccount = state.userAccount[action.payload];
-
-      if (!state.currentUserAccount) {
-        state.error = 'Account Not Found';
+      if (state.userAccount[action.payload] !== undefined) {
+        state.currentUserAccount = state.userAccount[action.payload];
       }
     },
 

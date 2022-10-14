@@ -158,13 +158,15 @@ const TestRequest: NextPage = () => {
             onClick={() => {
               const x = buildConnectDappUrl(localTesting);
 
+              // console.log(x)
               window.location.href = x;
             }}>Connect Wallet</button>
 
           <div className='divider'></div>
 
           {
-            account && account.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' && <>
+            account && account.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' &&
+            <>
               <h2 className='text-black'>Claim Some Faucet Token First ... </h2><br />
               <h3 className='text-black'
                 style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
@@ -201,9 +203,9 @@ const TestRequest: NextPage = () => {
               <h2 className='text-black'>Decrypt A Message</h2><br />
 
               <h2>
-                Message - A Clear Text Message - encoded into {'0x' + u8aToHex(stringToU8a('A Clear Text Message'))} <br/>
-                Send to {'0x' + u8aToHex(account.publicKey)} on sr25519 and address is { encodeAddress(account.publicKey) } <br/>
-                Encrypted Message is {encryptedMessage} <br/>
+                Message - A Clear Text Message - encoded into {'0x' + u8aToHex(stringToU8a('A Clear Text Message'))} <br />
+                Send to {'0x' + u8aToHex(account.publicKey)} on sr25519 and address is {encodeAddress(account.publicKey)} <br />
+                Encrypted Message is {encryptedMessage} <br />
                 Client Ephermeral Private Key is {'0x' + u8aToHex(clientPrivateKey)} and public key is {'0x' + u8aToHex(AsymmetricEncryption.getPublicKey(clientPrivateKey))}
               </h2>
               <button className='btn m-5 btn-error'
