@@ -8,10 +8,10 @@ import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-
+import toast, { Toaster } from "react-hot-toast";
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectCurrentUserAccount, selectDecryptCurrentUserAccountResult, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { decryptCurrentUserAccount, decryptCurrentUserAccount2, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 import Modal from '@choko-wallet/frontend/components/Modal';
 
@@ -60,27 +60,65 @@ function ConnectDappHandler(): JSX.Element {
     }
   }, [router, dispatch, userAccount, currentUserAccount]);
 
-  useEffect(() => {
-    if (currentUserAccount && !currentUserAccount.isLocked && decryptCurrentUserAccountResult === 'success') {
-      void (async () => {
-        const connectDapp = new ConnectDappDescriptor();
-        const response = await connectDapp.requestHandler(request, currentUserAccount);
-        const s = response.serialize();
+  // useEffect(() => {//成功了要走这个if 
+  //   if (currentUserAccount && !currentUserAccount.isLocked) {
+  //     void (async () => {
+  //       const connectDapp = new ConnectDappDescriptor();
+  //       const response = await connectDapp.requestHandler(request, currentUserAccount);
+  //       const s = response.serialize();
 
-        setPassword('');
-        dispatch(decryptCurrentUserAccount(''));
-        setOpenPasswordModal(false);
+  //       setPassword('');
+  //       setOpenPasswordModal(false);
 
-        window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
-      })();
-    }
-  }, [currentUserAccount, request, callback, decryptCurrentUserAccountResult, dispatch]);
+  //       window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
+  //     })();
+  //   }
+  // }, [currentUserAccount, request, callback, dispatch]);
 
   function unlock() {
     if (request) {
-      dispatch(decryptCurrentUserAccount(password));
-    } else {
-      alert('unexpected!');
+      try {
+        dispatch(decryptCurrentUserAccount2(password));
+        console.log('successfully')
+        toast("Password Correct, Redirecting...", {
+          duration: 5000,
+          icon: '👏',
+          style: {
+            background: "green",
+            color: "white",
+            fontWeight: "bolder",
+            fontFamily: "Poppins",
+            fontSize: "17px",
+            padding: "20px",
+          }
+        })
+
+        if (currentUserAccount && !currentUserAccount.isLocked) {
+          void (async () => {
+            const connectDapp = new ConnectDappDescriptor();
+            const response = await connectDapp.requestHandler(request, currentUserAccount);
+            const s = response.serialize();
+
+            setPassword('');
+            setOpenPasswordModal(false);
+
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
+          })();
+        }
+
+      } catch (e) {
+        toast("Wrong Password!", {
+          style: {
+            background: "red",
+            color: "white",
+            fontWeight: "bolder",
+            fontFamily: "Poppins",
+            fontSize: "16px",
+            padding: "20px",
+          }
+        })
+
+      }
     }
   }
 
@@ -96,6 +134,7 @@ function ConnectDappHandler(): JSX.Element {
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
+      <Toaster position="top-right" />
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
           {request?.dappOrigin.activeNetwork.text}

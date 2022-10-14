@@ -1521,7 +1521,7 @@ __metadata:
     react: 18.1.0
     react-copy-to-clipboard: ^5.1.0
     react-dom: 18.1.0
-    react-hot-toast: ^2.3.0
+    react-hot-toast: ^2.4.0
     react-qr-code: ^2.0.7
     react-qr-reader: ^3.0.0-beta-1
     react-redux: ^7.2.0
@@ -10823,7 +10823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hot-toast@npm:^2.3.0":
+"react-hot-toast@npm:^2.4.0":
   version: 2.4.0
   resolution: "react-hot-toast@npm:2.4.0"
   dependencies:

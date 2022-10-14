@@ -16,8 +16,9 @@ import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
 
 import Loading from '../../components/Loading';
+import Modal from '@choko-wallet/frontend/components/Modal';
 
-function DecryptMessageHandler (): JSX.Element {
+function DecryptMessageHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -79,7 +80,7 @@ function DecryptMessageHandler (): JSX.Element {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock () {
+  function unlock() {
     if (request) {
       dispatch(decryptCurrentUserAccount(password));
     } else {
@@ -87,7 +88,7 @@ function DecryptMessageHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
+  function closeModal() {
     setPassword('');
     dispatch(decryptCurrentUserAccount(''));
     setOpenPasswordModal(false);
@@ -185,70 +186,42 @@ function DecryptMessageHandler (): JSX.Element {
           <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
-      <Transition appear
-        as={Fragment}
-        show={openPasswordModal}>
-        <Dialog as='div'
-          className='relative z-10'
-          onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter='ease-out duration-300'
-            enterFrom='opacity-0'
-            enterTo='opacity-100'
-            leave='ease-in duration-200'
-            leaveFrom='opacity-100'
-            leaveTo='opacity-0'
+
+
+      <Modal closeModal={closeModal}
+        isOpen={openPasswordModal} >
+        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+          <Dialog.Title
+            as='h3'
+            className='text-lg font-medium leading-6 text-gray-900'
           >
-            <div className='fixed inset-0 bg-black bg-opacity-25' />
-          </Transition.Child>
+            Unlock Wallet with Password
+          </Dialog.Title>
+          <div className='mt-2'>
+            <p className='text-sm text-gray-500'>
+              <input className='input input-bordered w-full max-w-xs'
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder='Account Password'
 
-          <div className='fixed inset-0 overflow-y-auto'>
-            <div className='flex min-h-full items-center justify-center p-4 text-center'>
-              <Transition.Child
-                as={Fragment}
-                enter='ease-out duration-300'
-                enterFrom='opacity-0 scale-95'
-                enterTo='opacity-100 scale-100'
-                leave='ease-in duration-200'
-                leaveFrom='opacity-100 scale-100'
-                leaveTo='opacity-0 scale-95'
-              >
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
-                  <Dialog.Title
-                    as='h3'
-                    className='text-lg font-medium leading-6 text-gray-900'
-                  >
-                    Unlock Wallet with Password
-                  </Dialog.Title>
-                  <div className='mt-2'>
-                    <p className='text-sm text-gray-500'>
-                      <input className='input input-bordered w-full max-w-xs'
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder='Account Password'
-
-                        type='password'
-                        value={password}
-                      />
-                    </p>
-                  </div>
-
-                  <div className='mt-4 flex justify-between'>
-                    <button
-                      className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={unlock}
-                      type='button'
-                    >
-                      Unlock
-                    </button>
-                    {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
+                type='password'
+                value={password}
+              />
+            </p>
           </div>
-        </Dialog>
-      </Transition>
+
+          <div className='mt-4 flex justify-between'>
+            <button
+              className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+              onClick={unlock}
+              type='button'
+            >
+              Unlock
+            </button>
+            {decryptCurrentUserAccountResult ? <div className='text-black'>{decryptCurrentUserAccountResult}</div> : null}
+          </div>
+        </Dialog.Panel>
+
+      </Modal>
     </main>
   );
 }

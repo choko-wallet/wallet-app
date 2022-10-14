@@ -132,6 +132,12 @@ export const userSlice = createSlice({
       }
     },
 
+    // 外面try catch 成功了如何触发函数  同步的要么上面 要么这个 
+    decryptCurrentUserAccount2: (state, action: PayloadAction<string>) => {
+      console.log(state.currentUserAccount, action.payload);
+      state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
+    },
+
     lockCurrentUserAccount: (state) => {
       if (state.currentUserAccount) {
         state.currentUserAccount.lock();
@@ -225,5 +231,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
+export const { decryptCurrentUserAccount, decryptCurrentUserAccount2, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
 export default userSlice.reducer;
