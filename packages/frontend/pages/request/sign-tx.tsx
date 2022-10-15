@@ -3,7 +3,8 @@
 
 import { Dialog } from '@headlessui/react';
 import { CheckIcon, XIcon } from '@heroicons/react/outline';
-import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -17,6 +18,7 @@ import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
+import Loading from '../../components/Loading';
 
 function SignTxHandler (): JSX.Element {
   const router = useRouter();
@@ -26,7 +28,10 @@ function SignTxHandler (): JSX.Element {
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
   const [mounted, setMounted] = useState<boolean>(false);
-  const [displayType, setDisplayType] = useState<string>('hex');
+  const [displayType, setDisplayType] = useState<string>('decoded');
+
+  const [decodingTx, setDecodingTx] = useState<boolean>(true);
+  const [decodedTx, setDecodedTx] = useState<string>('');
 
   const [request, setRequest] = useState<SignTxRequest>(null);
   const [callback, setCallback] = useState<string>('');
@@ -38,10 +43,27 @@ function SignTxHandler (): JSX.Element {
     const callbackUrl = router.query.callbackUrl as string;
     const request = SignTxRequest.deserialize(u8aRequest);
 
-    console.log('currentUserAccount1', request.userOrigin.address);
     dispatch(loadUserAccount());
-
     dispatch(switchUserAccount(request.userOrigin.address));
+
+    void (async () => {
+      if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {
+        const provider = new WsProvider(request.dappOrigin.activeNetwork.defaultProvider);
+        const api = await ApiPromise.create({ provider: provider });
+        const tx = api.tx(request.payload.encoded).toHuman();
+
+        /* eslint-disable */
+        // @ts-ignore
+        setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
+        /* eslint-enable */
+
+        setDecodingTx(false);
+      } else {
+        setDecodedTx('WIP Ethereum Decode Support');
+        setDecodingTx(false);
+      }
+    })();
+
     setCallback(callbackUrl);
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
@@ -122,6 +144,8 @@ function SignTxHandler (): JSX.Element {
     return null;
   }
 
+  if (decodingTx) return <Loading title='Decoding Transaction ...' />;
+
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
       <Toaster />
@@ -168,7 +192,7 @@ function SignTxHandler (): JSX.Element {
                 <a className={`tab tab-bordered ${displayType === 'hex' ? 'tab-active' : ''}`}
                   onClick={() => setDisplayType('hex')}>Hex</a>
                 <a className={`tab tab-bordered ${displayType === 'ascii' ? 'tab-active' : ''}`}
-                  onClick={() => setDisplayType('ascii')}>Ascii</a>
+                  onClick={() => setDisplayType('decoded')}>Decoded</a>
               </div>
             </div>
 
@@ -181,7 +205,7 @@ function SignTxHandler (): JSX.Element {
                   )
                   : (
                     <div className='textarea h-[20vh] font-mono border-gray-400'
-                      style={{ overflowWrap: 'break-word' }}>{u8aToString(request.payload.encoded)}</div>
+                      style={{ overflowWrap: 'break-word' }}>{decodedTx}</div>
                   )
               }
             </div>
