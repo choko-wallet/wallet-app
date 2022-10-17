@@ -32,6 +32,8 @@ import Modal from '../../components/Modal';
 import { selectChangeCurrentAccountLoading } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
+import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
+import { Toaster } from 'react-hot-toast';
 
 interface Crypto {
   name: string;
@@ -47,7 +49,7 @@ interface Crypto {
 const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
 
 /* eslint-disable sort-keys */
-function Home (): JSX.Element {
+function Home(): JSX.Element {
   const nodeRef = React.useRef(null);
   const { setTheme, theme } = useTheme();
   const router = useRouter();
@@ -211,19 +213,19 @@ function Home (): JSX.Element {
     });
   };
 
-  function closeNetworkChangeModal () {
+  function closeNetworkChangeModal() {
     setIsNetworkChangeOpen(false);
   }
 
-  function closeSendModal () {
+  function closeSendModal() {
     setIsSendOpen(false);
   }
 
-  function closeReceiveModal () {
+  function closeReceiveModal() {
     setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal () {
+  function closeAddNetworkModal() {
     setAddNetworkModalOpen(false);
     setNetworkInput('');
   }
@@ -239,7 +241,7 @@ function Home (): JSX.Element {
     <div className={theme}>
 
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
-        {/* <Toaster /> */}
+        <Toaster />
         <Header />
 
         {/* drawer */}
@@ -563,7 +565,9 @@ function Home (): JSX.Element {
 
                 </Dialog.Title>
 
-                <div className='mt-2'>
+
+                <AddNetworkBox />
+                {/* <div className='mt-2'>
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
                   <input className=' input border border-[#c67391] w-full  '
                     onChange={(e) => setNetworkInput(e.target.value)}
@@ -585,9 +589,9 @@ function Home (): JSX.Element {
                     type='text'
                     value={networkInput} />
 
-                </div>
+                </div> */}
 
-                <div className='mt-4'>
+                {/* <div className='mt-4'>
                   <button
                     className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
                     onClick={closeAddNetworkModal}
@@ -595,7 +599,7 @@ function Home (): JSX.Element {
                   >
                     OK
                   </button>
-                </div>
+                </div> */}
               </Dialog.Panel>
             </div >
 
