@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Toaster } from 'react-hot-toast';
 import QRCode from 'react-qr-code';
 import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
@@ -18,6 +19,7 @@ import { CSSTransition } from 'react-transition-group';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { keypairTypeNumberToString } from '@choko-wallet/core/util';
+import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
@@ -32,8 +34,6 @@ import Modal from '../../components/Modal';
 import { selectChangeCurrentAccountLoading } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
-import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
-import { Toaster } from 'react-hot-toast';
 
 interface Crypto {
   name: string;
@@ -49,7 +49,7 @@ interface Crypto {
 const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
 
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
+function Home (): JSX.Element {
   const nodeRef = React.useRef(null);
   const { setTheme, theme } = useTheme();
   const router = useRouter();
@@ -90,6 +90,7 @@ function Home(): JSX.Element {
   const currentAccount = '';
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
+  console.log(networkInput);
   useEffect(() => { // for changing network or account
     const getBalance = async () => {
       const provider = new WsProvider(knownNetworks[network].defaultProvider);
@@ -213,19 +214,19 @@ function Home(): JSX.Element {
     });
   };
 
-  function closeNetworkChangeModal() {
+  function closeNetworkChangeModal () {
     setIsNetworkChangeOpen(false);
   }
 
-  function closeSendModal() {
+  function closeSendModal () {
     setIsSendOpen(false);
   }
 
-  function closeReceiveModal() {
+  function closeReceiveModal () {
     setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal() {
+  function closeAddNetworkModal () {
     setAddNetworkModalOpen(false);
     setNetworkInput('');
   }
@@ -564,7 +565,6 @@ function Home(): JSX.Element {
                   </div>
 
                 </Dialog.Title>
-
 
                 <AddNetworkBox />
                 {/* <div className='mt-2'>

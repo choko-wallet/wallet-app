@@ -10,7 +10,7 @@ interface Props {
   exportUrl: string;
 }
 
-function ExportUrlWithQRcode({ exportUrl }: Props): JSX.Element {
+function ExportUrlWithQRcode ({ exportUrl }: Props): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
   const handleCopy = () => {

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Dialog, RadioGroup } from '@headlessui/react';
-import { CheckCircleIcon, CheckIcon, XIcon } from '@heroicons/react/outline';
+import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
+import SuperButton from '@choko-wallet/frontend/components/SuperButton';
 import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
@@ -115,98 +116,85 @@ function ConnectDappHandler (): JSX.Element {
   }
 
   return (
-    <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
+    <div className='bg-primary min-h-screen p-5 md:p-10 lg:p-20 flex items-center justify-center'>
       <Toaster />
-      <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
-        <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          {request?.dappOrigin.activeNetwork.text}
-        </h1>
-        <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          {request?.dappOrigin.activeNetwork.text}
-        </h1>
-      </div>
-      <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
-        <div className='col-span-12 shadow-xl rounded-lg card p-10 bg-white'>
-          <h2 className='card-title'>
-            Request to Connect From a Dapp
-          </h2>
-          <h3>Give the Dapp your public address.</h3>
 
-          <div className='grid grid-cols-12 gap-5 md:m-10 select-none'>
-            <br />
-            <div className='col-span-12'>
-              DApp Origin:
-            </div>
-            <div className='col-span-12'>
-              <code className='underline text-clip'>{request?.dappOrigin.displayName}</code>
-            </div>
-            <RadioGroup className='col-span-12'
-              onChange={setSelectedUserAccount}
-              value={selectedUserAccount}>
-              {Object.keys(userAccount).map((name, index) => (
-                <RadioGroup.Option
-                  className={({ checked }) =>
-                    `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
-                      m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
-                  }
-                  key={index}
-                  onClick={() => dispatch(switchUserAccount(name))}
-                  value={name}
-                >
-                  {({ checked }) => (
-                    <div className='flex w-full items-center justify-between'>
-                      <div className='flex items-center'>
-                        <div className='text-sm'>
-                          <RadioGroup.Label
-                            as='div'
-                            className={`font-medium ${checked ? 'text-white' : 'text-gray-900'}`}
-                          >
-                            <div className='w-1/2 md:w-full'
-                              style={{ overflowWrap: 'break-word' }}>{name}</div>
-                          </RadioGroup.Label>
-                        </div>
+      <div className='relative gradient-border p-[2px] rounded-3xl w-full max-w-[700px]'>
+        <div className='pink_gradient' />
+
+        <div className='z-20 relative bg-gradient-to-br from-gray-900 to-black flex-grow shadow-xl rounded-3xl flex flex-col p-10 '>
+          <p className='absolute text-xl md:text-3xl md:m-6 italic text-gray-200 top-4 right-4'>{request?.dappOrigin.activeNetwork.text}</p>
+          <p className='my-3 text-gradient font-poppins'>Request to Connect From a Dapp</p>
+          <p className='my-3 text-gradient font-poppins'>Give the Dapp your public address.</p>
+          <p className='my-3 text-gradient font-poppins'>DApp Origin: {request?.dappOrigin.displayName}</p>
+
+          <RadioGroup className=''
+            onChange={setSelectedUserAccount}
+            value={selectedUserAccount}>
+            {Object.keys(userAccount).map((name, index) => (
+              <RadioGroup.Option
+                className={({ checked }) =>
+                  `${checked ? 'bg-gradient-to-br from-gray-900 to-black border border-[#03F3FF] ' : ' bg-gray-700 '}
+                      m-5 relative flex cursor-pointer  rounded-lg p-4 shadow-md focus:outline-none font-poppins`
+                }
+                key={index}
+                onClick={() => dispatch(switchUserAccount(name))}
+                value={name}
+              >
+                {({ checked }) => (
+                  <div className='flex w-full items-center justify-center p-3'>
+                    <div className='flex items-center'>
+                      <div className='text-sm '>
+                        <RadioGroup.Label
+                          as='div'
+                          className={`font-medium  ${checked ? 'text-gradient' : 'text-white'}`}
+                        >
+                          <div className='w-[230px] md:w-full'
+                            style={{ overflowWrap: 'break-word' }}>{name}</div>
+                        </RadioGroup.Label>
                       </div>
-                      {checked && (
-                        <div className='shrink-0 text-white'>
-                          <CheckCircleIcon className='h-6 w-6' />
-                        </div>
-                      )}
                     </div>
-                  )}
-                </RadioGroup.Option>
-              ))}
-            </RadioGroup>
-          </div>
-        </div>
-      </div>
-      <div className='col-span-12 my-2'></div>
 
-      <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
-        <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => setOpenPasswordModal(true)}>
-          <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-        </button>
-      </div>
-      <div className='col-span-4 md:col-span-2'>
-        <button className='btn btn-error btn-circle btn-lg'
-          onClick={() => router.push('/')} >
-          <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-        </button>
+                  </div>
+                )}
+              </RadioGroup.Option>
+            ))}
+          </RadioGroup>
+
+          <div className='flex items-center justify-evenly '>
+
+            <div className='flex items-center justify-center '
+              onClick={() => setOpenPasswordModal(true)}
+            >
+              <SuperButton Icon={CheckIcon}
+                title='OK' />
+            </div>
+            <div className='flex items-center justify-center '
+              onClick={() => router.push('/')}
+            >
+              <SuperButton Icon={XIcon}
+                title='Cancel' />
+            </div>
+          </div>
+
+        </div>
+
+        <div className='blue_gradient z-10' />
       </div>
 
       <Modal closeModal={closeModal}
         isOpen={openPasswordModal} >
 
-        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
+        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
             as='h3'
-            className='font-poppins text-lg font-medium leading-6 text-black w-72'
+            className='font-poppins text-lg font-medium leading-6 text-gradient w-72'
           >
             Unlock Wallet with Password
           </Dialog.Title>
-          <div className='mt-2'>
+          <div className='my-6'>
             <p className='text-sm text-gray-500'>
-              <input className='input input-bordered w-full max-w-xs'
+              <input className='input input-bordered w-full bg-gray-700'
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder='Account Password'
 
@@ -218,7 +206,8 @@ function ConnectDappHandler (): JSX.Element {
 
           <div className='mt-4 flex justify-between'>
             <button
-              className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+              className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+
               onClick={unlock}
               type='button'
             >
@@ -229,7 +218,7 @@ function ConnectDappHandler (): JSX.Element {
         </Dialog.Panel>
 
       </Modal>
-    </main>
+    </div>
   );
 }
 

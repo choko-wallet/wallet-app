@@ -25,7 +25,7 @@ interface Props {
   setIsReceiveOpen: (value: boolean) => void;
 }
 
-function Balance({ cryptoInfo, currentNetworkName, setIsReceiveOpen, setIsSendOpen }: Props): JSX.Element {
+function Balance ({ cryptoInfo, currentNetworkName, setIsReceiveOpen, setIsSendOpen }: Props): JSX.Element {
   return (
     <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
       <div className='bg-[#F5F5F5] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-lg m-5 md:m-10 lg:ml-16 p-3 px-5'>
