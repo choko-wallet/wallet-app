@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Toaster } from 'react-hot-toast';
 import QRCode from 'react-qr-code';
 import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
@@ -18,6 +19,7 @@ import { CSSTransition } from 'react-transition-group';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { keypairTypeNumberToString } from '@choko-wallet/core/util';
+import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
@@ -88,6 +90,7 @@ function Home (): JSX.Element {
   const currentAccount = '';
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
+  console.log(networkInput);
   useEffect(() => { // for changing network or account
     const getBalance = async () => {
       const provider = new WsProvider(knownNetworks[network].defaultProvider);
@@ -239,7 +242,7 @@ function Home (): JSX.Element {
     <div className={theme}>
 
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
-        {/* <Toaster /> */}
+        <Toaster />
         <Header />
 
         {/* drawer */}
@@ -563,7 +566,8 @@ function Home (): JSX.Element {
 
                 </Dialog.Title>
 
-                <div className='mt-2'>
+                <AddNetworkBox />
+                {/* <div className='mt-2'>
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
                   <input className=' input border border-[#c67391] w-full  '
                     onChange={(e) => setNetworkInput(e.target.value)}
@@ -585,9 +589,9 @@ function Home (): JSX.Element {
                     type='text'
                     value={networkInput} />
 
-                </div>
+                </div> */}
 
-                <div className='mt-4'>
+                {/* <div className='mt-4'>
                   <button
                     className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
                     onClick={closeAddNetworkModal}
@@ -595,7 +599,7 @@ function Home (): JSX.Element {
                   >
                     OK
                   </button>
-                </div>
+                </div> */}
               </Dialog.Panel>
             </div >
 
