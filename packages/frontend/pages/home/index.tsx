@@ -73,9 +73,8 @@ function Home (): JSX.Element {
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
-  const [networkInput, setNetworkInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-
+  const [connectBlockchainLoading, setConnectBlockchainLoading] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
 
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
@@ -90,38 +89,43 @@ function Home (): JSX.Element {
   const currentAccount = '';
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
-  console.log(networkInput);
   useEffect(() => { // for changing network or account
+    if (connectBlockchainLoading) return;
+    setConnectBlockchainLoading(true);// no refetch
+
     const getBalance = async () => {
-      const provider = new WsProvider(knownNetworks[network].defaultProvider);
-      const api = await ApiPromise.create({
-        provider: provider
-      });
+      try {
+        const provider = new WsProvider(knownNetworks[network].defaultProvider);
+        const api = await ApiPromise.create({ provider });
+        const data = await api.query.system.account(currentAccount);
 
-      const data = await api.query.system.account(currentAccount);
-      // console.error(data['data'].toHuman()['free']);
+        const chainInfo = api.registry.getChainProperties();
 
-      const tokenDecimals = {
-        '847e7b7fa160d85f': 12,
-        '0018a49f151bcb20': 12,
-        e658ad422326d7f7: 10
-      };
+        /* eslint-disable */
+        // @ts-ignore
+        const nativeTokenSymbol = chainInfo.toHuman().tokenSymbol[0];//DOT
+        // @ts-ignore
+        const nativeTokenDecimal = Number(chainInfo.toHuman().tokenDecimals[0]);//10
 
-      /* eslint-disable */
-      // @ts-ignore
-      setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** tokenDecimals[network]));
-      /* eslint-enable */
-      console.log('balance', balance);
-      // const chainInfo = await api.registry.getChainProperties()
-      // return ( data.createdAtHash.free )
+        /* eslint-enable */
+        console.log('nativeTokenDecimal', nativeTokenSymbol, nativeTokenDecimal);
+
+        /* eslint-disable */
+        // @ts-ignore
+        setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal));
+        console.log('balance', balance);
+        /* eslint-enable */
+      } catch (e) {
+        console.log('balance-error', e);
+      }
     };
 
     void getBalance();
-
     void dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }));
-  }, [network, currentAccount, balance, dispatch]);
+    setConnectBlockchainLoading(false);
+  }, [network, currentAccount, connectBlockchainLoading, balance, dispatch]);
 
-  // console.log('coinPriceFromRedux', coinPriceFromRedux)
+  console.log('knownNetworkshome', knownNetworks);
 
   useEffect(() => { // for intialization
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -228,7 +232,6 @@ function Home (): JSX.Element {
 
   function closeAddNetworkModal () {
     setAddNetworkModalOpen(false);
-    setNetworkInput('');
   }
 
   const handleCopy = () => {
@@ -559,50 +562,18 @@ function Home (): JSX.Element {
                   className='text-lg font-medium leading-6 flex items-center mb-6'
                 >
                   <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Add Network</p>
-
                   <div onClick={closeAddNetworkModal}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
-
                 </Dialog.Title>
 
-                <AddNetworkBox />
-                {/* <div className='mt-2'>
-                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
-                  <input className=' input border border-[#c67391] w-full  '
-                    onChange={(e) => setNetworkInput(e.target.value)}
-                    placeholder='Polkadot'
-                    type='text'
-                    value={networkInput} />
+                <AddNetworkBox
+                  closeAddNetworkModal={closeAddNetworkModal}
+                  knownNetworks={knownNetworks}
+                />
 
-                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Info</p>
-                  <input className=' input border border-[#c67391] w-full '
-                    onChange={(e) => setNetworkInput(e.target.value)}
-                    placeholder='polkadot'
-                    type='text'
-                    value={networkInput} />
-
-                  <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
-                  <input className=' input border border-[#c67391] w-full '
-                    onChange={(e) => setNetworkInput(e.target.value)}
-                    placeholder='wss://polkadot.parity.io/ws'
-                    type='text'
-                    value={networkInput} />
-
-                </div> */}
-
-                {/* <div className='mt-4'>
-                  <button
-                    className='py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
-                    onClick={closeAddNetworkModal}
-                    type='button'
-                  >
-                    OK
-                  </button>
-                </div> */}
               </Dialog.Panel>
             </div >
-
           </Modal>
 
         </main >

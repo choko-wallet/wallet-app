@@ -11,7 +11,7 @@ export default {
   },
 
   images: {
-    domains: ['cdn.jsdelivr.net', 'avatars.githubusercontent.com', 'media-exp1.licdn.com', 'firebasestorage.googleapis.com']
+    domains: ['cdn.jsdelivr.net', 'cdn.hackernoon.com', 'avatars.githubusercontent.com', 'media-exp1.licdn.com', 'firebasestorage.googleapis.com']
 
   },
 

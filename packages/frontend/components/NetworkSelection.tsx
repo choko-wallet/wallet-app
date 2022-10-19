@@ -20,7 +20,7 @@ function NetworkSelection ({ changeNetwork, network,
   networkSelection, setAddNetworkModalOpen, setNetworkSelection }: Props): JSX.Element {
   return (
     <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
-      <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
+      <div className='scrollbar-thin max-h-[580px] overflow-y-scroll  mt-10 pr-2'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
           {Object.entries(knownNetworks).map(([hash, { color, defaultProvider, text }]) => {

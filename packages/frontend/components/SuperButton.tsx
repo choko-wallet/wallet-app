@@ -9,7 +9,7 @@ interface Props {
   onClick?: () => void;
 }
 
-function SuperButton ({ Icon, onClick, title }: Props) {
+function SuperButton ({ Icon, title }: Props): JSX.Element {
   return (
     <div className='flex justify-center items-center w-[90px] h-[90px] rounded-full bg-blue-gradient p-[2px] cursor-pointer'>
       <div className='flex justify-center items-center flex-col bg-primary w-[100%] h-[100%] rounded-full'>
