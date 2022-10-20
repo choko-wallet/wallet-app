@@ -20,10 +20,17 @@ type FormData = {
   netWorkRPC: string
 }
 
+interface networkObject {
+  [key: string]: Network
+}
+
 // wss://acala-rpc.dwellir.com
 const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Element => {
   const { formState: { errors }, handleSubmit, register, setValue } = useForm<FormData>();
   const [addNetworkLoading, setAddNetworkLoading] = useState<boolean>(false);
+  const [networkType, setNetworkType] = useState<string>('polkadot');
+
+  const networkTypeArray: string[] = ['polkadot', 'ethereum'];
 
   const onSubmit = handleSubmit(async (formData) => {
     if (addNetworkLoading) return;
@@ -60,7 +67,16 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
 
       knownNetworks[hexString] = networkForAdding;// home can get
 
-      console.log('added:', formData.netWorkRPC);
+      // add network to localstorage
+      const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+      const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+      const networkObject: networkObject = maybeNetworkAddedObject || {};
+
+      networkObject[hexString] = networkForAdding;
+      localStorage.setItem('networkAdded', JSON.stringify(networkObject));
+      console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
+
+      // console.log('added:', networkForAdding);
 
       // setValue('networkName', '');
       setValue('netWorkRPC', '');
@@ -78,6 +94,8 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
     }
   });
 
+  // console.log('networkType,networkType', networkType);
+
   return (
     <form
       onSubmit={onSubmit}
@@ -93,7 +111,8 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
       </div> */}
 
       <div className=''>
-        <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network RPC</p>
+        <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
+          Network RPC</p>
         <input
           className='input border border-[#c67391] w-full '
           {...register('netWorkRPC', { required: true })}
@@ -102,8 +121,29 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         />
       </div>
 
+      <p className=' text-gray-700 dark:text-white mt-4  font-poppins font-semibold'>
+        Network Type: {networkType}</p>
+      <div className='flex items-center justify-between'>
+        {networkTypeArray.map((item) => {
+          return (
+            <div
+              className=''
+              key={item}
+              onClick={() => setNetworkType(item)} >
+              {networkType === item
+                ? <p className='px-10 py-4 my-2 font-bold text-black transition duration-150
+                bg-blue-200 rounded-full shadow-md hover:shadow-xl active:scale-90 '>{item}</p>
+                : <p className='px-10 py-4 my-2 font-bold text-gray-600 transition duration-150
+                bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 '>{item}</p>
+              }
+            </div>
+          );
+        })
+        }
+      </div>
+
       {Object.keys(errors).length > 0 && (
-        <div className='p-2 space-y-2 text-red-500'>
+        <div className='p-2 space-y-2 text-red-500 font-poppins font-semibold'>
           {/* {errors.networkName?.type === 'required' && (
             <p>Network Name is required</p>
           )} */}
@@ -117,7 +157,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         ? (
           <img
             alt=''
-            className='object-cover w-40 h-20'
+            className='object-cover w-full h-20'
             src='https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif'
           />
         )

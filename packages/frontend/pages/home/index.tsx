@@ -17,7 +17,7 @@ import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
-import { AccountOption, UserAccount } from '@choko-wallet/core';
+import { AccountOption, Network, UserAccount } from '@choko-wallet/core';
 import { keypairTypeNumberToString } from '@choko-wallet/core/util';
 import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
 import Balance from '@choko-wallet/frontend/components/Balance';
@@ -31,7 +31,7 @@ import DropdownForSend from '../../components/DropdownForSend';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-import { selectChangeCurrentAccountLoading } from '../../features/redux/selectors';
+import { selectChangeCurrentAccountLoading, selectCurrentUserAccount } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
 
@@ -46,6 +46,10 @@ interface Crypto {
   MinDeposit: string;
 }
 
+interface networkObject {
+  [key: string]: Network
+}
+
 const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
 
 /* eslint-disable sort-keys */
@@ -56,7 +60,7 @@ function Home (): JSX.Element {
   // const dispatch = useDispatch();
   const dispatch = useAppThunkDispatch();
   // const coinPriceFromRedux = useSelector(selectCoinPrice);
-  // const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
   // const reduxError = useSelector(selectError);
   const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
   const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');
@@ -74,7 +78,6 @@ function Home (): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [connectBlockchainLoading, setConnectBlockchainLoading] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
 
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
@@ -86,46 +89,57 @@ function Home (): JSX.Element {
     { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
   ];
 
-  const currentAccount = '';
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
   useEffect(() => { // for changing network or account
-    if (connectBlockchainLoading) return;
-    setConnectBlockchainLoading(true);// no refetch
+    if (!currentUserAccount) return;
+    console.log('currentUserAccount', currentUserAccount);
 
     const getBalance = async () => {
       try {
         const provider = new WsProvider(knownNetworks[network].defaultProvider);
         const api = await ApiPromise.create({ provider });
-        const data = await api.query.system.account(currentAccount);
-
-        const chainInfo = api.registry.getChainProperties();
-
-        /* eslint-disable */
-        // @ts-ignore
-        const nativeTokenSymbol = chainInfo.toHuman().tokenSymbol[0];//DOT
-        // @ts-ignore
-        const nativeTokenDecimal = Number(chainInfo.toHuman().tokenDecimals[0]);//10
-
-        /* eslint-enable */
-        console.log('nativeTokenDecimal', nativeTokenSymbol, nativeTokenDecimal);
+        const data = await api.query.system.account(currentUserAccount.address);
+        // 如果currentUserAccount.address为'' skyekiwi的balance是256 是个bug？ polkadot的是0
 
         /* eslint-disable */
         // @ts-ignore
         setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal));
         console.log('balance', balance);
         /* eslint-enable */
-      } catch (e) {
-        console.log('balance-error', e);
+      } catch (err) {
+        console.log('balance-error', err);
       }
     };
 
     void getBalance();
-    void dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }));
-    setConnectBlockchainLoading(false);
-  }, [network, currentAccount, connectBlockchainLoading, balance, dispatch]);
 
-  console.log('knownNetworkshome', knownNetworks);
+    const fetchNativeTokenPrice = async () => {
+      try {
+        const provider = new WsProvider(knownNetworks[network].defaultProvider);
+        const api = await ApiPromise.create({ provider });
+        const chainInfo = api.registry.getChainProperties();
+        const [chain] = await Promise.all([api.rpc.system.chain()]);
+        /* eslint-disable */
+        // @ts-ignore
+        const nativeTokenSymbol = chainInfo.toHuman().tokenSymbol[0];// DOT skyekiwi为null
+        // @ts-ignore
+        const nativeTokenDecimal = Number(chainInfo.toHuman().tokenDecimals[0]);
+
+        const nativeTokenName = chain.toLocaleLowerCase();// acala
+
+        /* eslint-enable */
+        console.log('nativeTokenName', nativeTokenName);
+        void dispatch(fetchCoinPrice({ coinArray: [nativeTokenName], currency: 'usd' }));// 可以直接拿回数据 如果没有就设置0？
+      } catch (err) {
+        console.log('balance-error2', err);
+      }
+    };
+
+    void fetchNativeTokenPrice();
+  }, [network, currentUserAccount, balance, dispatch]);
+
+  // console.log('knownNetworkshome', knownNetworks);
 
   useEffect(() => { // for intialization
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -187,6 +201,21 @@ function Home (): JSX.Element {
       }
 
       dispatch(loadUserAccount());
+
+      try { // load local network added
+        const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+        const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+        const networkObject: networkObject = maybeNetworkAddedObject || {};
+
+        // console.log('networkObject', Object.entries(networkObject))
+        Object.entries(networkObject).forEach((element) => {
+          knownNetworks[element[0]] = element[1];
+        });
+        // console.log('knownNetworks111home', knownNetworks);
+      } catch (e) {
+        console.log('err', e);
+        localStorage.setItem('networkAdded', '');
+      }
     }
   }, [dispatch, router, setTheme, theme]);
 
@@ -267,6 +296,7 @@ function Home (): JSX.Element {
 
               <NetworkSelection
                 changeNetwork={changeNetwork}
+                knownNetworks={knownNetworks}
                 network={network}
                 networkSelection={networkSelection}
                 setAddNetworkModalOpen={setAddNetworkModalOpen}
@@ -292,6 +322,7 @@ function Home (): JSX.Element {
               <div className=' hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f] items-center md:h-full mr-10' >
                 <NetworkSelection
                   changeNetwork={changeNetwork}
+                  knownNetworks={knownNetworks}
                   network={network}
                   networkSelection={networkSelection}
                   setAddNetworkModalOpen={setAddNetworkModalOpen}

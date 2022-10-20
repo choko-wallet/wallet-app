@@ -2,22 +2,42 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { RadioGroup } from '@headlessui/react';
-import { CheckIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { CheckIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { knownNetworks } from '@choko-wallet/known-networks';
+import { KnownNetworks, Network } from '@choko-wallet/core';
 
 interface Props {
-  network: string;
-  networkSelection: string;
+  knownNetworks: KnownNetworks;
+  network: string;// current on
+  networkSelection: string;// onClick
   setNetworkSelection: (value: string) => void;
   changeNetwork: () => void;
   setAddNetworkModalOpen: (value: boolean) => void;
 }
 
-function NetworkSelection ({ changeNetwork, network,
+interface networkObject {
+  [key: string]: Network
+}
+
+function NetworkSelection ({ changeNetwork, knownNetworks, network,
   networkSelection, setAddNetworkModalOpen, setNetworkSelection }: Props): JSX.Element {
+  const deleteNetwork = (hash: string) => {
+    setNetworkSelection(network);
+    delete knownNetworks[hash];
+
+    // delete localstorage networks
+    const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+    const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+    const networkObject: networkObject = maybeNetworkAddedObject || {};
+
+    delete networkObject[hash];
+    localStorage.setItem('networkAdded', JSON.stringify(networkObject));
+
+    console.log(knownNetworks);
+  };
+
   return (
     <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
       <div className='scrollbar-thin max-h-[580px] overflow-y-scroll  mt-10 pr-2'>
@@ -90,8 +110,17 @@ function NetworkSelection ({ changeNetwork, network,
                     </div>}
 
                   {checked && knownNetworks[network].text !== text && (
-                    <div className='absolute top-7 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
-                      <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
+                    <div>
+                      <div className='absolute top-7 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                        <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
+
+                      </div>
+                      <div
+                        className='absolute top-0 right-0  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'
+                        onClick={() => deleteNetwork(hash)}>
+                        <XIcon className=' text-red-500 z-50 w-5 h-5' />
+
+                      </div>
                     </div>
                   )}
 
