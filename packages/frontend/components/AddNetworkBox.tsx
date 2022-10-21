@@ -132,7 +132,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
               onClick={() => setNetworkType(item)} >
               {networkType === item
                 ? <p className='px-10 py-4 my-2 font-bold text-black transition duration-150
-                bg-blue-200 rounded-full shadow-md hover:shadow-xl active:scale-90 '>{item}</p>
+                bg-[#c67391] rounded-full shadow-md hover:shadow-xl active:scale-90 '>{item}</p>
                 : <p className='px-10 py-4 my-2 font-bold text-gray-600 transition duration-150
                 bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 '>{item}</p>
               }
@@ -162,7 +162,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
           />
         )
         : <button
-          className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none '
+          className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none font-poppins'
           type='submit'
         >
           Add Network

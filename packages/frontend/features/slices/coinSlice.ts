@@ -10,7 +10,7 @@ interface FetchCoinPricePayload {
   coinArray: string[];
 }
 
-type CoinData = Array<CoinPrice>
+type CoinData = Array<CoinPrice>// type 有问题 前端获取也有问题
 
 interface CoinPrice {
   [key: string]: PriceUsd
@@ -52,16 +52,18 @@ export const fetchCoinPrice = createAsyncThunk<CoinData, FetchCoinPricePayload, 
 );
 
 interface CoinSliceItem {
-  error: string;
   coinPrice: CoinData;
+  error: string;
   loading: string;
+  nativeTokenPrice: number;
 }
 
 const initialState: CoinSliceItem = {
+
   coinPrice: [],
   error: '',
-  loading: 'idle'
-
+  loading: 'idle',
+  nativeTokenPrice: 0
 };
 
 /* eslint-disable sort-keys */
@@ -85,9 +87,9 @@ export const coinSlice = createSlice({
         }
       })
       .addCase(fetchCoinPrice.fulfilled, (state, action) => {
-        console.log('fulfiled');
-        console.log('fulfiled', action.payload);
-        state.coinPrice = action.payload;
+        console.log('fulfiled', state.coinPrice);
+        // console.log('fulfiled', Object.entries(action.payload));
+        state.nativeTokenPrice = Number(Object.entries(action.payload)[0][1]?.usd);
         state.loading = 'idle';
       })
       .addCase(fetchCoinPrice.rejected, (state, action) => {

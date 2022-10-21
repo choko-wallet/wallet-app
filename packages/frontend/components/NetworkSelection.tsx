@@ -43,7 +43,7 @@ function NetworkSelection ({ changeNetwork, knownNetworks, network,
       <div className='scrollbar-thin max-h-[580px] overflow-y-scroll  mt-10 pr-2'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
-          {Object.entries(knownNetworks).map(([hash, { color, defaultProvider, text }]) => {
+          {Object.entries(knownNetworks).map(([hash, { color, defaultProvider, isDevelopment, text }]) => {
             if (color === undefined) { // if color undefined, give randomColor
               const randomColors = ['#2497E7', '#fc6b03', '#befc03', '#5efc03', '#03fc56', '#03cafc', '#5a03fc'];
 
@@ -123,6 +123,12 @@ function NetworkSelection ({ changeNetwork, knownNetworks, network,
                       </div>
                     </div>
                   )}
+
+                  {isDevelopment === true
+                    ? <div className='absolute top-4 right-20 items-center bg-white rounded-lg p-[2px] cursor-pointer flex justify-center '>
+                      <p className='text-gray-800 text-xs font-poppins'>Test Net</p>
+                    </div>
+                    : null}
 
                 </div>;
               }}

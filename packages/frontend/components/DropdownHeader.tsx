@@ -12,7 +12,11 @@ import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/s
 import { removeAllAccounts } from '../features/slices/userSlice';
 import DropdownHeaderRow from './DropdownHeaderRow';
 
-function DropdownHeader (): JSX.Element {
+interface Props {
+  setChangeAccountLoading: (value: boolean) => void;
+}
+
+function DropdownHeader ({ setChangeAccountLoading }: Props): JSX.Element {
   const dispatch = useDispatch();
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
@@ -61,7 +65,8 @@ function DropdownHeader (): JSX.Element {
 
               {userAccountArray.map((account) => (
                 <DropdownHeaderRow account={account[1]}
-                  key={account[1].address} />
+                  key={account[1].address}
+                  setChangeAccountLoading={setChangeAccountLoading} />
               ))}
 
               <Menu.Item >

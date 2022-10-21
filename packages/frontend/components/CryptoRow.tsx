@@ -4,6 +4,7 @@
 import React from 'react';
 
 interface Props {
+  balance: number;
   name: string;
   img: string;
   price: number;
@@ -11,13 +12,13 @@ interface Props {
 
 }
 
-function CryptoRow ({ img, name, price, shortName }: Props): JSX.Element {
+function CryptoRow ({ balance, img, name, price, shortName }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
       <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#4797B5]  hover:bg-[#4797B5]'>
         <div className='flex justify-between flex-grow'>
           <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent dark:bg-gray-700'>
-            <img alt='star'
+            <img alt='icon'
               className='w-[70%] h-[70%] object-contain'
               src={img} />
           </div>
@@ -26,16 +27,16 @@ function CryptoRow ({ img, name, price, shortName }: Props): JSX.Element {
               {name}
             </p>
             <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
-              {price}
+              {price}{' '}USD
             </p>
           </div>
         </div>
         <div className=' flex flex-col justify-between '>
           <p className=' font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins'>
-            {'0.005' + ' '}{shortName}
+            {balance}{'  '}{shortName}
           </p>
           <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
-            {price} USD
+            {balance * price} USD
           </p>
         </div>
       </div>

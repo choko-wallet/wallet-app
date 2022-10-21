@@ -8,14 +8,15 @@ import Image from 'next/image';
 import React, { Fragment, useEffect, useState } from 'react';
 
 interface Crypto {
+  balance: number,
   name: string;
   img: string;
   price: number;
   shortName: string;
-  networkFee: string;
+  networkFee: number;
   estimatedTime: string;
   arrival: string;
-  MinDeposit: string;
+  minDeposit: number;
 }
 
 interface Props {

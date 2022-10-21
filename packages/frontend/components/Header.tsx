@@ -18,7 +18,11 @@ import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
 import DropdownHeader from './DropdownHeader';
 
-function Header (): JSX.Element {
+interface Props {
+  setChangeAccountLoading: (value: boolean) => void;
+}
+
+function Header ({ setChangeAccountLoading }: Props): JSX.Element {
   const dispatch = useDispatch();
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -97,7 +101,7 @@ function Header (): JSX.Element {
           <MenuIcon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500'
             onClick={() => setMenuIcon(!menuIcon)} />
 
-          <DropdownHeader />
+          <DropdownHeader setChangeAccountLoading={setChangeAccountLoading} />
 
           <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}

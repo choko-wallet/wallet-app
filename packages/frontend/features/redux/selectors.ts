@@ -24,6 +24,8 @@ export const selectError = (state: RootState): string => state.user.error;
 // export const selectDecryptCurrentUserAccountResult = (state: RootState): string => state.user.decryptCurrentUserAccountResult;
 
 export const selectCoinPrice = (state: RootState): CoinData => state.coin.coinPrice;
+export const selectNativeTokenPrice = (state: RootState): number => state.coin.nativeTokenPrice;
+
 export const selectCoinApiLoading = (state: RootState): string => state.coin.loading;
 export const selectChangeCurrentAccountLoading = (state: RootState): boolean => state.user.changeCurrentAccountLoading;
 

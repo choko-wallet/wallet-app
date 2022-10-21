@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import QRCode from 'react-qr-code';
 import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
@@ -31,19 +31,20 @@ import DropdownForSend from '../../components/DropdownForSend';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-import { selectChangeCurrentAccountLoading, selectCurrentUserAccount } from '../../features/redux/selectors';
+import { selectCurrentUserAccount, selectNativeTokenPrice } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
 
 interface Crypto {
+  balance: number,
   name: string;
   img: string;
   price: number;
   shortName: string;
-  networkFee: string;
+  networkFee: number;
   estimatedTime: string;
   arrival: string;
-  MinDeposit: string;
+  minDeposit: number;
 }
 
 interface networkObject {
@@ -59,10 +60,14 @@ function Home (): JSX.Element {
   const router = useRouter();
   // const dispatch = useDispatch();
   const dispatch = useAppThunkDispatch();
-  // const coinPriceFromRedux = useSelector(selectCoinPrice);
+  // const coinPriceFromRedux = useSelector(selectCoinPrice);// 是object 需要处理
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const nativeTokenPriceFromRedux: number = useSelector(selectNativeTokenPrice);
   // const reduxError = useSelector(selectError);
-  const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
+  // const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
+  const [changeAccountLoading, setChangeAccountLoading] = useState<boolean>(false);// not redux
+  // const [nativeTokenPrice, setNativeTokenPrice] = useState<number>(0);
+
   const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');
   const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
   const [mounted, setMounted] = useState<boolean>(false);
@@ -80,14 +85,16 @@ function Home (): JSX.Element {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
 
-  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
-  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' });
+  const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
+  const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
-  const cryptoInfo = [
-    { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', MinDeposit: '0.0000001BTC' },
-    { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData?.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', MinDeposit: '0.0000001ETH' },
-    { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', MinDeposit: '0.0000001DOGE' }
-  ];
+  const [cryptoInfo, setCryptoInfo] = useState<Crypto[]>([]);
+
+  // const cryptoInfo = [
+  //   { name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: '0.00000123BTC', estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: '0.0000001BTC' },
+  //   { name: 'Ethereum', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png', price: coinPriceData?.ethereum.usd, shortName: 'ETH', networkFee: '0.00000123ETH', estimatedTime: '5min', arrival: '6 network confirmations', minDeposit: '0.0000001ETH' },
+  //   { name: 'Dogecoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/doge.png', price: coinPriceData?.dogecoin.usd, shortName: 'DOGE', networkFee: '1.00DOGE', estimatedTime: '1min', arrival: '6 network confirmations', minDeposit: '0.0000001DOGE' }
+  // ];
 
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
@@ -95,20 +102,34 @@ function Home (): JSX.Element {
     if (!currentUserAccount) return;
     console.log('currentUserAccount', currentUserAccount);
 
+    setCryptoInfo([]);
+
     const getBalance = async () => {
       try {
         const provider = new WsProvider(knownNetworks[network].defaultProvider);
         const api = await ApiPromise.create({ provider });
         const data = await api.query.system.account(currentUserAccount.address);
-        // 如果currentUserAccount.address为'' skyekiwi的balance是256 是个bug？ polkadot的是0
 
         /* eslint-disable */
         // @ts-ignore
         setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal));
         console.log('balance', balance);
         /* eslint-enable */
+
+        setChangeAccountLoading(false);
       } catch (err) {
         console.log('balance-error', err);
+        setChangeAccountLoading(false);
+        toast('Someting Wrong!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
       }
     };
 
@@ -122,24 +143,37 @@ function Home (): JSX.Element {
         const [chain] = await Promise.all([api.rpc.system.chain()]);
         /* eslint-disable */
         // @ts-ignore
-        const nativeTokenSymbol = chainInfo.toHuman().tokenSymbol[0];// DOT skyekiwi为null
+        const nativeTokenSymbol = chainInfo.toHuman().tokenSymbol[0] as string;// DOT skyekiwi为null
         // @ts-ignore
-        const nativeTokenDecimal = Number(chainInfo.toHuman().tokenDecimals[0]);
-
-        const nativeTokenName = chain.toLocaleLowerCase();// acala
-
+        const nativeTokenDecimal = Number(chainInfo.toHuman().tokenDecimals[0]) as number;
+        const nativeTokenName = chain.toLocaleLowerCase() as string;// acala
         /* eslint-enable */
-        console.log('nativeTokenName', nativeTokenName);
-        void dispatch(fetchCoinPrice({ coinArray: [nativeTokenName], currency: 'usd' }));// 可以直接拿回数据 如果没有就设置0？
+
+        // console.log('nativeTokenName', nativeTokenName);
+        void dispatch(fetchCoinPrice({ coinArray: [nativeTokenName], currency: 'usd' }));
+
+        const cryptoForBalance = {
+          arrival: '6 comfimations',
+          balance: balance,
+          estimatedTime: '1min',
+          img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${nativeTokenSymbol.toLowerCase()}.png`,
+          minDeposit: 0,
+          name: nativeTokenName,
+          networkFee: 0,
+          price: nativeTokenPriceFromRedux,
+          shortName: nativeTokenSymbol
+        };
+
+        setCryptoInfo([cryptoForBalance]);
       } catch (err) {
-        console.log('balance-error2', err);
+        // console.log('balance-error2', err);
       }
     };
 
     void fetchNativeTokenPrice();
-  }, [network, currentUserAccount, balance, dispatch]);
+  }, [network, currentUserAccount, nativeTokenPriceFromRedux, balance, dispatch]);
 
-  // console.log('knownNetworkshome', knownNetworks);
+  console.log('cryptoInfo', cryptoInfo);
 
   useEffect(() => { // for intialization
     if (!localStorage.getItem('serialziedUserAccount')) {
@@ -226,13 +260,13 @@ function Home (): JSX.Element {
   if (migInProcess) return <Loading title='Account System Migration in process ' />;
 
   const changeNetwork = async () => {
-    dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
-      .unwrap()
-      .then((result) => {
-        console.log('result', result);
-      }).catch((rejectedValueOrSerializedError) => {
-        console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
-      });
+    // dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
+    //   .unwrap()
+    //   .then((result) => {
+    //     console.log('result', result);
+    //   }).catch((rejectedValueOrSerializedError) => {
+    //     console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
+    //   });
 
     setIsLoadingOpen(true);
     setNetwork(networkSelection);
@@ -275,7 +309,7 @@ function Home (): JSX.Element {
 
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
         <Toaster />
-        <Header />
+        <Header setChangeAccountLoading={setChangeAccountLoading} />
 
         {/* drawer */}
         <CSSTransition
@@ -331,6 +365,7 @@ function Home (): JSX.Element {
             </div>
 
             <Balance
+              balance={balance}
               cryptoInfo={cryptoInfo}
               currentNetworkName={knownNetworks[network].text}
               setIsReceiveOpen={setIsReceiveOpen}
@@ -570,7 +605,7 @@ function Home (): JSX.Element {
                     </div>
                     <div>
                       <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Minimum deposit</p>
-                      <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.MinDeposit}</p>
+                      <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.minDeposit}</p>
                     </div>
                   </div>
                   <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p>
