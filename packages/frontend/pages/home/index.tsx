@@ -16,7 +16,7 @@ import QRCode from 'react-qr-code';
 import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
-
+import { ethers } from "ethers";
 import { AccountOption, Network, UserAccount } from '@choko-wallet/core';
 import { keypairTypeNumberToString } from '@choko-wallet/core/util';
 import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
@@ -25,7 +25,7 @@ import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
 import { fetchCoinPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
 import { knownNetworks } from '@choko-wallet/known-networks';
-
+// import knownNetworks from '../../utils/knownNetworks';//注释掉上一行代码 用这行 就可以本地调试 
 import DropdownForNetwork from '../../components/DropdownForNetwork';
 import DropdownForSend from '../../components/DropdownForSend';
 import Header from '../../components/Header';
@@ -54,7 +54,7 @@ interface networkObject {
 const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
 
 /* eslint-disable sort-keys */
-function Home (): JSX.Element {
+function Home(): JSX.Element {
   const nodeRef = React.useRef(null);
   const { setTheme, theme } = useTheme();
   const router = useRouter();
@@ -74,6 +74,8 @@ function Home (): JSX.Element {
   const [balance, setBalance] = useState<number>(0);
   const [isNetworkChangeOpen, setIsNetworkChangeOpen] = useState<boolean>(false);
   const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
+  const [isInitializeLoadingOpen, setIsInitializeLoadingOpen] = useState<boolean>(true);
+
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
@@ -84,6 +86,7 @@ function Home (): JSX.Element {
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
+
 
   const [cryptoToSend, setCryptoToSend] = useState<Crypto>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
   const [cryptoToReceive, setCryptoToReceive] = useState<Crypto>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
@@ -98,84 +101,80 @@ function Home (): JSX.Element {
 
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
-  useEffect(() => { // for changing network or account
+  useEffect(() => { // initialization on skyekiwi
+
     if (!currentUserAccount) return;
-    console.log('currentUserAccount', currentUserAccount);
-
-    setCryptoInfo([]);
-
-    const getBalance = async () => {
+    if (!isInitializeLoadingOpen) return;//当currentUserAccount 变化时 不再触发这个useEffect
+    // console.log('first', isInitializeLoadingOpen);
+    const getBalanceSkyekiwiInitial = async () => {
       try {
         const provider = new WsProvider(knownNetworks[network].defaultProvider);
+        console.log('knownNetworks', knownNetworks)
         const api = await ApiPromise.create({ provider });
         const data = await api.query.system.account(currentUserAccount.address);
 
-        /* eslint-disable */
-        // @ts-ignore
-        setBalance(Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal));
-        console.log('balance', balance);
-        /* eslint-enable */
-
-        setChangeAccountLoading(false);
-      } catch (err) {
-        console.log('balance-error', err);
-        setChangeAccountLoading(false);
-        toast('Someting Wrong!', {
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '16px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }
-    };
-
-    void getBalance();
-
-    const fetchNativeTokenPrice = async () => {
-      try {
-        const provider = new WsProvider(knownNetworks[network].defaultProvider);
-        const api = await ApiPromise.create({ provider });
-        const chainInfo = api.registry.getChainProperties();
-        const [chain] = await Promise.all([api.rpc.system.chain()]);
-        /* eslint-disable */
-        // @ts-ignore
-        const nativeTokenSymbol = chainInfo.toHuman().tokenSymbol[0] as string;// DOT skyekiwi为null
-        // @ts-ignore
-        const nativeTokenDecimal = Number(chainInfo.toHuman().tokenDecimals[0]) as number;
-        const nativeTokenName = chain.toLocaleLowerCase() as string;// acala
-        /* eslint-enable */
-
-        // console.log('nativeTokenName', nativeTokenName);
-        void dispatch(fetchCoinPrice({ coinArray: [nativeTokenName], currency: 'usd' }));
-
         const cryptoForBalance = {
           arrival: '6 comfimations',
-          balance: balance,
+          /* eslint-disable */
+          // @ts-ignore
+          balance: Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal),
           estimatedTime: '1min',
-          img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${nativeTokenSymbol.toLowerCase()}.png`,
+          img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png',
           minDeposit: 0,
-          name: nativeTokenName,
+          name: "skyekiwi",
           networkFee: 0,
-          price: nativeTokenPriceFromRedux,
-          shortName: nativeTokenSymbol
+          price: 0,
+          shortName: "SKW"
         };
+        /* eslint-enable */
 
         setCryptoInfo([cryptoForBalance]);
+        setIsInitializeLoadingOpen(false);
+
       } catch (err) {
-        // console.log('balance-error2', err);
+        console.log('balance-error', err);//有错误就是地址有错 balance设置为0 
+        const cryptoForBalance = {
+          arrival: '6 comfimations',
+          /* eslint-disable */
+          // @ts-ignore
+          balance: 0,
+          estimatedTime: '1min',
+          img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png',
+          minDeposit: 0,
+          name: "skyekiwi",
+          networkFee: 0,
+          price: 0,
+          shortName: "SKW"
+        };
+        /* eslint-enable */
+
+        setCryptoInfo([cryptoForBalance]);
+
+        setIsInitializeLoadingOpen(false);
+        setTimeout(() => {
+          toast('Someting Wrong! Please Try Again', {
+            duration: 4000,
+            style: {
+              background: 'red',
+              color: 'white',
+              fontFamily: 'Poppins',
+              fontSize: '17px',
+              fontWeight: 'bolder',
+              padding: '20px'
+            }
+          });
+        }, 100);
+
       }
     };
 
-    void fetchNativeTokenPrice();
-  }, [network, currentUserAccount, nativeTokenPriceFromRedux, balance, dispatch]);
+    void getBalanceSkyekiwiInitial();
 
-  console.log('cryptoInfo', cryptoInfo);
+  }, [dispatch, currentUserAccount]);
 
-  useEffect(() => { // for intialization
+  // console.log('networkSelection', networkSelection);
+
+  useEffect(() => { // for mig  and  initialization
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
@@ -230,9 +229,6 @@ function Home (): JSX.Element {
         // console.log(userAccount);
       }
 
-      if (theme !== 'dark' && theme !== 'light') {
-        setTheme('light');
-      }
 
       dispatch(loadUserAccount());
 
@@ -247,53 +243,474 @@ function Home (): JSX.Element {
         });
         // console.log('knownNetworks111home', knownNetworks);
       } catch (e) {
-        console.log('err', e);
+        console.log('load local network added err', e);
         localStorage.setItem('networkAdded', '');
       }
+
     }
-  }, [dispatch, router, setTheme, theme]);
+  }, [dispatch, router]);
+
+
+  useEffect(() => {
+    if (theme !== 'dark' && theme !== 'light') {
+      setTheme('light');
+    }
+  }, [setTheme, theme])
+
+
+
+  const changeNetworkForPolka = async () => {
+    if (!currentUserAccount) return;
+    setNetwork(networkSelection);
+    setIsLoadingOpen(true);
+
+    // 最外面的try catch 给toast
+    try {
+      const provider = new WsProvider(knownNetworks[networkSelection].defaultProvider);
+      console.log('knownNetworks', knownNetworks)
+      const api = await ApiPromise.create({ provider });
+      const data = await api.query.system.account(currentUserAccount.address);
+
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[networkSelection].nativeTokenDecimal),
+        estimatedTime: '1min',
+        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[networkSelection].nativeTokenSymbol.toLowerCase()}.png`,
+        minDeposit: 0,
+        name: knownNetworks[networkSelection].info,
+        networkFee: 0,
+        price: 0,
+        shortName: knownNetworks[networkSelection].nativeTokenSymbol,
+      };
+      // /* eslint-enable */
+
+
+      // fetchCoinPrice 拿不到api的价格就设置为0
+      try {
+        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[networkSelection].info.toLowerCase()}&vs_currencies=usd`)
+          .then((res) => res.json());
+        /* eslint-disable */
+        // @ts-ignore
+        cryptoForBalance.price = Number(Object.entries(coinData)[0][1].usd);
+        console.log('cryptoForBalance', cryptoForBalance)
+        // /* eslint-enable */
+
+      } catch (err) {
+        console.log('fetchCoinPrice-err', err);
+        cryptoForBalance.price = 0;
+      }
+
+      setCryptoInfo([cryptoForBalance]);
+      setIsLoadingOpen(false);
+      setTimeout(() => {
+        toast(`Changed to ${knownNetworks[networkSelection].text}`, {
+          duration: 4000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    } catch (err) {//地址有错 cryptoForBalance清空
+      console.log('outTry-err', err);
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: 0,
+        estimatedTime: '1min',
+        img: '',
+        minDeposit: 0,
+        name: "",
+        networkFee: 0,
+        price: 0,
+        shortName: ""
+      };
+      /* eslint-enable */
+
+      setCryptoInfo([cryptoForBalance]);
+
+      setIsLoadingOpen(false);
+
+      setTimeout(() => {
+        toast('Someting Wrong! Please Switch To Other Network.', {
+          duration: 4000,
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    }
+
+  }
+
+  const changeAccountForPolka = async (accountAddress: string) => {
+
+    try {
+      const provider = new WsProvider(knownNetworks[network].defaultProvider);
+      const api = await ApiPromise.create({ provider });
+      const data = await api.query.system.account(accountAddress);
+
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[networkSelection].nativeTokenDecimal),
+        estimatedTime: '1min',
+        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[network].nativeTokenSymbol.toLowerCase()}.png`,
+        minDeposit: 0,
+        name: knownNetworks[network].info,
+        networkFee: 0,
+        price: 0,
+        shortName: knownNetworks[network].nativeTokenSymbol,
+      };
+      // /* eslint-enable */
+
+
+      // fetchCoinPrice 拿不到api的价格就设置为0
+      try {
+        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[network].info.toLowerCase()}&vs_currencies=usd`)
+          .then((res) => res.json());
+        /* eslint-disable */
+        // @ts-ignore
+        cryptoForBalance.price = Number(Object.entries(coinData)[0][1].usd);
+        console.log('cryptoForBalance', cryptoForBalance)
+        // /* eslint-enable */
+
+      } catch (err) {
+        console.log('fetchCoinPrice-err', err);
+        cryptoForBalance.price = 0;
+      }
+
+      setCryptoInfo([cryptoForBalance]);
+      setChangeAccountLoading(false);
+      setTimeout(() => {
+        toast('Successfully Changed Account', {
+          duration: 4000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    } catch (err) {//地址有错 cryptoForBalance清空
+      console.log('outTry-err', err);
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: 0,
+        estimatedTime: '1min',
+        img: '',
+        minDeposit: 0,
+        name: "",
+        networkFee: 0,
+        price: 0,
+        shortName: ""
+      };
+      /* eslint-enable */
+
+      setCryptoInfo([cryptoForBalance]);
+
+      setChangeAccountLoading(false);
+
+      setTimeout(() => {
+        toast('Someting Wrong! Please Switch To Other Account.', {
+          duration: 4000,
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    }
+
+  }
+
+
+  const changeNetworkForEth = async () => {
+    if (!currentUserAccount) return;
+    setNetwork(networkSelection);
+    setIsLoadingOpen(true);
+
+    // 最外面的try catch 给toast
+    try {
+      // https://chainlist.org/ 节点 给JsonRpcProvider就可以 
+      const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`)
+      // const provider = new ethers.providers.JsonRpcProvider(knownNetworks[networkSelection].defaultProvider)
+
+      // const balance = await provider.getBalance(currentUserAccount.address)
+      const balance = await provider.getBalance('0x2eFB50e952580f4ff32D8d2122853432bbF2E204')
+      const balanceFormat = ethers.utils.formatEther(balance)
+      console.log('ETH Balance', balance)//object
+      console.log('ETH Balance', Number(balanceFormat))
+
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: Number(balanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
+        estimatedTime: '1min',
+        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[networkSelection].nativeTokenSymbol.toLowerCase()}.png`,
+        minDeposit: 0,
+        name: knownNetworks[networkSelection].info,
+        networkFee: 0,
+        price: 0,
+        shortName: knownNetworks[networkSelection].nativeTokenSymbol,
+      };
+      // /* eslint-enable */
+
+
+      // fetchCoinPrice 拿不到api的价格就设置为0
+      try {
+        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[networkSelection].info.toLowerCase()}&vs_currencies=usd`)
+          .then((res) => res.json());
+        /* eslint-disable */
+        // @ts-ignore
+        cryptoForBalance.price = Number(Object.entries(coinData)[0][1].usd);
+        console.log('cryptoForBalance', cryptoForBalance)
+        // /* eslint-enable */
+
+      } catch (err) {
+        console.log('fetchCoinPrice-err', err);
+        cryptoForBalance.price = 0;
+      }
+
+      setCryptoInfo([cryptoForBalance]);
+      setIsLoadingOpen(false);
+      setTimeout(() => {
+        toast(`Changed to ${knownNetworks[networkSelection].text}`, {
+          duration: 4000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    } catch (err) {//地址有错 cryptoForBalance清空
+      console.log('outTry-err', err);
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: 0,
+        estimatedTime: '1min',
+        img: '',
+        minDeposit: 0,
+        name: "",
+        networkFee: 0,
+        price: 0,
+        shortName: ""
+      };
+      /* eslint-enable */
+
+      setCryptoInfo([cryptoForBalance]);
+
+      setIsLoadingOpen(false);
+
+      setTimeout(() => {
+        toast('Someting Wrong! Please Switch To Other Network.', {
+          duration: 4000,
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    }
+
+  }
+
+  const changeAccountForEth = async (accountAddress: string) => {
+
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`);
+
+      // const balance = await provider.getBalance(accountAddress)
+      const balance = await provider.getBalance('0x2eFB50e952580f4ff32D8d2122853432bbF2E204');
+      const balanceFormat = ethers.utils.formatEther(balance);
+
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: Number(balanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
+        estimatedTime: '1min',
+        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[networkSelection].nativeTokenSymbol.toLowerCase()}.png`,
+        minDeposit: 0,
+        name: knownNetworks[networkSelection].info,
+        networkFee: 0,
+        price: 0,
+        shortName: knownNetworks[networkSelection].nativeTokenSymbol,
+      };
+      // /* eslint-enable */
+
+
+
+      // fetchCoinPrice 拿不到api的价格就设置为0
+      try {
+        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[network].info.toLowerCase()}&vs_currencies=usd`)
+          .then((res) => res.json());
+        /* eslint-disable */
+        // @ts-ignore
+        cryptoForBalance.price = Number(Object.entries(coinData)[0][1].usd);
+        console.log('cryptoForBalance', cryptoForBalance)
+        // /* eslint-enable */
+
+      } catch (err) {
+        console.log('fetchCoinPrice-err', err);
+        cryptoForBalance.price = 0;
+      }
+
+      setCryptoInfo([cryptoForBalance]);
+      setChangeAccountLoading(false);
+      setTimeout(() => {
+        toast('Successfully Changed Account', {
+          duration: 4000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    } catch (err) {//地址有错 cryptoForBalance清空
+      console.log('outTry-err', err);
+
+      const cryptoForBalance = {
+        arrival: '6 comfimations',
+        /* eslint-disable */
+        // @ts-ignore
+        balance: 0,
+        estimatedTime: '1min',
+        img: '',
+        minDeposit: 0,
+        name: "",
+        networkFee: 0,
+        price: 0,
+        shortName: ""
+      };
+      /* eslint-enable */
+
+      setCryptoInfo([cryptoForBalance]);
+
+      setChangeAccountLoading(false);
+
+      setTimeout(() => {
+        toast('Someting Wrong! Please Switch To Other Account.', {
+          duration: 4000,
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    }
+
+  }
+
+  const changeNetwork = () => {
+    if (knownNetworks[networkSelection].networkType === "polkadot") {
+      console.log('changeNetworkForPolka');
+      changeNetworkForPolka();
+    }
+
+    if (knownNetworks[networkSelection].networkType === "ethereum") {
+      console.log('changeNetworkForEth');
+      changeNetworkForEth();
+    }
+  }
+
+  const changeAccount = (address: string) => {
+    if (knownNetworks[network].networkType === "polkadot") {
+      console.log('changeAccountForPolka');
+      changeAccountForPolka(address);
+    }
+
+    if (knownNetworks[network].networkType === "ethereum") {
+      console.log('changeAccountForEth');
+      changeAccountForEth(address);
+    }
+  }
+
+
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
   if (isLoadingOpen) return <Loading title='Changing Network' />;
+  if (isInitializeLoadingOpen) return <Loading title='Initializing Account' />;
+
   if (changeAccountLoading) return <Loading title='Changing Account' />;
   if (migInProcess) return <Loading title='Account System Migration in process ' />;
 
-  const changeNetwork = async () => {
-    // dispatch(fetchCoinPrice({ coinArray: ['bitcoin', 'ethereum', 'dogecoin'], currency: 'usd' }))
-    //   .unwrap()
-    //   .then((result) => {
-    //     console.log('result', result);
-    //   }).catch((rejectedValueOrSerializedError) => {
-    //     console.log('redux-rejectedValueOrSerializedError', rejectedValueOrSerializedError);
-    //   });
 
-    setIsLoadingOpen(true);
-    setNetwork(networkSelection);
 
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        setIsLoadingOpen(false);
-        setIsNetworkChangeOpen(true);
-
-        resolve();
-      }, 3000);
-    });
-  };
-
-  function closeNetworkChangeModal () {
+  function closeNetworkChangeModal() {
     setIsNetworkChangeOpen(false);
   }
 
-  function closeSendModal () {
+  function closeSendModal() {
     setIsSendOpen(false);
   }
 
-  function closeReceiveModal () {
+  function closeReceiveModal() {
     setIsReceiveOpen(false);
   }
 
-  function closeAddNetworkModal () {
+  function closeAddNetworkModal() {
     setAddNetworkModalOpen(false);
   }
 
@@ -309,7 +726,10 @@ function Home (): JSX.Element {
 
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
         <Toaster />
-        <Header setChangeAccountLoading={setChangeAccountLoading} />
+        <Header
+          setChangeAccountLoading={setChangeAccountLoading}
+          changeAccount={changeAccount}
+        />
 
         {/* drawer */}
         <CSSTransition

@@ -2,15 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
+// import { Toaster } from 'react-hot-toast';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 
 interface Props {
   title: string;
 }
 
-function Loading ({ title }: Props): JSX.Element {
+function Loading({ title }: Props): JSX.Element {
   return (
     <div className='bg-primary h-screen flex flex-col items-center justify-center'>
+      {/* <Toaster /> */}
       <div className='flex items-center space-x-2 mb-10  m-3'>
         <p className='text-sm md:text-2xl'>
           <span className='text-gradient font-poppins w-36 '>{title}</span>

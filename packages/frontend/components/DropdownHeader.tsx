@@ -14,9 +14,10 @@ import DropdownHeaderRow from './DropdownHeaderRow';
 
 interface Props {
   setChangeAccountLoading: (value: boolean) => void;
+  changeAccount: (value: string) => void;
 }
 
-function DropdownHeader ({ setChangeAccountLoading }: Props): JSX.Element {
+function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.Element {
   const dispatch = useDispatch();
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
@@ -66,7 +67,9 @@ function DropdownHeader ({ setChangeAccountLoading }: Props): JSX.Element {
               {userAccountArray.map((account) => (
                 <DropdownHeaderRow account={account[1]}
                   key={account[1].address}
-                  setChangeAccountLoading={setChangeAccountLoading} />
+                  setChangeAccountLoading={setChangeAccountLoading}
+                  changeAccount={changeAccount}
+                />
               ))}
 
               <Menu.Item >
@@ -75,7 +78,7 @@ function DropdownHeader ({ setChangeAccountLoading }: Props): JSX.Element {
                     className={`${active
                       ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white'
                       : 'font-poppins text-gray-900'
-                    } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => router.push('/account')}
                   >
 
@@ -89,7 +92,7 @@ function DropdownHeader ({ setChangeAccountLoading }: Props): JSX.Element {
                 {({ active }) => (
                   <button
                     className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
-                    } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={removeAccounts}
 
                   >

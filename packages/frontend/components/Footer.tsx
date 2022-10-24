@@ -5,11 +5,10 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import React from 'react';
 import { SocialIcon } from 'react-social-icons';
-
 import discIcon1 from '../images/discord1.svg';
 import discIcon2 from '../images/discord2.svg';
 
-function Footer (): JSX.Element {
+function Footer(): JSX.Element {
   const { theme } = useTheme();
 
   return (
@@ -29,7 +28,7 @@ function Footer (): JSX.Element {
               /* eslint-disable */
               // @ts-ignore
               src={discIcon1}
-              /* eslint-enable */
+            /* eslint-enable */
             />
           </a>
           <SocialIcon
@@ -56,15 +55,13 @@ function Footer (): JSX.Element {
             target='_blank'
             url='https://medium.com/@choko_wallet'
           />
-          <a href='mailto:contact@choko.app'>
-            <SocialIcon
-              bgColor='transparent'
-              className='cursor-pointer'
-              fgColor='black'
-              network='email'
-            />
-          </a>
-
+          <SocialIcon
+            bgColor='transparent'
+            className='cursor-pointer'
+            fgColor='black'
+            network='email'
+            url='mailto:contact@choko.app'
+          />
         </div>
         : <div className='flex items-center justify-center'>
           <a className='relative h-7 w-7 m-3'
@@ -78,7 +75,7 @@ function Footer (): JSX.Element {
               /* eslint-disable */
               // @ts-ignore
               src={discIcon2}
-              /* eslint-enable */
+            /* eslint-enable */
             />
           </a>
           <SocialIcon
@@ -105,15 +102,14 @@ function Footer (): JSX.Element {
             target='_blank'
             url='https://medium.com/@choko_wallet'
           />
-          <a href='mailto:contact@choko.app'>
-            <SocialIcon
-              bgColor='transparent'
-              className='cursor-pointer'
-              fgColor='white'
-              network='email'
-            />
-          </a>
 
+          <SocialIcon
+            bgColor='transparent'
+            className='cursor-pointer'
+            fgColor='white'
+            network='email'
+            url='mailto:contact@choko.app'
+          />
         </div>}
 
     </div>

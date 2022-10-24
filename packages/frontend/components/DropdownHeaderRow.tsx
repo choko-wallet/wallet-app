@@ -15,9 +15,10 @@ import { switchUserAccount } from '../features/slices/userSlice';
 interface Props {
   account: UserAccount;
   setChangeAccountLoading: (value: boolean) => void;
+  changeAccount: (value: string) => void;
 }
 
-function DropdownHeaderRow ({ account, setChangeAccountLoading }: Props): JSX.Element {
+function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: Props): JSX.Element {
   const dispatch = useDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
@@ -30,19 +31,23 @@ function DropdownHeaderRow ({ account, setChangeAccountLoading }: Props): JSX.El
     }, 1000);
   };
 
-  const changeAccount = () => {
+  const changeAccountInHeader = () => {
     if (account.address !== currentUserAccount.address) {
       setChangeAccountLoading(true);
       dispatch(switchUserAccount(account.address));
+      changeAccount(account.address);
     }
   };
+
+
+
 
   return (
 
     <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${Object.keys(currentUserAccount)[0] === account.address ? 'bg-blue-gradient' : ''} `}>
       <p
         className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${Object.keys(currentUserAccount)[0] === account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `}
-        onClick={() => changeAccount()}>
+        onClick={() => changeAccountInHeader()}>
         {account.address.substring(0, 7)}
         <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${Object.keys(currentUserAccount)[0] === account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `} />
 
