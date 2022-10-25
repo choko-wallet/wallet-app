@@ -19,10 +19,11 @@ import logo2 from '../images/logo2.png';
 import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
 import DropdownHeader from './DropdownHeader';
+import { UserAccount } from '@choko-wallet/core';
 
 interface Props {
   setChangeAccountLoading: (value: boolean) => void;
-  changeAccount: (value: string) => void;
+  changeAccount: (value: UserAccount) => void;
 }
 
 function Header({ setChangeAccountLoading, changeAccount }: Props): JSX.Element {

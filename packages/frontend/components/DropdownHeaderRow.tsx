@@ -15,7 +15,7 @@ import { switchUserAccount } from '../features/slices/userSlice';
 interface Props {
   account: UserAccount;
   setChangeAccountLoading: (value: boolean) => void;
-  changeAccount: (value: string) => void;
+  changeAccount: (value: UserAccount) => void;
 }
 
 function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: Props): JSX.Element {
@@ -35,7 +35,7 @@ function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: 
     if (account.address !== currentUserAccount.address) {
       setChangeAccountLoading(true);
       dispatch(switchUserAccount(account.address));
-      changeAccount(account.address);
+      changeAccount(account);
     }
   };
 

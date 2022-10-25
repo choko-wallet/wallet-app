@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { blake2AsU8a } from '@polkadot/util-crypto';
+import { blake2AsU8a, ethereumEncode } from '@polkadot/util-crypto';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 

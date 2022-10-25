@@ -1,6 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { UserAccount } from '@choko-wallet/core';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsHorizontalIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
@@ -14,7 +15,7 @@ import DropdownHeaderRow from './DropdownHeaderRow';
 
 interface Props {
   setChangeAccountLoading: (value: boolean) => void;
-  changeAccount: (value: string) => void;
+  changeAccount: (value: UserAccount) => void;
 }
 
 function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.Element {

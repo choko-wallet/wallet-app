@@ -32,7 +32,9 @@ function CryptoRow({ balance, img, name, price, shortName }: Props): JSX.Element
               {name}
             </p>
             <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
-              {price}{' '}USD
+              {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })}
+              {/* price 很多币 价格特别低 需要多几位显示  */}
+              {' '}USD
             </p>
           </div>
         </div>

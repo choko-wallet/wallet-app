@@ -34,6 +34,7 @@ import Modal from '../../components/Modal';
 import { selectCurrentUserAccount, selectNativeTokenPrice } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
+import tokenList from '../../utils/EthMainnetTokenList2'
 
 interface Crypto {
   balance: number,
@@ -468,8 +469,7 @@ function Home(): JSX.Element {
       const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`)
       // const provider = new ethers.providers.JsonRpcProvider(knownNetworks[networkSelection].defaultProvider)
 
-      // const balance = await provider.getBalance(currentUserAccount.address)
-      const balance = await provider.getBalance('0x2eFB50e952580f4ff32D8d2122853432bbF2E204')
+      const balance = await provider.getBalance(ethereumEncode(currentUserAccount.publicKey));
       const balanceFormat = ethers.utils.formatEther(balance)
       console.log('ETH Balance', balance)//object
       console.log('ETH Balance', Number(balanceFormat))
@@ -564,48 +564,112 @@ function Home(): JSX.Element {
   }
 
   const changeAccountForEth = async (accountAddress: string) => {
+    const cryptoForBalanceArray = [];
+    // accountAddress = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
 
     try {
       const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`);
-
-      // const balance = await provider.getBalance(accountAddress)
-      const balance = await provider.getBalance('0x2eFB50e952580f4ff32D8d2122853432bbF2E204');
-      const balanceFormat = ethers.utils.formatEther(balance);
+      const ethBalance = await provider.getBalance(accountAddress);
+      const ethBalanceFormat = ethers.utils.formatEther(ethBalance);
 
 
       const cryptoForBalance = {
         arrival: '6 comfimations',
         /* eslint-disable */
         // @ts-ignore
-        balance: Number(balanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
+        balance: Number(ethBalanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
         estimatedTime: '1min',
-        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[networkSelection].nativeTokenSymbol.toLowerCase()}.png`,
+        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[network].nativeTokenSymbol.toLowerCase()}.png`,
         minDeposit: 0,
-        name: knownNetworks[networkSelection].info,
+        name: knownNetworks[network].info,
         networkFee: 0,
         price: 0,
-        shortName: knownNetworks[networkSelection].nativeTokenSymbol,
+        shortName: knownNetworks[network].nativeTokenSymbol,
+        coingeckoId: knownNetworks[network].info.toLowerCase(),
       };
       // /* eslint-enable */
 
+      cryptoForBalanceArray.push(cryptoForBalance);
+
+      // 合约币
+      const ERC20_ABI = [//还有其他 
+        "function name() view returns (string)",
+        "function symbol() view returns (string)",
+        "function totalSupply() view returns (uint256)",
+        "function balanceOf(address) view returns (uint)",
+      ];
+
+      for (let i = 0; i < tokenList.length; i++) {
+        const contract = new ethers.Contract(tokenList[i].address, ERC20_ABI, provider)
+        const name = await contract.name()
+        const symbol = await contract.symbol()
+        const contractTokenBalance = await contract.balanceOf(accountAddress);
+        const contractTokenBalanceFormat = ethers.utils.formatUnits(contractTokenBalance, tokenList[i].decimals)//应该是string parseEther再变回bigNumber
+
+        console.log(`Name: ${name}`)
+        console.log(`Symbol: ${symbol}`)
+        console.log(`Balance Formatted: ${contractTokenBalanceFormat}\n`)
+
+        const cryptoForBalance = {
+          arrival: '6 comfimations',
+          /* eslint-disable */
+          // @ts-ignore
+          balance: Number(contractTokenBalanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
+          estimatedTime: '1min',
+          img: tokenList[i].logoURI,
+          minDeposit: 0,
+          name: name,
+          networkFee: 0,
+          price: 0,
+          shortName: symbol,
+          coingeckoId: tokenList[i].coingeckoId,
+        };
+        // /* eslint-enable */
+
+        cryptoForBalanceArray.push(cryptoForBalance);
+
+      }
+
+      console.log('cryptoForBalanceArray', cryptoForBalanceArray)
 
 
       // fetchCoinPrice 拿不到api的价格就设置为0
+      const tokenNames = [];
+      for (let i = 0; i < cryptoForBalanceArray.length; i++) {
+        // const tokenNames = [];
+        tokenNames.push(cryptoForBalanceArray[i].coingeckoId);
+        // const tokenNamesString = tokenNames.join('%2C');
+      }
+      const tokenNamesString = tokenNames.join('%2C');
+      console.log('tokenNamesString', tokenNamesString)
+
       try {
-        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[network].info.toLowerCase()}&vs_currencies=usd`)
+        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${tokenNamesString}&vs_currencies=usd`)
           .then((res) => res.json());
         /* eslint-disable */
         // @ts-ignore
-        cryptoForBalance.price = Number(Object.entries(coinData)[0][1].usd);
-        console.log('cryptoForBalance', cryptoForBalance)
+
+        for (let i = 0; i < Object.entries(coinData).length; i++) {
+          for (let j = 0; j < cryptoForBalanceArray.length; j++) {
+            if (cryptoForBalanceArray[j].coingeckoId === Object.entries(coinData)[i][0]) {
+              // @ts-ignore
+              cryptoForBalanceArray[j].price = Number(Object.entries(coinData)[i][1].usd);
+            }
+          }
+        }
+
+        console.log('cryptoForBalanceArra2', cryptoForBalanceArray)
         // /* eslint-enable */
 
       } catch (err) {
         console.log('fetchCoinPrice-err', err);
-        cryptoForBalance.price = 0;
+        for (let j = 0; j < cryptoForBalanceArray.length; j++) {
+          cryptoForBalanceArray[j].price = 0;
+        }
       }
 
-      setCryptoInfo([cryptoForBalance]);
+
+      setCryptoInfo(cryptoForBalanceArray);
       setChangeAccountLoading(false);
       setTimeout(() => {
         toast('Successfully Changed Account', {
@@ -674,17 +738,18 @@ function Home(): JSX.Element {
     }
   }
 
-  const changeAccount = (address: string) => {
+  const changeAccount = (account: UserAccount) => {
     if (knownNetworks[network].networkType === "polkadot") {
       console.log('changeAccountForPolka');
-      changeAccountForPolka(address);
+      changeAccountForPolka(account.address);
     }
 
     if (knownNetworks[network].networkType === "ethereum") {
       console.log('changeAccountForEth');
-      changeAccountForEth(address);
+      changeAccountForEth(ethereumEncode(account.publicKey));
     }
   }
+
 
 
 
