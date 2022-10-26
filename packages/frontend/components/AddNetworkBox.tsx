@@ -6,7 +6,7 @@ import { u8aToHex } from '@skyekiwi/util';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-
+import { ethers } from "ethers";
 import { KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 
@@ -16,8 +16,9 @@ interface Props {
 }
 
 type FormData = {
-  // networkName: string
-  netWorkRPC: string
+  networkName: string;
+  netWorkRPC: string;
+  networkNativeTokenDecimal: number;
 }
 
 interface networkObject {
@@ -38,60 +39,124 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
 
     const notification = toast.loading('Adding Network...');
 
-    try {
-      const provider = new WsProvider(formData.netWorkRPC);
-      const api = await ApiPromise.create({ provider });
+    if (networkType === 'polkadot') {
+      try {
+        const provider = new WsProvider(formData.netWorkRPC);
+        const api = await ApiPromise.create({ provider });
 
-      const chainInfo = api.registry.getChainProperties();
-      const [chain] = await Promise.all([api.rpc.system.chain()]);
+        const chainInfo = api.registry.getChainProperties();
+        const [chain] = await Promise.all([api.rpc.system.chain()]);
 
-      const networkForAdding = new Network({
-        /* eslint-disable */
-        defaultProvider: formData.netWorkRPC,
-        info: chain.toLocaleLowerCase(),
-        networkType: 'polkadot',
-        providers: { defaultProvider: formData.netWorkRPC },
-        text: chain + ' Network',
-        // @ts-ignore
-        nativeTokenSymbol: chainInfo.toHuman().tokenSymbol[0],
-        // @ts-ignore
-        nativeTokenDecimal: Number(chainInfo.toHuman().tokenDecimals[0]),
-        /* eslint-enable */
-      });
+        const networkForAdding = new Network({
+          /* eslint-disable */
+          defaultProvider: formData.netWorkRPC,
+          info: chain.toLocaleLowerCase(),
+          networkType: 'polkadot',
+          providers: { defaultProvider: formData.netWorkRPC },
+          text: chain + ' Network',
+          // @ts-ignore
+          nativeTokenSymbol: chainInfo.toHuman().tokenSymbol[0],
+          // @ts-ignore
+          nativeTokenDecimal: Number(chainInfo.toHuman().tokenDecimals[0]),
+          /* eslint-enable */
+        });
 
-      const hexString = u8aToHex(xxHash(chain.toLocaleLowerCase()));
+        const hexString = u8aToHex(xxHash(chain.toLocaleLowerCase()));
 
-      if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
-        throw new Error('Network already exists');
+        if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
+          throw new Error('Network already exists');
+        }
+
+        knownNetworks[hexString] = networkForAdding;// home can get
+
+        // add network to localstorage
+        const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+        const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+        const networkObject: networkObject = maybeNetworkAddedObject || {};
+
+        networkObject[hexString] = networkForAdding;
+        localStorage.setItem('networkAdded', JSON.stringify(networkObject));
+        console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
+
+        // console.log('added:', networkForAdding);
+
+        // setValue('networkName', '');
+        setValue('netWorkRPC', '');
+        closeAddNetworkModal();
+        setAddNetworkLoading(false);
+        toast.success('New Network Added', {
+          id: notification
+        });
+      } catch (err) {
+        setAddNetworkLoading(false);
+        toast.error('Whoops! something went wrong!', {
+          id: notification
+        });
+        console.log(err);
       }
 
-      knownNetworks[hexString] = networkForAdding;// home can get
-
-      // add network to localstorage
-      const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
-      const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
-      const networkObject: networkObject = maybeNetworkAddedObject || {};
-
-      networkObject[hexString] = networkForAdding;
-      localStorage.setItem('networkAdded', JSON.stringify(networkObject));
-      console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
-
-      // console.log('added:', networkForAdding);
-
-      // setValue('networkName', '');
-      setValue('netWorkRPC', '');
-      closeAddNetworkModal();
-      setAddNetworkLoading(false);
-      toast.success('New Network Added', {
-        id: notification
-      });
-    } catch (err) {
-      setAddNetworkLoading(false);
-      toast.error('Whoops! something went wrong!', {
-        id: notification
-      });
-      console.log(err);
     }
+
+    if (networkType === 'ethereum') {
+      try {
+        const provider = new ethers.providers.JsonRpcProvider(formData.netWorkRPC);
+        const { chainId, name } = await provider.getNetwork()
+
+        console.log(chainId) // 137   56
+        console.log(name) // matic    bnb
+
+        const networkForAdding = new Network({
+          /* eslint-disable */
+          defaultProvider: formData.netWorkRPC,
+          info: formData.networkName,//网络名 暂时需要用户输入
+          networkType: 'ethereum',
+          providers: { defaultProvider: formData.netWorkRPC },
+          text: formData.networkName + ' Network',
+          // @ts-ignore
+          nativeTokenSymbol: name,
+          // @ts-ignore
+          nativeTokenDecimal: formData.networkNativeTokenDecimal,//暂时需要用户输入
+          /* eslint-enable */
+        });
+
+        const hexString = u8aToHex(xxHash(formData.networkName));
+
+        if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
+          throw new Error('Network already exists');
+        }
+
+        knownNetworks[hexString] = networkForAdding;// home can get
+
+        // add network to localstorage
+        const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+        const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+        const networkObject: networkObject = maybeNetworkAddedObject || {};
+
+        networkObject[hexString] = networkForAdding;
+        localStorage.setItem('networkAdded', JSON.stringify(networkObject));
+        console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
+
+        // console.log('added:', networkForAdding);
+
+        setValue('networkName', '');
+        setValue('netWorkRPC', '');
+        // setValue('networkNativeTokenDecimal', 0);
+        closeAddNetworkModal();
+        setAddNetworkLoading(false);
+        toast.success('New Network Added', {
+          id: notification
+        });
+      } catch (err) {
+        setAddNetworkLoading(false);
+        toast.error('Whoops! something went wrong!', {
+          id: notification
+        });
+        console.log(err);
+      }
+
+    }
+
+
   });
 
   // console.log('networkType,networkType', networkType);
@@ -100,26 +165,6 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
     <form
       onSubmit={onSubmit}
     >
-      {/* <div className=''>
-        <p className=' text-gray-700 dark:text-white mt-3 mb-1'>Network Name</p>
-        <input
-          {...register('networkName', { required: true })}
-          className='input border border-[#c67391] w-full '
-          placeholder={'Polkadot'}
-          type='text'
-        />
-      </div> */}
-
-      <div className=''>
-        <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
-          Network RPC</p>
-        <input
-          className='input border border-[#c67391] w-full '
-          {...register('netWorkRPC', { required: true })}
-          placeholder='wss://polkadot.parity.io/ws'
-          type='text'
-        />
-      </div>
 
       <p className=' text-gray-700 dark:text-white mt-4  font-poppins font-semibold'>
         Network Type: {networkType}</p>
@@ -142,13 +187,57 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         }
       </div>
 
+
+      <div className=''>
+        <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
+          Network RPC</p>
+        <input
+          className='input border border-[#c67391] w-full '
+          {...register('netWorkRPC', { required: true })}
+          placeholder='wss://polkadot.parity.io/ws'
+          type='text'
+        />
+      </div>
+
+      {networkType === 'ethereum' ?
+        <div className=''>
+          <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
+            Network Name</p>
+          <input
+            className='input border border-[#c67391] w-full '
+            {...register('networkName', { required: true })}
+            placeholder='Polygon'
+            type='text'
+          />
+        </div>
+        : null}
+
+      {networkType === 'ethereum' ?
+        <div className=''>
+          <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
+            Native Token Decimal</p>
+          <input
+            className='input border border-[#c67391] w-full '
+            {...register('networkNativeTokenDecimal', { required: true })}
+            placeholder='18'
+            type='text'
+          />
+        </div>
+        : null}
+
+
+
+
       {Object.keys(errors).length > 0 && (
         <div className='p-2 space-y-2 text-red-500 font-poppins font-semibold'>
-          {/* {errors.networkName?.type === 'required' && (
-            <p>Network Name is required</p>
-          )} */}
           {errors.netWorkRPC?.type === 'required' && (
             <p>Network RPC is required</p>
+          )}
+          {errors.networkName?.type === 'required' && (
+            <p>Network Name is required</p>
+          )}
+          {errors.networkNativeTokenDecimal?.type === 'required' && (
+            <p>Native Token Decimal is required</p>
           )}
         </div>
       )}

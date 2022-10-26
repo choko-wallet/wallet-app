@@ -34,7 +34,8 @@ import Modal from '../../components/Modal';
 import { selectCurrentUserAccount, selectNativeTokenPrice } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
-import tokenList from '../../utils/EthMainnetTokenList2'
+import tokenList from '../../utils/EthMainnetTokenList'
+import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
 
 interface Crypto {
   balance: number,
@@ -85,6 +86,8 @@ function Home(): JSX.Element {
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
+  const [addTokenModalOpen, setAddTokenModalOpen] = useState<boolean>(false);
+
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
 
@@ -462,24 +465,31 @@ function Home(): JSX.Element {
     if (!currentUserAccount) return;
     setNetwork(networkSelection);
     setIsLoadingOpen(true);
+    const cryptoForBalanceArray = [];
 
-    // 最外面的try catch 给toast
     try {
-      // https://chainlist.org/ 节点 给JsonRpcProvider就可以 
-      const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`)
+      let provider;
+      if (knownNetworks[networkSelection].info === 'ethereum') {
+        provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`)
+
+      } else {
+        provider = new ethers.providers.JsonRpcProvider(knownNetworks[networkSelection].defaultProvider)
+
+      }
+      // const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`)
       // const provider = new ethers.providers.JsonRpcProvider(knownNetworks[networkSelection].defaultProvider)
 
-      const balance = await provider.getBalance(ethereumEncode(currentUserAccount.publicKey));
-      const balanceFormat = ethers.utils.formatEther(balance)
-      console.log('ETH Balance', balance)//object
-      console.log('ETH Balance', Number(balanceFormat))
+      const ethBalance = await provider.getBalance(ethereumEncode(currentUserAccount.publicKey));
+      const ethBalanceFormat = ethers.utils.formatEther(balance)
+      console.log('ETH Balance', ethBalance)//object
+      console.log('ETH Balance', Number(ethBalanceFormat))
 
 
       const cryptoForBalance = {
         arrival: '6 comfimations',
         /* eslint-disable */
         // @ts-ignore
-        balance: Number(balanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
+        balance: Number(ethBalanceFormat),
         estimatedTime: '1min',
         img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[networkSelection].nativeTokenSymbol.toLowerCase()}.png`,
         minDeposit: 0,
@@ -487,26 +497,94 @@ function Home(): JSX.Element {
         networkFee: 0,
         price: 0,
         shortName: knownNetworks[networkSelection].nativeTokenSymbol,
+        coingeckoId: knownNetworks[networkSelection].info.toLowerCase(),
       };
       // /* eslint-enable */
 
+      cryptoForBalanceArray.push(cryptoForBalance);
+
+      // 合约币
+      const ERC20_ABI = [//还有其他 
+        "function name() view returns (string)",
+        "function symbol() view returns (string)",
+        "function totalSupply() view returns (uint256)",
+        "function balanceOf(address) view returns (uint)",
+      ];
+
+      if (knownNetworks[networkSelection].nativeTokenSymbol === "ETH") {//要判断这个network的tokenlist 
+        for (let i = 0; i < tokenList.length; i++) {
+          const contract = new ethers.Contract(tokenList[i].address, ERC20_ABI, provider)
+          const name = await contract.name()
+          const symbol = await contract.symbol()
+          const contractTokenBalance = await contract.balanceOf(ethereumEncode(currentUserAccount.publicKey));
+          const contractTokenBalanceFormat = ethers.utils.formatUnits(contractTokenBalance, tokenList[i].decimals)//应该是string parseEther再变回bigNumber
+
+          console.log(`Name: ${name}`)
+          console.log(`Symbol: ${symbol}`)
+          console.log(`Balance Formatted: ${contractTokenBalanceFormat}\n`)
+
+          const cryptoForBalance = {
+            arrival: '6 comfimations',
+            /* eslint-disable */
+            // @ts-ignore
+            balance: Number(contractTokenBalanceFormat),//传number 在balance中处理 
+            estimatedTime: '1min',
+            img: tokenList[i].logoURI,
+            minDeposit: 0,
+            name: name,
+            networkFee: 0,
+            price: 0,
+            shortName: symbol,
+            coingeckoId: tokenList[i].coingeckoId,
+          };
+          // /* eslint-enable */
+
+          cryptoForBalanceArray.push(cryptoForBalance);
+
+        }
+      }
+
+
+      console.log('cryptoForBalanceArray', cryptoForBalanceArray)
+
+
+
 
       // fetchCoinPrice 拿不到api的价格就设置为0
+      const tokenNames = [];
+      for (let i = 0; i < cryptoForBalanceArray.length; i++) {
+        // const tokenNames = [];
+        tokenNames.push(cryptoForBalanceArray[i].coingeckoId);
+        // const tokenNamesString = tokenNames.join('%2C');
+      }
+      const tokenNamesString = tokenNames.join('%2C');
+      console.log('tokenNamesString', tokenNamesString)
+
       try {
-        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[networkSelection].info.toLowerCase()}&vs_currencies=usd`)
+        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${tokenNamesString}&vs_currencies=usd`)
           .then((res) => res.json());
         /* eslint-disable */
         // @ts-ignore
-        cryptoForBalance.price = Number(Object.entries(coinData)[0][1].usd);
-        console.log('cryptoForBalance', cryptoForBalance)
-        // /* eslint-enable */
 
+        for (let i = 0; i < Object.entries(coinData).length; i++) {
+          for (let j = 0; j < cryptoForBalanceArray.length; j++) {
+            if (cryptoForBalanceArray[j].coingeckoId === Object.entries(coinData)[i][0]) {
+              // @ts-ignore
+              cryptoForBalanceArray[j].price = Number(Object.entries(coinData)[i][1].usd);
+            }
+          }
+        }
+
+        console.log('cryptoForBalanceArra2', cryptoForBalanceArray)
+        // /* eslint-enable */
       } catch (err) {
         console.log('fetchCoinPrice-err', err);
-        cryptoForBalance.price = 0;
+        for (let j = 0; j < cryptoForBalanceArray.length; j++) {
+          cryptoForBalanceArray[j].price = 0;
+        }
       }
 
-      setCryptoInfo([cryptoForBalance]);
+      setCryptoInfo(cryptoForBalanceArray);
       setIsLoadingOpen(false);
       setTimeout(() => {
         toast(`Changed to ${knownNetworks[networkSelection].text}`, {
@@ -568,7 +646,9 @@ function Home(): JSX.Element {
     // accountAddress = '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7';
 
     try {
-      const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`);
+      // const provider = new ethers.providers.JsonRpcProvider(`https://rpc.ankr.com/eth`);
+      const provider = new ethers.providers.JsonRpcProvider(knownNetworks[network].defaultProvider)
+
       const ethBalance = await provider.getBalance(accountAddress);
       const ethBalanceFormat = ethers.utils.formatEther(ethBalance);
 
@@ -614,7 +694,7 @@ function Home(): JSX.Element {
           arrival: '6 comfimations',
           /* eslint-disable */
           // @ts-ignore
-          balance: Number(contractTokenBalanceFormat),//.toFixed(4)变成string了 传number 在balance中处理 
+          balance: Number(contractTokenBalanceFormat),//传number 在balance中处理 
           estimatedTime: '1min',
           img: tokenList[i].logoURI,
           minDeposit: 0,
@@ -779,6 +859,10 @@ function Home(): JSX.Element {
     setAddNetworkModalOpen(false);
   }
 
+  function closeAddTokenModal() {
+    setAddTokenModalOpen(false);
+  }
+
   const handleCopy = () => {
     setShowCheck(true);
     setTimeout(() => {
@@ -854,7 +938,9 @@ function Home(): JSX.Element {
               cryptoInfo={cryptoInfo}
               currentNetworkName={knownNetworks[network].text}
               setIsReceiveOpen={setIsReceiveOpen}
-              setIsSendOpen={setIsSendOpen} />
+              setIsSendOpen={setIsSendOpen}
+              setAddTokenModalOpen={setAddTokenModalOpen}
+            />
 
           </div>
 
@@ -1120,6 +1206,30 @@ function Home(): JSX.Element {
 
                 <AddNetworkBox
                   closeAddNetworkModal={closeAddNetworkModal}
+                  knownNetworks={knownNetworks}
+                />
+
+              </Dialog.Panel>
+            </div >
+          </Modal>
+
+          {/* add token modal pink */}
+          <Modal closeModal={closeAddTokenModal}
+            isOpen={addTokenModalOpen} >
+            <div className={theme}>
+              <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
+                <Dialog.Title
+                  as='h3'
+                  className='text-lg font-medium leading-6 flex items-center mb-6'
+                >
+                  <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Add ERC20 Token</p>
+                  <div onClick={closeAddTokenModal}>
+                    <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
+                  </div>
+                </Dialog.Title>
+
+                <AddTokenBox
+                  closeAddTokenModal={closeAddTokenModal}
                   knownNetworks={knownNetworks}
                 />
 

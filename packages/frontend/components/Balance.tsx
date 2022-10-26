@@ -1,9 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { DownloadIcon, PaperAirplaneIcon } from '@heroicons/react/outline';
+import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchCircleIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
-
+import { Switch } from '@headlessui/react'
 import Button from './Button';
 import CryptoRow from './CryptoRow';
 
@@ -25,11 +25,16 @@ interface Props {
   cryptoInfo: Crypto[];
   setIsSendOpen: (value: boolean) => void;
   setIsReceiveOpen: (value: boolean) => void;
+  setAddTokenModalOpen: (value: boolean) => void;
+
 }
 
 function Balance({ balance, cryptoInfo,
-  currentNetworkName, setIsReceiveOpen, setIsSendOpen }: Props): JSX.Element {
+  currentNetworkName, setAddTokenModalOpen, setIsReceiveOpen, setIsSendOpen }: Props): JSX.Element {
   const [balanceTotal, setBalanceTotal] = useState<string>('0');
+  const [enabled, setEnabled] = useState<boolean>(false)
+  const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false)
+
 
   useEffect(() => {
     let balance = 0;
@@ -66,11 +71,58 @@ function Balance({ balance, cryptoInfo,
       </div>
 
       <div className='flex items-center justify-between  pt-5 px-16'>
+
+        <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed'
+          onClick={() => setAddTokenModalOpen(true)}>
+          <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
+          >
+
+            <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
+              <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
+
+
+            </div>
+            <p className='absolute top-[60px] whitespace-nowrap text-lg font-semibold font-poppins text-black dark:text-white'>Add ERC20 Token</p>
+          </div>
+
+        </div>
+
+        <SearchCircleIcon className=' text-black z-50 h-12 w-12 cursor-pointer'
+          onClick={() => setSearchInputOpen(!searchInputOpen)} />
+
+        <div className="py-16">
+          <Switch
+            checked={enabled}
+            onChange={setEnabled}
+            className={`${enabled ? 'bg-teal-900' : 'bg-teal-700'}
+          relative inline-flex h-[38px] w-[74px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+          >
+            <span className="sr-only">Use setting</span>
+            <span
+              aria-hidden="true"
+              className={`${enabled ? 'translate-x-9' : 'translate-x-0'}
+            pointer-events-none inline-block h-[34px] w-[34px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            />
+          </Switch>
+          <p className='text-black dark:text-gray-400'>hide small assets</p>
+        </div>
+
+      </div>
+
+
+      <div className='flex items-center justify-between  pt-5 px-16'>
         <p className='text-black dark:text-gray-400'>Your Portfolio</p>
         <p className='text-black dark:text-gray-400'>Total Balance</p>
       </div>
 
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll m-5 mt-0'>
+
+        {searchInputOpen ?
+          <input className='input border border-[#c67391] w-full '
+            placeholder='token'
+            type='text'
+          />
+          : null}
 
         {cryptoInfo.map((item) => (
           <CryptoRow
