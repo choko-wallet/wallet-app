@@ -6,7 +6,9 @@ import { CheckIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { KnownNetworks, Network } from '@choko-wallet/core';
+// import { KnownNetworks, Network } from '@choko-wallet/core';
+import { KnownNetworks, Network } from '../utils/knownNetworks';
+
 
 interface Props {
   knownNetworks: KnownNetworks;
@@ -21,7 +23,7 @@ interface networkObject {
   [key: string]: Network
 }
 
-function NetworkSelection ({ changeNetwork, knownNetworks, network,
+function NetworkSelection({ changeNetwork, knownNetworks, network,
   networkSelection, setAddNetworkModalOpen, setNetworkSelection }: Props): JSX.Element {
   const deleteNetwork = (hash: string) => {
     setNetworkSelection(network);

@@ -1,5 +1,28 @@
-export default {
-    "847e7b7fa160d85f": {
+export interface Network {
+    providers: Record<string, string>;
+    info: string;
+    text: string;
+    defaultProvider: string;
+    networkType: string;
+    nativeTokenSymbol: string;
+    nativeTokenDecimal: number;
+    homepage?: string;
+    isChild?: boolean;
+    isDevelopment?: boolean;
+    isDisabled?: boolean;
+    isUnreachable?: boolean;
+    paraId?: number;
+    summary?: string;
+    color?: string;
+    logo?: string;
+}
+
+export interface KnownNetworks {
+    [key: string]: Network
+}
+
+const knownNetworks: KnownNetworks = {
+    "847e7b7fa160d85f": {//skye.kiwi
         "providers": {
             "SkyeKiwi": "wss://staging.rpc.skye.kiwi"
         },
@@ -13,7 +36,7 @@ export default {
         "isDevelopment": true,
         "color": "#6667ab"
     },
-    "e658ad422326d7f7": {
+    "e658ad422326d7f7": {//polkadot
         "providers": {
             "Parity": "wss://rpc.polkadot.io",
             "OnFinality": "wss://polkadot.api.onfinality.io/public-ws",
@@ -30,7 +53,7 @@ export default {
         "homepage": "https://polkadot.network",
         "color": "#e6007a"
     },
-    "0018a49f151bcb20": {
+    "0018a49f151bcb20": {//kusama
         "providers": {
             "Parity": "wss://kusama-rpc.polkadot.io",
             "OnFinality": "wss://kusama.api.onfinality.io/public-ws",
@@ -47,26 +70,24 @@ export default {
         "homepage": "https://polkadot.network",
         "color": "#000000"
     },
-    "e4954477095c7d9a": {
+    "7950925295c6a887": {//ethmainnet
         "providers": {
-            "Rinkeby": "wss://rinkeby.infura.io/ws/v3/dc6c26f799af4a57b0ca5f37b50558c2"
+            "Ethereum": "https://rpc.ankr.com/eth"
         },
-        "defaultProvider": "wss://rinkeby.infura.io/ws/v3/dc6c26f799af4a57b0ca5f37b50558c2",
+        "defaultProvider": "https://rpc.ankr.com/eth",
         "networkType": "ethereum",
-        "info": "rinkeby",
-        "text": "Rinkeby Network",
-        "nativeTokenSymbol": "RinkebyETH",
+        "info": "ethereum",
+        "text": "Ethereum Network",
+        "nativeTokenSymbol": "ETH",
         "nativeTokenDecimal": 18,
-        "homepage": "https://rinkeby.etherscan.io/",
-        "isDevelopment": true,
-        "isDisabled": true,
+        "homepage": "https://ethereum.org/en/",
         "color": "#627FE5"
     },
-    "757d522c05db42b6": {
+    "757d522c05db42b6": {//goerli 换provider
         "providers": {
-            "Goerli": "wss://goerli.infura.io/ws/v3/cdc0f422bf7f40e0bd2dcded8b62e878"
+            "Goerli": "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
         },
-        "defaultProvider": "wss://goerli.infura.io/ws/v3/cdc0f422bf7f40e0bd2dcded8b62e878",
+        "defaultProvider": "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
         "networkType": "ethereum",
         "info": "goerli",
         "text": "Goerli Network",
@@ -75,17 +96,7 @@ export default {
         "homepage": "https://goerli.net",
         "color": "#627FE5"
     },
-    "7950925295c6a887": {
-        "providers": {
-            "Ethereum": "wss://mainnet.infura.io/ws/v3/cdc0f422bf7f40e0bd2dcded8b62e878"
-        },
-        "defaultProvider": "wss://mainnet.infura.io/ws/v3/cdc0f422bf7f40e0bd2dcded8b62e878",
-        "networkType": "ethereum",
-        "info": "ethereum",
-        "text": "Ethereum Network",
-        "nativeTokenSymbol": "ETH",
-        "nativeTokenDecimal": 18,
-        "homepage": "https://ethereum.org/en/",
-        "color": "#627FE5"
-    }
+
 }
+
+export default knownNetworks;

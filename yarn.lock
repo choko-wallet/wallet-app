@@ -5,6 +5,22 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@alch/alchemy-sdk@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@alch/alchemy-sdk@npm:1.2.0"
+  dependencies:
+    "@ethersproject/abstract-provider": ^5.6.1
+    "@ethersproject/bignumber": ^5.6.2
+    "@ethersproject/networks": ^5.6.4
+    "@ethersproject/providers": ^5.6.8
+    "@ethersproject/web": ^5.6.1
+    axios: ^0.26.1
+    sturdy-websocket: ^0.2.1
+    websocket: ^1.0.34
+  checksum: 50d11403b054692fcfa91a2a387c2e4a8d111bcb9c08f3b9e9c305ecb792b1b57f580b3304af2f1fad4195df91c9d2ec3d25b205a294fbea89e80c6af95b01f5
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.2.0
   resolution: "@ampproject/remapping@npm:2.2.0"
@@ -1622,7 +1638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abstract-provider@npm:5.7.0, @ethersproject/abstract-provider@npm:^5.7.0":
+"@ethersproject/abstract-provider@npm:5.7.0, @ethersproject/abstract-provider@npm:^5.6.1, @ethersproject/abstract-provider@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abstract-provider@npm:5.7.0"
   dependencies:
@@ -1682,7 +1698,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/bignumber@npm:5.7.0, @ethersproject/bignumber@npm:^5.7.0":
+"@ethersproject/bignumber@npm:5.7.0, @ethersproject/bignumber@npm:^5.6.2, @ethersproject/bignumber@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/bignumber@npm:5.7.0"
   dependencies:
@@ -1711,7 +1727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/contracts@npm:5.7.0":
+"@ethersproject/contracts@npm:5.7.0, @ethersproject/contracts@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/contracts@npm:5.7.0"
   dependencies:
@@ -1804,7 +1820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/networks@npm:5.7.1, @ethersproject/networks@npm:^5.7.0":
+"@ethersproject/networks@npm:5.7.1, @ethersproject/networks@npm:^5.6.4, @ethersproject/networks@npm:^5.7.0":
   version: 5.7.1
   resolution: "@ethersproject/networks@npm:5.7.1"
   dependencies:
@@ -1860,7 +1876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/providers@npm:5.7.2":
+"@ethersproject/providers@npm:5.7.2, @ethersproject/providers@npm:^5.6.8, @ethersproject/providers@npm:^5.7.0":
   version: 5.7.2
   resolution: "@ethersproject/providers@npm:5.7.2"
   dependencies:
@@ -1975,7 +1991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/units@npm:5.7.0":
+"@ethersproject/units@npm:5.7.0, @ethersproject/units@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/units@npm:5.7.0"
   dependencies:
@@ -1986,7 +2002,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/wallet@npm:5.7.0":
+"@ethersproject/wallet@npm:5.7.0, @ethersproject/wallet@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/wallet@npm:5.7.0"
   dependencies:
@@ -2009,7 +2025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/web@npm:5.7.1, @ethersproject/web@npm:^5.7.0":
+"@ethersproject/web@npm:5.7.1, @ethersproject/web@npm:^5.6.1, @ethersproject/web@npm:^5.7.0":
   version: 5.7.1
   resolution: "@ethersproject/web@npm:5.7.1"
   dependencies:
@@ -4675,6 +4691,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"alchemy-sdk@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "alchemy-sdk@npm:2.2.0"
+  dependencies:
+    "@ethersproject/abstract-provider": ^5.7.0
+    "@ethersproject/bignumber": ^5.7.0
+    "@ethersproject/bytes": ^5.7.0
+    "@ethersproject/contracts": ^5.7.0
+    "@ethersproject/hash": ^5.7.0
+    "@ethersproject/networks": ^5.7.0
+    "@ethersproject/providers": ^5.7.0
+    "@ethersproject/units": ^5.7.0
+    "@ethersproject/wallet": ^5.7.0
+    "@ethersproject/web": ^5.7.0
+    axios: ^0.26.1
+    sturdy-websocket: ^0.2.1
+    websocket: ^1.0.34
+  checksum: 4f4ef49d5f774131d8353dfc7ef46e38e82e41b4c111e92b6fba4293572e1e3971cede3a3870a012cd70bd4c5ea075f225a5d02785ba55e13c7e7cfb6ef85223
+  languageName: node
+  linkType: hard
+
 "ansi-align@npm:^3.0.0":
   version: 3.0.1
   resolution: "ansi-align@npm:3.0.1"
@@ -4975,6 +5012,15 @@ __metadata:
   version: 1.11.0
   resolution: "aws4@npm:1.11.0"
   checksum: 5a00d045fd0385926d20ebebcfba5ec79d4482fe706f63c27b324d489a04c68edb0db99ed991e19eda09cb8c97dc2452059a34d97545cebf591d7a2b5a10999f
+  languageName: node
+  linkType: hard
+
+"axios@npm:^0.26.1":
+  version: 0.26.1
+  resolution: "axios@npm:0.26.1"
+  dependencies:
+    follow-redirects: ^1.14.8
+  checksum: d9eb58ff4bc0b36a04783fc9ff760e9245c829a5a1052ee7ca6013410d427036b1d10d04e7380c02f3508c5eaf3485b1ae67bd2adbfec3683704745c8d7a6e1a
   languageName: node
   linkType: hard
 
@@ -7365,6 +7411,16 @@ __metadata:
   version: 1.0.3
   resolution: "flatten@npm:1.0.3"
   checksum: 5c57379816f1692aaa79fbc6390e0a0644e5e8442c5783ed57c6d315468eddbc53a659eaa03c9bb1e771b0f4a9bd8dd8a2620286bf21fd6538a7857321fdfb20
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.14.8":
+  version: 1.15.2
+  resolution: "follow-redirects@npm:1.15.2"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: faa66059b66358ba65c234c2f2a37fcec029dc22775f35d9ad6abac56003268baf41e55f9ee645957b32c7d9f62baf1f0b906e68267276f54ec4b4c597c2b190
   languageName: node
   linkType: hard
 
@@ -11832,10 +11888,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@alch/alchemy-sdk": ^1.2.0
     "@skyekiwi/dev": ^0.4.6
     "@types/jest": ^27.0.1
     "@types/node": ^16.11.11
     "@types/superagent": ^4.1.15
+    alchemy-sdk: ^2.2.0
     dotenv: ^10.0.0
     typescript: ^4.7.4
   languageName: unknown
@@ -12411,6 +12469,13 @@ __metadata:
   dependencies:
     escape-string-regexp: ^1.0.2
   checksum: f8d65d33ca2b49aabc66bb41d689dda7b8b9959d320e3a40a2ef4d7079ff2f67ffb72db43f179f48dbf9495c2e33742863feab7a584d180fa62505439162c191
+  languageName: node
+  linkType: hard
+
+"sturdy-websocket@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "sturdy-websocket@npm:0.2.1"
+  checksum: 6d948da780397e8c27f7e324556d98b0cc4476c419a90863b498e284346864f9e168299a439e2eceba819477315096f9eccbd89640ab056c8c3212565020bce4
   languageName: node
   linkType: hard
 

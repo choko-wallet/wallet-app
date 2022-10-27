@@ -1,4 +1,15 @@
-export default [
+export interface tokenDetail {
+  symbol: string;
+  name: string;
+  address: string;
+  logoURI: string;
+  coingeckoId: string;
+  chainId: number;
+  decimals: number;
+  listedIn?: string[];
+}
+
+const ethMainnetTokenlist: tokenDetail[] = [
   {
     "symbol": "USDT",
     "name": "Tether",
@@ -43,3 +54,5 @@ export default [
     ]
   },
 ]
+
+export default ethMainnetTokenlist;

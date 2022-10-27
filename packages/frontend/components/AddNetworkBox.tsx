@@ -7,7 +7,9 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { ethers } from "ethers";
-import { KnownNetworks, Network } from '@choko-wallet/core';
+// import { KnownNetworks, Network } from '@choko-wallet/core';
+import { KnownNetworks, Network } from '../utils/knownNetworks';
+
 import { xxHash } from '@choko-wallet/core/util';
 
 interface Props {
@@ -47,7 +49,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         const chainInfo = api.registry.getChainProperties();
         const [chain] = await Promise.all([api.rpc.system.chain()]);
 
-        const networkForAdding = new Network({
+        const networkForAdding: Network = {
           /* eslint-disable */
           defaultProvider: formData.netWorkRPC,
           info: chain.toLocaleLowerCase(),
@@ -59,7 +61,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
           // @ts-ignore
           nativeTokenDecimal: Number(chainInfo.toHuman().tokenDecimals[0]),
           /* eslint-enable */
-        });
+        };
 
         const hexString = u8aToHex(xxHash(chain.toLocaleLowerCase()));
 
@@ -105,7 +107,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         console.log(chainId) // 137   56
         console.log(name) // matic    bnb
 
-        const networkForAdding = new Network({
+        const networkForAdding: Network = {
           /* eslint-disable */
           defaultProvider: formData.netWorkRPC,
           info: formData.networkName,//网络名 暂时需要用户输入
@@ -117,7 +119,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
           // @ts-ignore
           nativeTokenDecimal: formData.networkNativeTokenDecimal,//暂时需要用户输入
           /* eslint-enable */
-        });
+        };
 
         const hexString = u8aToHex(xxHash(formData.networkName));
 

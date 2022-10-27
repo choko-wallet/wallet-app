@@ -7,7 +7,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { ethers } from "ethers";
-import { KnownNetworks, Network } from '@choko-wallet/core';
+
+import { KnownNetworks, Network } from '../utils/knownNetworks';
 import { xxHash } from '@choko-wallet/core/util';
 
 interface Props {
