@@ -1,18 +1,21 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface Props {
   balance: number;
   name: string;
   img: string;
   price: number;
-  shortName: string;
+  symbol: string;
 
 }
 
-function CryptoRow({ balance, img, name, price, shortName }: Props): JSX.Element {
+function CryptoRow({ balance, img, name, price, symbol }: Props): JSX.Element {
+
+
+
   return (
     <div className=' w-full text-right p-1 '>
       <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#4797B5]  hover:bg-[#4797B5]'>
@@ -46,21 +49,44 @@ function CryptoRow({ balance, img, name, price, shortName }: Props): JSX.Element
             <p className='w-44 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins'>
               {name}
             </p>
-            <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
-              {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })}
-              {/* price 很多币 价格特别低 需要多几位显示  */}
-              {' '}USD
-            </p>
+            {price === undefined
+              ?
+              <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
+                {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
+                0{' '}USD
+              </p>
+              :
+              <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
+                {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
+                {price}
+                {' '}USD
+              </p>
+            }
+
+
           </div>
         </div>
         <div className=' flex flex-col justify-between '>
-          <p className=' font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins w-44 truncate '>
-            {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}{'  '}{shortName}
+          <p className='font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins justify-end'>
+            {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}
+            {/* 可试下不定四位 能否正常显示  */}
+            {'  '}{symbol}
 
           </p>
-          <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
-            {Number(balance * price).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
-          </p>
+
+          {price === undefined
+            ?
+            <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
+              {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
+              0{' '}USD
+            </p>
+            :
+            <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
+              {Number(balance * price).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
+            </p>
+          }
+
+
         </div>
       </div>
     </div>

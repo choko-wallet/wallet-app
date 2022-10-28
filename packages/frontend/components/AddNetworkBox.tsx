@@ -252,12 +252,25 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
             src='https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif'
           />
         )
-        : <button
-          className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none font-poppins'
-          type='submit'
-        >
-          Add Network
-        </button>
+        :
+        networkType === 'polkadot'
+          ?
+          <button
+            className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none font-poppins'
+            type='submit'
+          >
+            Add Network
+          </button>
+          :
+          <button
+            disabled
+            className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-gray-400 rounded-[10px] outline-none font-poppins'
+            type='submit'
+          >
+            Temporarily not supported
+          </button>
+
+
       }
 
     </form >

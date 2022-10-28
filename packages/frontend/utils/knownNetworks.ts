@@ -72,9 +72,9 @@ const knownNetworks: KnownNetworks = {
     },
     "7950925295c6a887": {//ethmainnet
         "providers": {
-            "Ethereum": "https://rpc.ankr.com/eth"
+            "Ethereum": ""
         },
-        "defaultProvider": "https://rpc.ankr.com/eth",
+        "defaultProvider": "",
         "networkType": "ethereum",
         "info": "ethereum",
         "text": "Ethereum Network",
@@ -83,19 +83,7 @@ const knownNetworks: KnownNetworks = {
         "homepage": "https://ethereum.org/en/",
         "color": "#627FE5"
     },
-    "757d522c05db42b6": {//goerli 换provider
-        "providers": {
-            "Goerli": "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-        },
-        "defaultProvider": "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-        "networkType": "ethereum",
-        "info": "goerli",
-        "text": "Goerli Network",
-        "nativeTokenSymbol": "GoerliETH",
-        "nativeTokenDecimal": 18,
-        "homepage": "https://goerli.net",
-        "color": "#627FE5"
-    },
+
 
 }
 
