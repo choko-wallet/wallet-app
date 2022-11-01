@@ -6,14 +6,14 @@ import React, { useEffect, useState } from 'react';
 import { Switch } from '@headlessui/react'
 import Button from './Button';
 import CryptoRow from './CryptoRow';
-import ethMainnetTokenList, { tokenDetail } from '../utils/EthMainnetTokenList'
 import { Network } from '../utils/knownNetworks';
+import { CryptoForBalance } from '../utils/types';
 
 
 interface Props {
   // balance: number;
   currentNetwork: Network;
-  cryptoInfo: tokenDetail[];
+  cryptoInfo: CryptoForBalance[];
   setIsSendOpen: (value: boolean) => void;
   setIsReceiveOpen: (value: boolean) => void;
   setAddTokenModalOpen: (value: boolean) => void;
@@ -30,11 +30,11 @@ function Balance({ cryptoInfo,
   const [searchInput, setSearchInput] = useState<string>('');
 
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false)
-  const [filterResult, setFilterResult] = useState<tokenDetail[]>(cryptoInfo);
+  const [filterResult, setFilterResult] = useState<CryptoForBalance[]>(cryptoInfo);
 
   useEffect(() => {
 
-    function filterCoinByName(item: tokenDetail) {
+    function filterCoinByName(item: CryptoForBalance) {
       return item.name.toLowerCase().includes(searchInput.toLowerCase()) || item.symbol.toLowerCase().includes(searchInput.toLowerCase());
     }
     const result = cryptoInfo.filter(filterCoinByName);
@@ -45,8 +45,8 @@ function Balance({ cryptoInfo,
   useEffect(() => {
 
     if (showSmallAssets === false) {
-      function filterCoinSmallAssets(item: tokenDetail) {
-        return item.balance * item.price > 5;
+      function filterCoinSmallAssets(item: CryptoForBalance) {
+        return item.balance * item.priceInUSD > 5;
       }
       const result = cryptoInfo.filter(filterCoinSmallAssets);
       setFilterResult(result);
@@ -60,8 +60,8 @@ function Balance({ cryptoInfo,
   useEffect(() => {//计算总的balance
     let balance = 0;
     for (let i = 0; i < cryptoInfo.length; i++) {
-      if (cryptoInfo[i].balance !== undefined && cryptoInfo[i].price !== undefined) {
-        balance += cryptoInfo[i].balance * cryptoInfo[i].price;
+      if (cryptoInfo[i].balance !== undefined && cryptoInfo[i].priceInUSD !== undefined) {
+        balance += cryptoInfo[i].balance * cryptoInfo[i].priceInUSD;
         // console.log('balancex', balance)
 
       }
@@ -151,10 +151,10 @@ function Balance({ cryptoInfo,
         {filterResult.map((item) => (
           <CryptoRow
             balance={item.balance}
-            img={item.logoURI}
+            img={item.img}
             key={item.name}
             name={item.name}
-            price={item.price}
+            price={item.priceInUSD}
             symbol={item.symbol}
           />
         ))}

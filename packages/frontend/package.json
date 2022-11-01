@@ -21,6 +21,7 @@
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/crypto": "0.8.4-2",
     "@skyekiwi/util": "0.8.4-2",
+    "alchemy-sdk": "^2.2.0",
     "daisyui": "^2.19.0",
     "framer-motion": "^7.4.0",
     "next": "12.3.1",

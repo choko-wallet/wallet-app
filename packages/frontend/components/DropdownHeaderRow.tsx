@@ -33,7 +33,7 @@ function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: 
 
   const changeAccountInHeader = () => {
     if (account.address !== currentUserAccount.address) {
-      setChangeAccountLoading(true);
+      // setChangeAccountLoading(true);
       dispatch(switchUserAccount(account.address));
       changeAccount(account);
     }
