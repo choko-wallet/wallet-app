@@ -83,6 +83,128 @@ const knownNetworks: KnownNetworks = {
         "homepage": "https://ethereum.org/en/",
         "color": "#627FE5"
     },
+    "402faeece1824383": {//polygon
+        "providers": {
+            "Polygon": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "polygon",
+        "text": "Polygon Mainnet",
+        "nativeTokenSymbol": "MATIC",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://www.polygon.com/",
+        "color": "#627FE5"
+    },
+    "e7e96958a14e0e27": {//Optimism Mainnet
+        "providers": {
+            "Optimism": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "optimism",
+        "text": "Optimism Mainnet",
+        "nativeTokenSymbol": "OP",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://www.optimism.io",
+        "color": "#627FE5"
+    },
+    "aff6108f83923832": {//Arbitrum Mainnet NO NATIVE TOKEN  USE ETH
+        "providers": {
+            "Arbitrum": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "arbitrum",
+        "text": "Arbitrum Mainnet",
+        "nativeTokenSymbol": "ETH",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://arbitrum.io/",
+        "color": "#627FE5"
+    },
+    "5d250fa40a2a1fd9": {//Astar Mainnet
+        "providers": {
+            "Astar Mainnet": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "astar",
+        "text": "Astar Mainnet",
+        "nativeTokenSymbol": "ASTR",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://astar.network/",
+        "color": "#627FE5"
+    },
+    "3958e67b85a2d618": {//eth goerli
+        "providers": {
+            "Ethereum goerli": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "ethereum goerli",
+        "text": "Ethereum Goerli Network",
+        "nativeTokenSymbol": "ETH",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://ethereum.org/en/",
+        "color": "#627FE5",
+        "isDevelopment": true,
+    },
+    "ae7a7d382f96ee7e": {//polygon goerli
+        "providers": {
+            "Polygon goerli": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "polygon goerli",
+        "text": "Polygon Goerli Network",
+        "nativeTokenSymbol": "MATIC",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://www.polygon.com/",
+        "color": "#627FE5",
+        "isDevelopment": true,
+    },
+    "1c5fba4a0e254708": {//Optimism goerli
+        "providers": {
+            "Optimism Goerli": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "optimism goerli",
+        "text": "Optimism Goerli Network",
+        "nativeTokenSymbol": "OP",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://www.optimism.io",
+        "color": "#627FE5",
+        "isDevelopment": true,
+    },
+    "195a725509804df6": {//Arbitrum goerli
+        "providers": {
+            "Arbitrum Goerli": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "arbitrum goerli",
+        "text": "Arbitrum Goerli Network",
+        "nativeTokenSymbol": "ETH",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://arbitrum.io/",
+        "color": "#627FE5",
+        "isDevelopment": true,
+    },
+    "9a0e88e6554543c5": {//Astar goerli
+        "providers": {
+            "Astar Goerli": ""
+        },
+        "defaultProvider": "",
+        "networkType": "ethereum",
+        "info": "astar goerli",
+        "text": "Astar Goerli Network",
+        "nativeTokenSymbol": "ASTR",
+        "nativeTokenDecimal": 18,
+        "homepage": "https://astar.network/",
+        "color": "#627FE5",
+        "isDevelopment": true,
+    },
 
 
 }

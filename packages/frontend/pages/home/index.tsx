@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { ethers } from "ethers";
 import { AccountOption, UserAccount } from '@choko-wallet/core';
-import { keypairTypeNumberToString } from '@choko-wallet/core/util';
+import { keypairTypeNumberToString, xxHash } from '@choko-wallet/core/util';
 import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
@@ -35,7 +35,7 @@ import { selectCurrentUserAccount, selectNativeTokenPrice } from '../../features
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadUserAccount } from '../../features/slices/userSlice';
 import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
-import { Alchemy, Network as alchemyNetwork } from "alchemy-sdk";
+import { Alchemy, Network as alchemyNetwork, Utils, Wallet } from "alchemy-sdk";
 // import ethMainnetTokenList, { tokenDetail } from '../../utils/EthMainnetTokenList'
 // import { ethFetchBalance } from '@choko-wallet/frontend/utils/ethFetchBalance';
 import { CryptoForBalance } from '@choko-wallet/frontend/utils/types';
@@ -84,14 +84,24 @@ function Home(): JSX.Element {
 
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
+  const [sendTransctionLoading, setSendTransctionLoading] = useState<boolean>(false);
 
-  // const [cryptoToSend, setCryptoToSend] = useState<tokenDetail>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
+  // const [cryptoToSend, setCryptoToSend] = useState<CryptoForBalance>();
   // const [cryptoToReceive, setCryptoToReceive] = useState<tokenDetail>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
 
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
-  const [cryptoInfo, setCryptoInfo] = useState<CryptoForBalance[]>([]);
-  // const [cryptoInfo, setCryptoInfo] = useState<CryptoForBalance[]>([]);
+  const [cryptoInfo, setCryptoInfo] = useState<CryptoForBalance[]>([]);//for balance and send
+  const [cryptoToSend, setCryptoToSend] = useState<CryptoForBalance>();
+
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
+
+  useEffect(() => {
+    if (cryptoInfo.length > 0) {
+      setCryptoToSend(cryptoInfo[0]);
+    }
+  }, [cryptoInfo]);
+
+
 
   useEffect(() => { // initialization on skyekiwi
 
@@ -591,8 +601,17 @@ function Home(): JSX.Element {
 
   }
 
-  // 内容几乎一样 需要换网络参数和地址参数  getTokenBalances(accountAddress);
+  // 内容和changeNetworkForEth几乎一样 需要换网络参数和地址参数  getTokenBalances(accountAddress);
   const changeAccountForEth = async (accountAddress: string) => {
+
+    console.log('u8aToHex(xxHash("ethereum"))', u8aToHex(xxHash("astar")))
+    console.log('u8aToHex(xxHash("ethereum"))', u8aToHex(xxHash("astar goerli")))
+
+
+
+
+
+
     setChangeAccountLoading(true);
 
     const cryptoForBalanceArray: CryptoForBalance[] = [];
@@ -763,6 +782,173 @@ function Home(): JSX.Element {
 
   }
 
+  const changeNetworkForEthGoerli = async () => {
+    if (!currentUserAccount) return;
+    setNetwork(networkSelection);
+    setIsLoadingOpen(true);
+    const cryptoForBalanceArray: CryptoForBalance[] = [];
+
+    // alchemy
+    const config = {
+      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_GOERLI,
+      network: alchemyNetwork.ETH_GOERLI,
+    };
+    const alchemy = new Alchemy(config);
+
+    try {
+      // fetch eth balance 
+      const ethBalance = await alchemy.core.getBalance("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE");
+      const ethBalanceFormat = Number(ethers.utils.formatEther(ethBalance._hex));
+
+      const ethForBalance: CryptoForBalance = {
+        name: 'ethereum',
+        symbol: 'ETH',
+        balance: ethBalanceFormat,
+        decimals: 18,
+        priceInUSD: 0,
+        img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png',
+      }
+
+      cryptoForBalanceArray.push(ethForBalance);
+
+      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
+
+      setCryptoInfo(cryptoForBalanceArray);
+      setIsLoadingOpen(false);
+      setTimeout(() => {
+        toast(`Changed to ${knownNetworks[networkSelection].text}`, {
+          duration: 4000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    } catch (err) {//地址或alchemy报错 cryptoForBalance清空
+      console.log('outTry-err', err);
+
+      setCryptoInfo([]);
+      setIsLoadingOpen(false);
+
+      setTimeout(() => {
+        toast('Someting Wrong! Please Switch To Other Network.', {
+          duration: 4000,
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
+      }, 100);
+
+    }
+
+  }
+
+  const sendTransactionEthGoerli = async () => {//需要toast提示成功还是失败 提示交易查询链接 fetch费用
+    if (sendTransctionLoading) return;
+    setSendTransctionLoading(true);
+
+    // alchemy
+    const config = {
+      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_GOERLI,
+      network: alchemyNetwork.ETH_GOERLI,
+    };
+    const alchemy = new Alchemy(config);
+
+    try {
+      // 用私钥发送  需要跳转输入密码获取私钥
+      const wallet = new Wallet('72c7ed523e0084a99d2419a30332dc0d83d6d61f4d4a6b3dc3a38f7cb3588d80');
+
+      const transaction = {
+        to: addressToSend,//接收地址
+        value: Utils.parseEther(amount.toString()),//0.001测试就行 账户余额0.14
+        gasLimit: "21000",
+        maxPriorityFeePerGas: Utils.parseUnits("5", "gwei"),
+        maxFeePerGas: Utils.parseUnits("20", "gwei"),
+        nonce: await alchemy.core.getTransactionCount(wallet.getAddress()),
+        type: 2,
+        chainId: 5, // Corresponds to ETH_GOERLI
+      };
+
+      const rawTransaction = await wallet.signTransaction(transaction);
+      console.log('rawTransaction', rawTransaction);
+      const transactionResponse = await alchemy.transact.sendTransaction(rawTransaction);
+      console.log('transactionResponse', transactionResponse);
+
+      alchemy.transact.getTransaction(transactionResponse.hash)
+        .then((res) => console.log(res));
+
+
+
+      // 成功了 balance重新获取余额
+      const cryptoForBalanceArray: CryptoForBalance[] = [];
+
+      const ethBalance = await alchemy.core.getBalance("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE");
+      const ethBalanceFormat = Number(ethers.utils.formatEther(ethBalance._hex));
+
+      const ethForBalance: CryptoForBalance = {
+        name: 'ethereum',
+        symbol: 'ETH',
+        balance: ethBalanceFormat,
+        decimals: 18,
+        priceInUSD: 0,
+        img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png',
+      }
+      cryptoForBalanceArray.push(ethForBalance);
+      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
+      setCryptoInfo(cryptoForBalanceArray);
+
+
+      closeSendModal();
+      setSendTransctionLoading(false);
+      const etherscanUrl = `https://goerli.etherscan.io/tx/${transactionResponse.hash}`
+      toast((t) => (
+        <div className='w-48 md:w-64 stringWrap'>
+          <p>Transaction Success<br /></p>
+          <a className='' href={etherscanUrl} target="_blank" >{transactionResponse.hash}</a>
+        </div>
+      ), {
+        duration: 8000,
+        icon: '👏',
+        style: {
+          background: 'green',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '17px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
+
+    } catch (err) {
+      console.log('transaction-err', err);
+      setSendTransctionLoading(false);
+      // toast 要给具体信息 显示余额不足或其他问题 
+      toast('Whoops! something went wrong!', {
+        duration: 8000,
+        style: {
+          background: 'red',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '16px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
+
+    }
+  }
+
 
 
   const changeNetwork = () => {
@@ -772,8 +958,14 @@ function Home(): JSX.Element {
     }
 
     if (knownNetworks[networkSelection].networkType === "ethereum") {
-      console.log('changeNetworkForEth');
-      changeNetworkForEth();
+      if (knownNetworks[networkSelection].info === "ethereum") {
+        console.log('changeNetworkForEth');
+        changeNetworkForEth();
+      }
+      if (knownNetworks[networkSelection].info === "ethereum goerli") {
+        console.log('changeNetworkForEthGoerli');
+        changeNetworkForEthGoerli();
+      }
     }
   }
 
@@ -956,9 +1148,9 @@ function Home(): JSX.Element {
                 </Dialog.Title>
                 <div className='mt-2 '>
 
-                  {/* <DropdownForSend Cryptos={cryptoInfo}
-                    defaultValue={cryptoToSend}
-                    onClick={setCryptoToSend} /> */}
+                  <DropdownForSend cryptoInfo={cryptoInfo} setCryptoToSend={setCryptoToSend}
+                    cryptoToSend={cryptoToSend}
+                  />
 
                   <p className=' text-gray-700 dark:text-white '>From</p>
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
@@ -979,7 +1171,7 @@ function Home(): JSX.Element {
 
                     <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-                    <input className='font-poppins input input-bordered input-info w-full '
+                    <input className='font-poppins input input-bordered input-info w-full pr-12 '
                       onChange={(e) => setAddressToSend(e.target.value)}
                       placeholder='Destination Address'
                       type='text'
@@ -1018,19 +1210,18 @@ function Home(): JSX.Element {
                       <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
                       <input
-
                         className='font-poppins pr-12 input input-bordered input-info w-full '
                         max='10000000'
                         min='0'
-                        // onChange={(e) => {
-                        //   setAmount(parseFloat(e.target.value));
-                        //   setAmountToCurrency(
-                        //     parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
-                        // }}
+                        onChange={(e) => {
+                          setAmount(parseFloat(e.target.value));
+                          setAmountToCurrency(
+                            parseFloat((parseFloat(e.target.value) * cryptoToSend?.priceInUSD).toFixed(2)));
+                        }}
                         placeholder='0.0'
                         type='number'
                         value={amountToCurrency ? amount : null} />
-                      {/* <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p> */}
+                      <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
                     </div>
 
                     <p className='mx-1 pb-3'>=</p>
@@ -1040,11 +1231,11 @@ function Home(): JSX.Element {
                         className='font-poppins pr-12  input input-bordered input-info w-full '
                         max='10000000'
                         min='0'
-                        // onChange={(e) => {
-                        //   setAmountToCurrency(parseFloat(e.target.value));
-                        //   setAmount(
-                        //     parseFloat((parseFloat(e.target.value) / cryptoToSend.price).toFixed(8)));
-                        // }}
+                        onChange={(e) => {
+                          setAmountToCurrency(parseFloat(e.target.value));
+                          setAmount(
+                            parseFloat((parseFloat(e.target.value) / cryptoToSend?.priceInUSD).toFixed(8)));
+                        }}
                         placeholder='0.0'
                         type='number'
                         value={amount ? amountToCurrency : null} />
@@ -1052,24 +1243,34 @@ function Home(): JSX.Element {
                     </div>
 
                   </div>
-                  {/* <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p> */}
+                  <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend?.name} price: {cryptoToSend?.priceInUSD} USD</p>
 
-                  {/* <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p> */}
+                  <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} </p>
 
-                  {/* <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time {cryptoToSend.estimatedTime}</p> */}
+                  <p className=' text-gray-700 dark:text-white text-sm font-poppins'>Estimated confirmation time 1 min</p>
 
                 </div>
 
                 <div className='mt-4'>
+                  {sendTransctionLoading
+                    ? (
+                      <img
+                        alt=''
+                        className='object-cover w-full h-20'
+                        src='https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif'
+                      />
+                    )
+                    :
+                    <button
+                      className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none cursor-pointer'
+                      onClick={sendTransactionEthGoerli}
 
-                  <button
-                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={closeSendModal}
+                      type='button'
+                    >
+                      Send
+                    </button>
+                  }
 
-                    type='button'
-                  >
-                    Send
-                  </button>
 
                 </div>
               </Dialog.Panel>
