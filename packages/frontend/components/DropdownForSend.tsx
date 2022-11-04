@@ -37,6 +37,10 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
     setFilterResult(result);
   }, [searchInput, cryptoInfo]);
 
+
+  // console.log('cryptoToSend', cryptoToSend)
+  // console.log('cryptoInfo', cryptoInfo)
+
   return (
     <div className=' w-full  text-right'>
       <Menu as='div'
@@ -100,12 +104,29 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
                       onClick={() => setCryptoToSend(item)}
                     >
                       <div className='relative h-5 w-5 ml-2 mr-3'>
-                        <Image
-                          layout='fill'
-                          objectFit='contain'
-                          src={item.img}
-                        />
+                        {/* <div className='relative h-6 w-6'> */}
+                        {item.img !== null
+                          ?
+                          <img alt='icon'
+                            className='w-[90%] h-[90%] object-contain'
+                            src={item.img}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
+                            }}
+                          />
+                          :
+                          <img alt='icon'
+                            className='w-[90%] h-[90%] object-contain'
+                            src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
+                            }}
+                          />
+                        }
                       </div>
+                      {/* </div> */}
                       {item.name}
 
                     </button>

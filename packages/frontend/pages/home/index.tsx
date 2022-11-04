@@ -40,7 +40,9 @@ import { Alchemy, Network as alchemyNetwork, Utils, Wallet } from "alchemy-sdk";
 // import { ethFetchBalance } from '@choko-wallet/frontend/utils/ethFetchBalance';
 import { CryptoForBalance } from '@choko-wallet/frontend/utils/types';
 import { fetchCoinPriceByIdArray } from '@choko-wallet/frontend/utils/ethFetchFunctions';
-
+import alchemyAll, { AlchemyAll } from '../../utils/alchemy';
+import { isAlchemyEvent } from 'alchemy-sdk/dist/src/internal/ethers-event';
+import { getEthGoerliBalance, getEthGoerliErc20Balance, sendTransactionEthGoerliErc20Token, sendTransactionEthGoerliNativeToken } from '@choko-wallet/frontend/utils/sendTransaction';
 
 
 interface networkObject {
@@ -72,6 +74,8 @@ function Home(): JSX.Element {
   const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
   const [isInitializeLoadingOpen, setIsInitializeLoadingOpen] = useState<boolean>(true);
 
+  const [isTransactionSuccessModalOpen, setIsTransactionSuccessModalOpen] = useState<boolean>(false);
+
   const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
   const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
@@ -82,6 +86,8 @@ function Home(): JSX.Element {
   const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
   const [addTokenModalOpen, setAddTokenModalOpen] = useState<boolean>(false);
 
+  const [etherscanUrl, setEtherscanUrl] = useState<string>('');
+
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [migInProcess, setMigInProcess] = useState<boolean>(false);
   const [sendTransctionLoading, setSendTransctionLoading] = useState<boolean>(false);
@@ -91,7 +97,7 @@ function Home(): JSX.Element {
 
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
   const [cryptoInfo, setCryptoInfo] = useState<CryptoForBalance[]>([]);//for balance and send
-  const [cryptoToSend, setCryptoToSend] = useState<CryptoForBalance>();
+  const [cryptoToSend, setCryptoToSend] = useState<CryptoForBalance | null>(null);
 
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
@@ -434,11 +440,7 @@ function Home(): JSX.Element {
     const cryptoForBalanceArray: CryptoForBalance[] = [];
 
     // alchemy
-    const config = {
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_MAIN,
-      network: alchemyNetwork.ETH_MAINNET,
-    };
-    const alchemy = new Alchemy(config);
+    const alchemy: Alchemy = alchemyAll['ethMain'];
 
     try {
       // fetch eth balance and price
@@ -616,11 +618,7 @@ function Home(): JSX.Element {
 
     const cryptoForBalanceArray: CryptoForBalance[] = [];
 
-    const config = {
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_MAIN,
-      network: alchemyNetwork.ETH_MAINNET,
-    };
-    const alchemy = new Alchemy(config);
+    const alchemy: Alchemy = alchemyAll['ethMain'];
 
     try {
       // fetch eth balance and price
@@ -789,11 +787,7 @@ function Home(): JSX.Element {
     const cryptoForBalanceArray: CryptoForBalance[] = [];
 
     // alchemy
-    const config = {
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_GOERLI,
-      network: alchemyNetwork.ETH_GOERLI,
-    };
-    const alchemy = new Alchemy(config);
+    const alchemy: Alchemy = alchemyAll['ethGoerli'];
 
     try {
       // fetch eth balance 
@@ -810,6 +804,51 @@ function Home(): JSX.Element {
       }
 
       cryptoForBalanceArray.push(ethForBalance);
+
+
+      // fetch erc20 tokens balance 
+      const balances = await alchemy.core.getTokenBalances("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE");
+      // const balances = await alchemy.core.getTokenBalances(ethereumEncode(currentUserAccount.publicKey));
+      console.log('balances', balances)
+
+      // Remove tokens with zero balance
+      const nonZeroBalances = balances.tokenBalances.filter((token) => {
+        return token.tokenBalance !== "0x0000000000000000000000000000000000000000000000000000000000000000";
+      });
+
+      console.log('nonZeroBalances', nonZeroBalances);
+
+      //metadata  address
+      for (let i = 0; i < nonZeroBalances.length; i++) {
+
+        const metadata = await alchemy.core.getTokenMetadata(nonZeroBalances[i].contractAddress);
+        console.log('metadata', metadata);
+
+        if (metadata.symbol.indexOf(".") === -1) {//not found .  
+
+          let balanceOrigin = nonZeroBalances[i].tokenBalance;
+          const balanceFormat = Number(balanceOrigin) / Math.pow(10, metadata.decimals);
+          console.log('balanceFormat', balanceFormat);
+
+          const cryptoForBalance: CryptoForBalance = {
+            name: metadata.name,
+            symbol: metadata.symbol,
+            balance: balanceFormat,
+            decimals: metadata.decimals,
+            img: metadata.logo,
+            contractAddress: nonZeroBalances[i].contractAddress,
+          }
+          cryptoForBalanceArray.push(cryptoForBalance);
+
+        }
+
+
+      }
+
+
+
+
+
 
       console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
 
@@ -854,100 +893,86 @@ function Home(): JSX.Element {
 
   }
 
-  const sendTransactionEthGoerli = async () => {//需要toast提示成功还是失败 提示交易查询链接 fetch费用
-    if (sendTransctionLoading) return;
-    setSendTransctionLoading(true);
 
-    // alchemy
-    const config = {
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_GOERLI,
-      network: alchemyNetwork.ETH_GOERLI,
-    };
-    const alchemy = new Alchemy(config);
+  // 0xAA1658296e2b770fB793eb8B36E856c8210A566F 接收地址
+  const sendTransaction = async () => {
+    if (knownNetworks[network].info === "ethereum goerli") {
+      if (cryptoToSend.name === "ethereum") {//当前的token是ethereum
+        console.log('sendTransactionEthGoerliNativeToken');
+        if (sendTransctionLoading) return;
+        setSendTransctionLoading(true);
 
-    try {
-      // 用私钥发送  需要跳转输入密码获取私钥
-      const wallet = new Wallet('72c7ed523e0084a99d2419a30332dc0d83d6d61f4d4a6b3dc3a38f7cb3588d80');
+        await sendTransactionEthGoerliNativeToken(addressToSend, amount)
+          .then(async res => {
+            console.log('transactionResponse', res);
+            setEtherscanUrl(`https://goerli.etherscan.io/tx/${res.hash}`)
+            setIsTransactionSuccessModalOpen(true);// url给modal 
+            await getEthGoerliBalance("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE")
+              .then((res) => {
+                cryptoInfo[0].balance = res;//这个位置需要改 查找赋值 
+              })
+              .catch((e) => { console.log('getEthGoerliBalance', e); })
 
-      const transaction = {
-        to: addressToSend,//接收地址
-        value: Utils.parseEther(amount.toString()),//0.001测试就行 账户余额0.14
-        gasLimit: "21000",
-        maxPriorityFeePerGas: Utils.parseUnits("5", "gwei"),
-        maxFeePerGas: Utils.parseUnits("20", "gwei"),
-        nonce: await alchemy.core.getTransactionCount(wallet.getAddress()),
-        type: 2,
-        chainId: 5, // Corresponds to ETH_GOERLI
-      };
-
-      const rawTransaction = await wallet.signTransaction(transaction);
-      console.log('rawTransaction', rawTransaction);
-      const transactionResponse = await alchemy.transact.sendTransaction(rawTransaction);
-      console.log('transactionResponse', transactionResponse);
-
-      alchemy.transact.getTransaction(transactionResponse.hash)
-        .then((res) => console.log(res));
-
-
-
-      // 成功了 balance重新获取余额
-      const cryptoForBalanceArray: CryptoForBalance[] = [];
-
-      const ethBalance = await alchemy.core.getBalance("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE");
-      const ethBalanceFormat = Number(ethers.utils.formatEther(ethBalance._hex));
-
-      const ethForBalance: CryptoForBalance = {
-        name: 'ethereum',
-        symbol: 'ETH',
-        balance: ethBalanceFormat,
-        decimals: 18,
-        priceInUSD: 0,
-        img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png',
+            closeSendModal();
+            setSendTransctionLoading(false);
+          })
+          .catch((error) => {
+            console.log('sendTransactionEthGoerliNativeToken', error);
+            setSendTransctionLoading(false);
+            toast('Whoops! something went wrong!', {
+              duration: 8000,
+              style: {
+                background: 'red',
+                color: 'white',
+                fontFamily: 'Poppins',
+                fontSize: '16px',
+                fontWeight: 'bolder',
+                padding: '20px'
+              }
+            });
+          });
       }
-      cryptoForBalanceArray.push(ethForBalance);
-      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
-      setCryptoInfo(cryptoForBalanceArray);
+
+    }
+    if (cryptoToSend.name !== "ethereum" && cryptoToSend.name !== null) {//当前的token是erc20
+      console.log('sendTransactionEthGoerliErc20Token', cryptoToSend);
+      if (sendTransctionLoading) return;
+      setSendTransctionLoading(true);
+      sendTransactionEthGoerliErc20Token(cryptoToSend, addressToSend, amount)
+        .then(async res => {
+          console.log('sendTransactionEthGoerliErc20Token', res);
+          setEtherscanUrl(`https://goerli.etherscan.io/tx/${res.hash}`)
+          setIsTransactionSuccessModalOpen(true);// url给modal 
+          // await getEthGoerliErc20Balance("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE", "0x326C977E6efc84E512bB9C30f76E30c160eD06FB")
+          //   .then((res) => {
+          //     cryptoInfo[0].balance = res;//这个位置需要改 查找赋值 
+          //   })
+          //   .catch((e) => { console.log('getEthGoerliBalance', e); })
+
+          closeSendModal();
+          setSendTransctionLoading(false);
+        })
+        .catch((error) => {
+          console.log('sendTransactionEthGoerliErc20Token', error);
+          setSendTransctionLoading(false);
+          toast('Whoops! something went wrong!', {
+            duration: 8000,
+            style: {
+              background: 'red',
+              color: 'white',
+              fontFamily: 'Poppins',
+              fontSize: '16px',
+              fontWeight: 'bolder',
+              padding: '20px'
+            }
+          });
+        });
 
 
-      closeSendModal();
-      setSendTransctionLoading(false);
-      const etherscanUrl = `https://goerli.etherscan.io/tx/${transactionResponse.hash}`
-      toast((t) => (
-        <div className='w-48 md:w-64 stringWrap'>
-          <p>Transaction Success<br /></p>
-          <a className='' href={etherscanUrl} target="_blank" >{transactionResponse.hash}</a>
-        </div>
-      ), {
-        duration: 8000,
-        icon: '👏',
-        style: {
-          background: 'green',
-          color: 'white',
-          fontFamily: 'Poppins',
-          fontSize: '17px',
-          fontWeight: 'bolder',
-          padding: '20px'
-        }
-      });
-
-    } catch (err) {
-      console.log('transaction-err', err);
-      setSendTransctionLoading(false);
-      // toast 要给具体信息 显示余额不足或其他问题 
-      toast('Whoops! something went wrong!', {
-        duration: 8000,
-        style: {
-          background: 'red',
-          color: 'white',
-          fontFamily: 'Poppins',
-          fontSize: '16px',
-          fontWeight: 'bolder',
-          padding: '20px'
-        }
-      });
 
     }
   }
+
 
 
 
@@ -997,7 +1022,9 @@ function Home(): JSX.Element {
   function closeNetworkChangeModal() {
     setIsNetworkChangeOpen(false);
   }
-
+  function closeTransactionSuccessModal() {
+    setIsTransactionSuccessModalOpen(false);
+  }
   function closeSendModal() {
     setIsSendOpen(false);
   }
@@ -1117,6 +1144,37 @@ function Home(): JSX.Element {
                   <button
                     className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
                     onClick={closeNetworkChangeModal}
+                    type='button'
+                  >
+                    OK
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </div>
+          </Modal>
+
+          {/* transaction success modal */}
+          <Modal closeModal={closeTransactionSuccessModal}
+            isOpen={isTransactionSuccessModalOpen} >
+            <div className={theme}>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border  border-[#00f6ff] dark:border-[#00f6ff]'>
+                <Dialog.Title
+                  as='h3'
+                  className='font-poppins text-lg font-medium leading-6 text-black dark:text-white w-72'
+                >
+                  Transaction Success
+                </Dialog.Title>
+                <a
+                  href={etherscanUrl}
+                  target="_blank"
+                  className='cursor-pointer w-full stringWrap text-gray-700'>
+                  {etherscanUrl}
+                </a>
+
+                <div className='mt-4'>
+                  <button
+                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                    onClick={closeTransactionSuccessModal}
                     type='button'
                   >
                     OK
@@ -1263,7 +1321,7 @@ function Home(): JSX.Element {
                     :
                     <button
                       className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none cursor-pointer'
-                      onClick={sendTransactionEthGoerli}
+                      onClick={sendTransaction}
 
                       type='button'
                     >
@@ -1392,6 +1450,7 @@ function Home(): JSX.Element {
                 <AddTokenBox
                   closeAddTokenModal={closeAddTokenModal}
                   knownNetworks={knownNetworks}
+                  currentNetwork={knownNetworks[network]}
                 />
 
               </Dialog.Panel>
