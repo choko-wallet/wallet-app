@@ -10,7 +10,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 // redux
 import { useDispatch } from 'react-redux';
 
-import { addUserAccount } from '../../features/slices/userSlice';
+import { addUserAccount } from '../../features/slices/user';
 
 interface Props {
   mnemonic: string,

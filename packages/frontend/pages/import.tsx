@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import Loading from '../components/Loading';
 import { selectError } from '../features/redux/selectors';
 import { useAppThunkDispatch } from '../features/redux/store';
-import { addUserAccount } from '../features/slices/userSlice';
+import { addUserAccount } from '../features/slices/user';
 
 /* eslint-disable sort-keys */
 function Import (): JSX.Element {

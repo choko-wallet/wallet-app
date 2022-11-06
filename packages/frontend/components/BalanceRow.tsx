@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface Props {
   balance: number;
@@ -9,13 +9,9 @@ interface Props {
   img: string;
   price: number;
   symbol: string;
-
 }
 
-function CryptoRow({ balance, img, name, price, symbol }: Props): JSX.Element {
-
-
-
+function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
       <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#4797B5]  hover:bg-[#4797B5]'>
@@ -41,9 +37,6 @@ function CryptoRow({ balance, img, name, price, symbol }: Props): JSX.Element {
                 }}
               />
             }
-
-
-
           </div>
           <div className='flex flex-col flex-1 ml-3'>
             <p className='w-44 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins'>
@@ -62,14 +55,11 @@ function CryptoRow({ balance, img, name, price, symbol }: Props): JSX.Element {
                 {' '}USD
               </p>
             }
-
-
           </div>
         </div>
         <div className=' flex flex-col justify-between '>
           <p className='font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins justify-end'>
             {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}
-            {/* 可试下不定四位 能否正常显示  */}
             {'  '}{symbol}
 
           </p>
@@ -85,12 +75,10 @@ function CryptoRow({ balance, img, name, price, symbol }: Props): JSX.Element {
               {Number(balance * price).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
             </p>
           }
-
-
         </div>
       </div>
     </div>
   );
 }
 
-export default CryptoRow;
+export default BalanceRow;

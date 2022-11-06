@@ -4,41 +4,33 @@
 import { RadioGroup } from '@headlessui/react';
 import { CheckIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-// import { KnownNetworks, Network } from '@choko-wallet/core';
-import { KnownNetworks, Network } from '../utils/knownNetworks';
+import { selectCurrentNetwork, selectKnownNetworks} from '../features/redux/selectors'
+import { useDispatch, useSelector } from 'react-redux';
+import { loadAllNetworks, removeNetworkAndSave, setCurrentNetwork } from '../features/slices/network';
+import { setOpen } from '../features/slices/status';
+import Loading from './Loading';
 
+function NetworkSelection(): JSX.Element {
 
-interface Props {
-  knownNetworks: KnownNetworks;
-  network: string;// current on
-  networkSelection: string;// onClick
-  setNetworkSelection: (value: string) => void;
-  changeNetwork: () => void;
-  setAddNetworkModalOpen: (value: boolean) => void;
-}
+  const dispatch = useDispatch();
 
-interface networkObject {
-  [key: string]: Network
-}
+  const currentNetwork = useSelector(selectCurrentNetwork);
+  const knownNetworks = useSelector(selectKnownNetworks);
 
-function NetworkSelection({ changeNetwork, knownNetworks, network,
-  networkSelection, setAddNetworkModalOpen, setNetworkSelection }: Props): JSX.Element {
-  const deleteNetwork = (hash: string) => {
-    setNetworkSelection(network);
-    delete knownNetworks[hash];
+  const [networkSelection, setNetworkSelection] = useState(currentNetwork);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    // delete localstorage networks
-    const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
-    const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
-    const networkObject: networkObject = maybeNetworkAddedObject || {};
+  useEffect(() => {
+    if (knownNetworks) {
+      setLoading(false)
+    } else {
+      dispatch(loadAllNetworks());
+    }
+  }, [knownNetworks]);
 
-    delete networkObject[hash];
-    localStorage.setItem('networkAdded', JSON.stringify(networkObject));
-
-    console.log(knownNetworks);
-  };
+  if (loading) return <Loading title="Loading ..."/>
 
   return (
     <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
@@ -77,13 +69,6 @@ function NetworkSelection({ changeNetwork, knownNetworks, network,
                           >
                             {text.substring(0, text.length - 8)}
                           </RadioGroup.Label>
-                          <RadioGroup.Description
-                            as='span'
-                            className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-                          >
-                            <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
-
-                          </RadioGroup.Description>
                         </div>
                       </div>
                     </motion.div>
@@ -95,23 +80,17 @@ function NetworkSelection({ changeNetwork, knownNetworks, network,
                         >
                           {text.substring(0, text.length - 8)}
                         </RadioGroup.Label>
-                        <RadioGroup.Description
-                          as='span'
-                          className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-                        >
-                          <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
-                        </RadioGroup.Description>
                       </div>
                     </div>
                   }
 
-                  {knownNetworks[network].text !== text
+                  {knownNetworks[currentNetwork].text !== text
                     ? null
                     : <div className='absolute top-7 right-4 rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
                       <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
                     </div>}
 
-                  {checked && knownNetworks[network].text !== text && (
+                  {checked && knownNetworks[currentNetwork].text !== text && (
                     <div>
                       <div className='absolute top-7 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
                         <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
@@ -119,7 +98,7 @@ function NetworkSelection({ changeNetwork, knownNetworks, network,
                       </div>
                       <div
                         className='absolute top-0 right-0  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'
-                        onClick={() => deleteNetwork(hash)}>
+                        onClick={() => dispatch(removeNetworkAndSave(hash))}>
                         <XIcon className=' text-red-500 z-50 w-5 h-5' />
 
                       </div>
@@ -128,7 +107,7 @@ function NetworkSelection({ changeNetwork, knownNetworks, network,
 
                   {isDevelopment === true
                     ? <div className='absolute top-4 right-20 items-center bg-white rounded-lg p-[2px] cursor-pointer flex justify-center '>
-                      <p className='text-gray-800 text-xs font-poppins'>Test Net</p>
+                      <p className='text-gray-800 text-xs font-poppins'>TestNet</p>
                     </div>
                     : null}
 
@@ -141,7 +120,7 @@ function NetworkSelection({ changeNetwork, knownNetworks, network,
       </div>
 
       <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
-        onClick={() => setAddNetworkModalOpen(true)}>
+        onClick={() => dispatch( setOpen("homeAddNetwork") )}>
         <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
         >
 
@@ -154,12 +133,12 @@ function NetworkSelection({ changeNetwork, knownNetworks, network,
       </div>
 
       <div className='flex justify-center mt-6'>
-        {network === networkSelection
-          ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+        {currentNetwork === networkSelection
+          ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection]?.text}</p>
           : <button
 
             className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
-            onClick={() => changeNetwork()}
+            onClick={() => dispatch( setCurrentNetwork(networkSelection) )}
           >
             <p className='text-black dark:text-white text-md whitespace-nowrap font-semibold font-poppins'>Switch Network</p>
 

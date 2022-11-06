@@ -1,131 +1,111 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchCircleIcon, SearchIcon } from '@heroicons/react/outline';
+import type { BalanceInfo } from '../utils/types';
+
+import { DownloadIcon, PaperAirplaneIcon, SearchCircleIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { Switch } from '@headlessui/react'
 import Button from './Button';
-import CryptoRow from './CryptoRow';
-import { Network } from '../utils/knownNetworks';
-import { CryptoForBalance } from '../utils/types';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
+import { setOpen } from '../features/slices/status';
+import BalanceRow from './BalanceRow';
+import Loading from './Loading';
 
 interface Props {
-  // balance: number;
-  currentNetwork: Network;
-  cryptoInfo: CryptoForBalance[];
-  setIsSendOpen: (value: boolean) => void;
-  setIsReceiveOpen: (value: boolean) => void;
-  setAddTokenModalOpen: (value: boolean) => void;
-
+  balance: BalanceInfo;
 }
 
-function Balance({ cryptoInfo,
-  currentNetwork, setAddTokenModalOpen, setIsReceiveOpen, setIsSendOpen }: Props): JSX.Element {
-
+function Balance({ balance }: Props): JSX.Element {
+  const dispatch = useDispatch();
+  
+  const knownNetworks = useSelector(selectKnownNetworks);
+  const currentNetwork = useSelector(selectCurrentNetwork);
 
   const [balanceTotal, setBalanceTotal] = useState<string>('0');
-  const [showSmallAssets, setShowSmallAssets] = useState<boolean>(true);
-  const [enabled, setEnabled] = useState<boolean>(true);
+  const [showDust, setShowDust] = useState<boolean>(true);
   const [searchInput, setSearchInput] = useState<string>('');
 
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false)
-  const [filterResult, setFilterResult] = useState<CryptoForBalance[]>(cryptoInfo);
+  const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
 
   useEffect(() => {
+    console.log(balance)
+    // Token search handler
+    let filtered = Object.entries(balance).filter(([_, item]) => {
+      return item.name.toLowerCase().includes(searchInput.toLowerCase()) 
+        || item.symbol.toLowerCase().includes(searchInput.toLowerCase());
+    })
 
-    function filterCoinByName(item: CryptoForBalance) {
-      return item.name.toLowerCase().includes(searchInput.toLowerCase()) || item.symbol.toLowerCase().includes(searchInput.toLowerCase());
-    }
-    const result = cryptoInfo.filter(filterCoinByName);
-
-    setFilterResult(result);
-  }, [searchInput, cryptoInfo]);
+    setFiltedBalance(Object.fromEntries(filtered));
+  }, [searchInput, balance]);
 
   useEffect(() => {
+    // Filter out Dust balance
+    let filtered = Object.entries(balance).filter(([id, item]) => {
+      return showDust ? (item.balanceInUSD > 5 || id === "native") : true; // always display eth .. even it's in dust
+    });
 
-    if (showSmallAssets === false) {
-      function filterCoinSmallAssets(item: CryptoForBalance) {
-        return item.balance * item.priceInUSD > 5;
-      }
-      const result = cryptoInfo.filter(filterCoinSmallAssets);
-      setFilterResult(result);
-    } else {
-      setFilterResult(cryptoInfo);
-    }
+    setFiltedBalance(Object.fromEntries(filtered));
+  }, [showDust, balance]);
 
-  }, [showSmallAssets]);
+  useEffect(() => {
+    // Calculate total balance
+    let b = Object.entries(balance).reduce((pre, [_, item]) => {
+      return pre + item.balanceInUSD;
+    }, 0)
 
+    setBalanceTotal(Number(b).toLocaleString(undefined, { maximumFractionDigits: 2 }))
+  }, [balance])
 
-  useEffect(() => {//计算总的balance
-    let balance = 0;
-    for (let i = 0; i < cryptoInfo.length; i++) {
-      if (cryptoInfo[i].balance !== undefined && cryptoInfo[i].priceInUSD !== undefined) {
-        balance += cryptoInfo[i].balance * cryptoInfo[i].priceInUSD;
-        // console.log('balancex', balance)
-
-      }
-    }
-    // console.log('balancexx', balance)
-    setBalanceTotal(Number(balance).toLocaleString(undefined, { maximumFractionDigits: 2 }))
-
-  }, [cryptoInfo])
-
-
-
-
-
-  // console.log('currentNetwork-balance', currentNetwork)
-  return (
-    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
+  return (<div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
       <div className='bg-[#F5F5F5] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-lg m-5 md:m-10 lg:ml-16 p-3 px-5'>
         <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
-        <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {currentNetwork?.text} </p>
+        <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
       </div>
 
       <div className='flex items-center justify-evenly '>
         <div className='flex items-center justify-center '
-          onClick={() => setIsSendOpen(true)} >
+          onClick={() => dispatch(setOpen('homeSend'))} >
           <Button Icon={PaperAirplaneIcon}
             rotate={true}
             title='Send' />
         </div>
         <div className='flex items-center justify-center '
-          onClick={() => setIsReceiveOpen(true)}>
+          onClick={() => dispatch(setOpen('homeReceive'))} >
           <Button Icon={DownloadIcon}
             title='Receive' />
         </div>
 
-        {currentNetwork?.networkType === 'ethereum' ?
+        {/* {knownNetworks[currentNetwork]?.networkType === 'ethereum' ?
           <div className='flex items-center justify-center '
-            onClick={() => setAddTokenModalOpen(true)}>
+            onClick={() => dispatch(setOpen('homeAddToken'))} >
             <Button Icon={PlusSmIcon}
               title='Add Token' />
           </div>
           :
-          null}
+          null} */}
 
       </div>
-
-
-
-
       <div className='flex items-center justify-between  pt-5 px-16'>
         <p className='text-black dark:text-gray-400'>Your Portfolio</p>
+        
         <SearchCircleIcon className=' text-black h-10 w-10 cursor-pointer'
           onClick={() => setSearchInputOpen(!searchInputOpen)} />
+
         <div className='flex items-center '>
           <Switch
-            checked={showSmallAssets}
-            onChange={setShowSmallAssets}
-            className={`${showSmallAssets ? 'bg-green-400' : 'bg-gray-400'}
+            checked={showDust}
+            onChange={setShowDust}
+            className={`${showDust ? 'bg-green-400' : 'bg-gray-400'}
           relative inline-flex h-[38px] w-[74px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
           >
             <span className="sr-only">Use setting</span>
             <span
               aria-hidden="true"
-              className={`${showSmallAssets ? 'translate-x-9' : 'translate-x-0'}
+              className={`${showDust ? 'translate-x-9' : 'translate-x-0'}
             pointer-events-none inline-block h-[34px] w-[34px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
             />
           </Switch>
@@ -148,11 +128,11 @@ function Balance({ cryptoInfo,
           </div>
           : null}
 
-        {filterResult.map((item) => (
-          <CryptoRow
+        {Object.entries(filtedBalance).map(([_, item], index) => (
+          <BalanceRow
             balance={item.balance}
             img={item.img}
-            key={item.name}
+            key={index}
             name={item.name}
             price={item.priceInUSD}
             symbol={item.symbol}

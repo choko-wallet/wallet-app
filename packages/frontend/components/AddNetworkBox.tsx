@@ -6,10 +6,10 @@ import { u8aToHex } from '@skyekiwi/util';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { ethers } from "ethers";
-// import { KnownNetworks, Network } from '@choko-wallet/core';
-import { KnownNetworks, Network } from '../utils/knownNetworks';
 
+import { ethers } from "ethers";
+
+import { KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 
 interface Props {
@@ -110,14 +110,14 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         const networkForAdding: Network = {
           /* eslint-disable */
           defaultProvider: formData.netWorkRPC,
-          info: formData.networkName,//网络名 暂时需要用户输入
+          info: formData.networkName,
           networkType: 'ethereum',
           providers: { defaultProvider: formData.netWorkRPC },
           text: formData.networkName + ' Network',
           // @ts-ignore
           nativeTokenSymbol: name,
           // @ts-ignore
-          nativeTokenDecimal: formData.networkNativeTokenDecimal,//暂时需要用户输入
+          nativeTokenDecimal: formData.networkNativeTokenDecimal,
           /* eslint-enable */
         };
 

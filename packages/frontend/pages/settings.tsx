@@ -14,7 +14,7 @@ import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
 import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/userSlice';
+import { loadUserAccount } from '../features/slices/user';
 
 /* eslint-disable sort-keys */
 function Settings (): JSX.Element {

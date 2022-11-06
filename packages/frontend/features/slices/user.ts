@@ -131,8 +131,8 @@ export const userSlice = createSlice({
     },
 
     removeAllAccounts: (state) => {
-      // localStorage.removeItem('serializedUserAccount');// cannot remove
-      localStorage.clear();
+      localStorage.removeItem('serialziedUserAccount');
+
       state.currentUserAccount = null;
       state.userAccount = {};
       state.error = '';

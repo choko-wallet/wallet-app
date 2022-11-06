@@ -3,32 +3,16 @@
 
 import type { RootState } from '../redux/store';
 
-import { UserAccount } from '@choko-wallet/core';
-
-type CoinData = Array<CoinPrice>
-
-interface CoinPrice {
-  [key: string]: PriceUsd
-}
-
-interface PriceUsd {
-  usd: number;
-}
+import { KnownNetworks, UserAccount } from '@choko-wallet/core';
 
 /* eslint-disable */
 // userAccount selectors
 export const selectCurrentUserAccount = (state: RootState): UserAccount => state.user.currentUserAccount;
 export const selectUserAccount = (state: RootState): { [key: string]: UserAccount } => state.user.userAccount;
-
 export const selectError = (state: RootState): string => state.user.error;
-// export const selectDecryptCurrentUserAccountResult = (state: RootState): string => state.user.decryptCurrentUserAccountResult;
-
-export const selectCoinPrice = (state: RootState): CoinData => state.coin.coinPrice;
-export const selectNativeTokenPrice = (state: RootState): number => state.coin.nativeTokenPrice;
-
-export const selectCoinApiLoading = (state: RootState): string => state.coin.loading;
 export const selectChangeCurrentAccountLoading = (state: RootState): boolean => state.user.changeCurrentAccountLoading;
 
+export const selectCurrentNetwork = (state: RootState): string => state.network.currentNetwork;
+export const selectKnownNetworks = (state: RootState): KnownNetworks => state.network.knownNetworks;
 
-
-/* eslint-enable */
+export const selectStatus = (state: RootState): Record<string, boolean> => state.status.status;

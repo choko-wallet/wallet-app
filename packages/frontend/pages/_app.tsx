@@ -26,8 +26,6 @@ Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
 function Root ({ Component, pageProps }: AppProps): JSX.Element {
-  // console.error(process.env);
-
   return (
     <Provider store={store}>
       <Head>

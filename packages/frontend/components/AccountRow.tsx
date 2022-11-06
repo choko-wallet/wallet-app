@@ -10,15 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UserAccount } from '@choko-wallet/core';
 
 import { selectCurrentUserAccount } from '../features/redux/selectors';
-import { switchUserAccount } from '../features/slices/userSlice';
+import { switchUserAccount } from '../features/slices/user';
 
 interface Props {
   account: UserAccount;
-  setChangeAccountLoading: (value: boolean) => void;
-  changeAccount: (value: UserAccount) => void;
 }
 
-function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: Props): JSX.Element {
+export default function AccountRow({ account }: Props): JSX.Element {
   const dispatch = useDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
@@ -33,14 +31,9 @@ function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: 
 
   const changeAccountInHeader = () => {
     if (account.address !== currentUserAccount.address) {
-      // setChangeAccountLoading(true);
       dispatch(switchUserAccount(account.address));
-      changeAccount(account);
     }
   };
-
-
-
 
   return (
 
@@ -65,5 +58,3 @@ function DropdownHeaderRow({ changeAccount, account, setChangeAccountLoading }: 
 
   );
 }
-
-export default DropdownHeaderRow;

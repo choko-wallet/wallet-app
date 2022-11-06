@@ -12,25 +12,20 @@ import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { removeAllAccounts } from '../features/slices/userSlice';
+import { removeAllAccounts } from '../features/slices/user';
 import icon1 from '../images/icon1.png';
 import logo from '../images/logo.png';
 import logo2 from '../images/logo2.png';
 import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
-import DropdownHeader from './DropdownHeader';
-import { UserAccount } from '@choko-wallet/core';
+import AccountInHeader from './AccountInHeader';
 
-interface Props {
-  setChangeAccountLoading: (value: boolean) => void;
-  changeAccount: (value: UserAccount) => void;
-}
-
-function Header({ setChangeAccountLoading, changeAccount }: Props): JSX.Element {
+function Header(): JSX.Element {
   const dispatch = useDispatch();
+
   const router = useRouter();
-  const [mounted, setMounted] = useState<boolean>(false);
   const { setTheme, theme } = useTheme();
+  const [mounted, setMounted] = useState<boolean>(false);
   const [menuIcon, setMenuIcon] = useState<boolean>(false);
 
   useEffect(() => {
@@ -105,9 +100,7 @@ function Header({ setChangeAccountLoading, changeAccount }: Props): JSX.Element 
           <MenuIcon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500'
             onClick={() => setMenuIcon(!menuIcon)} />
 
-          <DropdownHeader setChangeAccountLoading={setChangeAccountLoading}
-            changeAccount={changeAccount}
-          />
+          <AccountInHeader />
 
           <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}

@@ -1,7 +1,6 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { UserAccount } from '@choko-wallet/core';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsHorizontalIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
@@ -10,19 +9,14 @@ import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/selectors';
-import { removeAllAccounts } from '../features/slices/userSlice';
-import DropdownHeaderRow from './DropdownHeaderRow';
+import { removeAllAccounts } from '../features/slices/user';
+import AccountRow from './AccountRow';
 
-interface Props {
-  setChangeAccountLoading: (value: boolean) => void;
-  changeAccount: (value: UserAccount) => void;
-}
-
-function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.Element {
+export default function AccountInHeader(): JSX.Element {
   const dispatch = useDispatch();
+  
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const userAccountArray = Object.entries(userAccount);
   const router = useRouter();
 
   const removeAccounts = () => {
@@ -39,7 +33,6 @@ function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.
 
           <div className='relative h-6 w-6'>
             <UserCircleIcon className='h-6 w-6 dark:text-white text-gray-800' />
-
           </div>
 
           <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
@@ -62,15 +55,8 @@ function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.
         >
           <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]'>
             <div className='px-1 py-1 '>
-
-              {/* 直接map */}
-
-              {userAccountArray.map((account) => (
-                <DropdownHeaderRow account={account[1]}
-                  key={account[1].address}
-                  setChangeAccountLoading={setChangeAccountLoading}
-                  changeAccount={changeAccount}
-                />
+              {Object.entries(userAccount).map(([address, account], index) => (
+                <AccountRow account={account} key={index} />
               ))}
 
               <Menu.Item >
@@ -95,13 +81,11 @@ function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.
                     className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
                       } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={removeAccounts}
-
                   >
                     <p className='font-poppins text-black dark:text-white text-center'>Remove All Accounts</p>
                   </button>
                 )}
               </Menu.Item>
-
             </div>
 
           </Menu.Items>
@@ -109,6 +93,4 @@ function DropdownHeader({ setChangeAccountLoading, changeAccount }: Props): JSX.
       </Menu>
     </div >
   );
-}
-
-export default DropdownHeader;
+};

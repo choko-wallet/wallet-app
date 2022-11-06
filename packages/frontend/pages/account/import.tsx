@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 // redux
 import { useDispatch } from 'react-redux';
 
-import { addUserAccount } from '../../features/slices/userSlice';
+import { addUserAccount } from '../../features/slices/user';
 
 function ImportWallet (): JSX.Element {
   const router = useRouter();

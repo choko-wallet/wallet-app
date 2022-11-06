@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 

@@ -4,233 +4,88 @@
 import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, ChevronRightIcon, XIcon } from '@heroicons/react/outline';
 import { DocumentDuplicateIcon, DownloadIcon, PaperAirplaneIcon } from '@heroicons/react/solid';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
-import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import QRCode from 'react-qr-code';
 import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
-import { ethers } from "ethers";
-import { AccountOption, UserAccount } from '@choko-wallet/core';
-import { keypairTypeNumberToString } from '@choko-wallet/core/util';
-import AddNetworkBox from '@choko-wallet/frontend/components/AddNetworkBox';
+
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
-import { fetchCoinPrice } from '@choko-wallet/frontend/features/slices/coinSlice';
-// import { knownNetworks } from '@choko-wallet/known-networks';
-import knownNetworks, { Network, KnownNetworks } from '../../utils/knownNetworks';
+import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
+
 import DropdownForNetwork from '../../components/DropdownForNetwork';
 import DropdownForSend from '../../components/DropdownForSend';
+import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
+
+import {ethFetchBalance} from '../../utils/ethFetchBalance'
+import {polkadotFetchBalance} from '../../utils/polkadotFetchBalance'
+
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-import { selectCurrentUserAccount, selectNativeTokenPrice } from '../../features/redux/selectors';
+
 import { useAppThunkDispatch } from '../../features/redux/store';
-import { loadUserAccount } from '../../features/slices/userSlice';
-import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
-import { Alchemy, Network as alchemyNetwork } from "alchemy-sdk";
-// import ethMainnetTokenList, { tokenDetail } from '../../utils/EthMainnetTokenList'
-// import { ethFetchBalance } from '@choko-wallet/frontend/utils/ethFetchBalance';
-import { CryptoForBalance } from '@choko-wallet/frontend/utils/types';
-import { fetchCoinPriceByIdArray } from '@choko-wallet/frontend/utils/ethFetchFunctions';
-
-
-
-interface networkObject {
-  [key: string]: Network
-}
-
-const coinPriceData = { bitcoin: { usd: 19000 }, dogecoin: { usd: 0.0600 }, ethereum: { usd: 1000.00 } };
+import {selectStatus, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks} from '../../features/redux/selectors'
+import { loadUserAccount } from '../../features/slices/user';
+import { loadAllNetworks } from '../../features/slices/network';
+import { toastFail, toastSuccess } from '../../utils/toast';
+import { setClose, toggle } from '../../features/slices/status';
 
 /* eslint-disable sort-keys */
-function Home(): JSX.Element {
+export default function Home(): JSX.Element {
+  const dispatch = useAppThunkDispatch();
+
   const nodeRef = React.useRef(null);
+
   const { setTheme, theme } = useTheme();
   const router = useRouter();
-  // const dispatch = useDispatch();
-  const dispatch = useAppThunkDispatch();
-  // const coinPriceFromRedux = useSelector(selectCoinPrice);// 是object 需要处理
+
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const nativeTokenPriceFromRedux: number = useSelector(selectNativeTokenPrice);
-  // const reduxError = useSelector(selectError);
-  // const changeAccountLoading = useSelector(selectChangeCurrentAccountLoading);
-  const [changeAccountLoading, setChangeAccountLoading] = useState<boolean>(false);// not redux
-  // const [nativeTokenPrice, setNativeTokenPrice] = useState<number>(0);
+  const currentNetwork = useSelector(selectCurrentNetwork);
+  const knownNetworks = useSelector(selectKnownNetworks);
+  const status = useSelector(selectStatus);
 
-  const [networkSelection, setNetworkSelection] = useState<string>('847e7b7fa160d85f');
-  const [network, setNetwork] = useState<string>('847e7b7fa160d85f');
   const [mounted, setMounted] = useState<boolean>(false);
-  // const [balance, setBalance] = useState<number>(0);
-  const [isNetworkChangeOpen, setIsNetworkChangeOpen] = useState<boolean>(false);
-  const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
-  const [isInitializeLoadingOpen, setIsInitializeLoadingOpen] = useState<boolean>(true);
 
-  const [isSendOpen, setIsSendOpen] = useState<boolean>(false);
-  const [isReceiveOpen, setIsReceiveOpen] = useState<boolean>(false);
+  const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
+
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
   const [openScan, setOpenScan] = useState<boolean>(false);
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [addNetworkModalOpen, setAddNetworkModalOpen] = useState<boolean>(false);
-  const [addTokenModalOpen, setAddTokenModalOpen] = useState<boolean>(false);
-
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [migInProcess, setMigInProcess] = useState<boolean>(false);
-
-  // const [cryptoToSend, setCryptoToSend] = useState<tokenDetail>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
-  // const [cryptoToReceive, setCryptoToReceive] = useState<tokenDetail>({ balance: 1, name: 'Bitcoin', img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/btc.png', price: coinPriceData?.bitcoin.usd, shortName: 'BTC', networkFee: 0.001, estimatedTime: '20min', arrival: '6 network confirmations', minDeposit: 0.001 });
 
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
-  const [cryptoInfo, setCryptoInfo] = useState<CryptoForBalance[]>([]);
-  // const [cryptoInfo, setCryptoInfo] = useState<CryptoForBalance[]>([]);
+  const [balance, setBalanceInfo] = useState<BalanceInfo>({});
+
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
-  useEffect(() => { // initialization on skyekiwi
+  useEffect(() => {
+    console.log(knownNetworks, currentNetwork, currentUserAccount)
 
+    // Fetch balance and price once the network & user account is loaded in Redux
+    if (!knownNetworks) return;
     if (!currentUserAccount) return;
-    if (!isInitializeLoadingOpen) return;//当currentUserAccount 变化时 不再触发这个useEffect
-    // console.log('first', isInitializeLoadingOpen);
-    const getBalanceSkyekiwiInitial = async () => {
-      try {
-        const provider = new WsProvider(knownNetworks[network].defaultProvider);
-        console.log('knownNetworks', knownNetworks)
-        const api = await ApiPromise.create({ provider });
-        const data = await api.query.system.account(currentUserAccount.address);
+    if (!currentNetwork) return;
+    // no need to await
+    void fetchBalanceAndPrice()
+    setMounted(true);
+  }, [currentNetwork, currentUserAccount]);
 
-        const cryptoForBalance: CryptoForBalance = {
-          symbol: "SKW",
-          name: "skyekiwi",
-          decimals: 12,
-          /* eslint-disable */
-          // @ts-ignore
-          balance: Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal),
-          img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png',
-        };
-        /* eslint-enable */
-
-        setCryptoInfo([cryptoForBalance]);
-        setIsInitializeLoadingOpen(false);
-
-      } catch (err) {
-        console.log('balance-error', err);//有错误就是地址有错 balance设置为0 
-        const cryptoForBalance: CryptoForBalance = {
-          symbol: "SKW",
-          name: "skyekiwi",
-          decimals: 12,
-          /* eslint-disable */
-          // @ts-ignore
-          balance: 0,
-          img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png',
-        };
-        /* eslint-enable */
-
-        setCryptoInfo([cryptoForBalance]);
-
-        setIsInitializeLoadingOpen(false);
-        setTimeout(() => {
-          toast('Someting Wrong! Please Try Again', {
-            duration: 4000,
-            style: {
-              background: 'red',
-              color: 'white',
-              fontFamily: 'Poppins',
-              fontSize: '17px',
-              fontWeight: 'bolder',
-              padding: '20px'
-            }
-          });
-        }, 100);
-
-      }
-    };
-
-    void getBalanceSkyekiwiInitial();
-
-  }, [dispatch, currentUserAccount]);
-
-  // console.log('networkSelection', networkSelection);
-
-  useEffect(() => { // for mig  and  initialization
+  useEffect(() => {
+    // IF account is not in localStorage - redirect to account creation page
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
-      setMounted(true);
-
-      // MIG 5259b734e61e1acd3e8da16ec3a7560d2611d884c99216f6256bf66105f10e4e87c1a99d5b5abdb6fb966bb8a3232291a3c08ed0525b289e20ce1cbee09261435ffe8cea6775146500000000 3a0338a9d957a061d94fe5beeb0463f540459d247d0456988c714edc93d2a91400000000
-
-      // MIG
-      const lockedPrivateKey = localStorage.getItem('lockedPrivateKey');
-
-      if (lockedPrivateKey && lockedPrivateKey.length !== 0) {
-        // DO MIGRATION
-
-        const serialziedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
-
-        console.log('MIG', lockedPrivateKey, serialziedUserAccount);
-
-        setMigInProcess(true);
-
-        const publicKey = serialziedUserAccount.slice(0, 32);
-        const keypairType = keypairTypeNumberToString(serialziedUserAccount[32]);
-        const localKeyEncryption = serialziedUserAccount[33];
-        const hasEncryptedPrivateKeyExported = serialziedUserAccount[34];
-        const version = serialziedUserAccount[35];
-
-        const encryptedPrivateKey = hexToU8a(lockedPrivateKey).slice(0, 32 + 16 + 24);
-        const address = (['ecdsa', 'ethereum'].includes(keypairType)) ? ethereumEncode(publicKey) : encodeAddress(publicKey);
-
-        const newU = new UserAccount(new AccountOption({
-          hasEncryptedPrivateKeyExported: hasEncryptedPrivateKeyExported === 1,
-          keyType: keypairType,
-          localKeyEncryptionStrategy: localKeyEncryption,
-          version: version
-        }));
-
-        newU.publicKey = publicKey;
-        newU.encryptedPrivateKey = encryptedPrivateKey;
-        newU.address = address;
-
-        const se = newU.serializeWithEncryptedKey();
-
-        localStorage.removeItem('serialziedUserAccount');
-        localStorage.removeItem('lockedPrivateKey');
-
-        localStorage.setItem('serialziedUserAccount', u8aToHex(se));
-
-        setTimeout(() => {
-          setMigInProcess(false);
-        }, 3000);
-
-        // const userAccount = UserAccount.deserialize( hexToU8a(serialziedUserAccount) );
-        // console.log(userAccount);
-      }
-
-
+      // We are all good. Load UserAccount & Networks
       dispatch(loadUserAccount());
-
-      try { // load local network added
-        const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
-        const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
-        const networkObject: networkObject = maybeNetworkAddedObject || {};
-
-        // console.log('networkObject', Object.entries(networkObject))
-        Object.entries(networkObject).forEach((element) => {
-          knownNetworks[element[0]] = element[1];
-        });
-        // console.log('knownNetworks111home', knownNetworks);
-      } catch (e) {
-        console.log('load local network added err', e);
-        localStorage.setItem('networkAdded', '');
-      }
-
+      dispatch(loadAllNetworks());
     }
   }, [dispatch, router]);
 
@@ -241,586 +96,44 @@ function Home(): JSX.Element {
     }
   }, [setTheme, theme])
 
-
-
-  const changeNetworkForPolka = async () => {
-    if (!currentUserAccount) return;
-    setNetwork(networkSelection);
+  const fetchBalanceAndPrice = async() => {
     setIsLoadingOpen(true);
 
-    // 最外面的try catch 给toast
-    try {
-      const provider = new WsProvider(knownNetworks[networkSelection].defaultProvider);
-      console.log('knownNetworks', knownNetworks)
-      const api = await ApiPromise.create({ provider });
-      const data = await api.query.system.account(currentUserAccount.address);
-
-      const cryptoForBalance: CryptoForBalance = {
-        symbol: knownNetworks[networkSelection].nativeTokenSymbol,
-        name: knownNetworks[networkSelection].info,
-        decimals: knownNetworks[networkSelection].nativeTokenDecimal,
-        /* eslint-disable */
-        // @ts-ignore
-        balance: Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[networkSelection].nativeTokenDecimal),
-        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[networkSelection].nativeTokenSymbol.toLowerCase()}.png`,
-      };
-      /* eslint-enable */
-
-      // fetchCoinPrice 拿不到api的价格就设置为0
-      try {
-        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[networkSelection].info.toLowerCase()}&vs_currencies=usd`)
-          .then((res) => res.json());
-        /* eslint-disable */
-        // @ts-ignore
-        cryptoForBalance.priceInUSD = Number(Object.entries(coinData)[0][1].usd);
-        console.log('cryptoForBalance', cryptoForBalance)
-        // /* eslint-enable */
-
-      } catch (err) {
-        console.log('fetchCoinPrice-err', err);
-        cryptoForBalance.priceInUSD = 0;
-      }
-
-      setCryptoInfo([cryptoForBalance]);
-      setIsLoadingOpen(false);
-      setTimeout(() => {
-        toast(`Changed to ${knownNetworks[networkSelection].text}`, {
-          duration: 4000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    } catch (err) {//地址有错 cryptoForBalance清空
-      console.log('outTry-err', err);
-
-
-      setCryptoInfo([]);
-
-      setIsLoadingOpen(false);
-
-      setTimeout(() => {
-        toast('Someting Wrong! Please Switch To Other Network.', {
-          duration: 4000,
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    }
-
-  }
-
-  const changeAccountForPolka = async (accountAddress: string) => {
-
-    try {
-      const provider = new WsProvider(knownNetworks[network].defaultProvider);
-      const api = await ApiPromise.create({ provider });
-      const data = await api.query.system.account(accountAddress);
-
-      const cryptoForBalance: CryptoForBalance = {
-        symbol: knownNetworks[network].nativeTokenSymbol,
-        name: knownNetworks[network].info,
-        decimals: knownNetworks[network].nativeTokenDecimal,
-        /* eslint-disable */
-        // @ts-ignore
-        balance: Number(data.data.toHuman().free.replaceAll(',', '')) / (10 ** knownNetworks[network].nativeTokenDecimal),
-        img: `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/${knownNetworks[network].nativeTokenSymbol.toLowerCase()}.png`,
-      };
-      /* eslint-enable */
-
-      // fetchCoinPrice 拿不到api的价格就设置为0
-      try {
-        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${knownNetworks[network].info.toLowerCase()}&vs_currencies=usd`)
-          .then((res) => res.json());
-        /* eslint-disable */
-        // @ts-ignore
-        cryptoForBalance.priceInUSD = Number(Object.entries(coinData)[0][1].usd);
-        console.log('cryptoForBalance', cryptoForBalance)
-        // /* eslint-enable */
-
-      } catch (err) {
-        console.log('fetchCoinPrice-err', err);
-        cryptoForBalance.priceInUSD = 0;
-      }
-
-      setCryptoInfo([cryptoForBalance]);
-      setChangeAccountLoading(false);
-      setTimeout(() => {
-        toast('Successfully Changed Account', {
-          duration: 4000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    } catch (err) {//地址有错 cryptoForBalance清空
-      console.log('outTry-err', err);
-
-      setCryptoInfo([]);
-      setChangeAccountLoading(false);
-
-      setTimeout(() => {
-        toast('Someting Wrong! Please Switch To Other Account.', {
-          duration: 4000,
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    }
-
-  }
-
-
-
-  // const changeNetworkForEth2 = async () => {
-  //   if (!currentUserAccount) return;
-  //   setNetwork(networkSelection);
-  //   setIsLoadingOpen(true);
-
-  //   try {
-  //     // const res = await ethFetchBalance("0x84e39f4038db1Cb3C26092F68380B207f58B9c3A")
-  //     const res = await ethFetchBalance("0xDFd5293D8e347dFe59E90eFd55b2956a1343963d")
-  //     console.log("setCryptoInfo", res);
-  //     setCryptoInfo(res);
-  //     setIsLoadingOpen(false);
-  //   } catch (e) {
-  //     console.error("ethFetchBalance Error", e);
-  //   }
-  // }
-
-
-  const changeNetworkForEth = async () => {
-    if (!currentUserAccount) return;
-    setNetwork(networkSelection);
-    setIsLoadingOpen(true);
-    const cryptoForBalanceArray: CryptoForBalance[] = [];
-
-    // alchemy
-    const config = {
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_MAIN,
-      network: alchemyNetwork.ETH_MAINNET,
-    };
-    const alchemy = new Alchemy(config);
-
-    try {
-      // fetch eth balance and price
-      const ethBalance = await alchemy.core.getBalance("0xf6006A8511F83c4a56ee59c3a50E6f82cB6b7176");
-      const ethBalanceFormat = Number(ethers.utils.formatEther(ethBalance._hex));
-
-      const ethForBalance: CryptoForBalance = {
-        name: 'ethereum',
-        symbol: 'ETH',
-        balance: ethBalanceFormat,
-        decimals: 18,
-        img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png',
-      }
-
-      try {
-        // const ethCoinData = fetchCoinPriceByIdArray(['ethereum'])
-        const ethCoinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`)
-          .then((res) => res.json());
-
-        /* eslint-disable */
-        // @ts-ignore
-        ethForBalance.priceInUSD = ethCoinData.ethereum.usd;
-        console.log('ethCoinData', ethCoinData)
-        // /* eslint-enable */
-      } catch (err) {
-        console.log('fetchEthCoinPrice-err', err);
-        ethForBalance.priceInUSD = 0;
-      }
-
-
-      cryptoForBalanceArray.push(ethForBalance);
-
-
-
-      // fetch erc20 tokens balance and price
-      const balances = await alchemy.core.getTokenBalances("0xf6006A8511F83c4a56ee59c3a50E6f82cB6b7176");
-      // const balances = await alchemy.core.getTokenBalances(ethereumEncode(currentUserAccount.publicKey));
-
-      console.log('balances', balances)
-
-      // Remove tokens with zero balance
-      const nonZeroBalances = balances.tokenBalances.filter((token) => {
-        return token.tokenBalance !== "0x0000000000000000000000000000000000000000000000000000000000000000";
-      });
-
-      console.log('nonZeroBalances', nonZeroBalances);
-
-      //metadata  address
-      for (let i = 0; i < nonZeroBalances.length; i++) {
-
-        const metadata = await alchemy.core.getTokenMetadata(nonZeroBalances[i].contractAddress);
-        console.log('metadata', metadata);
-
-        if (metadata.symbol.indexOf(".") === -1) {//not found .  
-
-          let balanceOrigin = nonZeroBalances[i].tokenBalance;
-          const balanceFormat = Number(balanceOrigin) / Math.pow(10, metadata.decimals);
-          console.log('balanceFormat', balanceFormat);
-
-          const cryptoForBalance: CryptoForBalance = {
-            name: metadata.name,
-            symbol: metadata.symbol,
-            balance: balanceFormat,
-            decimals: metadata.decimals,
-            img: metadata.logo,
-            contractAddress: nonZeroBalances[i].contractAddress,
-          }
-          cryptoForBalanceArray.push(cryptoForBalance);
-
+    const network = knownNetworks[currentNetwork];
+    switch (network.networkType) {
+      case 'polkadot':
+        try {
+          const res = await polkadotFetchBalance(network, currentUserAccount.address);
+          console.log(res)
+          setBalanceInfo(res);
+          setIsLoadingOpen(false);
+          toastSuccess(`Changed to ${network.text}`);
+        } catch(e) {
+          console.error(e);
+          setIsLoadingOpen(false);
+          toastFail('Someting Wrong! Please Switch To Other Network.');
         }
+        break;
+      case 'ethereum':
+        try {
+          // const res = await ethFetchBalance(network, currentUserAccount.address);
+          const res = await ethFetchBalance(network, "0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2");
 
-
-      }
-
-
-      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
-
-      // fetch price by address 
-      const tokenAddresses = [];
-      for (let i = 0; i < cryptoForBalanceArray.length; i++) {
-        tokenAddresses.push(cryptoForBalanceArray[i].contractAddress);
-      }
-      const tokenAddressesString = tokenAddresses.join('%2C');
-      console.log('tokenAddresses', tokenAddressesString)
-
-      try {
-        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${tokenAddressesString}&vs_currencies=usd`)
-          .then((res) => res.json());
-        /* eslint-disable */
-        // @ts-ignore
-
-        for (let i = 0; i < Object.entries(coinData).length; i++) {
-          for (let j = 0; j < cryptoForBalanceArray.length; j++) {
-            if (cryptoForBalanceArray[j].contractAddress === Object.entries(coinData)[i][0]) {
-              // @ts-ignore
-              cryptoForBalanceArray[j].priceInUSD = Number(Object.entries(coinData)[i][1].usd);
-            }
-          }
+          setBalanceInfo(res);
+          setIsLoadingOpen(false);
+          toastSuccess(`Changed to ${network.text}`);
+        } catch(e) {
+          console.error(e);
+          setIsLoadingOpen(false);
+          toastFail('Someting Wrong! Please Switch To Other Network.');
         }
-        // /* eslint-enable */
-      } catch (err) {
-        console.log('fetchCoinPrice-err', err);
-        for (let h = 0; h < cryptoForBalanceArray.length; h++) {
-          cryptoForBalanceArray[h].priceInUSD = 0;
-        }
-      }
-
-
-      cryptoForBalanceArray.sort((a, b) => {
-        // if (a.symbol === 'ETH') return -1;  还需要个属性判断是否是nativetoken 
-        // native asset balance always on top
-
-        return b.priceInUSD * b.balance - a.priceInUSD * a.balance;
-
-      });
-
-
-
-      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
-
-
-      setCryptoInfo(cryptoForBalanceArray);
-      setIsLoadingOpen(false);
-      setTimeout(() => {
-        toast(`Changed to ${knownNetworks[networkSelection].text}`, {
-          duration: 4000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    } catch (err) {//地址或alchemy报错 cryptoForBalance清空
-      console.log('outTry-err', err);
-
-      setCryptoInfo([]);
-      setIsLoadingOpen(false);
-
-      setTimeout(() => {
-        toast('Someting Wrong! Please Switch To Other Network.', {
-          duration: 4000,
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    }
-
-  }
-
-  // 内容几乎一样 需要换网络参数和地址参数  getTokenBalances(accountAddress);
-  const changeAccountForEth = async (accountAddress: string) => {
-    setChangeAccountLoading(true);
-
-    const cryptoForBalanceArray: CryptoForBalance[] = [];
-
-    const config = {
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_MAIN,
-      network: alchemyNetwork.ETH_MAINNET,
-    };
-    const alchemy = new Alchemy(config);
-
-    try {
-      // fetch eth balance and price
-      const ethBalance = await alchemy.core.getBalance(accountAddress);
-      const ethBalanceFormat = Number(ethers.utils.formatEther(ethBalance._hex));
-
-      const ethForBalance: CryptoForBalance = {
-        name: 'ethereum',
-        symbol: 'ETH',
-        balance: ethBalanceFormat,
-        decimals: 18,
-        img: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png',
-      }
-
-      try {
-        // const ethCoinData = fetchCoinPriceByIdArray(['ethereum'])
-        const ethCoinData = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`)
-          .then((res) => res.json());
-
-        /* eslint-disable */
-        // @ts-ignore
-        ethForBalance.priceInUSD = ethCoinData.ethereum.usd;
-        console.log('ethCoinData', ethCoinData)
-        // /* eslint-enable */
-      } catch (err) {
-        console.log('fetchEthCoinPrice-err', err);
-        ethForBalance.priceInUSD = 0;
-      }
-
-
-      cryptoForBalanceArray.push(ethForBalance);
-
-
-
-      // fetch erc20 tokens balance and price
-      const balances = await alchemy.core.getTokenBalances(accountAddress);
-
-      console.log('balances', balances)
-
-      // Remove tokens with zero balance
-      const nonZeroBalances = balances.tokenBalances.filter((token) => {
-        return token.tokenBalance !== "0x0000000000000000000000000000000000000000000000000000000000000000";
-      });
-
-      console.log('nonZeroBalances', nonZeroBalances);
-
-      //metadata  address
-      for (let i = 0; i < nonZeroBalances.length; i++) {
-
-        const metadata = await alchemy.core.getTokenMetadata(nonZeroBalances[i].contractAddress);
-        console.log('metadata', metadata);
-
-        if (metadata.symbol.indexOf(".") === -1) {//not found .  
-
-          let balanceOrigin = nonZeroBalances[i].tokenBalance;
-          const balanceFormat = Number(balanceOrigin) / Math.pow(10, metadata.decimals);
-          console.log('balanceFormat', balanceFormat);
-
-          const cryptoForBalance: CryptoForBalance = {
-            name: metadata.name,
-            symbol: metadata.symbol,
-            balance: balanceFormat,
-            decimals: metadata.decimals,
-            img: metadata.logo,
-            contractAddress: nonZeroBalances[i].contractAddress,
-          }
-          cryptoForBalanceArray.push(cryptoForBalance);
-
-        }
-
-
-      }
-
-
-      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
-
-      // fetch price by address 
-      const tokenAddresses = [];
-      for (let i = 0; i < cryptoForBalanceArray.length; i++) {
-        tokenAddresses.push(cryptoForBalanceArray[i].contractAddress);
-      }
-      const tokenAddressesString = tokenAddresses.join('%2C');
-      console.log('tokenAddresses', tokenAddressesString)
-
-      try {
-        const coinData = await fetch(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${tokenAddressesString}&vs_currencies=usd`)
-          .then((res) => res.json());
-        /* eslint-disable */
-        // @ts-ignore
-
-        for (let i = 0; i < Object.entries(coinData).length; i++) {
-          for (let j = 0; j < cryptoForBalanceArray.length; j++) {
-            if (cryptoForBalanceArray[j].contractAddress === Object.entries(coinData)[i][0]) {
-              // @ts-ignore
-              cryptoForBalanceArray[j].priceInUSD = Number(Object.entries(coinData)[i][1].usd);
-            }
-          }
-        }
-        // /* eslint-enable */
-      } catch (err) {
-        console.log('fetchCoinPrice-err', err);
-        for (let h = 0; h < cryptoForBalanceArray.length; h++) {
-          cryptoForBalanceArray[h].priceInUSD = 0;
-        }
-      }
-
-
-      cryptoForBalanceArray.sort((a, b) => {
-        // if (a.symbol === 'ETH') return -1;  还需要个属性判断是否是nativetoken 
-        // native asset balance always on top
-
-        return b.priceInUSD * b.balance - a.priceInUSD * a.balance;
-
-      });
-
-
-
-      console.log('cryptoForBalanceArray3', cryptoForBalanceArray)
-
-
-      setCryptoInfo(cryptoForBalanceArray);
-      setChangeAccountLoading(false);
-      setTimeout(() => {
-        toast(`Changed to ${knownNetworks[networkSelection].text}`, {
-          duration: 4000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    } catch (err) {//地址或alchemy报错 cryptoForBalance清空
-      console.log('outTry-err', err);
-
-      setCryptoInfo([]);
-      setChangeAccountLoading(false);
-
-      setTimeout(() => {
-        toast('Someting Wrong! Please Switch To Other Network.', {
-          duration: 4000,
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-      }, 100);
-
-    }
-
-  }
-
-
-
-  const changeNetwork = () => {
-    if (knownNetworks[networkSelection].networkType === "polkadot") {
-      console.log('changeNetworkForPolka');
-      changeNetworkForPolka();
-    }
-
-    if (knownNetworks[networkSelection].networkType === "ethereum") {
-      console.log('changeNetworkForEth');
-      changeNetworkForEth();
+        break;
     }
   }
-
-  const changeAccount = (account: UserAccount) => {
-    if (knownNetworks[network].networkType === "polkadot") {
-      console.log('changeAccountForPolka');
-      changeAccountForPolka(account.address);
-    }
-
-    if (knownNetworks[network].networkType === "ethereum") {
-      console.log('changeAccountForEth');
-      changeAccountForEth(ethereumEncode(account.publicKey));
-    }
-  }
-
-
-
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
-  if (isLoadingOpen) return <Loading title='Changing Network' />;
-  if (isInitializeLoadingOpen) return <Loading title='Initializing Account' />;
-
-  if (changeAccountLoading) return <Loading title='Changing Account' />;
-  if (migInProcess) return <Loading title='Account System Migration in process ' />;
-
-
-
-  function closeNetworkChangeModal() {
-    setIsNetworkChangeOpen(false);
-  }
-
-  function closeSendModal() {
-    setIsSendOpen(false);
-  }
-
-  function closeReceiveModal() {
-    setIsReceiveOpen(false);
-  }
-
-  function closeAddNetworkModal() {
-    setAddNetworkModalOpen(false);
-  }
-
-  function closeAddTokenModal() {
-    setAddTokenModalOpen(false);
-  }
+  if (isLoadingOpen) return <Loading title='Fetching Network Balance ...' />;
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -835,35 +148,25 @@ function Home(): JSX.Element {
 
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
         <Toaster />
-        <Header
-          setChangeAccountLoading={setChangeAccountLoading}
-          changeAccount={changeAccount}
-        />
+        <Header />
 
-        {/* drawer */}
         <CSSTransition
           className='md:hidden z-40 p-6 w-[300px] bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 bottom-0'
           classNames='drawer'
-          in={drawerOpen}
+          in={status.homeMobileDrawer}
           nodeRef={nodeRef}
           timeout={500}
           unmountOnExit
         >
           <div ref={nodeRef}>
-            <p className='text-lg flex  w-full font-semibold justify-between text-black dark:text-white font-poppins  '>Change Network
+            <p className='text-lg flex  w-full font-semibold justify-between text-black dark:text-white font-poppins'>Change Network
               <XIcon className=' text-black dark:text-white h-8 w-8 cursor-pointer '
-                onClick={() => setDrawerOpen(!drawerOpen)} />
+                onClick={() => dispatch(toggle('homeMobileDrawer'))} />
             </p>
 
             <div className='flex md:flex-col items-center md:h-full bg-transparent' >
 
-              <NetworkSelection
-                changeNetwork={changeNetwork}
-                knownNetworks={knownNetworks}
-                network={network}
-                networkSelection={networkSelection}
-                setAddNetworkModalOpen={setAddNetworkModalOpen}
-                setNetworkSelection={setNetworkSelection} />
+              <NetworkSelection />
 
             </div>
           </div>
@@ -874,7 +177,7 @@ function Home(): JSX.Element {
             <div className='bg-transparent'>
               <button
                 className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
-                onClick={() => setDrawerOpen(!drawerOpen)}
+                onClick={() => dispatch(toggle('homeMobileDrawer'))}
               >
                 <p className='ml-1  text-white text-md font-semibold font-poppins'>NETWORK</p>
                 <ChevronRightIcon className=' text-white h-6 w-6 ml-6  ' />
@@ -883,60 +186,16 @@ function Home(): JSX.Element {
 
               {/* wideScreen network */}
               <div className=' hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f] items-center md:h-full mr-10' >
-                <NetworkSelection
-                  changeNetwork={changeNetwork}
-                  knownNetworks={knownNetworks}
-                  network={network}
-                  networkSelection={networkSelection}
-                  setAddNetworkModalOpen={setAddNetworkModalOpen}
-                  setNetworkSelection={setNetworkSelection} />
+                <NetworkSelection />
               </div>
             </div>
 
-            <Balance
-              // balance={balance}
-              cryptoInfo={cryptoInfo}
-              currentNetwork={knownNetworks[network]}
-              setIsReceiveOpen={setIsReceiveOpen}
-              setIsSendOpen={setIsSendOpen}
-              setAddTokenModalOpen={setAddTokenModalOpen}
-            />
+            <Balance balance={balance}/>
 
           </div>
 
-          {/* network change modal */}
-          <Modal closeModal={closeNetworkChangeModal}
-            isOpen={isNetworkChangeOpen} >
-            <div className={theme}>
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border  border-[#00f6ff] dark:border-[#00f6ff]'>
-                <Dialog.Title
-                  as='h3'
-                  className='font-poppins text-lg font-medium leading-6 text-black dark:text-white w-72'
-                >
-                  Changed successfully
-                </Dialog.Title>
-                <div className='mt-2'>
-                  <p className='text-sm font-poppins text-gray-500 dark:text-white'>
-                    {`Network changed to ${knownNetworks[networkSelection].text}`}
-                  </p>
-                </div>
-
-                <div className='mt-4'>
-                  <button
-                    className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={closeNetworkChangeModal}
-                    type='button'
-                  >
-                    OK
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </div>
-          </Modal>
-
           {/* send modal */}
-          <Modal closeModal={closeSendModal}
-            isOpen={isSendOpen}>
+          <Modal modalName="homeSend">
             <div className={theme}>
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
@@ -950,7 +209,7 @@ function Home(): JSX.Element {
                       : <p className=' text-gray-700 font-poppins'>Send Crypto</p>
                     }
                   </div>
-                  <div onClick={closeSendModal}>
+                  <div onClick={() => dispatch(setClose('homeSend'))}>
                     <XIcon className='  h-8 w-8 cursor-pointer text-black dark:text-white' />
                   </div>
                 </Dialog.Title>
@@ -986,19 +245,19 @@ function Home(): JSX.Element {
                       value={addressToSend} />
                     <CameraIcon
                       className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
-                      onClick={() => setOpenScan(!openScan)} />
+                      onClick={() => dispatch(toggle('homeQRScanner'))} />
 
                   </div>
 
-                  {openScan &&
+                  {status["homeQRScanner"] &&
                     <div>
                       <QrReader
                         className='absolute top-0 right-5 left-5 bottom-0 z-40'
                         constraints={{ facingMode: 'user' }}
                         onResult={(result, error) => {
                           if (result) {
-                            // setAddressToSend(result?.text);//这个位置官方写法还报错 不行就换插件
-                            setOpenScan(false);
+                            // setAddressToSend(result?.text)
+                            dispatch(setClose('homeQRScanner'))
                           }
 
                           if (error) {
@@ -1008,7 +267,7 @@ function Home(): JSX.Element {
                       />
                       <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
                         <XIcon className='h-5 w-5'
-                          onClick={() => setOpenScan(false)} />
+                          onClick={() => dispatch(setClose('homeQRScanner'))} />
                       </div>
 
                     </div>}
@@ -1064,7 +323,7 @@ function Home(): JSX.Element {
 
                   <button
                     className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={closeSendModal}
+                    onClick={() => dispatch(setClose('homeSend'))}
 
                     type='button'
                   >
@@ -1077,10 +336,8 @@ function Home(): JSX.Element {
           </Modal>
 
           {/* receive modal */}
-          <Modal closeModal={closeReceiveModal}
-            isOpen={isReceiveOpen}>
+          <Modal modalName='homeReceive'>
             <div className={theme}>
-
               <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
                   as='h3'
@@ -1090,7 +347,7 @@ function Home(): JSX.Element {
                   <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
                   {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
 
-                  <div onClick={closeReceiveModal}>
+                  <div onClick={() => dispatch(setClose('homeReceive'))}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
 
@@ -1102,9 +359,9 @@ function Home(): JSX.Element {
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
 
-                  <DropdownForNetwork defaultValue={networkToReceive}
+                  {/* <DropdownForNetwork defaultValue={networkToReceive}
                     networks={networks}
-                    onClick={setNetworkToReceive} />
+                    onClick={setNetworkToReceive} /> */}
 
                   <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
@@ -1150,8 +407,7 @@ function Home(): JSX.Element {
           </Modal>
 
           {/* add network modal pink */}
-          <Modal closeModal={closeAddNetworkModal}
-            isOpen={addNetworkModalOpen} >
+          <Modal modalName='homeAddNetwork'>
             <div className={theme}>
               <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
                 <Dialog.Title
@@ -1159,23 +415,22 @@ function Home(): JSX.Element {
                   className='text-lg font-medium leading-6 flex items-center mb-6'
                 >
                   <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Add Network</p>
-                  <div onClick={closeAddNetworkModal}>
+                  <div onClick={() => dispatch(setClose('homeAddNetwork'))}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
                 </Dialog.Title>
 
-                <AddNetworkBox
+                {/* <AddNetworkBox
                   closeAddNetworkModal={closeAddNetworkModal}
                   knownNetworks={knownNetworks}
-                />
+                /> */}
 
               </Dialog.Panel>
             </div >
           </Modal>
 
           {/* add token modal pink */}
-          <Modal closeModal={closeAddTokenModal}
-            isOpen={addTokenModalOpen} >
+          <Modal modalName='homeAddToken'>
             <div className={theme}>
               <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
                 <Dialog.Title
@@ -1183,15 +438,15 @@ function Home(): JSX.Element {
                   className='text-lg font-medium leading-6 flex items-center mb-6'
                 >
                   <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Add ERC20 Token</p>
-                  <div onClick={closeAddTokenModal}>
+                  <div onClick={() => dispatch(setClose('homeAddToken'))}>
                     <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
                   </div>
                 </Dialog.Title>
 
-                <AddTokenBox
+                {/* <AddTokenBox
                   closeAddTokenModal={closeAddTokenModal}
                   knownNetworks={knownNetworks}
-                />
+                /> */}
 
               </Dialog.Panel>
             </div >
@@ -1204,5 +459,3 @@ function Home(): JSX.Element {
     </div >
   );
 }
-
-export default Home;

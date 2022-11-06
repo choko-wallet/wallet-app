@@ -1,11 +1,9 @@
-
-export type CryptoForBalance = {
+export type BalanceInfo = Record<string, CryptoBalance>;
+export type CryptoBalance = {
+  balance: number,
+  img: string,
   name: string,
   symbol: string,
-  balance: number,
-  decimals?: number;
-  contractAddress?: string,
-  img?: string,
-  priceInUSD?: number,
-  balanceInUSD?: number,
+  priceInUSD: number,
+  balanceInUSD: number,
 };

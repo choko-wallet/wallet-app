@@ -3,13 +3,14 @@
 
 import { combineReducers, Reducer } from '@reduxjs/toolkit';
 
-import coinSlice from '../slices/coinSlice';
-import userSlice from '../slices/userSlice';
+import statusSlice from '../slices/status';
+import networkSlice from '../slices/network';
+import userSlice from '../slices/user';
 
 export const rootReducer: Reducer = combineReducers({
-  coin: coinSlice,
-  user: userSlice
-
+  user: userSlice,
+  network: networkSlice,
+  status: statusSlice
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
