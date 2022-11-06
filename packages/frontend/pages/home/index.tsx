@@ -14,6 +14,7 @@ import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
+import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
@@ -21,24 +22,20 @@ import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
 
 import DropdownForNetwork from '../../components/DropdownForNetwork';
 import DropdownForSend from '../../components/DropdownForSend';
-import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
-
-import {ethFetchBalance} from '../../utils/ethFetchBalance'
-import {polkadotFetchBalance} from '../../utils/polkadotFetchBalance'
-
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectStatus, selectToast } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
-import {selectStatus, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks} from '../../features/redux/selectors'
-import { loadUserAccount } from '../../features/slices/user';
 import { loadAllNetworks } from '../../features/slices/network';
+import { endLoading, setClose, startLoading, toast, toggle } from '../../features/slices/status';
+import { loadUserAccount } from '../../features/slices/user';
+import { ethFetchBalance } from '../../utils/ethFetchBalance';
+import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail, toastSuccess } from '../../utils/toast';
-import { setClose, toggle } from '../../features/slices/status';
 
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const nodeRef = React.useRef(null);
@@ -50,10 +47,11 @@ export default function Home(): JSX.Element {
   const currentNetwork = useSelector(selectCurrentNetwork);
   const knownNetworks = useSelector(selectKnownNetworks);
   const status = useSelector(selectStatus);
+  const loadingText = useSelector(selectLoading);
 
   const [mounted, setMounted] = useState<boolean>(false);
 
-  const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
@@ -67,14 +65,20 @@ export default function Home(): JSX.Element {
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
   useEffect(() => {
-    console.log(knownNetworks, currentNetwork, currentUserAccount)
+    if (loadingText && loadingText.length !== 0) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [loadingText]);
 
+  useEffect(() => {
     // Fetch balance and price once the network & user account is loaded in Redux
     if (!knownNetworks) return;
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
     // no need to await
-    void fetchBalanceAndPrice()
+    void fetchBalanceAndPrice();
     setMounted(true);
   }, [currentNetwork, currentUserAccount]);
 
@@ -89,51 +93,54 @@ export default function Home(): JSX.Element {
     }
   }, [dispatch, router]);
 
-
   useEffect(() => {
     if (theme !== 'dark' && theme !== 'light') {
       setTheme('light');
     }
-  }, [setTheme, theme])
+  }, [setTheme, theme]);
 
-  const fetchBalanceAndPrice = async() => {
-    setIsLoadingOpen(true);
+  const fetchBalanceAndPrice = async () => {
+    dispatch(startLoading('Fetching Balance ...'));
 
     const network = knownNetworks[currentNetwork];
+
     switch (network.networkType) {
       case 'polkadot':
         try {
           const res = await polkadotFetchBalance(network, currentUserAccount.address);
-          console.log(res)
+
+          console.log(res);
           setBalanceInfo(res);
-          setIsLoadingOpen(false);
+          dispatch(endLoading());
           toastSuccess(`Changed to ${network.text}`);
-        } catch(e) {
+        } catch (e) {
           console.error(e);
-          setIsLoadingOpen(false);
+          dispatch(endLoading());
           toastFail('Someting Wrong! Please Switch To Other Network.');
         }
+
         break;
       case 'ethereum':
         try {
           // const res = await ethFetchBalance(network, currentUserAccount.address);
-          const res = await ethFetchBalance(network, "0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2");
+          const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
 
           setBalanceInfo(res);
-          setIsLoadingOpen(false);
+          dispatch(endLoading());
           toastSuccess(`Changed to ${network.text}`);
-        } catch(e) {
+        } catch (e) {
           console.error(e);
-          setIsLoadingOpen(false);
+          dispatch(endLoading());
           toastFail('Someting Wrong! Please Switch To Other Network.');
         }
+
         break;
     }
-  }
+  };
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
-  if (isLoadingOpen) return <Loading title='Fetching Network Balance ...' />;
+  if (loading) return <Loading />;
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -195,7 +202,7 @@ export default function Home(): JSX.Element {
           </div>
 
           {/* send modal */}
-          <Modal modalName="homeSend">
+          <Modal modalName='homeSend'>
             <div className={theme}>
               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
                 <Dialog.Title
@@ -249,7 +256,7 @@ export default function Home(): JSX.Element {
 
                   </div>
 
-                  {status["homeQRScanner"] &&
+                  {status.homeQRScanner &&
                     <div>
                       <QrReader
                         className='absolute top-0 right-5 left-5 bottom-0 z-40'
@@ -257,7 +264,7 @@ export default function Home(): JSX.Element {
                         onResult={(result, error) => {
                           if (result) {
                             // setAddressToSend(result?.text)
-                            dispatch(setClose('homeQRScanner'))
+                            dispatch(setClose('homeQRScanner'));
                           }
 
                           if (error) {

@@ -4,33 +4,20 @@
 import { RadioGroup } from '@headlessui/react';
 import { CheckIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
-
-import { selectCurrentNetwork, selectKnownNetworks} from '../features/redux/selectors'
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadAllNetworks, removeNetworkAndSave, setCurrentNetwork } from '../features/slices/network';
+
+import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
+import { removeNetworkAndSave, setCurrentNetwork } from '../features/slices/network';
 import { setOpen } from '../features/slices/status';
-import Loading from './Loading';
 
-function NetworkSelection(): JSX.Element {
-
+function NetworkSelection (): JSX.Element {
   const dispatch = useDispatch();
 
   const currentNetwork = useSelector(selectCurrentNetwork);
   const knownNetworks = useSelector(selectKnownNetworks);
 
   const [networkSelection, setNetworkSelection] = useState(currentNetwork);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (knownNetworks) {
-      setLoading(false)
-    } else {
-      dispatch(loadAllNetworks());
-    }
-  }, [knownNetworks]);
-
-  if (loading) return <Loading title="Loading ..."/>
 
   return (
     <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
@@ -120,7 +107,7 @@ function NetworkSelection(): JSX.Element {
       </div>
 
       <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
-        onClick={() => dispatch( setOpen("homeAddNetwork") )}>
+        onClick={() => dispatch(setOpen('homeAddNetwork'))}>
         <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
         >
 
@@ -138,7 +125,7 @@ function NetworkSelection(): JSX.Element {
           : <button
 
             className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
-            onClick={() => dispatch( setCurrentNetwork(networkSelection) )}
+            onClick={() => dispatch(setCurrentNetwork(networkSelection))}
           >
             <p className='text-black dark:text-white text-md whitespace-nowrap font-semibold font-poppins'>Switch Network</p>
 

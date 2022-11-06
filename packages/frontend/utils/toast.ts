@@ -1,3 +1,6 @@
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
 import toast from 'react-hot-toast';
 
 export const toastSuccess = (title: string): void => {
@@ -13,7 +16,7 @@ export const toastSuccess = (title: string): void => {
       padding: '20px'
     }
   });
-}
+};
 
 export const toastFail = (title: string): void => {
   toast(title, {
@@ -27,4 +30,4 @@ export const toastFail = (title: string): void => {
       padding: '20px'
     }
   });
-}
+};

@@ -6,8 +6,8 @@ import { SearchIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import React, { Fragment, useEffect, useState } from 'react';
-import { CryptoForBalance } from '../utils/types';
 
+import { CryptoForBalance } from '../utils/types';
 
 interface Props {
   cryptoInfo: CryptoForBalance[];
@@ -18,8 +18,7 @@ interface Props {
 
 }
 
-function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): JSX.Element {
-
+function DropdownForSend ({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   const [filterResult, setFilterResult] = useState<CryptoForBalance[]>(cryptoInfo);
 
@@ -28,7 +27,7 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
   // }, [cryptoInfo]);
 
   useEffect(() => {
-    function filterCoin(item: CryptoForBalance) {
+    function filterCoin (item: CryptoForBalance) {
       return item.name.toLowerCase().includes(searchInput.toLowerCase());
     }
 
@@ -36,7 +35,6 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
 
     setFilterResult(result);
   }, [searchInput, cryptoInfo]);
-
 
   // console.log('cryptoToSend', cryptoToSend)
   // console.log('cryptoInfo', cryptoInfo)
@@ -50,23 +48,21 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
 
             <div className='relative h-6 w-6'>
               {cryptoToSend?.img !== null
-                ?
-                <img alt='icon'
+                ? <img alt='icon'
                   className='w-[90%] h-[90%] object-contain'
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                  }}
                   src={cryptoToSend?.img}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null
-                    e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
-                  }}
                 />
-                :
-                <img alt='icon'
+                : <img alt='icon'
                   className='w-[90%] h-[90%] object-contain'
-                  src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
                   onError={(e) => {
-                    e.currentTarget.onerror = null
-                    e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
                   }}
+                  src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
                 />
               }
             </div>
@@ -100,29 +96,27 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
                 <Menu.Item key={item.img}>
                   {({ active }) => (
                     <button className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white font-poppins' : 'font-poppins text-gray-900'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      onClick={() => setCryptoToSend(item)}
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => setCryptoToSend(item)}
                     >
                       <div className='relative h-5 w-5 ml-2 mr-3'>
                         {/* <div className='relative h-6 w-6'> */}
                         {item.img !== null
-                          ?
-                          <img alt='icon'
+                          ? <img alt='icon'
                             className='w-[90%] h-[90%] object-contain'
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                            }}
                             src={item.img}
-                            onError={(e) => {
-                              e.currentTarget.onerror = null
-                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
-                            }}
                           />
-                          :
-                          <img alt='icon'
+                          : <img alt='icon'
                             className='w-[90%] h-[90%] object-contain'
-                            src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
                             onError={(e) => {
-                              e.currentTarget.onerror = null
-                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
                             }}
+                            src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
                           />
                         }
                       </div>

@@ -3,11 +3,10 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { u8aToHex } from '@skyekiwi/util';
+import { ethers } from 'ethers';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-
-import { ethers } from "ethers";
 
 import { KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
@@ -96,16 +95,15 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         });
         console.log(err);
       }
-
     }
 
     if (networkType === 'ethereum') {
       try {
         const provider = new ethers.providers.JsonRpcProvider(formData.netWorkRPC);
-        const { chainId, name } = await provider.getNetwork()
+        const { chainId, name } = await provider.getNetwork();
 
-        console.log(chainId) // 137   56
-        console.log(name) // matic    bnb
+        console.log(chainId); // 137   56
+        console.log(name); // matic    bnb
 
         const networkForAdding: Network = {
           /* eslint-disable */
@@ -155,10 +153,7 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         });
         console.log(err);
       }
-
     }
-
-
   });
 
   // console.log('networkType,networkType', networkType);
@@ -189,7 +184,6 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         }
       </div>
 
-
       <div className=''>
         <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
           Network RPC</p>
@@ -201,8 +195,8 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         />
       </div>
 
-      {networkType === 'ethereum' ?
-        <div className=''>
+      {networkType === 'ethereum'
+        ? <div className=''>
           <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
             Network Name</p>
           <input
@@ -214,8 +208,8 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
         </div>
         : null}
 
-      {networkType === 'ethereum' ?
-        <div className=''>
+      {networkType === 'ethereum'
+        ? <div className=''>
           <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
             Native Token Decimal</p>
           <input
@@ -226,9 +220,6 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
           />
         </div>
         : null}
-
-
-
 
       {Object.keys(errors).length > 0 && (
         <div className='p-2 space-y-2 text-red-500 font-poppins font-semibold'>
@@ -252,24 +243,20 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
             src='https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif'
           />
         )
-        :
-        networkType === 'polkadot'
-          ?
-          <button
+        : networkType === 'polkadot'
+          ? <button
             className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-[#c67391] rounded-[10px] outline-none font-poppins'
             type='submit'
           >
             Add Network
           </button>
-          :
-          <button
-            disabled
+          : <button
             className='mt-5 py-3 px-6 font-medium text-[18px] text-primary bg-gray-400 rounded-[10px] outline-none font-poppins'
+            disabled
             type='submit'
           >
             Temporarily not supported
           </button>
-
 
       }
 

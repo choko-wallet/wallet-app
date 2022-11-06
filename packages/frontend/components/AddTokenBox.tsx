@@ -3,15 +3,16 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { u8aToHex } from '@skyekiwi/util';
+import { Alchemy } from 'alchemy-sdk';
+import { ethers } from 'ethers';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { ethers } from "ethers";
 
-import { KnownNetworks, Network } from '../utils/knownNetworks';
 import { xxHash } from '@choko-wallet/core/util';
-import { Alchemy } from 'alchemy-sdk';
+
 import alchemyAll from '../utils/alchemy';
+import { KnownNetworks, Network } from '../utils/knownNetworks';
 
 interface Props {
   knownNetworks?: KnownNetworks;
@@ -33,34 +34,30 @@ const AddNetworkBox = ({ closeAddTokenModal, currentNetwork, knownNetworks }: Pr
   const { formState: { errors }, handleSubmit, register, setValue } = useForm<FormData>();
   const [addTokenLoading, setAddTokenLoading] = useState<boolean>(false);
 
-
   const onSubmit = handleSubmit(async (formData) => {
     if (addTokenLoading) return;
     setAddTokenLoading(true);
 
     // const notification = toast.loading('Adding Token...');
-    console.log(formData)
+    console.log(formData);
 
-    // 获取币信息metadata 加到localstorage? 重新加载带localstorage?  获取余额 
+    // 获取币信息metadata 加到localstorage? 重新加载带localstorage?  获取余额
 
     try {
-
       // alchemy
-      const alchemy: Alchemy = alchemyAll['alchemyEthGoerli'];
+      const alchemy: Alchemy = alchemyAll.alchemyEthGoerli;
 
       // 0x326C977E6efc84E512bB9C30f76E30c160eD06FB  goerli的erc20
 
-      const balances = await alchemy.core.getTokenBalances("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE");
-      console.log('balances', balances)
+      const balances = await alchemy.core.getTokenBalances('0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');
+
+      console.log('balances', balances);
       const metadata = await alchemy.core.getTokenMetadata(formData.ERC20TokenAddress);
+
       console.log('metadata', metadata);
-
-
     } catch (err) {
 
     }
-
-
   });
 
   // console.log('networkType,networkType', networkType);
@@ -83,9 +80,6 @@ const AddNetworkBox = ({ closeAddTokenModal, currentNetwork, knownNetworks }: Pr
         />
         {/* 0x326C977E6efc84E512bB9C30f76E30c160eD06FB */}
       </div>
-
-
-
 
       {Object.keys(errors).length > 0 && (
         <div className='p-2 space-y-2 text-red-500 font-poppins font-semibold'>

@@ -11,30 +11,28 @@ interface Props {
   symbol: string;
 }
 
-function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
+function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
       <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#4797B5]  hover:bg-[#4797B5]'>
         <div className='flex justify-between flex-grow'>
           <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent dark:bg-gray-700'>
             {img !== null
-              ?
-              <img alt='icon'
+              ? <img alt='icon'
                 className='w-[70%] h-[70%] object-contain'
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                }}
                 src={img}
-                onError={(e) => {
-                  e.currentTarget.onerror = null
-                  e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
-                }}
               />
-              :
-              <img alt='icon'
+              : <img alt='icon'
                 className='w-[70%] h-[70%] object-contain'
-                src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
                 onError={(e) => {
-                  e.currentTarget.onerror = null
-                  e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
                 }}
+                src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
               />
             }
           </div>
@@ -43,13 +41,11 @@ function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
               {name}
             </p>
             {price === undefined
-              ?
-              <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
+              ? <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
                 {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
                 0{' '}USD
               </p>
-              :
-              <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
+              : <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
                 {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
                 {price}
                 {' '}USD
@@ -65,13 +61,11 @@ function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
           </p>
 
           {price === undefined
-            ?
-            <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
+            ? <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
               {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
               0{' '}USD
             </p>
-            :
-            <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
+            : <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
               {Number(balance * price).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
             </p>
           }

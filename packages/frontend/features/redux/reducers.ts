@@ -3,8 +3,8 @@
 
 import { combineReducers, Reducer } from '@reduxjs/toolkit';
 
-import statusSlice from '../slices/status';
 import networkSlice from '../slices/network';
+import statusSlice from '../slices/status';
 import userSlice from '../slices/user';
 
 export const rootReducer: Reducer = combineReducers({

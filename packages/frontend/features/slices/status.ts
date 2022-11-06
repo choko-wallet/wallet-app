@@ -6,7 +6,8 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 interface StatusSliceItem {
   status: {
     [key: string]: boolean
-  }
+  },
+  loading: string
 }
 
 const initialState: StatusSliceItem = {
@@ -17,9 +18,10 @@ const initialState: StatusSliceItem = {
     homeAddToken: false,
     homeQRScanner: false,
     homeMobileDrawer: false,
-    
-    requestPassword: false, 
-  }
+
+    requestPassword: false
+  },
+  loading: ''
 };
 
 /* eslint-disable sort-keys */
@@ -29,36 +31,46 @@ export const statusSlice = createSlice({
   reducers: {
     setOpen: (state, action: PayloadAction<string>) => {
       const name = action.payload;
+
       if (state.status.hasOwnProperty(name)) {
         state.status[name] = true;
       } else {
-        console.error(`Moving component name not found ${name}`)
+        console.error(`Moving component name not found ${name}`);
         // pass
       }
     },
     setClose: (state, action: PayloadAction<string>) => {
       const name = action.payload;
+
       if (state.status.hasOwnProperty(name)) {
         state.status[name] = false;
       } else {
-        console.error(`Moving component name not found ${name}`)
+        console.error(`Moving component name not found ${name}`);
         // pass
       }
     },
-
     toggle: (state, action: PayloadAction<string>) => {
       const name = action.payload;
-      const currentStatus = current( state.status );
+      const currentStatus = current(state.status);
 
       if (state.status.hasOwnProperty(name)) {
         state.status[name] = !currentStatus[name];
       } else {
-        console.error(`Moving component name not found ${name}`)
+        console.error(`Moving component name not found ${name}`);
         // pass
       }
     },
-  },
+    startLoading: (state, action: PayloadAction<string>) => {
+      const title = action.payload;
+
+      state.loading = title;
+    },
+
+    endLoading: (state) => {
+      state.loading = '';
+    }
+  }
 });
 
-export const { setOpen, setClose, toggle, } = statusSlice.actions;
+export const { endLoading, setClose, setOpen, startLoading, toggle } = statusSlice.actions;
 export default statusSlice.reducer;

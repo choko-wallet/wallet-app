@@ -1,11 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {
-  BellIcon, CogIcon,
+import { BellIcon, CogIcon,
   MenuIcon,
-  MoonIcon, SunIcon
-} from '@heroicons/react/outline';
+  MoonIcon, SunIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -20,7 +18,7 @@ import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
 import AccountInHeader from './AccountInHeader';
 
-function Header(): JSX.Element {
+function Header (): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();

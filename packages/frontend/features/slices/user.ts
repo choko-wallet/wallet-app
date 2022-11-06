@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { blake2AsU8a, ethereumEncode } from '@polkadot/util-crypto';
+import { blake2AsU8a } from '@polkadot/util-crypto';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
@@ -51,34 +51,14 @@ export const addUserAccount = createAsyncThunk(
   }
 );
 
-export const changeCurrentAccountType = createAsyncThunk(
-  'users/changeCurrentAccountType',
-  async (payload: {
-    option: AccountOption,
-    userAccount: UserAccount,
-  }) => {
-    const { option, userAccount } = payload;
-
-    userAccount.option = option;
-    await userAccount.init();
-
-    return userAccount;
-  }
-);
-
 // User slice
 interface UserSliceItem {
-  error: string;
   userAccount: { [key: string]: UserAccount };
   currentUserAccount: UserAccount | null;
-  changeCurrentAccountLoading: boolean;
-
 }
 
 const initialState: UserSliceItem = {
-  changeCurrentAccountLoading: false,
   currentUserAccount: null,
-  error: '',
   userAccount: {}
 };
 
@@ -176,37 +156,6 @@ export const userSlice = createSlice({
       })
       .addCase(addUserAccount.rejected, (state, action) => {
         state.error = (action.error ? action.error : 'Invalid password!') as string;
-      })
-
-      .addCase(changeCurrentAccountType.fulfilled, (state, action) => {
-        const userAccount = action.payload;
-        const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
-        let newLocalStorageContent = '';
-
-        if (maybeCurrentSerializedAccount) {
-          let offset = 0;
-          const len = UserAccount.serializedLengthWithEncryptedKey();
-
-          while (offset < maybeCurrentSerializedAccount.length) {
-            const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
-            const account = UserAccount.deserializeWithEncryptedKey(hexToU8a(currentSerializedAccount));
-
-            offset += len;
-
-            if (account.address === userAccount.address) {
-              newLocalStorageContent += u8aToHex(userAccount.serializeWithEncryptedKey());
-            } else {
-              newLocalStorageContent += u8aToHex(account.serializeWithEncryptedKey());
-            }
-          }
-        }
-
-        state.currentUserAccount = userAccount;
-        localStorage.setItem('serialziedUserAccount', newLocalStorageContent);
-      })
-      .addCase(changeCurrentAccountType.rejected, (state, action) => {
-        // unexpected;
-        state.error = (action.error ? action.error : 'unexpected!') as string;
       });
   }
 });

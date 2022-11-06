@@ -4,6 +4,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { selectStatus } from '../features/redux/selectors';
 import { setClose } from '../features/slices/status';
 
@@ -17,7 +18,7 @@ function Modal ({ children, modalName }: Props): JSX.Element {
   const status = useSelector(selectStatus);
 
   return (
-     <Transition appear
+    <Transition appear
       as={Fragment}
       show={status[modalName]}>
       <Dialog as='div'
