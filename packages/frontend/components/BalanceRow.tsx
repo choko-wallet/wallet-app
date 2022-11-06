@@ -39,7 +39,7 @@ function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
             }
           </div>
           <div className='flex flex-col flex-1 ml-3'>
-            <p className='w-44 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins'>
+            <p className='w-full max-w-64 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins'>
               {name}
             </p>
             {price === undefined

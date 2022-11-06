@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
 import { setOpen } from '../features/slices/status';
 import BalanceRow from './BalanceRow';
-import Loading from './Loading';
 
 interface Props {
   balance: BalanceInfo;

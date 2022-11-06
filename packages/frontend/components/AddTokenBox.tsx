@@ -10,10 +10,13 @@ import { ethers } from "ethers";
 
 import { KnownNetworks, Network } from '../utils/knownNetworks';
 import { xxHash } from '@choko-wallet/core/util';
+import { Alchemy } from 'alchemy-sdk';
+import alchemyAll from '../utils/alchemy';
 
 interface Props {
-  knownNetworks: KnownNetworks;
-  closeAddTokenModal: () => void;
+  knownNetworks?: KnownNetworks;
+  closeAddTokenModal?: () => void;
+  currentNetwork: Network;
 }
 
 type FormData = {
@@ -21,12 +24,12 @@ type FormData = {
 
 }
 
-interface networkObject {
-  [key: string]: Network
-}
+// interface networkObject {
+//   [key: string]: Network
+// }
 
 // wss://acala-rpc.dwellir.com
-const AddNetworkBox = ({ closeAddTokenModal, knownNetworks }: Props): JSX.Element => {
+const AddNetworkBox = ({ closeAddTokenModal, currentNetwork, knownNetworks }: Props): JSX.Element => {
   const { formState: { errors }, handleSubmit, register, setValue } = useForm<FormData>();
   const [addTokenLoading, setAddTokenLoading] = useState<boolean>(false);
 
@@ -38,6 +41,24 @@ const AddNetworkBox = ({ closeAddTokenModal, knownNetworks }: Props): JSX.Elemen
     // const notification = toast.loading('Adding Token...');
     console.log(formData)
 
+    // 获取币信息metadata 加到localstorage? 重新加载带localstorage?  获取余额 
+
+    try {
+
+      // alchemy
+      const alchemy: Alchemy = alchemyAll['alchemyEthGoerli'];
+
+      // 0x326C977E6efc84E512bB9C30f76E30c160eD06FB  goerli的erc20
+
+      const balances = await alchemy.core.getTokenBalances("0xBF544eBd099Fa1797Ed06aD4665646c1995629EE");
+      console.log('balances', balances)
+      const metadata = await alchemy.core.getTokenMetadata(formData.ERC20TokenAddress);
+      console.log('metadata', metadata);
+
+
+    } catch (err) {
+
+    }
 
 
   });
@@ -51,13 +72,16 @@ const AddNetworkBox = ({ closeAddTokenModal, knownNetworks }: Props): JSX.Elemen
 
       <div className=''>
         <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
-          ERC20 Token Address:</p>
+          ERC20 Token Address: </p>
+        <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins font-semibold'>
+          On {currentNetwork.info}</p>
         <input
           className='input border border-[#c67391] w-full '
           {...register('ERC20TokenAddress', { required: true })}
           placeholder='0x0000'
           type='text'
         />
+        {/* 0x326C977E6efc84E512bB9C30f76E30c160eD06FB */}
       </div>
 
 
@@ -66,7 +90,7 @@ const AddNetworkBox = ({ closeAddTokenModal, knownNetworks }: Props): JSX.Elemen
       {Object.keys(errors).length > 0 && (
         <div className='p-2 space-y-2 text-red-500 font-poppins font-semibold'>
           {errors.ERC20TokenAddress?.type === 'required' && (
-            <p>Network RPC is required</p>
+            <p>Token Address is required</p>
           )}
 
         </div>
