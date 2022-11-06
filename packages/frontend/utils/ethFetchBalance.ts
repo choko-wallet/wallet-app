@@ -10,17 +10,93 @@ const notShitcoinFilter = (metadata: TokenMetadataResponse) => {
     && metadata.symbol.indexOf(".") === -1
 };
 
-const getAlchemy = (): Alchemy => {
-  const config = {
-    apiKey: process.env.ALCHEMY_API_KEY,
-    network: alchemyNetwork.ETH_MAINNET,
-  };
-  return new Alchemy(config);
+const getAlchemy = (network: Network): Alchemy => {
+  let config = { };
+  switch (network.info) {
+    case 'ethereum':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.ETH_MAINNET,
+      };
+      return new Alchemy(config);
+    case 'goerli':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.ETH_GOERLI
+      };
+      return new Alchemy(config);
+    case 'optimism':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.OPT_MAINNET
+      };
+      return new Alchemy(config);
+    case 'optimism-goerli':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.OPT_GOERLI
+      };
+      return new Alchemy(config);
+    case 'arbitrum':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.ARB_MAINNET
+      };
+      return new Alchemy(config);
+    case 'arbitrum-goerli':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.ARB_GOERLI
+      };
+      return new Alchemy(config);
+    case 'polygon':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.MATIC_MAINNET
+      };
+      return new Alchemy(config);
+    case 'polygon-mumbai':
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.MATIC_MUMBAI
+      };
+      return new Alchemy(config);
+    default:
+      config = {
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: alchemyNetwork.ETH_MAINNET,
+      };
+      return new Alchemy(config);
+  }
+}
+
+const getTokenImage = (network: Network): string => {
+  switch (network.info) {
+    case 'ethereum' || 'goerli':
+      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png";
+    case 'optimism' || 'optimism-goerli':
+      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png";
+    case 'arbitrum' || 'arbitrum-goerli':
+      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png";
+    case 'polygon' || 'polygon-mumbari' || 'polygon-goerli':
+      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png";
+    default:
+      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png";
+  }
+}
+
+const getNativeAssetCoingeckoId = (networkInfo: string): string => {
+  switch (networkInfo) {
+    case 'ethereum': return 'ethereum';
+    case 'polygon': return 'matic-network'
+    default: return ''
+  }
 }
 
 const fetchNativeAssetPrice = async (name: string, currency: string): Promise<number> => {
-  const price = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=${currency}`).then(res => res.json());
-  return price[name][currency]
+  const coingeckoId = getNativeAssetCoingeckoId(name);
+  const price = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=${currency}`).then(res => res.json());
+  return price[coingeckoId][currency]
 }
 
 const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string, number>): BalanceInfo => {
@@ -64,8 +140,8 @@ const sortBalance = (original: BalanceInfo): BalanceInfo => {
   }));
 }
 
-export const fetchNativeAssetBalanceAndPrice = async (address: string, name: string, currency: string, decimals: number): Promise<BalanceInfo> => {
-  const alchemy = getAlchemy();
+export const fetchNativeAssetBalanceAndPrice = async (network: Network, address: string, name: string, currency: string, decimals: number): Promise<BalanceInfo> => {
+  const alchemy = getAlchemy(network);
 
   const divBy = decimals >= 6 ? decimals - 6 : decimals;
 
@@ -75,9 +151,9 @@ export const fetchNativeAssetBalanceAndPrice = async (address: string, name: str
 
   result["native"] = {
     balance: nativeBalance,
-    img: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png", // TODO: Change me
+    img: getTokenImage(network),
     name: name,
-    symbol: "ETH", // TODO: Change me
+    symbol: network.nativeTokenSymbol,
     priceInUSD: nativePrice,
     balanceInUSD: nativeBalance * nativePrice,
   }
@@ -85,8 +161,8 @@ export const fetchNativeAssetBalanceAndPrice = async (address: string, name: str
   return result;
 }
 
-export const fetchTokenBalance = async (address: string): Promise<BalanceInfo> => {
-  const alchemy = getAlchemy();
+export const fetchTokenBalance = async (network: Network, address: string): Promise<BalanceInfo> => {
+  const alchemy = getAlchemy(network);
 
   const rawBalances = await alchemy.core.getTokenBalances(address, {
     type: TokenBalanceType.DEFAULT_TOKENS
@@ -115,13 +191,20 @@ export const fetchTokenBalance = async (address: string): Promise<BalanceInfo> =
 }
 
 export const ethFetchBalance = async (network: Network, address: string): Promise<BalanceInfo> => {
-  const tokenBalance = await fetchTokenBalance(address);
+  const tokenBalance = await fetchTokenBalance(network, address);
   
 
-  const tokenAddressBatch = Object.entries(tokenBalance).map(i => i[0]);
-  const tokenPrice = await fetchBatchTokenPrice(tokenAddressBatch, 'usd');
+  const tokenAddressBatch = Object.keys(tokenBalance);
+
+  console.log("tokenAddressBatch", tokenAddressBatch);
   
-  const nativeAssetBalanceAndPrice = await fetchNativeAssetBalanceAndPrice(address, 'ethereum', 'usd', 18);
+  let tokenPrice = {}
+  if (network.info === 'ethereum') {
+    // only fetch on ethereum?
+    tokenPrice = await fetchBatchTokenPrice(tokenAddressBatch, 'usd');
+  }
+  
+  const nativeAssetBalanceAndPrice = await fetchNativeAssetBalanceAndPrice(network, address, network.info, 'usd', 18);
   
   return {
     ...nativeAssetBalanceAndPrice,
