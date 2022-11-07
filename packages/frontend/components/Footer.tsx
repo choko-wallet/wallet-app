@@ -5,16 +5,15 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import React from 'react';
 import { SocialIcon } from 'react-social-icons';
-
 import discIcon1 from '../images/discord1.svg';
 import discIcon2 from '../images/discord2.svg';
 
-function Footer (): JSX.Element {
+function Footer(): JSX.Element {
   const { theme } = useTheme();
 
   return (
     // <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
-    <div className='flex justify-between items-center p-3 pt-5 md:px-10 '>
+    <div className='flex justify-between items-center md:px-10 '>
       <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>

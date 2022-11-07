@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Typed from 'react-typed';
-
-import logo1 from '../../images/logo1.svg';
+import { ArrowDownIcon } from '@heroicons/react/outline';
+import logo3 from '../../images/logo3.svg';
 import BackgroundCircle from './BackgroundCircle';
 
 const Hero = (): JSX.Element => {
@@ -23,7 +23,7 @@ const Hero = (): JSX.Element => {
           height={180}
           /* eslint-disable */
           // @ts-ignore
-          src={logo1}
+          src={logo3}
           /* eslint-enable */
           width={180}
         />
@@ -44,15 +44,21 @@ const Hero = (): JSX.Element => {
               typeSpeed={100} />crypto wallet
           </p>
 
-          <div className='flex flex-col '>
-            <button className='btn btn-secondary w-36 md:w-44 mb-10'
-              onClick={() => router.push('/home')}>Enter
+          <div className='flex flex-col mt-16'>
+            <button className='py-3 mt-3 text-xl text-black transition duration-150 
+                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#F5CBD5]'
+              onClick={() => router.push('/home')}>ENTER
             </button>
 
-            <button className='btn btn-accent w-36 md:w-44 mb-10'
-              onClick={() => router.push('/alpha')}>Alpha Test
+            <button className='py-3 text-xl text-white transition duration-150 
+                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
+              onClick={() => router.push('/alpha')}>BETA TEST
             </button>
           </div>
+
+          <a href={'#about'}>
+            <ArrowDownIcon className='h-10 text-white cursor-pointer ' />
+          </a>
         </div>
       </div>
     </section>

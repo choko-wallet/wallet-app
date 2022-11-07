@@ -4,7 +4,7 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import logo2 from '../../images/logo2.svg';
+import logo4 from '../../images/logo4.svg';
 
 const About = (): JSX.Element => {
   return (
@@ -26,7 +26,7 @@ const About = (): JSX.Element => {
           /* eslint-disable */
           // @ts-ignore
 
-          src={logo2.src}
+          src={logo4.src}
           /* eslint-enable */
 
           transition={{
@@ -51,17 +51,17 @@ const About = (): JSX.Element => {
             opacity: 1
           }}
         >
-          <p className='text-2xl font-semibold md:text-4xl'>
+          <p className='text-2xl font-semibold md:text-4xl font-poppins'>
             Choko <span className='underline decoration-[#F7AB0A]/50'>Wallet</span>
           </p>
-          <p className='text-sm md:text-base'>
-            Multi-chain crypto wallet made by SkyeKiwi.
+          <p className='text-sm md:text-base font-poppins'>
+            A Multi-chain Crypto Wallet.
 
           </p>
-          <p className='text-sm md:text-base'>
+          {/* <p className='text-sm md:text-base'>
             SkyeKiwi is a privacy layer for blockchains.
             A Substrate-based privacy-first blockchain for concealed smart contract execution with interoperability and novel economic models of data ownership.
-          </p>
+          </p> */}
         </motion.div>
       </div>
     </section>

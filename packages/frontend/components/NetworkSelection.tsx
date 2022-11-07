@@ -11,7 +11,7 @@ import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/sel
 import { removeNetworkAndSave, setCurrentNetwork } from '../features/slices/network';
 import { setOpen } from '../features/slices/status';
 
-function NetworkSelection (): JSX.Element {
+function NetworkSelection(): JSX.Element {
   const dispatch = useDispatch();
 
   const currentNetwork = useSelector(selectCurrentNetwork);
@@ -21,7 +21,7 @@ function NetworkSelection (): JSX.Element {
 
   return (
     <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
-      <div className='scrollbar-thin max-h-[580px] overflow-y-scroll  mt-10 pr-2'>
+      <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
           {Object.entries(knownNetworks).map(([hash, { color, defaultProvider, isDevelopment, text }]) => {

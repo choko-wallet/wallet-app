@@ -35,7 +35,7 @@ import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail, toastSuccess } from '../../utils/toast';
 
 /* eslint-disable sort-keys */
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const nodeRef = React.useRef(null);
@@ -60,7 +60,7 @@ export default function Home (): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
   const [networkToReceive, setNetworkToReceive] = useState<string>('');
-  const [balance, setBalanceInfo] = useState<BalanceInfo>({});
+  const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
 
   const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
@@ -78,7 +78,8 @@ export default function Home (): JSX.Element {
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
     // no need to await
-    void fetchBalanceAndPrice();
+    console.log('useEffect-changenetwork')//切换网络或变量 可能会多次触发useEffect
+    void fetchBalanceAndPrice();//
     setMounted(true);
   }, [currentNetwork, currentUserAccount]);
 
@@ -103,7 +104,7 @@ export default function Home (): JSX.Element {
     dispatch(startLoading('Fetching Balance ...'));
 
     const network = knownNetworks[currentNetwork];
-
+    console.log('network', network)
     switch (network.networkType) {
       case 'polkadot':
         try {
@@ -122,8 +123,12 @@ export default function Home (): JSX.Element {
         break;
       case 'ethereum':
         try {
+          console.log('ethereum');
           // const res = await ethFetchBalance(network, currentUserAccount.address);
-          const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
+          // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
+          const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');//goerli
+
+          console.log('res', res);
 
           setBalanceInfo(res);
           dispatch(endLoading());
@@ -137,6 +142,9 @@ export default function Home (): JSX.Element {
         break;
     }
   };
+
+
+
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
@@ -153,7 +161,7 @@ export default function Home (): JSX.Element {
   return (
     <div className={theme}>
 
-      <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen'>
+      <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen flex flex-col justify-between'>
         <Toaster />
         <Header />
 
@@ -179,8 +187,10 @@ export default function Home (): JSX.Element {
           </div>
         </CSSTransition>
 
-        < main className='min-h-[750px] bg-transparent h-85v  dark:bg-[#22262f] max-w-7xl mx-auto' >
-          <div className='bg-transparent flex-col h-full  flex md:flex-row m-3 md:m-10'>
+        < main className='min-h-[750px] bg-transparent h-80v  dark:bg-[#22262f] max-w-7xl mx-auto' >
+
+          <div className='bg-transparent flex-col h-full  flex md:flex-row mx-3 md:mx-10'>
+
             <div className='bg-transparent'>
               <button
                 className='md:hidden mb-2 w-[158px] h-[40px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-[#4797B5] rounded-[8px] outline-none '
@@ -197,7 +207,7 @@ export default function Home (): JSX.Element {
               </div>
             </div>
 
-            <Balance balance={balance}/>
+            <Balance balance={balanceInfo} />
 
           </div>
 
@@ -222,9 +232,10 @@ export default function Home (): JSX.Element {
                 </Dialog.Title>
                 <div className='mt-2 '>
 
-                  {/* <DropdownForSend Cryptos={cryptoInfo}
+                  {/* <DropdownForSend Cryptos={balanceInfo}
                     defaultValue={cryptoToSend}
                     onClick={setCryptoToSend} /> */}
+                  {/* 这个位置  cryptoToSend是home中的useState变量 用来发送 不用的话 该怎么办  */}
 
                   <p className=' text-gray-700 dark:text-white '>From</p>
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
