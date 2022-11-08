@@ -17,7 +17,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance ({ balance }: Props): JSX.Element {
+function Balance({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
 
   const knownNetworks = useSelector(selectKnownNetworks);
@@ -62,7 +62,7 @@ function Balance ({ balance }: Props): JSX.Element {
   return (<div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
     <div className='bg-[#F5F5F5] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-lg m-5 md:m-10 lg:ml-16 p-3 px-5'>
       <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
-          ${balanceTotal} USD </p>
+        ${balanceTotal} USD </p>
       <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
     </div>
 
@@ -89,10 +89,10 @@ function Balance ({ balance }: Props): JSX.Element {
           null} */}
 
     </div>
-    <div className='flex items-center justify-between  pt-5 px-16'>
-      <p className='text-black dark:text-gray-400'>Your Portfolio</p>
+    <div className='flex items-center justify-between  pt-5 px-5'>
+      <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
 
-      <SearchCircleIcon className=' text-black h-10 w-10 cursor-pointer'
+      <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
         onClick={() => setSearchInputOpen(!searchInputOpen)} />
 
       <div className='flex items-center '>
@@ -109,8 +109,10 @@ function Balance ({ balance }: Props): JSX.Element {
             pointer-events-none inline-block h-[34px] w-[34px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
+
         <p className='text-black dark:text-gray-400'>small assets</p>
       </div>
+
       <p className='text-black dark:text-gray-400'>Total Balance</p>
     </div>
 

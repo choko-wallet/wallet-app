@@ -5,7 +5,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-function AccountRouter (): JSX.Element {
+function AccountRouter(): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -18,29 +18,37 @@ function AccountRouter (): JSX.Element {
   }
 
   return (
-    <main className='grid grid-cols-12 gap-4 h-screen content-center color-bg'>
-      <div className='grid grid-cols-12 col-span-10 col-start-2 md:col-span-4 md:col-start-5 gap-y-5'>
-        <div className=' col-span-12 shadow-xl rounded-lg'>
-          <div className='card p-5 md:p-10 '
-            style={{ background: 'white' }}>
-            <h2 className='card-title'>
-              Create Your Account
-            </h2><br />
-            <h3>You may either import or generate a new 12 word mnemonic seeds. You will be asked to create a password for it.</h3>
+    <main className='min-h-screen bg-[#2E304A] flex items-center justify-center'>
 
-            <div className='grid grid-cols-8 gap-5 m-10'>
-              <button className='btn col-span-8 md:col-span-3'
-                onClick={() => router.push('account/create')}>
-                Create New Mnemonic
-              </button>
-              <button className='btn btn-accent col-span-8 md:col-span-3'
-                onClick={() => router.push('account/import')}>
-                Import Mnemonic
-              </button>
-            </div>
-          </div>
+      <div className='bg-white rounded-md md:rounded-lg flex flex-col space-y-10 items-center justify-center w-full max-w-3xl p-5 sm:p-12 md:p-24 m-3 md:m-6 lg:m-12'>
+
+        <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+          Create An Account
+        </p>
+        <p className=' text-black font-poppins font-semibold '>
+          Import your mnemonic seed or generate a new 12-word mnemonic seed. You will be asked to create a password for your wallet.
+        </p>
+
+        <div className='flex justify-between items-center w-full md:px-6 pt-5 md:pt-8 lg:pt-12'>
+
+          <button className='w-40 md:w-48 h-12 md:h-16 font-bold text-[#F5CBD5] transition duration-150 
+                bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '
+            onClick={() => router.push('account/create')}>
+            <p>Create New </p>
+            <p>Mnemonic Seed</p>
+
+          </button>
+
+          <button className='w-40 md:w-48 h-12 md:h-16 font-bold text-white transition duration-150 
+                bg-[#88BADA] rounded-md hover:shadow-sm active:scale-95 '
+            onClick={() => router.push('account/import')}>
+            Import Mnemonic
+          </button>
+
         </div>
+
       </div>
+
     </main>
   );
 }
