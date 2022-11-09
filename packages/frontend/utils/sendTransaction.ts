@@ -99,4 +99,4 @@ export const sendTransactionEthGoerliErc20Token = async (cryptoToSend: CryptoFor
 
   return tx;
 };
-// 需要的话 找commit的erc20 token transfer  home发送函数和modal 
+// 需要的话 找commit的erc20 token transfer  home发送函数和modal

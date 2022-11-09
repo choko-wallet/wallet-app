@@ -18,7 +18,7 @@ interface Props {
 
 }
 
-function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): JSX.Element {
+function DropdownForSend ({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   const [filterResult, setFilterResult] = useState<CryptoBalance[]>(cryptoInfo);
 
@@ -27,7 +27,7 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
   // }, [cryptoInfo]);
 
   useEffect(() => {
-    function filterCoin(item: CryptoBalance) {
+    function filterCoin (item: CryptoBalance) {
       return item.name.toLowerCase().includes(searchInput.toLowerCase());
     }
 
@@ -96,8 +96,8 @@ function DropdownForSend({ cryptoInfo, cryptoToSend, setCryptoToSend }: Props): 
                 <Menu.Item key={item.img}>
                   {({ active }) => (
                     <button className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white font-poppins' : 'font-poppins text-gray-900'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      onClick={() => setCryptoToSend(item)}
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => setCryptoToSend(item)}
                     >
                       <div className='relative h-5 w-5 ml-2 mr-3'>
                         {/* <div className='relative h-6 w-6'> */}

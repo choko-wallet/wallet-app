@@ -17,7 +17,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance({ balance }: Props): JSX.Element {
+function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
 
   const knownNetworks = useSelector(selectKnownNetworks);
@@ -99,8 +99,7 @@ function Balance({ balance }: Props): JSX.Element {
             onClick={() => setSearchInputOpen(!searchInputOpen)} />
 
           {searchInputOpen
-            ?
-            <div className='flex py-1 w-[200px] items-center rounded-[10px] bg-[#F5F5F5]'>
+            ? <div className='flex py-1 w-[200px] items-center rounded-[10px] bg-[#F5F5F5]'>
               <input
                 className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -109,8 +108,7 @@ function Balance({ balance }: Props): JSX.Element {
                 value={searchInput} />
 
             </div>
-            :
-            <div className='flex py-1 w-[200px] items-center rounded-[10px] '>
+            : <div className='flex py-1 w-[200px] items-center rounded-[10px] '>
             </div>
           }
         </div>
@@ -139,8 +137,6 @@ function Balance({ balance }: Props): JSX.Element {
       </div>
 
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
-
-
 
         {Object.entries(filtedBalance).map(([_, item], index) => (
           <BalanceRow

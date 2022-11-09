@@ -8,7 +8,11 @@ import PacmanLoader from 'react-spinners/PacmanLoader';
 
 import { selectLoading } from '../features/redux/selectors';
 
-function Loading(): JSX.Element {
+interface Props {
+  title: string
+}
+
+function Loading ({title}: Props): JSX.Element {
   const loading = useSelector(selectLoading);
 
   return (
@@ -16,7 +20,7 @@ function Loading(): JSX.Element {
       {/* <Toaster /> */}
       <div className='flex items-center space-x-2 mb-10  m-3'>
         <p className='text-sm md:text-2xl'>
-          <span className='text-[#0170BF] font-poppins w-36 '>{loading}</span>
+          <span className='text-[#0170BF] font-poppins w-36 '>{title ? title : loading}</span>
         </p>
       </div>
       <PacmanLoader color='#ffffff'

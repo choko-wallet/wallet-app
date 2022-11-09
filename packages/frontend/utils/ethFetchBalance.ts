@@ -134,7 +134,7 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
 const fetchBatchTokenPrice = async (address: string[], currency: string): Promise<Record<string, number>> => {
   const payloadBase = 'https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=';
   const payloadWhole = `${payloadBase}${address.reduce((pre, i) => { return pre += i + ','; }, '')
-    }&vs_currencies=${currency}`;
+  }&vs_currencies=${currency}`;
 
   const price = await fetch(payloadWhole).then((r) => r.json());
   const res: Record<string, number> = {};
@@ -157,7 +157,7 @@ const sortBalance = (original: BalanceInfo): BalanceInfo => {
 };
 
 export const fetchNativeAssetBalanceAndPrice = async (network: Network, address: string, name: string, currency: string, decimals: number): Promise<BalanceInfo> => {
-  console.log('fetchNativeAssetBalanceAndPrice')
+  console.log('fetchNativeAssetBalanceAndPrice');
 
   const alchemy = getAlchemy(network);
 
@@ -167,13 +167,15 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
   const nativeBalance = Number((await alchemy.core.getBalance(address)).div('0x' + Math.pow(10, divBy).toString(16)).toNumber() / Math.pow(10, decimals - divBy));
 
   let nativePrice;
+
   try {
     nativePrice = await fetchNativeAssetPrice(name, currency);
   } catch (e) {
     console.log('fetchNativeAssetPrice-err', e);
-    nativePrice = 0;//需要个try catch 
+    nativePrice = 0;// 需要个try catch
   }
-  console.log('nativePrice', nativePrice)
+
+  console.log('nativePrice', nativePrice);
 
   result.native = {
     balance: nativeBalance,
@@ -183,21 +185,23 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
     priceInUSD: nativePrice,
     balanceInUSD: nativeBalance * nativePrice
   };
-  console.log('fetchNativeAssetBalanceAndPrice-result', result)
+  console.log('fetchNativeAssetBalanceAndPrice-result', result);
 
   return result;
 };
 
 export const fetchTokenBalance = async (network: Network, address: string): Promise<BalanceInfo> => {
   const alchemy = getAlchemy(network);
-  console.log('network-address', network, address)
+
+  console.log('network-address', network, address);
 
   // const rawBalances = await alchemy.core.getTokenBalances(address, {
   //   type: TokenBalanceType.DEFAULT_TOKENS
   // });
-  const rawBalances = await alchemy.core.getTokenBalances(address);//加第二个参数就拿不到goerli测试币 chainlink
+  const rawBalances = await alchemy.core.getTokenBalances(address);// 加第二个参数就拿不到goerli测试币 chainlink
   const result: BalanceInfo = {};
-  console.log('rawBalances', rawBalances)
+
+  console.log('rawBalances', rawBalances);
 
   await Promise.all(rawBalances.tokenBalances.map(async (token) => {
     if (Number(token.tokenBalance) !== 0) {
@@ -218,7 +222,7 @@ export const fetchTokenBalance = async (network: Network, address: string): Prom
       }
     }
   }));
-  console.log('result', result)
+  console.log('result', result);
 
   return result;
 };
@@ -229,7 +233,6 @@ export const ethFetchBalance = async (network: Network, address: string): Promis
   const tokenAddressBatch = Object.keys(tokenBalance);
 
   console.log('tokenAddressBatch', tokenAddressBatch);
-
 
   let tokenPrice = {};
 
@@ -243,8 +246,6 @@ export const ethFetchBalance = async (network: Network, address: string): Promis
   }
 
   const nativeAssetBalanceAndPrice = await fetchNativeAssetBalanceAndPrice(network, address, network.info, 'usd', 18);
-
-
 
   return {
     ...nativeAssetBalanceAndPrice,

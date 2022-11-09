@@ -35,7 +35,7 @@ import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail, toastSuccess } from '../../utils/toast';
 
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const nodeRef = React.useRef(null);
@@ -78,7 +78,7 @@ export default function Home(): JSX.Element {
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
     // no need to await
-    console.log('useEffect-changenetwork')//切换网络或变量 可能会多次触发useEffect
+    console.log('useEffect-changenetwork');// 切换网络或变量 可能会多次触发useEffect
     void fetchBalanceAndPrice();//
     setMounted(true);
   }, [currentNetwork, currentUserAccount]);
@@ -104,7 +104,9 @@ export default function Home(): JSX.Element {
     dispatch(startLoading('Fetching Balance ...'));
 
     const network = knownNetworks[currentNetwork];
-    console.log('network', network)
+
+    console.log('network', network);
+
     switch (network.networkType) {
       case 'polkadot':
         try {
@@ -126,7 +128,7 @@ export default function Home(): JSX.Element {
           console.log('ethereum');
           // const res = await ethFetchBalance(network, currentUserAccount.address);
           // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-          const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');//goerli
+          const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
 
           console.log('res', res);
 
@@ -142,9 +144,6 @@ export default function Home(): JSX.Element {
         break;
     }
   };
-
-
-
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 

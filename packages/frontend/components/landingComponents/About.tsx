@@ -67,7 +67,8 @@ const About = (): JSX.Element => {
       </div>
 
       <div className='absolute bottom-8 left-0 right-0 h-10 flex items-center justify-center '>
-        <a href={'#contact'} className=''>
+        <a className=''
+          href={'#contact'}>
           <ArrowDownIcon className='h-8 text-[#888888] cursor-pointer ' />
         </a>
       </div>

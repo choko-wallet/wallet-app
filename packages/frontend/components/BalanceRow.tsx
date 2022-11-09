@@ -11,7 +11,7 @@ interface Props {
   symbol: string;
 }
 
-function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
+function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
       <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#0170BF]  hover:bg-[#0170BF] group'>

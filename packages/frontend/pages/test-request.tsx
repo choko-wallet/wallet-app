@@ -15,16 +15,16 @@ import tweetnacl from 'tweetnacl';
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { decompressParameters } from '@choko-wallet/core/util';
 import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
-import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDKAndStore, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
+import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 
 import Loading from './../components/Loading';
 
-const localTesting = false;
-const callbackUrl = 'https://choko.app/test-request';
+// const localTesting = false;
+// const callbackUrl = 'https://choko.app/test-request';
 
-// const localTesting = true;
-// const callbackUrl = 'http://localhost:3000/test-request';
+const localTesting = true;
+const callbackUrl = 'http://localhost:3000/test-request';
 
 const accountOption = new AccountOption({
   hasEncryptedPrivateKeyExported: false,
@@ -104,7 +104,7 @@ const TestRequest: NextPage = () => {
     try {
       const a = getUserAccount();
 
-      configSDKAndStore(sdkConfig, a.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' ? a : null);
+      configSDK(sdkConfig, a.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' ? a : null);
 
       if (!loading) {
         const orignalMessage = stringToU8a('A Clear Text Message');
@@ -114,7 +114,7 @@ const TestRequest: NextPage = () => {
         setEncryptedMessage(encryptedMessage);
       }
     } catch (e) {
-      configSDKAndStore(sdkConfig);
+      configSDK(sdkConfig);
       console.error(e);
     }
 

@@ -1,15 +1,16 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowSmLeftIcon, ArrowRightIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon, ArrowLeftIcon } from '@heroicons/react/outline';
+import { ArrowLeftIcon, ArrowRightIcon, ArrowSmLeftIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
 import { cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
+import ProgressBar from '@ramonak/react-progress-bar';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 // redux
 import { useDispatch } from 'react-redux';
-import ProgressBar from "@ramonak/react-progress-bar";
+
 import { addUserAccount } from '../../features/slices/user';
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
   quizMnemonic: number,
 }
 
-function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
+function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -72,11 +73,14 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
       {/* pb-28 配合 my-auto 居中且上调 */}
       <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center pb-28'>
         <ProgressBar
+          baseBgColor='#AFAFAF'
+          bgColor='#4075A9'
           className='w-full mt-10 md:mt-16'
-          baseBgColor="#AFAFAF"
-          bgColor="#4075A9"
-          completed={step === 1 ? 0 : step === 2 ? 50 :
-            step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 80 : 80}
+          completed={step === 1
+            ? 0
+            : step === 2
+              ? 50
+              : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 80 : 80}
         />
 
         <div className='w-full max-w-2xl justify-between mt-2 flex'>
@@ -84,7 +88,6 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
           <p className='text-white text-xs md:text-sm font-poppins pr-10'>Verify</p>
           <p className='text-white text-xs md:text-sm font-poppins'>Set Password</p>
         </div>
-
 
         {step === 1 &&
           <div className='w-full max-w-2xl my-auto ' >
@@ -103,16 +106,16 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
               </div>
 
               <div className='flex space-x-5 items-center pt-5'>
-                <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150 
+                <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
-                  onClick={refreshMnemonic}>
+                onClick={refreshMnemonic}>
                   <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
                   <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
                 </button>
 
                 <CopyToClipboard onCopy={() => setCopied(true)}
                   text={seedsStringForCopy}>
-                  <button className='flex items-center justify-center w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150 
+                  <button className='flex items-center justify-center w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '>
                     <DuplicateIcon className='text-[#F5CBD5] h-5  m-3 duration-300 hover:scale-125 transtion east-out' />
                     <p className='text-[#F5CBD5] text-sm font-poppins'>COPY</p>
@@ -126,7 +129,6 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
               </div>
             </div>
 
-
             <div className='flex justify-evenly mt-12 md:mt-20'>
               <button className='bg-[#F5CBD5] rounded-full p-3'
                 onClick={() => router.push('/')} >
@@ -138,7 +140,6 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
               </button>
             </div>
-
 
           </div>
         }
@@ -160,7 +161,7 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
                   Word #{quizMnemonic}
                 </p>
 
-                <input className="w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none"
+                <input className='w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
                   onChange={(e) => setVerifyMnemonic(e.target.value)}
                   placeholder='verify'
                   type='text'
@@ -169,9 +170,7 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
               </div>
 
-
             </div>
-
 
             <div className='flex justify-evenly mt-12 md:mt-20'>
               <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
@@ -180,13 +179,12 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
               </button>
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                onClick={() => setStep(step + 1)}
                 disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1]}
+                onClick={() => setStep(step + 1)}
               >
                 <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
               </button>
             </div>
-
 
           </div>
         }
@@ -203,7 +201,7 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 <p className=' text-black text-xl font-poppins'>
                   Set Password
                 </p>
-                <input className="w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none"
+                <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
                   onChange={(e) => setPassword(e.target.value)}
                   // placeholder='Set a Password'
                   type='password'
@@ -211,13 +209,12 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 />
               </div>
 
-
               <div className='flex items-center justify-between px-10'>
                 <p className=' text-black text-xl font-poppins'>
                   Repeat Password
                 </p>
                 <div className=''>
-                  <input className="w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none"
+                  <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
                     onChange={(e) => setRepeatPassword(e.target.value)}
                     // placeholder='Repeat the Password'
                     type='password'
@@ -226,11 +223,7 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
                 </div>
               </div>
 
-
-
             </div>
-
-
 
             <div className='flex justify-evenly mt-12 md:mt-20'>
               <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
@@ -240,8 +233,8 @@ function CreateWallet({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                onClick={() => handleSetPassword()}
-                disabled={(!password || !repeatPassword || password !== repeatPassword)}
+              disabled={(!password || !repeatPassword || password !== repeatPassword)}
+              onClick={() => handleSetPassword()}
               >
 
                 <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
