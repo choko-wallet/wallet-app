@@ -18,6 +18,7 @@ const initialState: StatusSliceItem = {
     homeAddToken: false,
     homeQRScanner: false,
     homeMobileDrawer: false,
+    settingsExportUrl: false,
 
     requestPassword: false
   },
