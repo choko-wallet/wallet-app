@@ -79,9 +79,51 @@ export default function Home (): JSX.Element {
     if (!currentNetwork) return;
     // no need to await
     console.log('useEffect-changenetwork');
-    void fetchBalanceAndPrice();//
+
+    void (async () => {
+      dispatch(startLoading('Fetching Balance ...'));
+
+      const network = knownNetworks[currentNetwork];
+
+      console.log('network', network);
+
+      switch (network.networkType) {
+        case 'polkadot':
+          try {
+            const res = await polkadotFetchBalance(network, currentUserAccount.address);
+
+            setBalanceInfo(res);
+            dispatch(endLoading());
+            toastSuccess(`Changed to ${network.text}`);
+          } catch (e) {
+            console.error(e);
+            dispatch(endLoading());
+            toastFail('Someting Wrong! Please Switch To Other Network.');
+          }
+
+          break;
+        case 'ethereum':
+          try {
+            console.log('ethereum');
+            // const res = await ethFetchBalance(network, currentUserAccount.address);
+            // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
+            const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
+
+            setBalanceInfo(res);
+            dispatch(endLoading());
+            toastSuccess(`Changed to ${network.text}`);
+          } catch (e) {
+            console.error(e);
+            dispatch(endLoading());
+            toastFail('Someting Wrong! Please Switch To Other Network.');
+          }
+
+          break;
+      }
+    })();
+
     setMounted(true);
-  }, [currentNetwork, currentUserAccount]);
+  }, [currentNetwork, currentUserAccount, knownNetworks, dispatch]);
 
   useEffect(() => {
     // IF account is not in localStorage - redirect to account creation page
@@ -99,51 +141,6 @@ export default function Home (): JSX.Element {
       setTheme('light');
     }
   }, [setTheme, theme]);
-
-  const fetchBalanceAndPrice = async () => {
-    dispatch(startLoading('Fetching Balance ...'));
-
-    const network = knownNetworks[currentNetwork];
-
-    console.log('network', network);
-
-    switch (network.networkType) {
-      case 'polkadot':
-        try {
-          const res = await polkadotFetchBalance(network, currentUserAccount.address);
-
-          console.log(res);
-          setBalanceInfo(res);
-          dispatch(endLoading());
-          toastSuccess(`Changed to ${network.text}`);
-        } catch (e) {
-          console.error(e);
-          dispatch(endLoading());
-          toastFail('Someting Wrong! Please Switch To Other Network.');
-        }
-
-        break;
-      case 'ethereum':
-        try {
-          console.log('ethereum');
-          // const res = await ethFetchBalance(network, currentUserAccount.address);
-          // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-          const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
-
-          console.log('res', res);
-
-          setBalanceInfo(res);
-          dispatch(endLoading());
-          toastSuccess(`Changed to ${network.text}`);
-        } catch (e) {
-          console.error(e);
-          dispatch(endLoading());
-          toastFail('Someting Wrong! Please Switch To Other Network.');
-        }
-
-        break;
-    }
-  };
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 

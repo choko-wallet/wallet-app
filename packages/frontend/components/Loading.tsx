@@ -9,7 +9,7 @@ import PacmanLoader from 'react-spinners/PacmanLoader';
 import { selectLoading } from '../features/redux/selectors';
 
 interface Props {
-  title: string
+  title?: string
 }
 
 function Loading ({ title }: Props): JSX.Element {

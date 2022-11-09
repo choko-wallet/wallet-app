@@ -13,12 +13,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
-import { setOpen } from '@choko-wallet/frontend/features/slices/status';
 
-function SignMessageHandler(): JSX.Element {
+function SignMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -50,7 +50,7 @@ function SignMessageHandler(): JSX.Element {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
@@ -109,7 +109,7 @@ function SignMessageHandler(): JSX.Element {
     }
   }
 
-  function closeModal() {
+  function closeModal () {
     setPassword('');
     setOpenPasswordModal(false);
   }
@@ -201,7 +201,7 @@ function SignMessageHandler(): JSX.Element {
       <Modal
         modalName='signMessagePasswordModal'
       // closeModal={closeModal}
-      //   isOpen={openPasswordModal} 
+      //   isOpen={openPasswordModal}
       >
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
