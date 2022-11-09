@@ -18,6 +18,7 @@
     "@heroicons/react": "^1.0.6",
     "@polkadot/api": "^8.13.1",
     "@polkadot/util-crypto": "10.1.10",
+    "@ramonak/react-progress-bar": "^5.0.3",
     "@reduxjs/toolkit": "^1.8.3",
     "@skyekiwi/crypto": "1.0.2-5",
     "@skyekiwi/util": "1.0.2-5",

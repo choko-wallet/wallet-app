@@ -1,6 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { ArrowDownIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import React from 'react';
 
@@ -8,7 +9,7 @@ import logo4 from '../../images/logo4.svg';
 
 const About = (): JSX.Element => {
   return (
-    <section className='h-screen snap-center'
+    <section className='h-screen snap-center relative'
       id='about'>
       <div className='relative flex flex-col items-center justify-center h-screen px-10 mx-auto text-center max-w-7xl md:flex-row md:text-left'>
         <p className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
@@ -63,6 +64,12 @@ const About = (): JSX.Element => {
             A Substrate-based privacy-first blockchain for concealed smart contract execution with interoperability and novel economic models of data ownership.
           </p> */}
         </motion.div>
+      </div>
+
+      <div className='absolute bottom-8 left-0 right-0 h-10 flex items-center justify-center '>
+        <a href={'#contact'} className=''>
+          <ArrowDownIcon className='h-8 text-[#888888] cursor-pointer ' />
+        </a>
       </div>
     </section>
   );

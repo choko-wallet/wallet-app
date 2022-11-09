@@ -20,12 +20,12 @@ function AccountRouter(): JSX.Element {
   return (
     <main className='min-h-screen bg-[#2E304A] flex items-center justify-center'>
 
-      <div className='bg-white rounded-md md:rounded-lg flex flex-col space-y-10 items-center justify-center w-full max-w-3xl p-5 sm:p-12 md:p-24 m-3 md:m-6 lg:m-12'>
+      <div className='bg-[#FFFDF9] rounded-[10px] flex flex-col space-y-10 items-center justify-center w-full max-w-3xl p-5 sm:p-12 md:p-24 m-3 md:m-6 lg:m-12'>
 
         <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
           Create An Account
         </p>
-        <p className=' text-black font-poppins font-semibold '>
+        <p className=' text-black font-poppins '>
           Import your mnemonic seed or generate a new 12-word mnemonic seed. You will be asked to create a password for your wallet.
         </p>
 
@@ -39,7 +39,7 @@ function AccountRouter(): JSX.Element {
 
           </button>
 
-          <button className='w-40 md:w-48 h-12 md:h-16 font-bold text-white transition duration-150 
+          <button className='w-40 md:w-48 h-12 md:h-16 text-white transition duration-150 
                 bg-[#88BADA] rounded-md hover:shadow-sm active:scale-95 '
             onClick={() => router.push('account/import')}>
             Import Mnemonic

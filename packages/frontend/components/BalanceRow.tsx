@@ -11,10 +11,10 @@ interface Props {
   symbol: string;
 }
 
-function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element {
+function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
-      <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#4797B5]  hover:bg-[#4797B5]'>
+      <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#0170BF]  hover:bg-[#0170BF] group'>
         <div className='flex justify-between flex-grow'>
           <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent dark:bg-gray-700'>
             {img !== null
@@ -37,15 +37,15 @@ function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element 
             }
           </div>
           <div className='flex flex-col flex-1 ml-3'>
-            <p className='w-full max-w-64 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins'>
+            <p className='w-full max-w-64 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins group-hover:text-[#F5CBD5]'>
               {name}
             </p>
             {price === undefined
-              ? <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
+              ? <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
                 {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
                 0{' '}USD
               </p>
-              : <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins'>
+              : <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
                 {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
                 {price}
                 {' '}USD
@@ -54,18 +54,18 @@ function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element 
           </div>
         </div>
         <div className=' flex flex-col justify-between '>
-          <p className='font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins justify-end'>
+          <p className='font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins justify-end group-hover:text-[#F5CBD5]'>
             {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}
             {'  '}{symbol}
 
           </p>
 
           {price === undefined
-            ? <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
+            ? <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
               {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
               0{' '}USD
             </p>
-            : <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins'>
+            : <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
               {Number(balance * price).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
             </p>
           }

@@ -13,7 +13,7 @@ const Hero = (): JSX.Element => {
   const router = useRouter();
 
   return (
-    <section className='snap-center'
+    <section className='snap-center relative'
       id='hero'>
       <div className='flex flex-col items-center justify-center h-screen space-y-8 overflow-hidden text-center '>
         <BackgroundCircle />
@@ -56,10 +56,17 @@ const Hero = (): JSX.Element => {
             </button>
           </div>
 
-          <a href={'#about'}>
-            <ArrowDownIcon className='h-10 text-white cursor-pointer ' />
-          </a>
+          {/* <a href={'#about'} className=''>
+            <ArrowDownIcon className='h-8 text-[#888888] cursor-pointer ' />
+          </a> */}
+
         </div>
+      </div>
+
+      <div className='absolute bottom-8 left-0 right-0 h-10 flex items-center justify-center '>
+        <a href={'#about'} className=''>
+          <ArrowDownIcon className='h-8 text-[#888888] cursor-pointer ' />
+        </a>
       </div>
     </section>
   );

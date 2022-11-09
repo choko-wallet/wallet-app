@@ -1506,6 +1506,7 @@ __metadata:
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
     "@polkadot/util-crypto": 10.1.10
+    "@ramonak/react-progress-bar": ^5.0.3
     "@reduxjs/toolkit": ^1.8.3
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
@@ -3443,6 +3444,16 @@ __metadata:
     "@types/websocket": ^1.0.5
     websocket: ^1.0.34
   checksum: 5444a00c068a0b27e73361deb19a68fcf2fe4b941f915258bcdf24717e58e116621d6be4d37d8e6cdf2c5a939fd35305952992239f8dac9a2511b0181237f5b9
+  languageName: node
+  linkType: hard
+
+"@ramonak/react-progress-bar@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "@ramonak/react-progress-bar@npm:5.0.3"
+  peerDependencies:
+    react: ^16.0.0 || ^17 || ^18
+    react-dom: ^16.0.0 || ^17 || ^18
+  checksum: e041fa20749448eb46ef4a4abb6e6b7a1fd0dee4e75005e838a6cf7f0f42f1c8096c6a237986a5bfd531dd75995d3268ca713f1a5a5146496b8baaf99b2ddf3d
   languageName: node
   linkType: hard
 

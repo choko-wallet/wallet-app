@@ -9,12 +9,12 @@ interface Props {
   rotate?: boolean;
 }
 
-function Button ({ Icon, rotate, title }: Props): JSX.Element {
+function Button({ Icon, rotate, title }: Props): JSX.Element {
   return (
-    <div className='flex flex-col justify-center items-center w-[140px] h-[76px] bg-gray-400 dark:bg-[#384855] hover:bg-[#4797B5] dark:hover:bg-[#4797B5] rounded-2xl   cursor-pointer space-y-1'>
-      <Icon className={`h-6 w-6 text-white  ${rotate ? 'rotate-45 ml-1' : 'rotate-0'} `} />
+    <div className='flex flex-col justify-center items-center w-[140px] h-[76px] bg-[#F5F5F5] dark:bg-[#384855] hover:bg-[#0170BF] dark:hover:bg-[#4797B5] rounded-2xl   cursor-pointer space-y-1 group'>
+      <Icon className={`h-6 w-6 text-[#B6B7BC] group-hover:text-[#F5CBD5]  ${rotate ? 'rotate-45 ml-1' : 'rotate-0'} `} />
       <p className='text-[20px] '>
-        <span className='text-white font-semibold font-poppins'>{title}</span>
+        <span className='text-[#B6B7BC] font-semibold font-poppins  group-hover:text-[#F5CBD5]'>{title}</span>
       </p>
 
     </div>

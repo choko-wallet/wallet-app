@@ -59,27 +59,28 @@ function Balance({ balance }: Props): JSX.Element {
     setBalanceTotal(Number(b).toLocaleString(undefined, { maximumFractionDigits: 2 }));
   }, [balance]);
 
-  return (<div className='relative flex flex-col bg-white dark:bg-[#2A2E37] flex-grow rounded-[30px] '>
-    <div className='bg-[#F5F5F5] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-lg m-5 md:m-10 lg:ml-16 p-3 px-5'>
-      <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
-        ${balanceTotal} USD </p>
-      <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
-    </div>
-
-    <div className='flex items-center justify-evenly '>
-      <div className='flex items-center justify-center '
-        onClick={() => dispatch(setOpen('homeSend'))} >
-        <Button Icon={PaperAirplaneIcon}
-          rotate={true}
-          title='Send' />
-      </div>
-      <div className='flex items-center justify-center '
-        onClick={() => dispatch(setOpen('homeReceive'))} >
-        <Button Icon={DownloadIcon}
-          title='Receive' />
+  return (
+    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] py-5 px-3 md:px-5 lg:px-12'>
+      <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-[10px] p-2 md:p-4'>
+        <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
+          ${balanceTotal} USD </p>
+        <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
       </div>
 
-      {/* {knownNetworks[currentNetwork]?.networkType === 'ethereum' ?
+      <div className='flex items-center justify-evenly mt-6'>
+        <div className='flex items-center justify-center '
+          onClick={() => dispatch(setOpen('homeSend'))} >
+          <Button Icon={PaperAirplaneIcon}
+            rotate={true}
+            title='Send' />
+        </div>
+        <div className='flex items-center justify-center '
+          onClick={() => dispatch(setOpen('homeReceive'))} >
+          <Button Icon={DownloadIcon}
+            title='Receive' />
+        </div>
+
+        {/* {knownNetworks[currentNetwork]?.networkType === 'ethereum' ?
           <div className='flex items-center justify-center '
             onClick={() => dispatch(setOpen('homeAddToken'))} >
             <Button Icon={PlusSmIcon}
@@ -88,62 +89,73 @@ function Balance({ balance }: Props): JSX.Element {
           :
           null} */}
 
-    </div>
-    <div className='flex items-center justify-between  pt-5 px-5'>
-      <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
-
-      <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
-        onClick={() => setSearchInputOpen(!searchInputOpen)} />
-
-      <div className='flex items-center '>
-        <Switch
-          checked={showDust}
-          className={`${showDust ? 'bg-green-400' : 'bg-gray-400'}
-          relative inline-flex h-[38px] w-[74px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-          onChange={setShowDust}
-        >
-          <span className='sr-only'>Use setting</span>
-          <span
-            aria-hidden='true'
-            className={`${showDust ? 'translate-x-9' : 'translate-x-0'}
-            pointer-events-none inline-block h-[34px] w-[34px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
-          />
-        </Switch>
-
-        <p className='text-black dark:text-gray-400'>small assets</p>
       </div>
 
-      <p className='text-black dark:text-gray-400'>Total Balance</p>
-    </div>
+      <div className='flex items-center justify-between mt-5 px-5'>
+        <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
 
-    <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll m-5 mt-0'>
+        <div className='flex items-center justify-center' >
+          <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
+            onClick={() => setSearchInputOpen(!searchInputOpen)} />
 
-      {searchInputOpen
-        ? <div className='flex py-1  items-center rounded-md border border-gray-600'>
-          <input
-            className='flex-grow pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder='Search for Coin'
-            type='text'
-            value={searchInput} />
-          <SearchIcon className='hidden h-8 p-2 text-white bg-gray-500 rounded-full cursor-pointer md:inline md:mx-2' />
+          {searchInputOpen
+            ?
+            <div className='flex py-1 w-[200px] items-center rounded-[10px] bg-[#F5F5F5]'>
+              <input
+                className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder='Search token'
+                type='text'
+                value={searchInput} />
+
+            </div>
+            :
+            <div className='flex py-1 w-[200px] items-center rounded-[10px] '>
+            </div>
+          }
         </div>
-        : null}
 
-      {Object.entries(filtedBalance).map(([_, item], index) => (
-        <BalanceRow
-          balance={item.balance}
-          img={item.img}
-          key={index}
-          name={item.name}
-          price={item.priceInUSD}
-          symbol={item.symbol}
-        />
-      ))}
+        <div className='flex items-center '>
+          <p className={`text-xs ${!showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Show all assets</p>
 
-    </div>
+          <Switch
+            checked={showDust}
+            className={`${showDust ? 'bg-green-400' : 'bg-gray-400'}
+          relative inline-flex h-[19px] w-[36px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+            onChange={setShowDust}
+          >
+            <span className='sr-only'>Use setting</span>
+            <span
+              aria-hidden='true'
+              className={`${showDust ? 'translate-x-4' : 'translate-x-0'}
+            pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            />
+          </Switch>
 
-  </div >
+          <p className={` text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
+        </div>
+
+        <p className='text-black dark:text-gray-400'>Total Balance</p>
+      </div>
+
+      <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
+
+
+
+        {Object.entries(filtedBalance).map(([_, item], index) => (
+          <BalanceRow
+            balance={item.balance}
+            img={item.img}
+            key={index}
+            name={item.name}
+            price={item.priceInUSD}
+            symbol={item.symbol}
+          />
+        ))}
+
+      </div>
+
+    </div >
   );
 }
 

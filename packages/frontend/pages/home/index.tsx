@@ -187,9 +187,9 @@ export default function Home(): JSX.Element {
           </div>
         </CSSTransition>
 
-        < main className='min-h-[750px] bg-transparent h-80v  dark:bg-[#22262f] max-w-7xl mx-auto' >
+        < main className='min-h-[750px] bg-transparent h-80v w-full dark:bg-[#22262f] max-w-7xl mx-auto' >
 
-          <div className='bg-transparent flex-col h-full  flex md:flex-row mx-3 md:mx-10'>
+          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8'>
 
             <div className='bg-transparent'>
               <button
