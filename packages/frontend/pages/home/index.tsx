@@ -204,7 +204,6 @@ export default function Home (): JSX.Element {
             </div>
 
             <Balance balance={balanceInfo} />
-
           </div>
 
           {/* send modal */}

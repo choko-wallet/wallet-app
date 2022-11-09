@@ -4,7 +4,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { u8aToHex } from '@skyekiwi/util';
 
-import { INetwork, KnownNetworks, Network } from '@choko-wallet/core';
+import { KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 import { knownNetworks } from '@choko-wallet/known-networks';
 

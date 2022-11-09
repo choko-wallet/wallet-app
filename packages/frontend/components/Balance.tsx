@@ -4,11 +4,11 @@
 import type { BalanceInfo } from '../utils/types';
 
 import { Switch } from '@headlessui/react';
-import { DownloadIcon, PaperAirplaneIcon, SearchCircleIcon, SearchIcon } from '@heroicons/react/outline';
+import { DownloadIcon, PaperAirplaneIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
+import { selectCurrentNetwork, selectKnownNetworks, selectStatus } from '../features/redux/selectors';
 import { setOpen } from '../features/slices/status';
 import BalanceRow from './BalanceRow';
 import Button from './Button';
@@ -19,7 +19,9 @@ interface Props {
 
 function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
+  const status = useSelector(selectStatus);
 
+  console.log(status);
   const knownNetworks = useSelector(selectKnownNetworks);
   const currentNetwork = useSelector(selectCurrentNetwork);
 

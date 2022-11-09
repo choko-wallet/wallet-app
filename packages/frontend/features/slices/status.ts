@@ -36,7 +36,7 @@ export const statusSlice = createSlice({
     setOpen: (state, action: PayloadAction<string>) => {
       const name = action.payload;
 
-      if (state.status[name]) {
+      if (state.status[name] !== undefined) {
         state.status[name] = true;
       } else {
         console.error(`Moving component name not found ${name}`);
@@ -46,7 +46,7 @@ export const statusSlice = createSlice({
     setClose: (state, action: PayloadAction<string>) => {
       const name = action.payload;
 
-      if (state.status[name]) {
+      if (state.status[name] !== undefined) {
         state.status[name] = false;
       } else {
         console.error(`Moving component name not found ${name}`);
@@ -57,7 +57,7 @@ export const statusSlice = createSlice({
       const name = action.payload;
       const currentStatus = current(state.status);
 
-      if (state.status[name]) {
+      if (state.status[name] !== undefined) {
         state.status[name] = !currentStatus[name];
       } else {
         console.error(`Moving component name not found ${name}`);

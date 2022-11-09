@@ -89,7 +89,6 @@ export const userSlice = createSlice({
         localStorage.clear();
         state.currentUserAccount = null;
         state.userAccount = {};
-        state.error = '';
       }
     },
 
@@ -115,7 +114,6 @@ export const userSlice = createSlice({
 
       state.currentUserAccount = null;
       state.userAccount = {};
-      state.error = '';
     }
   },
   extraReducers: (builder) => {
@@ -142,9 +140,7 @@ export const userSlice = createSlice({
             offset += len;
 
             if (account.address === userAccount.address) {
-              state.error = 'account already existed';
-
-              return;
+              throw new Error('User Account Already Exists');
             }
           }
         }
@@ -152,10 +148,6 @@ export const userSlice = createSlice({
         const localStorageContent = maybeCurrentSerializedAccount || '';
 
         localStorage.setItem('serialziedUserAccount', localStorageContent + u8aToHex(userAccount.serializeWithEncryptedKey()));
-        state.error = 'none';
-      })
-      .addCase(addUserAccount.rejected, (state, action) => {
-        state.error = (action.error ? action.error : 'Invalid password!') as string;
       });
   }
 });
