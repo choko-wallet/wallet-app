@@ -19,7 +19,10 @@ const initialState: StatusSliceItem = {
     homeQRScanner: false,
     homeMobileDrawer: false,
     settingsExportUrl: false,
-
+    connectDappPasswordModal: false,
+    signTxPasswordModal: false,
+    signMessagePasswordModal: false,
+    decryptMessagePasswordModal: false,
     requestPassword: false
   },
   loading: ''

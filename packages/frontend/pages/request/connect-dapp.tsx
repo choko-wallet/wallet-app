@@ -15,10 +15,11 @@ import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
+import { setOpen } from '@choko-wallet/frontend/features/slices/status';
 
 // http://localhost:3000/request/connect-dapp?requestType=connectDapp&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf124d809006db70e53&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
-function ConnectDappHandler (): JSX.Element {
+function ConnectDappHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -60,7 +61,7 @@ function ConnectDappHandler (): JSX.Element {
     }
   }, [router, dispatch, userAccount, currentUserAccount]);
 
-  function unlock () {
+  function unlock() {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
@@ -105,7 +106,7 @@ function ConnectDappHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
+  function closeModal() {
     setPassword('');
     setOpenPasswordModal(false);
   }
@@ -183,7 +184,7 @@ function ConnectDappHandler (): JSX.Element {
 
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => setOpenPasswordModal(true)}>
+          onClick={() => dispatch(setOpen('connectDappPasswordModal'))}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -194,8 +195,11 @@ function ConnectDappHandler (): JSX.Element {
         </button>
       </div>
 
-      <Modal closeModal={closeModal}
-        isOpen={openPasswordModal} >
+      <Modal
+        modalName='connectDappPasswordModal'
+      // closeModal={closeModal}
+      //   isOpen={openPasswordModal} 
+      >
 
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
