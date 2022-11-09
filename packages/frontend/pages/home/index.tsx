@@ -78,7 +78,7 @@ export default function Home (): JSX.Element {
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
     // no need to await
-    console.log('useEffect-changenetwork');// 切换网络或变量 可能会多次触发useEffect
+    console.log('useEffect-changenetwork');
     void fetchBalanceAndPrice();//
     setMounted(true);
   }, [currentNetwork, currentUserAccount]);

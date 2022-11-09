@@ -1,6 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+export {};
 // import { Alchemy, Utils, Wallet } from 'alchemy-sdk';
 // import { ethers } from 'ethers';
 
