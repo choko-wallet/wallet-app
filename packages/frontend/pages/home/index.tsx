@@ -35,7 +35,7 @@ import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail, toastSuccess } from '../../utils/toast';
 
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const nodeRef = React.useRef(null);

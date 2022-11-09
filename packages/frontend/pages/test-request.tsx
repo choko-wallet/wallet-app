@@ -17,6 +17,7 @@ import { decompressParameters } from '@choko-wallet/core/util';
 import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
+import { hasUserAccountStored } from '@choko-wallet/sdk/store';
 
 import Loading from './../components/Loading';
 
@@ -101,10 +102,10 @@ const TestRequest: NextPage = () => {
   }, [router]);
 
   useEffect(() => {
-    try {
-      const a = getUserAccount();
+    configSDK(sdkConfig);
 
-      configSDK(sdkConfig, a.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' ? a : null);
+    if (hasUserAccountStored()) {
+      const a = getUserAccount();
 
       if (!loading) {
         const orignalMessage = stringToU8a('A Clear Text Message');
@@ -113,9 +114,6 @@ const TestRequest: NextPage = () => {
         console.error(encryptedMessage);
         setEncryptedMessage(encryptedMessage);
       }
-    } catch (e) {
-      configSDK(sdkConfig);
-      console.error(e);
     }
 
     void (async () => {

@@ -14,12 +14,12 @@ import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
 import Header from '../components/Header';
 import Modal from '../components/Modal';
 import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/user';
-import { setClose, setOpen } from '../features/slices/status';
 import { loadAllNetworks } from '../features/slices/network';
+import { setClose, setOpen } from '../features/slices/status';
+import { loadUserAccount } from '../features/slices/user';
 
 /* eslint-disable sort-keys */
-function Settings(): JSX.Element {
+function Settings (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
@@ -47,7 +47,6 @@ function Settings(): JSX.Element {
     } else {
       dispatch(loadUserAccount());
       dispatch(loadAllNetworks());
-
     }
   }, [dispatch, router]);
 
@@ -59,7 +58,7 @@ function Settings(): JSX.Element {
     return null;
   }
 
-  function closeExportModal() {
+  function closeExportModal () {
     setExportModalOpen(false);
     setExportUrl('');
   }
@@ -146,7 +145,7 @@ function Settings(): JSX.Element {
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={closeModal2}
+                    // onClick={closeModal2}
 
                   >
                     Password
@@ -164,8 +163,8 @@ function Settings(): JSX.Element {
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
                     onClick={() => {
-                      dispatch(setOpen('settingsExportUrl'))
-                      generateAccountUrl()
+                      dispatch(setOpen('settingsExportUrl'));
+                      generateAccountUrl();
                     }}
 
                   >
@@ -183,7 +182,7 @@ function Settings(): JSX.Element {
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={closeModal2}
+                    // onClick={closeModal2}
 
                   >
                     Language
@@ -200,7 +199,7 @@ function Settings(): JSX.Element {
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                  // onClick={closeModal2}
+                    // onClick={closeModal2}
 
                   >
                     Currency
@@ -213,7 +212,7 @@ function Settings(): JSX.Element {
 
           <Modal modalName='settingsExportUrl'
           // closeModal={closeExportModal}
-          // isOpen={exportModalOpen} 
+          // isOpen={exportModalOpen}
           >
 
             <Dialog.Panel className='border border-[#00f6ff] w-full max-w-md transform overflow-hidden rounded-2xl bg-black dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>

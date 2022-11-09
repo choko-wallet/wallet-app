@@ -1,10 +1,10 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { TokenMetadataResponse } from 'alchemy-sdk';
 import type { BalanceInfo } from './types';
 
-import { Alchemy, Network as alchemyNetwork, TokenBalanceType } from 'alchemy-sdk';
+import { Alchemy, Network as alchemyNetwork } from 'alchemy-sdk';
 
 import { Network } from '@choko-wallet/core';
 
