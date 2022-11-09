@@ -4,21 +4,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { u8aToHex } from '@skyekiwi/util';
 
-import { KnownNetworks, Network } from '@choko-wallet/core';
+import { INetwork, KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 import { knownNetworks } from '@choko-wallet/known-networks';
 
+/* eslint-disable sort-keys */
 interface NetworkSliceItem {
-  knownNetworks: KnownNetworks,
   currentNetwork: string,
+  knownNetworks: KnownNetworks,
 }
 
 const initialState: NetworkSliceItem = {
-  knownNetworks: {},
-  currentNetwork: u8aToHex(xxHash('skyekiwi'))
+  currentNetwork: u8aToHex(xxHash('skyekiwi')),
+  knownNetworks: {}
 };
 
-/* eslint-disable sort-keys */
 export const networkSlice = createSlice({
   initialState,
   name: 'network',
@@ -27,18 +27,18 @@ export const networkSlice = createSlice({
       let rawLocalNetworks = localStorage.getItem('localNetwork');
 
       if (!rawLocalNetworks) rawLocalNetworks = '{}';
-      const localNetwork = JSON.parse(rawLocalNetworks);
+      const localNetwork = JSON.parse(rawLocalNetworks) as KnownNetworks;
 
       let rawHiddenNetworks = localStorage.getItem('hiddenNetworks');
 
       if (!rawHiddenNetworks) rawHiddenNetworks = '[]';
-      const hiddenNetworks: string[] = JSON.parse(rawHiddenNetworks);
+      const hiddenNetworks = JSON.parse(rawHiddenNetworks) as string[];
 
       state.knownNetworks = {
         ...knownNetworks, ...localNetwork
       };
 
-      for (const tbr in hiddenNetworks) {
+      for (const tbr of hiddenNetworks) {
         delete state.knownNetworks[tbr];
       }
 
@@ -61,7 +61,7 @@ export const networkSlice = createSlice({
 
       if (!rawLocalNetworks) rawLocalNetworks = '{}';
 
-      const localNetwork = JSON.parse(rawLocalNetworks);
+      const localNetwork = JSON.parse(rawLocalNetworks) as KnownNetworks;
 
       // if already exist - override it!
       localNetwork[u8aToHex(xxHash(action.payload.info))] = action.payload;
@@ -77,7 +77,7 @@ export const networkSlice = createSlice({
       let rawHiddenNetworks = localStorage.getItem('hiddenNetworks');
 
       if (!rawHiddenNetworks) rawHiddenNetworks = '[]';
-      const hiddenNetworks = JSON.parse(rawHiddenNetworks);
+      const hiddenNetworks = JSON.parse(rawHiddenNetworks) as string[];
 
       hiddenNetworks.push(tbr);
       localStorage.setItem('hiddenNetworks', JSON.stringify(hiddenNetworks));

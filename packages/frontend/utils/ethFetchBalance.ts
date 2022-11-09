@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { TokenMetadataResponse } from 'alchemy-sdk';
-import type { BalanceInfo } from './types';
+import type { BalanceInfo, CoingeckoAPIResponse } from './types';
 
 import { Alchemy, Network as alchemyNetwork } from 'alchemy-sdk';
 
 import { Network } from '@choko-wallet/core';
 
-const notShitcoinFilter = (metadata: TokenMetadataResponse) => {
+/* eslint-disable sort-keys */
+const notShitcoinFilter = (metadata: TokenMetadataResponse): boolean => {
   return metadata.symbol && metadata.name &&
     metadata.symbol.length <= 8 &&
     metadata.symbol.indexOf('.') === -1;
@@ -109,7 +110,8 @@ const getNativeAssetCoingeckoId = (networkInfo: string): string => {
 
 const fetchNativeAssetPrice = async (name: string, currency: string): Promise<number> => {
   const coingeckoId = getNativeAssetCoingeckoId(name);
-  const price = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=${currency}`).then((res) => res.json());
+
+  const price = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=${currency}`).then((res) => res.json()) as CoingeckoAPIResponse;
 
   return price[coingeckoId][currency];
 };
@@ -120,11 +122,11 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
       if (price[address]) {
         return [address, {
           balance: b.balance,
+          balanceInUSD: price[address] * b.balance,
           img: b.img,
           name: b.name,
-          symbol: b.symbol,
           priceInUSD: price[address],
-          balanceInUSD: price[address] * b.balance
+          symbol: b.symbol
         }];
       } else return [address, b];
     })
@@ -133,10 +135,9 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
 
 const fetchBatchTokenPrice = async (address: string[], currency: string): Promise<Record<string, number>> => {
   const payloadBase = 'https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=';
-  const payloadWhole = `${payloadBase}${address.reduce((pre, i) => { return pre += i + ','; }, '')
-  }&vs_currencies=${currency}`;
+  const payloadWhole = `${payloadBase}${address.reduce((pre, i) => { return pre + i + ','; }, '')}&vs_currencies=${currency}`;
+  const price = await fetch(payloadWhole).then((r) => r.json()) as CoingeckoAPIResponse;
 
-  const price = await fetch(payloadWhole).then((r) => r.json());
   const res: Record<string, number> = {};
 
   for (const addr of address) {
@@ -151,7 +152,7 @@ const fetchBatchTokenPrice = async (address: string[], currency: string): Promis
 };
 
 const sortBalance = (original: BalanceInfo): BalanceInfo => {
-  return Object.fromEntries(Object.entries(original).sort(([idA, a], [idB, b]) => {
+  return Object.fromEntries(Object.entries(original).sort(([_, a], [__, b]) => {
     return b.balanceInUSD - a.balanceInUSD;
   }));
 };
@@ -213,11 +214,11 @@ export const fetchTokenBalance = async (network: Network, address: string): Prom
         // 1. push the contract address to coingeckPayload
         result[token.contractAddress] = {
           balance: Number(Number(token.tokenBalance) / Math.pow(10, metadata.decimals)),
+          balanceInUSD: 0,
           img: metadata.logo,
           name: metadata.name,
-          symbol: metadata.symbol,
           priceInUSD: 0,
-          balanceInUSD: 0
+          symbol: metadata.symbol
         };
       }
     }

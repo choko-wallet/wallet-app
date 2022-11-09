@@ -3,6 +3,7 @@
 
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
+/* eslint-disable sort-keys */
 interface StatusSliceItem {
   status: {
     [key: string]: boolean
@@ -28,7 +29,6 @@ const initialState: StatusSliceItem = {
   loading: ''
 };
 
-/* eslint-disable sort-keys */
 export const statusSlice = createSlice({
   initialState,
   name: 'status',
@@ -36,7 +36,7 @@ export const statusSlice = createSlice({
     setOpen: (state, action: PayloadAction<string>) => {
       const name = action.payload;
 
-      if (state.status.hasOwnProperty(name)) {
+      if (state.status[name]) {
         state.status[name] = true;
       } else {
         console.error(`Moving component name not found ${name}`);
@@ -46,7 +46,7 @@ export const statusSlice = createSlice({
     setClose: (state, action: PayloadAction<string>) => {
       const name = action.payload;
 
-      if (state.status.hasOwnProperty(name)) {
+      if (state.status[name]) {
         state.status[name] = false;
       } else {
         console.error(`Moving component name not found ${name}`);
@@ -57,7 +57,7 @@ export const statusSlice = createSlice({
       const name = action.payload;
       const currentStatus = current(state.status);
 
-      if (state.status.hasOwnProperty(name)) {
+      if (state.status[name]) {
         state.status[name] = !currentStatus[name];
       } else {
         console.error(`Moving component name not found ${name}`);

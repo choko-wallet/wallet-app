@@ -4,9 +4,11 @@
 export type BalanceInfo = Record<string, CryptoBalance>;
 export type CryptoBalance = {
   balance: number,
+  balanceInUSD: number,
   img: string,
   name: string,
-  symbol: string,
   priceInUSD: number,
-  balanceInUSD: number,
+  symbol: string,
 };
+
+export type CoingeckoAPIResponse = Record<string, {[key: string]: number}>;
