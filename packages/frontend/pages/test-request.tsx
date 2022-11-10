@@ -80,8 +80,6 @@ const TestRequest: NextPage = () => {
         console.log(resp.payload.userAccount);
         storeUserAccount(resp.payload.userAccount);
         setAccount(resp.payload.userAccount);
-
-        console.log(resp.payload.userAccount);
       }
     }
   }, [response, clientPrivateKey, router.query]);
@@ -159,7 +157,6 @@ const TestRequest: NextPage = () => {
             onClick={() => {
               const x = buildConnectDappUrl(localTesting);
 
-              // console.log(x)
               window.location.href = x;
             }}>Connect Wallet</button>
 

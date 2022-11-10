@@ -40,9 +40,6 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   };
 
   const handleSetPassword = () => {
-    console.log('first');
-    console.log(localStorage.getItem('serialziedUserAccount'));// null
-
     dispatch(addUserAccount({ password: password, seeds: seeds }));
 
     if (redirectRequest) {

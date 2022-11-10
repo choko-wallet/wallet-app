@@ -1,7 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-export {};
+export default function AddTokenBox(): JSX.Element {
+    return <p>unimplemented!()</p>
+};
 // import { ApiPromise, WsProvider } from '@polkadot/api';
 // import { u8aToHex } from '@skyekiwi/util';
 // import { Alchemy } from 'alchemy-sdk';

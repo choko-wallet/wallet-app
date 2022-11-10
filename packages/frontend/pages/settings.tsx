@@ -34,7 +34,6 @@ function Settings (): JSX.Element {
   const [exportUrl, setExportUrl] = useState<string>('');
 
   const handleCopy = () => {
-    console.log('first');
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);

@@ -47,8 +47,6 @@ export const networkSlice = createSlice({
       if (lastSelectedNetwork) {
         state.currentNetwork = lastSelectedNetwork;
       }
-
-      console.log(state);
     },
 
     setCurrentNetwork: (state, action: PayloadAction<string>) => {

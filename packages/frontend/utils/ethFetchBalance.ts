@@ -86,18 +86,22 @@ const getAlchemy = (network: Network): Alchemy => {
 };
 
 const getTokenImage = (network: Network): string => {
-  switch (network.info) {
-    case 'ethereum' || 'goerli':
-      return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
-    case 'optimism' || 'optimism-goerli':
-      return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
-    case 'arbitrum' || 'arbitrum-goerli':
-      return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
-    case 'polygon' || 'polygon-mumbari' || 'polygon-goerli':
-      return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png';
-    default:
-      return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+  if (network.info.indexOf('polygon') !== -1) {
+    return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png';
   }
+
+  return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+  // switch (network.info) {
+  //   case 'ethereum' || 'goerli':
+  //     return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+  //   case 'optimism' || 'optimism-goerli':
+  //     return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+  //   case 'arbitrum' || 'arbitrum-goerli':
+  //     return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+  //   default:
+  //     console.log(network.info)
+  //     return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+  // }
 };
 
 const getNativeAssetCoingeckoId = (networkInfo: string): string => {
@@ -158,8 +162,6 @@ const sortBalance = (original: BalanceInfo): BalanceInfo => {
 };
 
 export const fetchNativeAssetBalanceAndPrice = async (network: Network, address: string, name: string, currency: string, decimals: number): Promise<BalanceInfo> => {
-  console.log('fetchNativeAssetBalanceAndPrice');
-
   const alchemy = getAlchemy(network);
 
   const divBy = decimals >= 6 ? decimals - 6 : decimals;
@@ -173,10 +175,8 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
     nativePrice = await fetchNativeAssetPrice(name, currency);
   } catch (e) {
     console.log('fetchNativeAssetPrice-err', e);
-    nativePrice = 0;// 需要个try catch
+    nativePrice = 0;
   }
-
-  console.log('nativePrice', nativePrice);
 
   result.native = {
     balance: nativeBalance,
@@ -186,7 +186,6 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
     priceInUSD: nativePrice,
     balanceInUSD: nativeBalance * nativePrice
   };
-  console.log('fetchNativeAssetBalanceAndPrice-result', result);
 
   return result;
 };
@@ -194,15 +193,11 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
 export const fetchTokenBalance = async (network: Network, address: string): Promise<BalanceInfo> => {
   const alchemy = getAlchemy(network);
 
-  console.log('network-address', network, address);
-
   // const rawBalances = await alchemy.core.getTokenBalances(address, {
   //   type: TokenBalanceType.DEFAULT_TOKENS
   // });
-  const rawBalances = await alchemy.core.getTokenBalances(address);// 加第二个参数就拿不到goerli测试币 chainlink
+  const rawBalances = await alchemy.core.getTokenBalances(address);
   const result: BalanceInfo = {};
-
-  console.log('rawBalances', rawBalances);
 
   await Promise.all(rawBalances.tokenBalances.map(async (token) => {
     if (Number(token.tokenBalance) !== 0) {
@@ -223,7 +218,6 @@ export const fetchTokenBalance = async (network: Network, address: string): Prom
       }
     }
   }));
-  console.log('result', result);
 
   return result;
 };
@@ -232,9 +226,6 @@ export const ethFetchBalance = async (network: Network, address: string): Promis
   const tokenBalance = await fetchTokenBalance(network, address);
 
   const tokenAddressBatch = Object.keys(tokenBalance);
-
-  console.log('tokenAddressBatch', tokenAddressBatch);
-
   let tokenPrice = {};
 
   if (network.info === 'ethereum') {

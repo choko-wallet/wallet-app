@@ -4,11 +4,11 @@
 import type { BalanceInfo } from '../utils/types';
 
 import { Switch } from '@headlessui/react';
-import { DownloadIcon, PaperAirplaneIcon, SearchIcon } from '@heroicons/react/outline';
+import { DownloadIcon, PaperAirplaneIcon, SearchIcon, PlusSmIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectKnownNetworks, selectStatus } from '../features/redux/selectors';
+import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
 import { setOpen } from '../features/slices/status';
 import BalanceRow from './BalanceRow';
 import Button from './Button';
@@ -19,9 +19,7 @@ interface Props {
 
 function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
-  const status = useSelector(selectStatus);
 
-  console.log(status);
   const knownNetworks = useSelector(selectKnownNetworks);
   const currentNetwork = useSelector(selectCurrentNetwork);
 
@@ -33,7 +31,6 @@ function Balance ({ balance }: Props): JSX.Element {
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
 
   useEffect(() => {
-    console.log(balance);
     // Token search handler
     const filtered = Object.entries(balance).filter(([_, item]) => {
       return item.name.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -82,14 +79,14 @@ function Balance ({ balance }: Props): JSX.Element {
             title='Receive' />
         </div>
 
-        {/* {knownNetworks[currentNetwork]?.networkType === 'ethereum' ?
+        {knownNetworks[currentNetwork]?.networkType === 'ethereum' ?
           <div className='flex items-center justify-center '
             onClick={() => dispatch(setOpen('homeAddToken'))} >
             <Button Icon={PlusSmIcon}
               title='Add Token' />
           </div>
           :
-          null} */}
+          null}
 
       </div>
 

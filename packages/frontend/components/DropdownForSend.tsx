@@ -28,7 +28,6 @@ function DropdownForSend ({ balanceInfo, cryptoToSend, setCryptoToSend }: Props)
       cryptoArray.push(i[1]);
     }
 
-    // console.log(cryptoArray)
     setFilterResult(cryptoArray);
   }, [balanceInfo, setCryptoToSend]);
 
@@ -39,8 +38,6 @@ function DropdownForSend ({ balanceInfo, cryptoToSend, setCryptoToSend }: Props)
       cryptoArray.push(i[1]);
     }
 
-    console.log(cryptoArray);
-
     function filterCoin (item: CryptoBalance) {
       return item.name.toLowerCase().includes(searchInput.toLowerCase());
     }
@@ -49,10 +46,6 @@ function DropdownForSend ({ balanceInfo, cryptoToSend, setCryptoToSend }: Props)
 
     setFilterResult(result);
   }, [searchInput, balanceInfo]);
-
-  // console.log('cryptoToSend', cryptoToSend)
-  // console.log('filterResult', filterResult)
-  // console.log('balanceInfo', Object.entries(balanceInfo))
 
   return (
     <div className=' w-full  text-right'>

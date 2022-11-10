@@ -65,7 +65,6 @@ function ConnectDappHandler (): JSX.Element {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-        console.log('successfully');
         toast('Password Correct, Redirecting...', {
           duration: 5000,
           icon: '👏',

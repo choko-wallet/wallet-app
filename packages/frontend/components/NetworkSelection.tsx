@@ -24,14 +24,14 @@ function NetworkSelection (): JSX.Element {
       <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
-          {Object.entries(knownNetworks).map(([hash, { color, defaultProvider, isDevelopment, text }]) => {
+          {Object.entries(knownNetworks).map(([hash, { color, isDevelopment, isDisabled, text }]) => {
             if (color === undefined) { // if color undefined, give randomColor
               const randomColors = ['#2497E7', '#fc6b03', '#befc03', '#5efc03', '#03fc56', '#03cafc', '#5a03fc'];
 
               color = randomColors[Math.floor(Math.random() * 7)];
             }
 
-            return <RadioGroup.Option className=''
+            return !isDisabled && <RadioGroup.Option className=''
               key={hash}
               value={hash} >
               {({ checked }) => {
@@ -54,7 +54,8 @@ function NetworkSelection (): JSX.Element {
                             as='p'
                             className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                           >
-                            {text.substring(0, text.length - 8)}
+                            {/* {text.substring(0, text.length - 8)} */}
+                            {text}
                           </RadioGroup.Label>
                         </div>
                       </div>
@@ -65,7 +66,7 @@ function NetworkSelection (): JSX.Element {
                           as='p'
                           className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                         >
-                          {text.substring(0, text.length - 8)}
+                          {text.split(' ')[0]}
                         </RadioGroup.Label>
                       </div>
                     </div>
@@ -84,7 +85,7 @@ function NetworkSelection (): JSX.Element {
 
                       </div>
                       <div
-                        className='absolute top-0 right-0  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'
+                        className='absolute top-0 right-0 p-1 rounded-full items-center w-[16px] h-[16px] cursor-pointer flex justify-center bg-white'
                         onClick={() => dispatch(removeNetworkAndSave(hash))}>
                         <XIcon className=' text-red-500 z-50 w-5 h-5' />
 
@@ -93,8 +94,8 @@ function NetworkSelection (): JSX.Element {
                   )}
 
                   {isDevelopment === true
-                    ? <div className='absolute top-4 right-20 items-center bg-white rounded-lg p-[2px] cursor-pointer flex justify-center '>
-                      <p className='text-gray-800 text-xs font-poppins'>TestNet</p>
+                    ? <div className={'absolute top-1 right-6 items-center bg-slate-300 rounded-lg p-[2px] cursor-pointer flex justify-center'}>
+                      <p className='text-gray-500 text-xs font-semibold font-poppins m-1'>TestNet</p>
                     </div>
                     : null}
 

@@ -93,7 +93,6 @@ export const userSlice = createSlice({
     },
 
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
-      console.log(state.currentUserAccount, action.payload);
       state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
     },
 
@@ -124,17 +123,11 @@ export const userSlice = createSlice({
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
 
         if (maybeCurrentSerializedAccount) {
-          console.log('maybeCurrentSerializedAccount', maybeCurrentSerializedAccount);
-          console.log('maybeCurrentSerializedAccount.length', maybeCurrentSerializedAccount.length);// 218
-
           let offset = 0;
           const len = UserAccount.serializedLengthWithEncryptedKey() * 2;// 109  * 2
 
           while (offset < maybeCurrentSerializedAccount.length) {
             const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
-
-            console.log('currentSerializedAccount', currentSerializedAccount);
-
             const account = UserAccount.deserializeWithEncryptedKey(hexToU8a(currentSerializedAccount));
 
             offset += len;

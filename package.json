@@ -15,7 +15,6 @@
     "build": "cd ./packages/frontend && yarn build",
     "clean": "skyekiwi-dev-clean-build",
     "postinstall": "skyekiwi-dev-yarn-only",
-    "dev:next": "cd ./packages/frontend && yarn dev",
     "dev": "cd ./packages/frontend && yarn dev",
     "start": "cd ./packages/frontend && yarn build && yarn start"
   },

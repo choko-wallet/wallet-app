@@ -8,6 +8,7 @@ import React from 'react';
 
 import { useAppThunkDispatch } from '../features/redux/store';
 import { setClose } from '../features/slices/status';
+import AddTokenBox from './AddTokenBox';
 import Modal from './Modal';
 
 const AddTokenModal = (): JSX.Element => {
@@ -28,10 +29,7 @@ const AddTokenModal = (): JSX.Element => {
             </div>
           </Dialog.Title>
 
-          {/* <AddTokenBox
-                  closeAddTokenModal={closeAddTokenModal}
-                  knownNetworks={knownNetworks}
-                /> */}
+          <AddTokenBox />
 
         </Dialog.Panel>
       </div >

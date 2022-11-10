@@ -16,6 +16,7 @@ import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
 import ReceiveTokenModal from '@choko-wallet/frontend/components/ReceiveTokenModal';
 import SendTokenModal from '@choko-wallet/frontend/components/SendTokenModal';
+import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
 
 import Header from '../../components/Header';
@@ -27,7 +28,7 @@ import { endLoading, startLoading, toggle } from '../../features/slices/status';
 import { loadUserAccount } from '../../features/slices/user';
 import { ethFetchBalance } from '../../utils/ethFetchBalance';
 import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
-import { toastFail, toastSuccess } from '../../utils/toast';
+import { toastFail } from '../../utils/toast';
 
 /* eslint-disable sort-keys */
 export default function Home (): JSX.Element {
@@ -47,14 +48,6 @@ export default function Home (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const [cryptoToSend, setCryptoToSend] = useState<CryptoBalance | null>(null);
-  // const [amount, setAmount] = useState<number>(0);
-  // const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
-  // const [openScan, setOpenScan] = useState<boolean>(false);
-  // const [addressToSend, setAddressToSend] = useState<string>('');
-  // const [showCheck, setShowCheck] = useState<boolean>(false);
-  // const [networkToReceive, setNetworkToReceive] = useState<string>('');
-
   const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
 
   useEffect(() => {
@@ -70,24 +63,22 @@ export default function Home (): JSX.Element {
     if (!knownNetworks) return;
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
-    // no need to await
-    console.log('useEffect-changenetwork');
 
+    // no need to await
     void (async () => {
       dispatch(startLoading('Fetching Balance ...'));
 
       const network = knownNetworks[currentNetwork];
 
-      console.log('network', network);
-
       switch (network.networkType) {
         case 'polkadot':
           try {
-            const res = await polkadotFetchBalance(network, currentUserAccount.address);
+            // const res = await polkadotFetchBalance(network, '16aThbzrsb2ohiLXJLqN8jLST6JgUPRi3BqyHxUW4yVHBQ44')
+            const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
 
             setBalanceInfo(res);
             dispatch(endLoading());
-            toastSuccess(`Changed to ${network.text}`);
+            // toastSuccess(`Changed to ${network.text}`);
           } catch (e) {
             console.error(e);
             dispatch(endLoading());
@@ -97,14 +88,13 @@ export default function Home (): JSX.Element {
           break;
         case 'ethereum':
           try {
-            console.log('ethereum');
-            // const res = await ethFetchBalance(network, currentUserAccount.address);
+            const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
             // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-            const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
+            // const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
 
             setBalanceInfo(res);
             dispatch(endLoading());
-            toastSuccess(`Changed to ${network.text}`);
+            // toastSuccess(`Changed to ${network.text}`);
           } catch (e) {
             console.error(e);
             dispatch(endLoading());
@@ -138,14 +128,6 @@ export default function Home (): JSX.Element {
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
   if (loading) return <Loading />;
-
-  // const handleCopy = () => {
-  //   setShowCheck(true);
-  //   setTimeout(() => {
-  //     setShowCheck(false);
-  //   }, 1000);
-  // };
-  // console.log('currentNetwork-11', knownNetworks[network])
 
   return (
     <div className={theme}>

@@ -7,7 +7,8 @@ import { Network, UserAccount } from '@choko-wallet/core';
 
 const encodeAddr = (network: Network, account: UserAccount): string => {
   if (network.networkType === 'polkadot') {
-    return encodeAddress(account.publicKeys[0]);
+    return encodeAddress(account.publicKeys[0],
+      network.ss58Prefix === undefined ? 42 : network.ss58Prefix);
   } else {
     return ethereumEncode(account.publicKeys[2]);
   }

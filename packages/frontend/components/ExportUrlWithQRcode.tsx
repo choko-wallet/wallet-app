@@ -14,7 +14,6 @@ function ExportUrlWithQRcode ({ exportUrl }: Props): JSX.Element {
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
   const handleCopy = () => {
-    console.log('first');
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);

@@ -42,9 +42,8 @@ function SignTxHandler (): JSX.Element {
     const payload = router.query.payload as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
     const callbackUrl = router.query.callbackUrl as string;
-    const request = SignTxRequest.deserialize(u8aRequest);// 报错
+    const request = SignTxRequest.deserialize(u8aRequest);
 
-    console.log('request', request);
     dispatch(loadUserAccount());
     dispatch(switchUserAccount(request.userOrigin.address));
 
@@ -70,8 +69,6 @@ function SignTxHandler (): JSX.Element {
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
-  console.log('currentUserAccount', currentUserAccount);
-
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
@@ -80,7 +77,6 @@ function SignTxHandler (): JSX.Element {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-        console.log('successfully');
         toast('Password Correct, Redirecting...', {
           duration: 5000,
           icon: '👏',

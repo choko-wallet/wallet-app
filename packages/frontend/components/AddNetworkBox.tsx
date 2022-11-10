@@ -17,20 +17,11 @@ import { useAppThunkDispatch } from '../features/redux/store';
 import { addNetworkAndSave } from '../features/slices/network';
 import { setClose } from '../features/slices/status';
 
-// interface Props {
-//   // knownNetworks: KnownNetworks;
-//   // closeAddNetworkModal: () => void;
-// }
-
 type FormData = {
   networkName: string;
   netWorkRPC: string;
   networkNativeTokenDecimal: number;
 }
-
-// interface networkObject {
-//   [key: string]: Network
-// }
 
 // wss://acala-rpc.dwellir.com
 const AddNetworkBox = (): JSX.Element => {
@@ -56,6 +47,7 @@ const AddNetworkBox = (): JSX.Element => {
         const chainInfo = api.registry.getChainProperties();
         const [chain] = await Promise.all([api.rpc.system.chain()]);
 
+        console.log(chainInfo.toHuman());
         const networkForAdding: Network = {
           /* eslint-disable */
           defaultProvider: formData.netWorkRPC,
@@ -69,35 +61,16 @@ const AddNetworkBox = (): JSX.Element => {
           nativeTokenDecimal: Number(chainInfo.toHuman().tokenDecimals[0]),
           serialize: function (): Uint8Array {
             return xxHash(this.info);
-            // return xxHash(chain.toLocaleLowerCase());
           }
         };
 
         const hexString = u8aToHex(xxHash(chain.toLocaleLowerCase()));
-        // console.log('hexString', hexString)
 
         if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
           throw new Error('Network already exists');
         }
-        // console.log('knownNetworks', knownNetworks)
         dispatch(addNetworkAndSave(networkForAdding));
 
-
-        // knownNetworks[hexString] = networkForAdding;// error 不能添加 
-
-        // add network to localstorage
-        // const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
-        // const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
-        // const networkObject: networkObject = maybeNetworkAddedObject || {};
-        // console.log('first3')
-
-        // networkObject[hexString] = networkForAdding;
-        // localStorage.setItem('networkAdded', JSON.stringify(networkObject));
-        // console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
-
-        // console.log('added:', networkForAdding);
-
-        // setValue('networkName', '');
         setValue('netWorkRPC', '');
         dispatch(setClose('homeAddNetwork'))
         setAddNetworkLoading(false);
@@ -271,7 +244,7 @@ const AddNetworkBox = (): JSX.Element => {
             disabled
             type='submit'
           >
-            Temporarily not supported
+            unimplemented!()
           </button>
 
       }
