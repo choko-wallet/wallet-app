@@ -13,6 +13,10 @@ import { selectCurrentUserAccount } from '../../features/redux/selectors';
 import { switchUserAccount } from '../../features/slices/user';
 import encodeAddr from '../../utils/encodeAddr';
 
+/**
+ * a dropdown of all userAccount in header
+ */
+
 interface Props {
   account: UserAccount;
   network: Network;

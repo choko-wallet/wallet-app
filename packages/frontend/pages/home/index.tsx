@@ -29,6 +29,9 @@ import { ethFetchBalance } from '../../utils/ethFetchBalance';
 import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail } from '../../utils/toast';
 
+/**
+ * Main dashboard
+ */
 /* eslint-disable sort-keys */
 export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
@@ -45,6 +48,18 @@ export default function Home (): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
+
+  // Init user account & networks
+  useEffect(() => {
+    // IF account is not in localStorage - redirect to account creation page
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      void router.push('/account');
+    } else {
+      // We are all good. Load UserAccount & Networks
+      dispatch(loadUserAccount());
+      dispatch(loadAllNetworks());
+    }
+  }, [dispatch, router]);
 
   useEffect(() => {
     if (loadingText && loadingText.length !== 0) {
@@ -103,17 +118,6 @@ export default function Home (): JSX.Element {
 
     setMounted(true);
   }, [currentNetwork, currentUserAccount, knownNetworks, dispatch]);
-
-  useEffect(() => {
-    // IF account is not in localStorage - redirect to account creation page
-    if (!localStorage.getItem('serialziedUserAccount')) {
-      void router.push('/account');
-    } else {
-      // We are all good. Load UserAccount & Networks
-      dispatch(loadUserAccount());
-      dispatch(loadAllNetworks());
-    }
-  }, [dispatch, router]);
 
   useEffect(() => {
     if (theme !== 'dark' && theme !== 'light') {

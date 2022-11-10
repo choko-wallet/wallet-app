@@ -17,6 +17,11 @@ import { useAppThunkDispatch } from '../../features/redux/store';
 import { addNetworkAndSave } from '../../features/slices/network';
 import { setClose } from '../../features/slices/status';
 
+/**
+ * Render a box to add Network
+ * Only Support Polkadot Networks for now
+ */
+
 type FormData = {
   networkName: string;
   netWorkRPC: string;

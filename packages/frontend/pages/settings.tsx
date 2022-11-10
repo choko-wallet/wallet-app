@@ -15,6 +15,10 @@ import { loadAllNetworks } from '../features/slices/network';
 import { setOpen } from '../features/slices/status';
 import { loadUserAccount } from '../features/slices/user';
 
+/**
+ * Setting page. WIP.
+ */
+
 /* eslint-disable sort-keys */
 function Settings (): JSX.Element {
   const router = useRouter();

@@ -11,6 +11,10 @@ import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';
 import AddNetworkBox from './AddNetworkBox';
 
+/**
+ * Modal Wrapper to display the AddNetworkBox
+ */
+
 const AddNetworkModal = (): JSX.Element => {
   const { theme } = useTheme();
   const dispatch = useAppThunkDispatch();

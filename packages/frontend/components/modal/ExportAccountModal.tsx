@@ -15,6 +15,10 @@ import getWalletUrl from '@choko-wallet/sdk/walletUrl';
 import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';
 
+/**
+ * Modal wrapper to generate an exportAccount in Setting
+ */
+
 const ExportAccountModal = (): JSX.Element => {
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);

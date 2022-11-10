@@ -11,6 +11,10 @@ import { selectCurrentNetwork, selectKnownNetworks } from '../../features/redux/
 import { removeNetworkAndSave, setCurrentNetwork } from '../../features/slices/network';
 import { setOpen } from '../../features/slices/status';
 
+/**
+ * Renders a list of all network avaliable
+ */
+
 function NetworkSelection (): JSX.Element {
   const dispatch = useDispatch();
 

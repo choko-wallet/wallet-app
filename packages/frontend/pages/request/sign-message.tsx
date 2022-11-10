@@ -14,7 +14,7 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
@@ -24,9 +24,7 @@ function SignMessageHandler (): JSX.Element {
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
-  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
-
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
 
@@ -70,7 +68,6 @@ function SignMessageHandler (): JSX.Element {
         if (currentUserAccount && !currentUserAccount.isLocked) {
           void (async () => {
             setPassword('');
-            // setOpenPasswordModal(false);
             dispatch(setClose('signMessagePasswordModal'));
 
             const signMessage = new SignMessageDescriptor();
@@ -78,6 +75,8 @@ function SignMessageHandler (): JSX.Element {
             try {
               const response = await signMessage.requestHandler(request, currentUserAccount);
               const s = response.serialize();
+
+              dispatch(lockCurrentUserAccount());
 
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
             } catch (err) {

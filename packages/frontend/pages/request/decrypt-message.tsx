@@ -14,14 +14,16 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
 
+/**
+ * Handler for DecryptMesasgeRequest
+ */
 function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -66,7 +68,6 @@ function DecryptMessageHandler (): JSX.Element {
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
           setPassword('');
-          // setOpenPasswordModal(false);
           dispatch(setClose('decryptMessagePasswordModal'));
 
           void (async () => {
@@ -76,9 +77,10 @@ function DecryptMessageHandler (): JSX.Element {
               const response = await decryptMessage.requestHandler(request, currentUserAccount);
               const s = response.serialize();
 
+              dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
             } catch (err) {
-              console.log('err', err);
+              console.error('err', err);
               toast('Something Wrong', {
                 style: {
                   background: 'red',

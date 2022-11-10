@@ -12,6 +12,13 @@ import { useAppThunkDispatch } from '../../features/redux/store';
 import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';
 
+/**
+ * The dropdown to receive crypto and display a QR code
+ * unimplemented!() for security reason.
+ * Mostly likely nobody is gonna actually use this yet.
+ * We do not want our users to use the wallet for real assets yet.
+ */
+
 const ReceiveTokenModal = (): JSX.Element => {
   const { theme } = useTheme();
   const dispatch = useAppThunkDispatch();
@@ -42,15 +49,7 @@ const ReceiveTokenModal = (): JSX.Element => {
 
           </Dialog.Title>
           <div className='mt-2 '>
-            {/* <DropdownForSend Cryptos={cryptoInfo}
-                    defaultValue={cryptoToReceive}
-                    onClick={setCryptoToReceive} /> */}
-
-            <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network</p>
-
-            {/* <DropdownForNetwork defaultValue={networkToReceive}
-                    networks={networks}
-                    onClick={setNetworkToReceive} /> */}
+            <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network <b>unimplemented!()</b></p>
 
             <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
@@ -75,16 +74,6 @@ const ReceiveTokenModal = (): JSX.Element => {
                 value={' '} />
             </div>
 
-            <div className='flex space-x-5'>
-              <div>
-                <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Expected arrival</p>
-                {/* <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.arrival}</p> */}
-              </div>
-              <div>
-                <p className='dark:text-white text-gray-700 pt-3 font-poppins'>Minimum deposit</p>
-                {/* <p className='dark:text-white text-gray-700 text-sm font-poppins'>{cryptoToReceive.minDeposit}</p> */}
-              </div>
-            </div>
             {/* <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p> */}
             <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {' '}
               {/* <span className='text-red-400'>{networkToReceive}</span>. */}

@@ -6,10 +6,14 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
-import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelection';
+import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelectionList';
 import { toggle } from '@choko-wallet/frontend/features/slices/status';
 
 import { selectStatus } from '../../features/redux/selectors';
+
+/**
+ * wrapper of the NetworkSelection list for mobile devices
+ */
 
 export default function NetworkSidebarMobile (): JSX.Element {
   const nodeRef = React.useRef(null);

@@ -13,6 +13,9 @@ import { removeAllAccounts } from '../../features/slices/user';
 import encodeAddr from '../../utils/encodeAddr';
 import AccountRow from './AccountRow';
 
+/**
+ * Render currentUserAccount address on Header & a drop down of all UserAccount
+ */
 export default function AccountInHeader (): JSX.Element {
   const dispatch = useDispatch();
 

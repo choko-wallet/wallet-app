@@ -7,8 +7,12 @@ import React, { useEffect, useState } from 'react';
 
 import Loading from '../components/Loading';
 import { useAppThunkDispatch } from '../features/redux/store';
-import { startLoading } from '../features/slices/status';
+import { endLoading, startLoading } from '../features/slices/status';
 import { addUserAccount } from '../features/slices/user';
+
+/**
+ * Import an account from URL.
+ */
 
 /* eslint-disable sort-keys */
 function Import (): JSX.Element {
@@ -25,6 +29,7 @@ function Import (): JSX.Element {
       dispatch(startLoading('Importing in progress! You will be reidrect To Home once done.'));
       dispatch(addUserAccount({ importKey: hexToU8a(payload) })).then(() => {
         setTimeout(() => {
+          dispatch(endLoading());
           void router.push('/home');
         }, 2000);
       }).catch((e) => {

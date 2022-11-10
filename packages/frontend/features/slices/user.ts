@@ -7,6 +7,18 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 
+/**
+ * Wallet core account storage
+ */
+
+/**
+ * Add an account to storage
+ * There are two this can be done
+ *
+ * @First option: AccountOption + seed: mnemonic + password: string
+ * password is an user input password
+ * @Second use importKey which should always be an UserAccount.serializeWithEncryptedKey()
+ */
 export const addUserAccount = createAsyncThunk(
   'users/add',
   async (payload: {
@@ -92,6 +104,7 @@ export const userSlice = createSlice({
       }
     },
 
+    // Use with caution! Always lock the account when done.
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
       state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
     },

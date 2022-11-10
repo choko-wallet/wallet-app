@@ -13,6 +13,10 @@ import { setOpen } from '../../features/slices/status';
 import Button from '../Button';
 import BalanceRow from './BalanceRow';
 
+/**
+ * The balance display on the right of the home dashboard
+ */
+
 interface Props {
   balance: BalanceInfo;
 }

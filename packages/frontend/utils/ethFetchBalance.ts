@@ -91,6 +91,7 @@ const getTokenImage = (network: Network): string => {
   }
 
   return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
+
   // switch (network.info) {
   //   case 'ethereum' || 'goerli':
   //     return 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png';
@@ -137,6 +138,9 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
   );
 };
 
+// Fetch token price from a batch of contract address on ethereum
+// The URL might be very large. However, tested with 100+ tokens, it still works well.
+// There is very little likelyhood a user hold that much of shitcoins
 const fetchBatchTokenPrice = async (address: string[], currency: string): Promise<Record<string, number>> => {
   const payloadBase = 'https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=';
   const payloadWhole = `${payloadBase}${address.reduce((pre, i) => { return pre + i + ','; }, '')}&vs_currencies=${currency}`;
@@ -222,14 +226,17 @@ export const fetchTokenBalance = async (network: Network, address: string): Prom
   return result;
 };
 
+// Entry point
 export const ethFetchBalance = async (network: Network, address: string): Promise<BalanceInfo> => {
+  // 1. Fetch ERC20 token balance
   const tokenBalance = await fetchTokenBalance(network, address);
 
   const tokenAddressBatch = Object.keys(tokenBalance);
   let tokenPrice = {};
 
   if (network.info === 'ethereum') {
-    // only fetch on ethereum?
+    // only fetch on ethereum? and skip other chains. Contract address might be different?
+    // 2. fetch ERC20 token price
     tokenPrice = await fetchBatchTokenPrice(tokenAddressBatch, 'usd');
   }
 
@@ -237,8 +244,11 @@ export const ethFetchBalance = async (network: Network, address: string): Promis
     tokenPrice = 0;
   }
 
+  // 3. for native assets, we can fetch token balance & price at the same time
   const nativeAssetBalanceAndPrice = await fetchNativeAssetBalanceAndPrice(network, address, network.info, 'usd', 18);
 
+  // 4. populate tokenPrice into token balance & sort by balanceInUSD
+  // Native asset always at top
   return {
     ...nativeAssetBalanceAndPrice,
     ...sortBalance(populateTokenPriceToBalance(tokenBalance, tokenPrice))

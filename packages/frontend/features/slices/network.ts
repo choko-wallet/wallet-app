@@ -23,6 +23,9 @@ export const networkSlice = createSlice({
   initialState,
   name: 'network',
   reducers: {
+    // Load from KnownNetworks from the SDK.
+    // + addedNetwork = localNetwork
+    // - hiddenNetwork
     loadAllNetworks: (state) => {
       let rawLocalNetworks = localStorage.getItem('localNetwork');
 

@@ -34,7 +34,7 @@ const sdkConfig = {
   accountOption: accountOption,
   activeNetworkHash: '847e7b7fa160d85f', // skyekiwi
   callbackUrlBase: callbackUrl,
-  displayName: 'Choko Wallet Alpha Test',
+  displayName: 'Choko Wallet Sample Dapp',
   infoName: 'test',
   version: 0
 };
@@ -51,6 +51,7 @@ const TestRequest: NextPage = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Handle response from the wallet
   useEffect(() => {
     if (response && response.length > 0) {
       if (router.query.responseType === 'signTx') {
@@ -97,6 +98,7 @@ const TestRequest: NextPage = () => {
     }
   }, [router]);
 
+  // configSDK and store in localStorage
   useEffect(() => {
     configSDK(sdkConfig);
 
@@ -119,6 +121,7 @@ const TestRequest: NextPage = () => {
     setMounted(true);
   }, [loading]);
 
+  // GEnerate an ephemeral key for receiving decryptMessage
   useEffect(() => {
     const lsSK = localStorage.getItem('ephemeralKey');
 

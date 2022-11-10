@@ -3,6 +3,10 @@
 
 import React from 'react';
 
+/**
+ * Render each row of crypto in protfolio
+ */
+
 interface Props {
   balance: number;
   name: string;

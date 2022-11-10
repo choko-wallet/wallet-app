@@ -12,6 +12,9 @@ import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '../../features/slices/user';
 
+/**
+ * Guide user to create an account with seed phrase
+ */
 function CreateWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();

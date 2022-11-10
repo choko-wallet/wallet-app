@@ -11,6 +11,10 @@ import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';
 import AddTokenBox from './AddTokenBox';
 
+/**
+ * Modal wrapper for AddTokenBo
+ */
+
 const AddTokenModal = (): JSX.Element => {
   const { theme } = useTheme();
   const dispatch = useAppThunkDispatch();

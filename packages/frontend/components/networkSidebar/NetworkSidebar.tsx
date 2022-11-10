@@ -5,8 +5,12 @@ import { ChevronRightIcon } from '@heroicons/react/outline';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelection';
+import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelectionList';
 import { toggle } from '@choko-wallet/frontend/features/slices/status';
+
+/**
+ * wrapper of the NetworkSelection list for widescreen devices
+ */
 
 export default function NetworkSidebar (): JSX.Element {
   const dispatch = useDispatch();

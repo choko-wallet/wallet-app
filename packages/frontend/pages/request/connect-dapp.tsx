@@ -14,11 +14,14 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 
 // http://localhost:3000/request/connect-dapp?requestType=connectDapp&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf124d809006db70e53&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
+/**
+ * Handler for ConnectDappRequest
+ */
 function ConnectDappHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -26,7 +29,6 @@ function ConnectDappHandler (): JSX.Element {
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
-  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -85,9 +87,8 @@ function ConnectDappHandler (): JSX.Element {
             const s = response.serialize();
 
             setPassword('');
-            // setOpenPasswordModal(false);
             dispatch(setClose('connectDappPasswordModal'));
-
+            dispatch(lockCurrentUserAccount());
             window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
           })();
         }
@@ -105,11 +106,6 @@ function ConnectDappHandler (): JSX.Element {
       }
     }
   }
-
-  // function closeModal () {
-  //   setPassword('');
-  //   setOpenPasswordModal(false);
-  // }
 
   if (!mounted) {
     return null;

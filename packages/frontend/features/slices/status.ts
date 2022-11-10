@@ -3,6 +3,10 @@
 
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
+/**
+ * statusSlice is used for controlling model behaviours & Loading behavior
+ */
+
 /* eslint-disable sort-keys */
 interface StatusSliceItem {
   status: {

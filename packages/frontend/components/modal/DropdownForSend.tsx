@@ -8,6 +8,10 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import { BalanceInfo, CryptoBalance } from '../../utils/types';
 
+/**
+ * The dropdown to select crypto asset to send
+ */
+
 interface Props {
   balanceInfo: BalanceInfo;
   cryptoToSend: CryptoBalance;

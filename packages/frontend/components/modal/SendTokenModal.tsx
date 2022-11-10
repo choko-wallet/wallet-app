@@ -16,11 +16,12 @@ import { BalanceInfo, CryptoBalance } from '../../utils/types';
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
 
+/**
+ * Modal wrapper to send crypto to another account
+ * NOT FUNCTIONAL YET.
+ */
 interface Props {
   balanceInfo: BalanceInfo;
-  // cryptoToSend: CryptoBalance;
-  // setCryptoToSend: (value: CryptoBalance) => void;
-
 }
 
 const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
@@ -60,7 +61,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             </div>
           </Dialog.Title>
           <div className='mt-2 '>
-
+            <b>unimplemented!()</b>
             <DropdownForSend
               balanceInfo={balanceInfo}
               cryptoToSend={cryptoToSend}
