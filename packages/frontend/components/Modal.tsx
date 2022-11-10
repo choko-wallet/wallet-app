@@ -3,22 +3,27 @@
 
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { selectStatus } from '../features/redux/selectors';
+import { setClose } from '../features/slices/status';
 
 interface Props {
-  closeModal: () => void;
-  isOpen: boolean;
-  children: JSX.Element
+  modalName: string;
+  children: JSX.Element;
 }
 
-function Modal ({ children, closeModal, isOpen }: Props): JSX.Element {
-  return (
+function Modal ({ children, modalName }: Props): JSX.Element {
+  const dispatch = useDispatch();
+  const status = useSelector(selectStatus);
 
+  return (
     <Transition appear
       as={Fragment}
-      show={isOpen}>
+      show={status[modalName]}>
       <Dialog as='div'
         className='relative z-50'
-        onClose={closeModal}>
+        onClose={() => dispatch(setClose(modalName))}>
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-300'
@@ -42,9 +47,7 @@ function Modal ({ children, closeModal, isOpen }: Props): JSX.Element {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-
               {children}
-
             </Transition.Child>
           </div>
         </div>

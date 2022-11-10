@@ -4,6 +4,10 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
+/**
+ * Router for requests.
+ * If there is no UserAccount found. Store the requestParams to localStorage and delete when done.
+ */
 function RequestRouter (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);

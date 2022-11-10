@@ -14,7 +14,7 @@ function Footer (): JSX.Element {
 
   return (
     // <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
-    <div className='flex justify-between items-center p-3 pt-5 md:px-10 '>
+    <div className='flex justify-between items-center md:px-10 '>
       <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>
@@ -29,7 +29,7 @@ function Footer (): JSX.Element {
               /* eslint-disable */
               // @ts-ignore
               src={discIcon1}
-              /* eslint-enable */
+            /* eslint-enable */
             />
           </a>
           <SocialIcon
@@ -56,15 +56,13 @@ function Footer (): JSX.Element {
             target='_blank'
             url='https://medium.com/@choko_wallet'
           />
-          <a href='mailto:contact@choko.app'>
-            <SocialIcon
-              bgColor='transparent'
-              className='cursor-pointer'
-              fgColor='black'
-              network='email'
-            />
-          </a>
-
+          <SocialIcon
+            bgColor='transparent'
+            className='cursor-pointer'
+            fgColor='black'
+            network='email'
+            url='mailto:contact@choko.app'
+          />
         </div>
         : <div className='flex items-center justify-center'>
           <a className='relative h-7 w-7 m-3'
@@ -78,7 +76,7 @@ function Footer (): JSX.Element {
               /* eslint-disable */
               // @ts-ignore
               src={discIcon2}
-              /* eslint-enable */
+            /* eslint-enable */
             />
           </a>
           <SocialIcon
@@ -105,15 +103,14 @@ function Footer (): JSX.Element {
             target='_blank'
             url='https://medium.com/@choko_wallet'
           />
-          <a href='mailto:contact@choko.app'>
-            <SocialIcon
-              bgColor='transparent'
-              className='cursor-pointer'
-              fgColor='white'
-              network='email'
-            />
-          </a>
 
+          <SocialIcon
+            bgColor='transparent'
+            className='cursor-pointer'
+            fgColor='white'
+            network='email'
+            url='mailto:contact@choko.app'
+          />
         </div>}
 
     </div>

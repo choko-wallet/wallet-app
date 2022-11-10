@@ -1,29 +1,29 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowSmLeftIcon, ArrowSmRightIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
 import { cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
-import { GetServerSideProps } from 'next';
+import ProgressBar from '@ramonak/react-progress-bar';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 // redux
 import { useDispatch } from 'react-redux';
 
-import { addUserAccount } from '../../features/slices/userSlice';
+import { addUserAccount } from '../../features/slices/user';
 
-interface Props {
-  mnemonic: string,
-  quizMnemonic: number,
-}
-
-function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
+/**
+ * Guide user to create an account with seed phrase
+ */
+function CreateWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
   const [step, setStep] = useState<number>(1);
-  const [seeds, setSeeds] = useState<string>(mnemonic);
-  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>(mnemonic);
+  const [seeds, setSeeds] = useState<string>('');
+  const [quizMnemonic, setQuizMnemonic] = useState<number>(1);
+
+  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [verifyMnemonic, setVerifyMnemonic] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -39,9 +39,6 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   };
 
   const handleSetPassword = () => {
-    console.log('first');
-    console.log(localStorage.getItem('serialziedUserAccount'));// null
-
     dispatch(addUserAccount({ password: password, seeds: seeds }));
 
     if (redirectRequest) {
@@ -60,7 +57,18 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
       setRedirectRequest(redirectParams);
     }
 
-    setMounted(true);
+    (async () => {
+      await cryptoWaitReady();
+      const mnemonic = mnemonicGenerate();
+
+      setSeeds(mnemonic);
+      setSeedsStringForCopy(mnemonic);
+      setQuizMnemonic(Math.floor(Math.random() * 12) + 1);
+    })().then(() => {
+      setMounted(true);
+    }).catch((e) => {
+      console.error(e);
+    });
   }, [router]);
 
   if (!mounted) {
@@ -68,205 +76,182 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
   }
 
   return (
-    <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5' >
+    <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >
 
-      <div className='md:hidden col-span-12'></div>
-      <div className='md:hidden col-span-12'></div>
+      <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
+        <ProgressBar
+          baseBgColor='#AFAFAF'
+          bgColor='#4075A9'
+          className='w-full '
+          completed={step === 1
+            ? 0
+            : step === 2
+              ? 50
+              : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 80 : 80}
+        />
 
-      <ul className='steps steps-horizontal col-span-10 col-start-2 md:col-span-6 md:col-start-4'>
-        <li className={`text-black step ${step > 0 ? 'step-neutral  ' : ' '}`}>
-          <p className='text-black'>Generate Mnemonic</p>
-        </li>
-        <li className={`step ${step > 1 ? 'step-neutral' : ''}`}>
-          <p className='text-black'>Verify</p>
-        </li>
-        <li className={`step ${step > 2 ? 'step-neutral' : ''}`}>
-          <p className='text-black'>Set a Password</p>
-        </li>
-      </ul>
+        <div className='w-full max-w-2xl justify-between mt-2 flex'>
+          <p className='text-white text-xs md:text-sm font-poppins'>Generate Mnemonic</p>
+          <p className='text-white text-xs md:text-sm font-poppins pr-10'>Verify</p>
+          <p className='text-white text-xs md:text-sm font-poppins'>Set Password</p>
+        </div>
 
-      {/* TODO: these are used to create more space between the steps and main content.
-    We should have a better way to deal with it  */}
-      <div className='hidden md:block col-span-12'></div>
-      <div className='hidden md:block col-span-12'></div>
-      <div className='hidden md:block col-span-12'></div>
+        {step === 1 &&
+          <div className='w-full max-w-2xl  ' >
+            <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-      {step === 1 &&
-        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-          <div className='col-span-12 shadow-xl rounded-lg'>
-            <div className='card p-5 md:p-6 bg-white'>
-              <h2 className='card-title text-black'>
-                Create Mnemonic
-              </h2>
-              <h3 className=' text-black'>Generate a 12 words mnemonic.</h3>
-              <div className='grid grid-cols-12 gap-5 m-6 select-none'>
+              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+                Generated 12-word mnemonic seed: </p>
+
+              <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>
                 {seeds.split(' ').map((seed, index) =>
-                  <div className='col-span-6 md:col-span-3 p-2 text-center rounded-lg border border-netrual-200'
+                  <div className='border border-[#94C5E3]  rounded-lg flex items-center justify-center p-1 md:p-3 py-2'
                     key={index}>
-                    <p className=' text-black'>{seed}</p>
+                    <p className='text-black text-sm font-poppins'>{seed}</p>
                   </div>
                 )}
+              </div>
 
-                <button className='btn col-span-6 md:col-span-5'
-                  onClick={refreshMnemonic}>
-
-                  <RefreshIcon className='h-5 duration-300 hover:rotate-180 transtion east-out' />
-                  <span className='md:ml-3'>Refresh</span>
+              <div className='flex space-x-5 items-center pt-5'>
+                <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
+                bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
+                onClick={refreshMnemonic}>
+                  <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
+                  <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
                 </button>
 
                 <CopyToClipboard onCopy={() => setCopied(true)}
                   text={seedsStringForCopy}>
-                  <button className='btn btn-accent col-span-6 md:col-span-4'>
-                    <DuplicateIcon className='h-5 duration-300 hover:scale-125 transtion east-out' />
-                    <span className='md:ml-3'>Copy</span>
+                  <button className='flex items-center justify-center w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
+                bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '>
+                    <DuplicateIcon className='text-[#F5CBD5] h-5  m-3 duration-300 hover:scale-125 transtion east-out' />
+                    <p className='text-[#F5CBD5] text-sm font-poppins'>COPY</p>
                   </button>
                 </CopyToClipboard>
 
-                {
-                  copied && <button
-                    className='btn btn-outline btn-success col-span-2 border-none'>
-                    Copied!</button>
+                {copied &&
+                  <p className='text-[#99D8FF] font-poppins'>COPIED!</p>
                 }
+
               </div>
             </div>
-          </div>
 
-          <div className='col-span-12 my-4'></div>
+            <div className='flex justify-evenly mt-12 md:mt-20'>
+              <button className='bg-[#F5CBD5] rounded-full p-3'
+                onClick={() => router.push('/')} >
+                <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+              </button>
 
-          <div className='col-span-4 col-start-4'>
-            <button className='btn btn-error btn-circle btn-lg'
-              onClick={() => router.push('/')} >
-              <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-            </button>
-          </div>
-
-          <div className='col-span-4'>
-            <button className='btn btn-accent btn-circle btn-lg'
-              onClick={() => setStep(step + 1)} >
-              <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-            </button>
-          </div>
-        </div>
-      }
-
-      {step === 2 &&
-
-        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-          <div className=' col-span-12 shadow-xl rounded-lg'>
-            <div className='card p-5 md:p-6 bg-white'>
-              <h2 className='card-title text-black'>
-                Verify
-              </h2>
-              <h3 className='card-title text-black'>Verify if you have securely remember these mneomic.</h3>
-
-              <div className='grid grid-cols-12 gap-5 m-6'>
-
-                <h2 className='col-span-6 pt-2'>
-                  <span className='text-black'>What is Word #{quizMnemonic}</span>
-                </h2>
-                <div className='col-span-6'>
-                  <input className='input input-bordered w-full max-w-xs'
-                    onChange={(e) => setVerifyMnemonic(e.target.value)}
-
-                    placeholder='Verify'
-                    type='text'
-
-                    value={verifyMnemonic}
-                  />
-                </div>
-              </div>
+              <button className='bg-[#0170BF] rounded-full p-3'
+                onClick={() => setStep(step + 1)} >
+                <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+              </button>
             </div>
+
           </div>
+        }
 
-          <div className='col-span-12 my-4'></div>
+        {step === 2 &&
 
-          <div className='col-span-4 col-start-4'>
-            <button className='btn btn-error btn-circle btn-lg'
-              onClick={() => setStep(1)} >
-              <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-            </button>
-          </div>
+          <div className='w-full max-w-2xl ' >
+            <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-          <div className='col-span-4'>
-            <button className={`btn btn-accent btn-circle btn-lg ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'btn-disabled'}`}
-              onClick={() => setStep(step + 1)} >
-              <ArrowSmRightIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-            </button>
-          </div>
-        </div>
-      }
+              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+                Verify your mnemonic seed:
+              </p>
+              <p className=' text-black text-sm md:text-xl md:-mt-5 font-poppins'>
+                Ensure that you keep the secret seed in a safe place.</p>
 
-      {step === 3 &&
-        <div className='grid grid-cols-12 col-span-12 md:col-span-4 md:col-start-5'>
-          <div className=' col-span-12 shadow-xl rounded-lg'>
-            <div className='card p-5 md:p-6 bg-white'>
-              <h2 className='card-title text-black'>
-                Set a Password
-              </h2>
-              <h3 className=' text-black'>Set a local password for you wallet. </h3>
+              <div className='flex items-center justify-center p-10'>
 
-              <div className='grid grid-cols-12 gap-5 m-6'>
+                <p className=' text-black font-semibold font-poppins mr-5'>
+                  Word #{quizMnemonic}
+                </p>
 
-                <h2 className='col-span-5 pt-2'>
-                  <span className='text-black'>Set a good password</span>
-                </h2>
-                <div className='col-span-7'>
-                  <input className='input input-bordered w-full max-w-xs'
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder='Set a Password'
+                <input className='w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
+                  onChange={(e) => setVerifyMnemonic(e.target.value)}
+                  placeholder='verify'
+                  type='text'
+                  value={verifyMnemonic}
+                />
 
-                    type='password'
-                    value={password}
-                  />
-                </div>
               </div>
-              <div className='grid grid-cols-12 gap-5 m-6'>
 
-                <h2 className='col-span-5 pt-2'>
-                  <span className='text-black'>Repeat Password</span>
-                </h2>
-                <div className='col-span-7'>
-                  <input className='input input-bordered w-full max-w-xs'
+            </div>
+
+            <div className='flex justify-evenly mt-12 md:mt-20'>
+              <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
+                onClick={() => setStep(1)} >
+                <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+              </button>
+
+              <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+                disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1]}
+                onClick={() => setStep(step + 1)}
+              >
+                <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+              </button>
+            </div>
+
+          </div>
+        }
+
+        {step === 3 &&
+          <div className='w-full max-w-2xl '>
+
+            <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
+              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+                Set a local password for your wallet:
+              </p>
+
+              <div className='flex items-center justify-between px-10 py-5'>
+                <p className=' text-black text-xl font-poppins'>
+                  Set Password
+                </p>
+                <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
+                  onChange={(e) => setPassword(e.target.value)}
+                  // placeholder='Set a Password'
+                  type='password'
+                  value={password}
+                />
+              </div>
+
+              <div className='flex items-center justify-between px-10'>
+                <p className=' text-black text-xl font-poppins'>
+                  Repeat Password
+                </p>
+                <div className=''>
+                  <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
                     onChange={(e) => setRepeatPassword(e.target.value)}
-                    placeholder='Repeat the Password'
+                    // placeholder='Repeat the Password'
                     type='password'
                     value={repeatPassword}
                   />
                 </div>
               </div>
+
+            </div>
+
+            <div className='flex justify-evenly mt-12 md:mt-20'>
+              <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
+                onClick={() => setStep(1)} >
+                <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+              </button>
+
+              <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
+            ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+              disabled={(!password || !repeatPassword || password !== repeatPassword)}
+              onClick={() => handleSetPassword()}
+              >
+
+                <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+              </button>
             </div>
           </div>
-          <div className='col-span-12 my-4'></div>
-
-          <div className='col-span-4 col-start-4'>
-            <button className='btn btn-error btn-circle btn-lg'
-              onClick={() => setStep(1)} >
-              <ArrowSmLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-            </button>
-          </div>
-          <div className='col-span-4 '>
-            <button className={`btn btn-accent btn-circle btn-lg ${(password && repeatPassword && password === repeatPassword) ? '' : 'btn-disabled'}`}
-              onClick={() => handleSetPassword()}>
-              <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-            </button>
-          </div>
-        </div>
-      }
+        }
+      </div>
     </main>
   );
 }
 
 export default CreateWallet;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  await cryptoWaitReady();
-  const mnemonic = mnemonicGenerate();
-  const quizMnemonic = Math.floor(Math.random() * 12) + 1;
-
-  return {
-    props: {
-      mnemonic,
-      quizMnemonic
-    }
-  };
-};

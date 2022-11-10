@@ -8,8 +8,12 @@ import React, { useEffect, useState } from 'react';
 // redux
 import { useDispatch } from 'react-redux';
 
-import { addUserAccount } from '../../features/slices/userSlice';
+import { addUserAccount } from '../../features/slices/user';
 
+/**
+ * Guide user to import an account
+ * Paste a seed into any space will automatically try to render the whole seed phrase
+ */
 function ImportWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -85,7 +89,6 @@ function ImportWallet (): JSX.Element {
 
               <div className='grid grid-cols-12 gap-5 m-6 select-none'>
                 {seeds.map((_, index) => {
-                  // console.error(seeds)
                   return <div className='col-span-6 md:col-span-3 p-2 text-center rounded-lg border border-netrual-200'
                     key={index}>
                     <input className='input input-bordered w-full max-w-xs'

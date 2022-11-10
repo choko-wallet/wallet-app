@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
@@ -23,9 +24,7 @@ function SignMessageHandler (): JSX.Element {
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
-
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('hex');
 
@@ -53,7 +52,6 @@ function SignMessageHandler (): JSX.Element {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-        console.log('successfully');
         toast('Password Correct, Redirecting...', {
           duration: 5000,
           icon: '👏',
@@ -70,12 +68,15 @@ function SignMessageHandler (): JSX.Element {
         if (currentUserAccount && !currentUserAccount.isLocked) {
           void (async () => {
             setPassword('');
-            setOpenPasswordModal(false);
+            dispatch(setClose('signMessagePasswordModal'));
+
             const signMessage = new SignMessageDescriptor();
 
             try {
               const response = await signMessage.requestHandler(request, currentUserAccount);
               const s = response.serialize();
+
+              dispatch(lockCurrentUserAccount());
 
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
             } catch (err) {
@@ -108,10 +109,10 @@ function SignMessageHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
-    setPassword('');
-    setOpenPasswordModal(false);
-  }
+  // function closeModal () {
+  //   setPassword('');
+  //   setOpenPasswordModal(false);
+  // }
 
   if (!mounted) {
     return null;
@@ -186,7 +187,7 @@ function SignMessageHandler (): JSX.Element {
 
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => setOpenPasswordModal(true)}>
+          onClick={() => dispatch(setOpen('signMessagePasswordModal'))}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -197,8 +198,11 @@ function SignMessageHandler (): JSX.Element {
         </button>
       </div>
 
-      <Modal closeModal={closeModal}
-        isOpen={openPasswordModal} >
+      <Modal
+        modalName='signMessagePasswordModal'
+      // closeModal={closeModal}
+      //   isOpen={openPasswordModal}
+      >
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
             as='h3'

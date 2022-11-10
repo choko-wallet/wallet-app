@@ -13,14 +13,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
 
+/**
+ * Handler for DecryptMesasgeRequest
+ */
 function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -50,7 +53,6 @@ function DecryptMessageHandler (): JSX.Element {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-        console.log('successfully');
         toast('Password Correct, Redirecting...', {
           duration: 5000,
           icon: '👏',
@@ -66,7 +68,7 @@ function DecryptMessageHandler (): JSX.Element {
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
           setPassword('');
-          setOpenPasswordModal(false);
+          dispatch(setClose('decryptMessagePasswordModal'));
 
           void (async () => {
             const decryptMessage = new DecryptMessageDescriptor();
@@ -75,9 +77,10 @@ function DecryptMessageHandler (): JSX.Element {
               const response = await decryptMessage.requestHandler(request, currentUserAccount);
               const s = response.serialize();
 
+              dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
             } catch (err) {
-              console.log('err', err);
+              console.error('err', err);
               toast('Something Wrong', {
                 style: {
                   background: 'red',
@@ -106,10 +109,10 @@ function DecryptMessageHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
-    setPassword('');
-    setOpenPasswordModal(false);
-  }
+  // function closeModal () {
+  //   setPassword('');
+  //   setOpenPasswordModal(false);
+  // }
 
   if (!mounted) {
     return null;
@@ -191,7 +194,7 @@ function DecryptMessageHandler (): JSX.Element {
 
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => setOpenPasswordModal(true)}>
+          onClick={() => dispatch(setOpen('decryptMessagePasswordModal'))}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -202,8 +205,12 @@ function DecryptMessageHandler (): JSX.Element {
         </button>
       </div>
 
-      <Modal closeModal={closeModal}
-        isOpen={openPasswordModal} >
+      <Modal
+        modalName='decryptMessagePasswordModal'
+
+      // closeModal={closeModal}
+      //   isOpen={openPasswordModal}
+      >
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
             as='h3'

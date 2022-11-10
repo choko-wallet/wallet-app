@@ -7,6 +7,18 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 
+/**
+ * Wallet core account storage
+ */
+
+/**
+ * Add an account to storage
+ * There are two this can be done
+ *
+ * @First option: AccountOption + seed: mnemonic + password: string
+ * password is an user input password
+ * @Second use importKey which should always be an UserAccount.serializeWithEncryptedKey()
+ */
 export const addUserAccount = createAsyncThunk(
   'users/add',
   async (payload: {
@@ -51,34 +63,14 @@ export const addUserAccount = createAsyncThunk(
   }
 );
 
-export const changeCurrentAccountType = createAsyncThunk(
-  'users/changeCurrentAccountType',
-  async (payload: {
-    option: AccountOption,
-    userAccount: UserAccount,
-  }) => {
-    const { option, userAccount } = payload;
-
-    userAccount.option = option;
-    await userAccount.init();
-
-    return userAccount;
-  }
-);
-
 // User slice
 interface UserSliceItem {
-  error: string;
   userAccount: { [key: string]: UserAccount };
   currentUserAccount: UserAccount | null;
-  changeCurrentAccountLoading: boolean;
-
 }
 
 const initialState: UserSliceItem = {
-  changeCurrentAccountLoading: false,
   currentUserAccount: null,
-  error: '',
   userAccount: {}
 };
 
@@ -109,12 +101,11 @@ export const userSlice = createSlice({
         localStorage.clear();
         state.currentUserAccount = null;
         state.userAccount = {};
-        state.error = '';
       }
     },
 
+    // Use with caution! Always lock the account when done.
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
-      console.log(state.currentUserAccount, action.payload);
       state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
     },
 
@@ -131,11 +122,10 @@ export const userSlice = createSlice({
     },
 
     removeAllAccounts: (state) => {
-      // localStorage.removeItem('serializedUserAccount');// cannot remove
-      localStorage.clear();
+      localStorage.removeItem('serialziedUserAccount');
+
       state.currentUserAccount = null;
       state.userAccount = {};
-      state.error = '';
     }
   },
   extraReducers: (builder) => {
@@ -146,25 +136,17 @@ export const userSlice = createSlice({
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
 
         if (maybeCurrentSerializedAccount) {
-          console.log('maybeCurrentSerializedAccount', maybeCurrentSerializedAccount);
-          console.log('maybeCurrentSerializedAccount.length', maybeCurrentSerializedAccount.length);// 218
-
           let offset = 0;
           const len = UserAccount.serializedLengthWithEncryptedKey() * 2;// 109  * 2
 
           while (offset < maybeCurrentSerializedAccount.length) {
             const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
-
-            console.log('currentSerializedAccount', currentSerializedAccount);
-
             const account = UserAccount.deserializeWithEncryptedKey(hexToU8a(currentSerializedAccount));
 
             offset += len;
 
             if (account.address === userAccount.address) {
-              state.error = 'account already existed';
-
-              return;
+              throw new Error('User Account Already Exists');
             }
           }
         }
@@ -172,41 +154,6 @@ export const userSlice = createSlice({
         const localStorageContent = maybeCurrentSerializedAccount || '';
 
         localStorage.setItem('serialziedUserAccount', localStorageContent + u8aToHex(userAccount.serializeWithEncryptedKey()));
-        state.error = 'none';
-      })
-      .addCase(addUserAccount.rejected, (state, action) => {
-        state.error = (action.error ? action.error : 'Invalid password!') as string;
-      })
-
-      .addCase(changeCurrentAccountType.fulfilled, (state, action) => {
-        const userAccount = action.payload;
-        const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
-        let newLocalStorageContent = '';
-
-        if (maybeCurrentSerializedAccount) {
-          let offset = 0;
-          const len = UserAccount.serializedLengthWithEncryptedKey();
-
-          while (offset < maybeCurrentSerializedAccount.length) {
-            const currentSerializedAccount = maybeCurrentSerializedAccount.slice(offset, offset + len);
-            const account = UserAccount.deserializeWithEncryptedKey(hexToU8a(currentSerializedAccount));
-
-            offset += len;
-
-            if (account.address === userAccount.address) {
-              newLocalStorageContent += u8aToHex(userAccount.serializeWithEncryptedKey());
-            } else {
-              newLocalStorageContent += u8aToHex(account.serializeWithEncryptedKey());
-            }
-          }
-        }
-
-        state.currentUserAccount = userAccount;
-        localStorage.setItem('serialziedUserAccount', newLocalStorageContent);
-      })
-      .addCase(changeCurrentAccountType.rejected, (state, action) => {
-        // unexpected;
-        state.error = (action.error ? action.error : 'unexpected!') as string;
       });
   }
 });

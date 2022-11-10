@@ -8,8 +8,11 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectUserAccount } from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/userSlice';
+import { loadUserAccount } from '../features/slices/user';
 
+/**
+ * IGNORED.. For now.
+ */
 /* eslint-disable sort-keys */
 function Transaction (): JSX.Element {
   const router = useRouter();

@@ -2,35 +2,40 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { RadioGroup } from '@headlessui/react';
-import { CheckIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { CheckIcon, PlusSmIcon, XIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { knownNetworks } from '@choko-wallet/known-networks';
+import { selectCurrentNetwork, selectKnownNetworks } from '../../features/redux/selectors';
+import { removeNetworkAndSave, setCurrentNetwork } from '../../features/slices/network';
+import { setOpen } from '../../features/slices/status';
 
-interface Props {
-  network: string;
-  networkSelection: string;
-  setNetworkSelection: (value: string) => void;
-  changeNetwork: () => void;
-  setAddNetworkModalOpen: (value: boolean) => void;
-}
+/**
+ * Renders a list of all network avaliable
+ */
 
-function NetworkSelection ({ changeNetwork, network,
-  networkSelection, setAddNetworkModalOpen, setNetworkSelection }: Props): JSX.Element {
+function NetworkSelection (): JSX.Element {
+  const dispatch = useDispatch();
+
+  const currentNetwork = useSelector(selectCurrentNetwork);
+  const knownNetworks = useSelector(selectKnownNetworks);
+
+  const [networkSelection, setNetworkSelection] = useState(currentNetwork);
+
   return (
     <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
       <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
-          {Object.entries(knownNetworks).map(([hash, { color, defaultProvider, text }]) => {
+          {Object.entries(knownNetworks).map(([hash, { color, isDevelopment, isDisabled, text }]) => {
             if (color === undefined) { // if color undefined, give randomColor
               const randomColors = ['#2497E7', '#fc6b03', '#befc03', '#5efc03', '#03fc56', '#03cafc', '#5a03fc'];
 
               color = randomColors[Math.floor(Math.random() * 7)];
             }
 
-            return <RadioGroup.Option className=''
+            return !isDisabled && <RadioGroup.Option className=''
               key={hash}
               value={hash} >
               {({ checked }) => {
@@ -53,15 +58,9 @@ function NetworkSelection ({ changeNetwork, network,
                             as='p'
                             className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                           >
-                            {text.substring(0, text.length - 8)}
+                            {/* {text.substring(0, text.length - 8)} */}
+                            {text}
                           </RadioGroup.Label>
-                          <RadioGroup.Description
-                            as='span'
-                            className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-                          >
-                            <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
-
-                          </RadioGroup.Description>
                         </div>
                       </div>
                     </motion.div>
@@ -71,29 +70,38 @@ function NetworkSelection ({ changeNetwork, network,
                           as='p'
                           className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                         >
-                          {text.substring(0, text.length - 8)}
+                          {text.split(' ')[0]}
                         </RadioGroup.Label>
-                        <RadioGroup.Description
-                          as='span'
-                          className={`inline text-sm ${checked ? 'text-white font-poppins' : 'text-[#B6B7BC] font-poppins'}`}
-                        >
-                          <p className='w-44 truncate'>{defaultProvider.slice(6)}</p>
-                        </RadioGroup.Description>
                       </div>
                     </div>
                   }
 
-                  {knownNetworks[network].text !== text
+                  {knownNetworks[currentNetwork].text !== text
                     ? null
                     : <div className='absolute top-7 right-4 rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
                       <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
                     </div>}
 
-                  {checked && knownNetworks[network].text !== text && (
-                    <div className='absolute top-7 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
-                      <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
+                  {checked && knownNetworks[currentNetwork].text !== text && (
+                    <div>
+                      <div className='absolute top-7 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                        <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
+
+                      </div>
+                      <div
+                        className='absolute top-0 right-0 p-1 rounded-full items-center w-[16px] h-[16px] cursor-pointer flex justify-center bg-white'
+                        onClick={() => dispatch(removeNetworkAndSave(hash))}>
+                        <XIcon className=' text-red-500 z-50 w-5 h-5' />
+
+                      </div>
                     </div>
                   )}
+
+                  {isDevelopment === true
+                    ? <div className={'absolute top-1 right-6 items-center bg-slate-300 rounded-lg p-[2px] cursor-pointer flex justify-center'}>
+                      <p className='text-gray-500 text-xs font-semibold font-poppins m-1'>TestNet</p>
+                    </div>
+                    : null}
 
                 </div>;
               }}
@@ -104,7 +112,7 @@ function NetworkSelection ({ changeNetwork, network,
       </div>
 
       <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
-        onClick={() => setAddNetworkModalOpen(true)}>
+        onClick={() => dispatch(setOpen('homeAddNetwork'))}>
         <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
         >
 
@@ -116,13 +124,17 @@ function NetworkSelection ({ changeNetwork, network,
 
       </div>
 
-      <div className='flex justify-center mt-6'>
-        {network === networkSelection
-          ? <p className='flex items-center justify-center   outline-none z-50 text-md text-md font-semibold font-poppins'>Already On {knownNetworks[networkSelection].text}</p>
+      <div className='flex justify-center mt-3'>
+        {currentNetwork === networkSelection
+          ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 text-center'>
+            <p className=' font-semibold font-poppins'>current On </p>
+            <p className=' font-semibold font-poppins'>{knownNetworks[networkSelection]?.text}</p>
+
+          </div>
           : <button
 
-            className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#DADADA] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
-            onClick={() => changeNetwork()}
+            className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#FDF6E3] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
+            onClick={() => dispatch(setCurrentNetwork(networkSelection))}
           >
             <p className='text-black dark:text-white text-md whitespace-nowrap font-semibold font-poppins'>Switch Network</p>
 

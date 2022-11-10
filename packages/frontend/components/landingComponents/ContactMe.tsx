@@ -22,7 +22,7 @@ const ContactMe = (): JSX.Element => {
             Let&apos;s{' '}
             <span className='underline decoration-[#F7AB0A]/50'>Talk!</span>
           </h4>
-          <div className='flex items-center justify-center space-x-4'>
+          {/* <div className='flex items-center justify-center space-x-4'>
 
             <SocialIcon
               bgColor='transparent'
@@ -33,7 +33,7 @@ const ContactMe = (): JSX.Element => {
 
             <p className='text-2xl'>contact@choko.app</p>
 
-          </div>
+          </div> */}
 
           <div className='flex items-center justify-center'>
             <SocialIcon
@@ -76,7 +76,7 @@ const ContactMe = (): JSX.Element => {
                 /* eslint-disable */
                 // @ts-ignore
                 src={discIcon2}
-                /* eslint-enable */
+              /* eslint-enable */
               />
             </a>
 

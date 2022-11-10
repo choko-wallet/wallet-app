@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/userSlice';
+import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
@@ -25,7 +26,7 @@ function SignTxHandler (): JSX.Element {
   const dispatch = useDispatch();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('decoded');
@@ -68,8 +69,6 @@ function SignTxHandler (): JSX.Element {
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
-  console.log('currentUserAccount', currentUserAccount);
-
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
@@ -78,7 +77,6 @@ function SignTxHandler (): JSX.Element {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-        console.log('successfully');
         toast('Password Correct, Redirecting...', {
           duration: 5000,
           icon: '👏',
@@ -93,9 +91,8 @@ function SignTxHandler (): JSX.Element {
         });
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
-          console.log('first');
           setPassword('');
-          setOpenPasswordModal(false);
+          dispatch(setClose('signTxPasswordModal'));
 
           void (async () => {
             const signTx = new SignTxDescriptor();
@@ -104,6 +101,7 @@ function SignTxHandler (): JSX.Element {
               const response = await signTx.requestHandler(request, currentUserAccount);
               const s = response.serialize();
 
+              dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
             } catch (err) {
               console.log('err', err);
@@ -133,11 +131,6 @@ function SignTxHandler (): JSX.Element {
         });
       }
     }
-  }
-
-  function closeModal () {
-    setPassword('');
-    setOpenPasswordModal(false);
   }
 
   if (!mounted) {
@@ -216,7 +209,7 @@ function SignTxHandler (): JSX.Element {
 
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => setOpenPasswordModal(true)}>
+          onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -227,8 +220,11 @@ function SignTxHandler (): JSX.Element {
         </button>
       </div>
 
-      <Modal closeModal={closeModal}
-        isOpen={openPasswordModal} >
+      <Modal
+        modalName='signTxPasswordModal'
+      // closeModal={closeModal}
+      //   isOpen={openPasswordModal}
+      >
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
             as='h3'
