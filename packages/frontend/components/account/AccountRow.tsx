@@ -8,9 +8,9 @@ import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentUserAccount } from '../features/redux/selectors';
-import { switchUserAccount } from '../features/slices/user';
-import encodeAddr from '../utils/encodeAddr';
+import { selectCurrentUserAccount } from '../../features/redux/selectors';
+import { switchUserAccount } from '../../features/slices/user';
+import encodeAddr from '../../utils/encodeAddr';
 
 interface Props {
   account: UserAccount;

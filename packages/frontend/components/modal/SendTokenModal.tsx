@@ -9,12 +9,12 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 
-import { selectStatus } from '../features/redux/selectors';
-import { useAppThunkDispatch } from '../features/redux/store';
-import { setClose, toggle } from '../features/slices/status';
-import { BalanceInfo, CryptoBalance } from '../utils/types';
+import { selectStatus } from '../../features/redux/selectors';
+import { useAppThunkDispatch } from '../../features/redux/store';
+import { setClose, toggle } from '../../features/slices/status';
+import { BalanceInfo, CryptoBalance } from '../../utils/types';
+import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
-import Modal from './Modal';
 
 interface Props {
   balanceInfo: BalanceInfo;

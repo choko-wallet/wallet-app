@@ -12,10 +12,10 @@ import { useSelector } from 'react-redux';
 
 import { u8aToHex } from '@skyekiwi/util';
 
-import { selectKnownNetworks } from '../features/redux/selectors';
-import { useAppThunkDispatch } from '../features/redux/store';
-import { addNetworkAndSave } from '../features/slices/network';
-import { setClose } from '../features/slices/status';
+import { selectKnownNetworks } from '../../features/redux/selectors';
+import { useAppThunkDispatch } from '../../features/redux/store';
+import { addNetworkAndSave } from '../../features/slices/network';
+import { setClose } from '../../features/slices/status';
 
 type FormData = {
   networkName: string;

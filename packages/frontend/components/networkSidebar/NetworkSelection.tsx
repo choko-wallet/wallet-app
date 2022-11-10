@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
-import { removeNetworkAndSave, setCurrentNetwork } from '../features/slices/network';
-import { setOpen } from '../features/slices/status';
+import { selectCurrentNetwork, selectKnownNetworks } from '../../features/redux/selectors';
+import { removeNetworkAndSave, setCurrentNetwork } from '../../features/slices/network';
+import { setOpen } from '../../features/slices/status';
 
 function NetworkSelection (): JSX.Element {
   const dispatch = useDispatch();

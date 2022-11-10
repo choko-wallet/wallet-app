@@ -9,6 +9,7 @@ import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignT
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 import { hasUserAccountStored } from '@choko-wallet/sdk/store';
+import getWalletUrl from '@choko-wallet/sdk/walletUrl';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { cryptoWaitReady, encodeAddress } from '@polkadot/util-crypto';
 import Head from 'next/head';
@@ -21,11 +22,8 @@ import { hexToU8a, stringToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 
 import Loading from './../components/Loading';
 
-// const localTesting = false;
-// const callbackUrl = 'https://choko.app/test-request';
-
-const localTesting = true;
-const callbackUrl = 'http://localhost:3000/test-request';
+const walletUrl = getWalletUrl();
+const callbackUrl = `${walletUrl}/test-request`;
 
 const accountOption = new AccountOption({
   hasEncryptedPrivateKeyExported: false,
@@ -154,7 +152,7 @@ const TestRequest: NextPage = () => {
           <h1>Connect This Testing Page with an Address! </h1><br />
           <button className='btn m-2 btn-error'
             onClick={() => {
-              const x = buildConnectDappUrl(localTesting);
+              const x = buildConnectDappUrl();
 
               window.location.href = x;
             }}>Connect Wallet</button>
@@ -180,7 +178,7 @@ const TestRequest: NextPage = () => {
                   const api = await ApiPromise.create({ provider: provider });
                   const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
                   const encoded = hexToU8a(tx.toHex().substring(2));
-                  const x = buildSignTxUrl(encoded, localTesting);
+                  const x = buildSignTxUrl(encoded);
 
                   await provider.disconnect();
                   window.location.href = x;
@@ -190,7 +188,7 @@ const TestRequest: NextPage = () => {
               <h2 className='text-black'>Sign A Message</h2><br />
               <button className='btn m-5 btn-error'
                 onClick={() => {
-                  const x = buildSignMessageUrl(stringToU8a('Test Messaage'), localTesting);
+                  const x = buildSignMessageUrl(stringToU8a('Test Messaage'));
 
                   window.location.href = x;
                 }}>Sign Message</button><br />
@@ -207,7 +205,7 @@ const TestRequest: NextPage = () => {
               </h2>
               <button className='btn m-5 btn-error'
                 onClick={() => {
-                  const x = buildDecryptMessageUrl('sr25519', encryptedMessage, AsymmetricEncryption.getPublicKey(clientPrivateKey), localTesting);
+                  const x = buildDecryptMessageUrl('sr25519', encryptedMessage, AsymmetricEncryption.getPublicKey(clientPrivateKey));
 
                   window.location.href = x;
                 }}>Decrypt Message</button><br />

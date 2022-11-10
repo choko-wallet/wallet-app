@@ -1,17 +1,17 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BalanceInfo } from '../utils/types';
+import type { BalanceInfo } from '../../utils/types';
 
 import { Switch } from '@headlessui/react';
 import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectKnownNetworks } from '../features/redux/selectors';
-import { setOpen } from '../features/slices/status';
+import { selectCurrentNetwork, selectKnownNetworks } from '../../features/redux/selectors';
+import { setOpen } from '../../features/slices/status';
+import Button from '../Button';
 import BalanceRow from './BalanceRow';
-import Button from './Button';
 
 interface Props {
   balance: BalanceInfo;
@@ -59,7 +59,7 @@ function Balance ({ balance }: Props): JSX.Element {
   }, [balance]);
 
   return (
-    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] py-5 px-3 md:px-5 lg:px-12'>
+    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-12'>
       <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-[10px] p-2 md:p-4'>
         <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
@@ -127,9 +127,9 @@ function Balance ({ balance }: Props): JSX.Element {
             pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
             />
           </Switch>
-          <p className={`flex md:hidden  text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Smaller assets</p>
+          <p className={`flex md:hidden text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Smaller assets</p>
 
-          <p className={`hidden md:inline-flex  text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
+          <p className={`hidden md:inline-flex text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
 
         <p className='text-black dark:text-gray-400 text-right'>Total Balance</p>

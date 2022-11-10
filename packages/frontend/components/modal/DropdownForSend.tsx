@@ -6,7 +6,7 @@ import { SearchIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import React, { Fragment, useEffect, useState } from 'react';
 
-import { BalanceInfo, CryptoBalance } from '../utils/types';
+import { BalanceInfo, CryptoBalance } from '../../utils/types';
 
 interface Props {
   balanceInfo: BalanceInfo;

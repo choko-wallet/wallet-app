@@ -8,9 +8,9 @@ import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
 
-import { useAppThunkDispatch } from '../features/redux/store';
-import { setClose } from '../features/slices/status';
-import Modal from './Modal';
+import { useAppThunkDispatch } from '../../features/redux/store';
+import { setClose } from '../../features/slices/status';
+import Modal from '../Modal';
 
 const ReceiveTokenModal = (): JSX.Element => {
   const { theme } = useTheme();

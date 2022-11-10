@@ -16,7 +16,7 @@ import logo from '../images/logo.png';
 import logo2 from '../images/logo2.png';
 import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
-import AccountInHeader from './AccountInHeader';
+import AccountInHeader from './account/AccountInHeader';
 
 function Header (): JSX.Element {
   const dispatch = useDispatch();

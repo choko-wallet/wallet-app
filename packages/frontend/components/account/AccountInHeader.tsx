@@ -8,9 +8,9 @@ import { useRouter } from 'next/router';
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '../features/redux/selectors';
-import { removeAllAccounts } from '../features/slices/user';
-import encodeAddr from '../utils/encodeAddr';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '../../features/redux/selectors';
+import { removeAllAccounts } from '../../features/slices/user';
+import encodeAddr from '../../utils/encodeAddr';
 import AccountRow from './AccountRow';
 
 export default function AccountInHeader (): JSX.Element {
