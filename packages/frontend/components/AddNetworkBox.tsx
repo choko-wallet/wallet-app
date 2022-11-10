@@ -3,18 +3,24 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { u8aToHex } from '@skyekiwi/util';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 
 import { KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 
-interface Props {
-  knownNetworks: KnownNetworks;
-  closeAddNetworkModal: () => void;
-}
+import { selectKnownNetworks } from '../features/redux/selectors';
+import { useAppThunkDispatch } from '../features/redux/store';
+import { addNetworkAndSave } from '../features/slices/network';
+import { setClose } from '../features/slices/status';
+
+// interface Props {
+//   // knownNetworks: KnownNetworks;
+//   // closeAddNetworkModal: () => void;
+// }
 
 type FormData = {
   networkName: string;
@@ -22,15 +28,17 @@ type FormData = {
   networkNativeTokenDecimal: number;
 }
 
-interface networkObject {
-  [key: string]: Network
-}
+// interface networkObject {
+//   [key: string]: Network
+// }
 
 // wss://acala-rpc.dwellir.com
-const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Element => {
+const AddNetworkBox = (): JSX.Element => {
   const { formState: { errors }, handleSubmit, register, setValue } = useForm<FormData>();
   const [addNetworkLoading, setAddNetworkLoading] = useState<boolean>(false);
   const [networkType, setNetworkType] = useState<string>('polkadot');
+  const dispatch = useAppThunkDispatch();
+  const knownNetworks = useSelector(selectKnownNetworks);
 
   const networkTypeArray: string[] = ['polkadot', 'ethereum'];
 
@@ -59,31 +67,39 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
           nativeTokenSymbol: chainInfo.toHuman().tokenSymbol[0],
           // @ts-ignore
           nativeTokenDecimal: Number(chainInfo.toHuman().tokenDecimals[0]),
-          /* eslint-enable */
+          serialize: function (): Uint8Array {
+            return xxHash(this.info);
+            // return xxHash(chain.toLocaleLowerCase());
+          }
         };
 
         const hexString = u8aToHex(xxHash(chain.toLocaleLowerCase()));
+        // console.log('hexString', hexString)
 
         if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
           throw new Error('Network already exists');
         }
+        // console.log('knownNetworks', knownNetworks)
+        dispatch(addNetworkAndSave(networkForAdding));
 
-        knownNetworks[hexString] = networkForAdding;// home can get
+
+        // knownNetworks[hexString] = networkForAdding;// error 不能添加 
 
         // add network to localstorage
-        const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
-        const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
-        const networkObject: networkObject = maybeNetworkAddedObject || {};
+        // const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+        // const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+        // const networkObject: networkObject = maybeNetworkAddedObject || {};
+        // console.log('first3')
 
-        networkObject[hexString] = networkForAdding;
-        localStorage.setItem('networkAdded', JSON.stringify(networkObject));
-        console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
+        // networkObject[hexString] = networkForAdding;
+        // localStorage.setItem('networkAdded', JSON.stringify(networkObject));
+        // console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
 
         // console.log('added:', networkForAdding);
 
         // setValue('networkName', '');
         setValue('netWorkRPC', '');
-        closeAddNetworkModal();
+        dispatch(setClose('homeAddNetwork'))
         setAddNetworkLoading(false);
         toast.success('New Network Added', {
           id: notification
@@ -97,63 +113,63 @@ const AddNetworkBox = ({ closeAddNetworkModal, knownNetworks }: Props): JSX.Elem
       }
     }
 
-    if (networkType === 'ethereum') {
-      try {
-        const provider = new ethers.providers.JsonRpcProvider(formData.netWorkRPC);
-        const { chainId, name } = await provider.getNetwork();
+    // if (networkType === 'ethereum') {
+    //   try {
+    //     const provider = new ethers.providers.JsonRpcProvider(formData.netWorkRPC);
+    //     const { chainId, name } = await provider.getNetwork();
 
-        console.log(chainId); // 137   56
-        console.log(name); // matic    bnb
+    //     console.log(chainId); // 137   56
+    //     console.log(name); // matic    bnb
 
-        const networkForAdding: Network = {
-          /* eslint-disable */
-          defaultProvider: formData.netWorkRPC,
-          info: formData.networkName,
-          networkType: 'ethereum',
-          providers: { defaultProvider: formData.netWorkRPC },
-          text: formData.networkName + ' Network',
-          // @ts-ignore
-          nativeTokenSymbol: name,
-          // @ts-ignore
-          nativeTokenDecimal: formData.networkNativeTokenDecimal,
-          /* eslint-enable */
-        };
+    //     const networkForAdding: Network = {
+    //       /* eslint-disable */
+    //       defaultProvider: formData.netWorkRPC,
+    //       info: formData.networkName,
+    //       networkType: 'ethereum',
+    //       providers: { defaultProvider: formData.netWorkRPC },
+    //       text: formData.networkName + ' Network',
+    //       // @ts-ignore
+    //       nativeTokenSymbol: name,
+    //       // @ts-ignore
+    //       nativeTokenDecimal: formData.networkNativeTokenDecimal,
+    //       /* eslint-enable */
+    //     };
 
-        const hexString = u8aToHex(xxHash(formData.networkName));
+    //     const hexString = u8aToHex(xxHash(formData.networkName));
 
-        if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
-          throw new Error('Network already exists');
-        }
+    //     if (Object.keys(knownNetworks).includes(hexString)) { // check network already exists or not
+    //       throw new Error('Network already exists');
+    //     }
 
-        knownNetworks[hexString] = networkForAdding;// home can get
+    //     knownNetworks[hexString] = networkForAdding;// home can get
 
-        // add network to localstorage
-        const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
-        const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
-        const networkObject: networkObject = maybeNetworkAddedObject || {};
+    //     // add network to localstorage
+    //     const maybeNetworkAdded: string = localStorage.getItem('networkAdded');
+    //     const maybeNetworkAddedObject: networkObject | null = JSON.parse(maybeNetworkAdded) as networkObject | null;
+    //     const networkObject: networkObject = maybeNetworkAddedObject || {};
 
-        networkObject[hexString] = networkForAdding;
-        localStorage.setItem('networkAdded', JSON.stringify(networkObject));
-        console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
+    //     networkObject[hexString] = networkForAdding;
+    //     localStorage.setItem('networkAdded', JSON.stringify(networkObject));
+    //     console.log('added:', JSON.parse(localStorage.getItem('networkAdded')));
 
-        // console.log('added:', networkForAdding);
+    //     // console.log('added:', networkForAdding);
 
-        setValue('networkName', '');
-        setValue('netWorkRPC', '');
-        // setValue('networkNativeTokenDecimal', 0);
-        closeAddNetworkModal();
-        setAddNetworkLoading(false);
-        toast.success('New Network Added', {
-          id: notification
-        });
-      } catch (err) {
-        setAddNetworkLoading(false);
-        toast.error('Whoops! something went wrong!', {
-          id: notification
-        });
-        console.log(err);
-      }
-    }
+    //     setValue('networkName', '');
+    //     setValue('netWorkRPC', '');
+    //     // setValue('networkNativeTokenDecimal', 0);
+    //     dispatch(setClose('homeAddNetwork'));
+    //     setAddNetworkLoading(false);
+    //     toast.success('New Network Added', {
+    //       id: notification
+    //     });
+    //   } catch (err) {
+    //     setAddNetworkLoading(false);
+    //     toast.error('Whoops! something went wrong!', {
+    //       id: notification
+    //     });
+    //     console.log(err);
+    //   }
+    // }
   });
 
   // console.log('networkType,networkType', networkType);

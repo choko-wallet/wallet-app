@@ -4,7 +4,6 @@
 import { Menu, Transition } from '@headlessui/react';
 import { SearchIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
 import React, { Fragment, useEffect, useState } from 'react';
 
 import { BalanceInfo, CryptoBalance } from '../utils/types';
@@ -13,35 +12,36 @@ interface Props {
   balanceInfo: BalanceInfo;
   cryptoToSend: CryptoBalance;
   setCryptoToSend: (value: CryptoBalance) => void;
-  // setIsReceiveOpen: (value: boolean) => void;
-  // setAddTokenModalOpen: (value: boolean) => void;
 
 }
 
-function DropdownForSend({ balanceInfo, cryptoToSend, setCryptoToSend }: Props): JSX.Element {
+function DropdownForSend ({ balanceInfo, cryptoToSend, setCryptoToSend }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   const [filterResult, setFilterResult] = useState<CryptoBalance[] | null>(null);
 
-  useEffect(() => {//初始时设置第一个 
+  useEffect(() => { // initialization
     setCryptoToSend(balanceInfo.native);
 
-    let cryptoArray = [];
-    for (let i of Object.entries(balanceInfo)) {
+    const cryptoArray = [];
+
+    for (const i of Object.entries(balanceInfo)) {
       cryptoArray.push(i[1]);
     }
+
     // console.log(cryptoArray)
     setFilterResult(cryptoArray);
-  }, [balanceInfo]);
+  }, [balanceInfo, setCryptoToSend]);
 
-  useEffect(() => {//array filter
-    let cryptoArray = [];
-    for (let i of Object.entries(balanceInfo)) {
+  useEffect(() => { // array filter
+    const cryptoArray = [];
+
+    for (const i of Object.entries(balanceInfo)) {
       cryptoArray.push(i[1]);
     }
-    console.log(cryptoArray)
 
+    console.log(cryptoArray);
 
-    function filterCoin(item: CryptoBalance) {
+    function filterCoin (item: CryptoBalance) {
       return item.name.toLowerCase().includes(searchInput.toLowerCase());
     }
 
@@ -50,9 +50,9 @@ function DropdownForSend({ balanceInfo, cryptoToSend, setCryptoToSend }: Props):
     setFilterResult(result);
   }, [searchInput, balanceInfo]);
 
-  console.log('cryptoToSend', cryptoToSend)
-  console.log('filterResult', filterResult)
-  console.log('balanceInfo', Object.entries(balanceInfo))
+  // console.log('cryptoToSend', cryptoToSend)
+  // console.log('filterResult', filterResult)
+  // console.log('balanceInfo', Object.entries(balanceInfo))
 
   return (
     <div className=' w-full  text-right'>
@@ -61,7 +61,26 @@ function DropdownForSend({ balanceInfo, cryptoToSend, setCryptoToSend }: Props):
         <div>
           <Menu.Button className='inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
 
-
+            <div className='relative h-6 w-6'>
+              {cryptoToSend?.img !== null
+                ? <img alt='icon'
+                  className='w-[90%] h-[90%] object-contain'
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                  }}
+                  src={cryptoToSend?.img}
+                />
+                : <img alt='icon'
+                  className='w-[90%] h-[90%] object-contain'
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                  }}
+                  src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
+                />
+              }
+            </div>
             <p className='flex flex-grow mx-3 text-black dark:text-white font-poppins'> {cryptoToSend?.name}</p>
             <ChevronDownIcon className='ml-2 -mr-1 h-5 w-5 text-gray-700 dark:text-white' />
           </Menu.Button>
@@ -89,18 +108,31 @@ function DropdownForSend({ balanceInfo, cryptoToSend, setCryptoToSend }: Props):
               </div>
 
               {filterResult?.map((item) => (
-                <Menu.Item key={item.img}>
+                <Menu.Item key={item.name}>
                   {({ active }) => (
                     <button className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white font-poppins' : 'font-poppins text-gray-900'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      onClick={() => setCryptoToSend(item)}
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => setCryptoToSend(item)}
                     >
                       <div className='relative h-5 w-5 ml-2 mr-3'>
-                        <Image
-                          layout='fill'
-                          objectFit='contain'
-                          src={item.img}
-                        />
+                        {item?.img !== null
+                          ? <img alt='icon'
+                            className='w-[90%] h-[90%] object-contain'
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                            }}
+                            src={item?.img}
+                          />
+                          : <img alt='icon'
+                            className='w-[90%] h-[90%] object-contain'
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
+                            }}
+                            src={'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
+                          />
+                        }
                       </div>
                       {item.name}
 

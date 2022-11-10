@@ -121,7 +121,7 @@ function NetworkSelection (): JSX.Element {
 
       <div className='flex justify-center mt-3'>
         {currentNetwork === networkSelection
-          ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 '>
+          ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 text-center'>
             <p className=' font-semibold font-poppins'>current On </p>
             <p className=' font-semibold font-poppins'>{knownNetworks[networkSelection]?.text}</p>
 
