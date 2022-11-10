@@ -1,11 +1,11 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+
+import { AccountOption, UserAccount } from '@choko-wallet/core';
 
 export const addUserAccount = createAsyncThunk(
   'users/add',

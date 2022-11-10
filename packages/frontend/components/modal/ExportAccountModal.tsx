@@ -1,16 +1,16 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import getWalletUrl from '@choko-wallet/sdk/walletUrl';
 import { Dialog } from '@headlessui/react';
 import { CheckIcon, DocumentDuplicateIcon } from '@heroicons/react/outline';
+import { u8aToHex } from '@skyekiwi/util';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { u8aToHex } from '@skyekiwi/util';
+import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import getWalletUrl from '@choko-wallet/sdk/walletUrl';
 
 import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';

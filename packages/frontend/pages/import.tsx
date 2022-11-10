@@ -1,10 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { hexToU8a } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-
-import { hexToU8a } from '@skyekiwi/util';
 
 import Loading from '../components/Loading';
 import { useAppThunkDispatch } from '../features/redux/store';

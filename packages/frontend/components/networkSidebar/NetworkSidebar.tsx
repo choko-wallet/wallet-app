@@ -1,11 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelection';
-import { toggle } from '@choko-wallet/frontend/features/slices/status';
 import { ChevronRightIcon } from '@heroicons/react/outline';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+
+import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelection';
+import { toggle } from '@choko-wallet/frontend/features/slices/status';
 
 export default function NetworkSidebar (): JSX.Element {
   const dispatch = useDispatch();

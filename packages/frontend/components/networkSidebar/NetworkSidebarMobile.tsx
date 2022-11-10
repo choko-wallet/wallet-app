@@ -1,12 +1,13 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelection';
-import { toggle } from '@choko-wallet/frontend/features/slices/status';
 import { XIcon } from '@heroicons/react/outline';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
+
+import NetworkSelection from '@choko-wallet/frontend/components/networkSidebar/NetworkSelection';
+import { toggle } from '@choko-wallet/frontend/features/slices/status';
 
 import { selectStatus } from '../../features/redux/selectors';
 

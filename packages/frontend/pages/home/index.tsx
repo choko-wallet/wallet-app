@@ -1,6 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+
 import Balance from '@choko-wallet/frontend/components/balance/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
@@ -11,11 +17,6 @@ import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/Net
 import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
 import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import React, { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
-import { useSelector } from 'react-redux';
 
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
