@@ -4,44 +4,40 @@
 import { hexToU8a } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-// redux
-import { useSelector } from 'react-redux';
 
 import Loading from '../components/Loading';
-import { selectError } from '../features/redux/selectors';
 import { useAppThunkDispatch } from '../features/redux/store';
-import { addUserAccount } from '../features/slices/userSlice';
+import { endLoading, startLoading } from '../features/slices/status';
+import { addUserAccount } from '../features/slices/user';
+
+/**
+ * Import an account from URL.
+ */
 
 /* eslint-disable sort-keys */
 function Import (): JSX.Element {
   const router = useRouter();
   const dispatch = useAppThunkDispatch();
 
-  const addAccountError = useSelector(selectError);
-
   const [mounted, setMounted] = useState<boolean>(false);
   const [theme] = useState<string>('dark');
-  const [title, setTitle] = useState<string>('Importing in progress! You will be reidrect To Home once done.');
 
   useEffect(() => {
     if (router.query.payload !== undefined) {
       const payload = router.query.payload as string;
 
-      void dispatch(addUserAccount({ importKey: hexToU8a(payload) }));
-    }
-  }, [router.isReady, router.query, dispatch]);
-
-  useEffect(() => {
-    if (addAccountError !== '') {
-      if (addAccountError === 'none') {
+      dispatch(startLoading('Importing in progress! You will be reidrect To Home once done.'));
+      dispatch(addUserAccount({ importKey: hexToU8a(payload) })).then(() => {
         setTimeout(() => {
+          dispatch(endLoading());
           void router.push('/home');
-        }, 3000);
-      } else {
-        setTitle(`Error: ${addAccountError}`);
-      }
+        }, 2000);
+      }).catch((e) => {
+        console.error(e);
+        dispatch(startLoading('Error ... Check console for details.'));
+      });
     }
-  }, [addAccountError, router]);
+  }, [router, dispatch]);
 
   useEffect(() => {
     setMounted(true);
@@ -51,7 +47,7 @@ function Import (): JSX.Element {
 
   return (
     <div className={theme}>
-      <Loading title={title} />
+      <Loading />
     </div >
 
   );

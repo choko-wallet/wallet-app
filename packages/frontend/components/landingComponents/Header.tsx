@@ -8,7 +8,7 @@ import { SocialIcon } from 'react-social-icons';
 
 const Header = (): JSX.Element => {
   return (
-    <div className='sticky top-0 z-20 flex items-center justify-between p-5 mx-auto max-w-7xl '>
+    <div className='sticky top-0 z-20 flex items-center justify-between p-5 mx-auto max-w-screen-2xl '>
       <motion.div
         animate={{
           opacity: 1,

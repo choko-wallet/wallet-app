@@ -1,38 +1,37 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from '@headlessui/react';
 import { CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
-import { u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
 import Header from '../components/Header';
-import Modal from '../components/Modal';
-import { selectCurrentUserAccount, selectUserAccount } from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/userSlice';
+import ExportAccountModal from '../components/modal/ExportAccountModal';
+import { selectCurrentUserAccount } from '../features/redux/selectors';
+import { loadAllNetworks } from '../features/slices/network';
+import { setOpen } from '../features/slices/status';
+import { loadUserAccount } from '../features/slices/user';
+
+/**
+ * Setting page. WIP.
+ */
 
 /* eslint-disable sort-keys */
 function Settings (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const userAccount = useSelector(selectUserAccount);
 
   const { theme } = useTheme();
 
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-  const [exportUrl, setExportUrl] = useState<string>('');
 
   const handleCopy = () => {
-    console.log('first');
     setShowCheck(true);
     setTimeout(() => {
       setShowCheck(false);
@@ -44,31 +43,17 @@ function Settings (): JSX.Element {
       void router.push('/account');
     } else {
       dispatch(loadUserAccount());
+      dispatch(loadAllNetworks());
     }
   }, [dispatch, router]);
 
   useEffect(() => {
     setMounted(true);
-  }, [userAccount, currentUserAccount]);
+  }, [currentUserAccount]);
 
   if (!mounted) {
     return null;
   }
-
-  function closeExportModal () {
-    setExportModalOpen(false);
-    setExportUrl('');
-  }
-
-  const generateAccountUrl = () => {
-    const payloadForExport = u8aToHex(currentUserAccount?.serializeWithEncryptedKey());
-
-    const superUrl = 'http://localhost:3000/import?payload=' + payloadForExport;
-
-    console.log(superUrl);
-    setExportUrl(superUrl);
-    setExportModalOpen(true);
-  };
 
   return (
     <div className={theme}>
@@ -87,7 +72,7 @@ function Settings (): JSX.Element {
 
               <div className='flex justify-between m-1'>
                 <div className='my-auto'>
-                  <p className='text-lg dark:text-[#03F3FF]'>Wallet ID</p>
+                  <p className='text-lg dark:text-[#03F3FF]'>Your Address</p>
 
                 </div>
 
@@ -121,7 +106,7 @@ function Settings (): JSX.Element {
                 </div>
               </div>
 
-              <div className='flex justify-between m-1'>
+              {/* <div className='flex justify-between m-1'>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>View Your Mnemonic</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Do not share your private keys with anyone.</p>
@@ -136,12 +121,12 @@ function Settings (): JSX.Element {
                     Mnemonic
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
-                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Change Password</p>
-                  <p className='text-sm font-normal text-gray-400 font-poppins'>Password is your unique password.</p>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>(WIP) Change Password</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Password is the one you set when creating the account.</p>
                 </div>
 
                 <div className='md:w-40 w-32 flex justify-end'>
@@ -158,15 +143,13 @@ function Settings (): JSX.Element {
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
                   <p className='text-md md:text-lg dark:text-[#03F3FF]'>Export Account Url</p>
-                  <p className='text-sm font-normal text-gray-400 font-poppins'>Export Account Url For Import.</p>
+                  <p className='text-sm font-normal text-gray-400 font-poppins'>Generate Account Url For Import.</p>
                 </div>
 
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
                     className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={() => generateAccountUrl()}
-
-                  >
+                    onClick={() => dispatch(setOpen('settingsExportUrl'))} >
                     Account Url
                   </button>
                 </div>
@@ -174,16 +157,13 @@ function Settings (): JSX.Element {
 
               <div className='flex justify-between m-1'>
                 <div className='flex-col'>
-                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Select Language</p>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>(WIP)Select Language</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Set your preferred language</p>
                 </div>
 
                 <div className='md:w-40 w-32 flex justify-end'>
                   <button
-                    className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    // onClick={closeModal2}
-
-                  >
+                    className='my-auto w-32 md:w-40  font-poppins py-2 px-4 md:py-3 md:px-6 font-medium text-sm md:text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'>
                     Language
                   </button>
                 </div>
@@ -191,7 +171,7 @@ function Settings (): JSX.Element {
 
               <div className='flex justify-between m-1 '>
                 <div className='flex-col'>
-                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>Trading Currency</p>
+                  <p className='text-md md:text-lg dark:text-[#03F3FF]'>(WIP) Trading Currency</p>
                   <p className='text-sm font-normal text-gray-400 font-poppins'>Select your trading currency</p>
                 </div>
 
@@ -209,35 +189,7 @@ function Settings (): JSX.Element {
             </div >
           </div>
 
-          <Modal closeModal={closeExportModal}
-            isOpen={exportModalOpen} >
-
-            <Dialog.Panel className='border border-[#00f6ff] w-full max-w-md transform overflow-hidden rounded-2xl bg-black dark:bg-gradient-to-br from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all'>
-              <Dialog.Title
-                as='h3'
-                className='text-lg font-medium leading-6 text-gradient '
-              >
-                Account Url
-              </Dialog.Title>
-
-              <div>
-                <ExportUrlWithQRcode exportUrl={exportUrl} />
-
-                <div className='mt-4 flex justify-between'>
-                  <button
-                    className='py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-                    onClick={closeExportModal}
-                    type='button'
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-
-            </Dialog.Panel>
-
-          </Modal>
-
+          <ExportAccountModal />
         </div>
       </div>
 
