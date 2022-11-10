@@ -3,12 +3,13 @@
 
 import { Dialog } from '@headlessui/react';
 import { CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
-import { u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { u8aToHex } from '@skyekiwi/util';
 
 import ExportUrlWithQRcode from '../components/ExportUrlWithQRcode';
 import Header from '../components/Header';

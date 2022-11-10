@@ -1,14 +1,6 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ChevronRightIcon, XIcon } from '@heroicons/react/outline';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import React, { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
-import { useSelector } from 'react-redux';
-import { CSSTransition } from 'react-transition-group';
-
 import AddNetworkModal from '@choko-wallet/frontend/components/AddNetworkModal';
 import AddTokenModal from '@choko-wallet/frontend/components/AddTokenModal';
 import Balance from '@choko-wallet/frontend/components/Balance';
@@ -18,6 +10,13 @@ import ReceiveTokenModal from '@choko-wallet/frontend/components/ReceiveTokenMod
 import SendTokenModal from '@choko-wallet/frontend/components/SendTokenModal';
 import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
+import { ChevronRightIcon, XIcon } from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import { CSSTransition } from 'react-transition-group';
 
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';

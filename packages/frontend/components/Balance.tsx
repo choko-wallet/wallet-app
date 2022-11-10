@@ -4,7 +4,7 @@
 import type { BalanceInfo } from '../utils/types';
 
 import { Switch } from '@headlessui/react';
-import { DownloadIcon, PaperAirplaneIcon, SearchIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -79,14 +79,13 @@ function Balance ({ balance }: Props): JSX.Element {
             title='Receive' />
         </div>
 
-        {knownNetworks[currentNetwork]?.networkType === 'ethereum' ?
-          <div className='flex items-center justify-center '
+        {knownNetworks[currentNetwork]?.networkType === 'ethereum'
+          ? <div className='flex items-center justify-center '
             onClick={() => dispatch(setOpen('homeAddToken'))} >
             <Button Icon={PlusSmIcon}
               title='Add Token' />
           </div>
-          :
-          null}
+          : null}
 
       </div>
 

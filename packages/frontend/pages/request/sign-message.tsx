@@ -1,15 +1,6 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from '@headlessui/react';
-import { CheckIcon, XIcon } from '@heroicons/react/outline';
-import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-// redux
-import { useDispatch, useSelector } from 'react-redux';
-
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
@@ -17,6 +8,15 @@ import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
+import { Dialog } from '@headlessui/react';
+import { CheckIcon, XIcon } from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+
+import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 
 function SignMessageHandler (): JSX.Element {
   const router = useRouter();

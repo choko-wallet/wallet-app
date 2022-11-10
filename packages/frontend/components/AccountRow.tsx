@@ -1,13 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { Network, UserAccount } from '@choko-wallet/core';
 import { CheckIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
 import { DocumentDuplicateIcon } from '@heroicons/react/solid';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { Network, UserAccount } from '@choko-wallet/core';
 
 import { selectCurrentUserAccount } from '../features/redux/selectors';
 import { switchUserAccount } from '../features/slices/user';

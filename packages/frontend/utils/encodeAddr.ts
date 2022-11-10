@@ -1,9 +1,8 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
-
 import { Network, UserAccount } from '@choko-wallet/core';
+import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
 
 const encodeAddr = (network: Network, account: UserAccount): string => {
   if (network.networkType === 'polkadot') {

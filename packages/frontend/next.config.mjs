@@ -5,14 +5,8 @@
 
 export default {
   distDir: 'build',
-  eslint: {
-    // TODO: remove this
-    ignoreDuringBuilds: true
-  },
-
   images: {
     domains: ['cdn.jsdelivr.net', 'static.alchemyapi.io', 'cdn.hackernoon.com', 'avatars.githubusercontent.com', 'media-exp1.licdn.com', 'firebasestorage.googleapis.com']
-
   },
 
   reactStrictMode: true

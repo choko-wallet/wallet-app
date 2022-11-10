@@ -4,9 +4,8 @@
 import type { TokenMetadataResponse } from 'alchemy-sdk';
 import type { BalanceInfo, CoingeckoAPIResponse } from './types';
 
-import { Alchemy, Network as alchemyNetwork } from 'alchemy-sdk';
-
 import { Network } from '@choko-wallet/core';
+import { Alchemy, Network as alchemyNetwork } from 'alchemy-sdk';
 
 /* eslint-disable sort-keys */
 const notShitcoinFilter = (metadata: TokenMetadataResponse): boolean => {

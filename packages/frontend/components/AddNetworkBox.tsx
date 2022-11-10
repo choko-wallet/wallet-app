@@ -1,16 +1,16 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { Network } from '@choko-wallet/core';
+import { xxHash } from '@choko-wallet/core/util';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { u8aToHex } from '@skyekiwi/util';
 // import { ethers } from 'ethers';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
-import { Network } from '@choko-wallet/core';
-import { xxHash } from '@choko-wallet/core/util';
+import { u8aToHex } from '@skyekiwi/util';
 
 import { selectKnownNetworks } from '../features/redux/selectors';
 import { useAppThunkDispatch } from '../features/redux/store';

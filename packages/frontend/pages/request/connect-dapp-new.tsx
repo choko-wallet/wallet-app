@@ -1,9 +1,11 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-export default function ConnectDappHandler(): JSX.Element {
-  return <p>placeholder!()</p>
-};
+import React from 'react';
+
+export default function ConnectDappHandler (): JSX.Element {
+  return <p>placeholder!()</p>;
+}
 
 // import { Dialog, RadioGroup } from '@headlessui/react';
 // import { CheckIcon, XIcon } from '@heroicons/react/outline';

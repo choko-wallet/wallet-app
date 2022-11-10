@@ -4,7 +4,6 @@
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
 import { cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
 import ProgressBar from '@ramonak/react-progress-bar';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -13,18 +12,15 @@ import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '../../features/slices/user';
 
-interface Props {
-  mnemonic: string,
-  quizMnemonic: number,
-}
-
-function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
+function CreateWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
   const [step, setStep] = useState<number>(1);
-  const [seeds, setSeeds] = useState<string>(mnemonic);
-  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>(mnemonic);
+  const [seeds, setSeeds] = useState<string>('');
+  const [quizMnemonic, setQuizMnemonic] = useState<number>(1);
+
+  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [verifyMnemonic, setVerifyMnemonic] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -58,7 +54,18 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
       setRedirectRequest(redirectParams);
     }
 
-    setMounted(true);
+    (async () => {
+      await cryptoWaitReady();
+      const mnemonic = mnemonicGenerate();
+
+      setSeeds(mnemonic);
+      setSeedsStringForCopy(mnemonic);
+      setQuizMnemonic(Math.floor(Math.random() * 12) + 1);
+    })().then(() => {
+      setMounted(true);
+    }).catch((e) => {
+      console.error(e);
+    });
   }, [router]);
 
   if (!mounted) {
@@ -245,16 +252,3 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
 }
 
 export default CreateWallet;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  await cryptoWaitReady();
-  const mnemonic = mnemonicGenerate();
-  const quizMnemonic = Math.floor(Math.random() * 12) + 1;
-
-  return {
-    props: {
-      mnemonic,
-      quizMnemonic
-    }
-  };
-};

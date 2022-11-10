@@ -1,12 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { u8aToHex } from '@skyekiwi/util';
-
 import { KnownNetworks, Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 import { knownNetworks } from '@choko-wallet/known-networks';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { u8aToHex } from '@skyekiwi/util';
 
 /* eslint-disable sort-keys */
 interface NetworkSliceItem {

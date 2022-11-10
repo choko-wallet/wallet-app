@@ -3,21 +3,21 @@
 
 import type { NextPage } from 'next';
 
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { cryptoWaitReady, encodeAddress } from '@polkadot/util-crypto';
-import { AsymmetricEncryption } from '@skyekiwi/crypto';
-import { hexToU8a, stringToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import tweetnacl from 'tweetnacl';
-
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { decompressParameters } from '@choko-wallet/core/util';
 import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 import { hasUserAccountStored } from '@choko-wallet/sdk/store';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { cryptoWaitReady, encodeAddress } from '@polkadot/util-crypto';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import tweetnacl from 'tweetnacl';
+
+import { AsymmetricEncryption } from '@skyekiwi/crypto';
+import { hexToU8a, stringToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 
 import Loading from './../components/Loading';
 
@@ -109,7 +109,6 @@ const TestRequest: NextPage = () => {
         const orignalMessage = stringToU8a('A Clear Text Message');
         const encryptedMessage = AsymmetricEncryption.encryptWithCurveType('sr25519', orignalMessage, a.publicKey);
 
-        console.error(encryptedMessage);
         setEncryptedMessage(encryptedMessage);
       }
     }
