@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
-import { KnownNetworks, Network } from '@choko-wallet/core';
+import { Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 
 import { selectKnownNetworks } from '../features/redux/selectors';
