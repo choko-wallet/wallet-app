@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
 
@@ -21,7 +21,7 @@ function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -67,7 +67,8 @@ function DecryptMessageHandler (): JSX.Element {
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
           setPassword('');
-          setOpenPasswordModal(false);
+          // setOpenPasswordModal(false);
+          dispatch(setClose('decryptMessagePasswordModal'));
 
           void (async () => {
             const decryptMessage = new DecryptMessageDescriptor();
@@ -107,10 +108,10 @@ function DecryptMessageHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
-    setPassword('');
-    setOpenPasswordModal(false);
-  }
+  // function closeModal () {
+  //   setPassword('');
+  //   setOpenPasswordModal(false);
+  // }
 
   if (!mounted) {
     return null;

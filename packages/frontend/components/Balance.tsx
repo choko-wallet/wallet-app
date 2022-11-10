@@ -93,7 +93,7 @@ function Balance ({ balance }: Props): JSX.Element {
 
       </div>
 
-      <div className='flex items-center justify-between mt-5 px-5'>
+      <div className='flex items-center justify-between mt-5 px-5 '>
         <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
 
         <div className='flex items-center justify-center' >
@@ -101,7 +101,7 @@ function Balance ({ balance }: Props): JSX.Element {
             onClick={() => setSearchInputOpen(!searchInputOpen)} />
 
           {searchInputOpen
-            ? <div className='flex py-1 w-[200px] items-center rounded-[10px] bg-[#F5F5F5]'>
+            ? <div className='hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5]'>
               <input
                 className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -110,18 +110,18 @@ function Balance ({ balance }: Props): JSX.Element {
                 value={searchInput} />
 
             </div>
-            : <div className='flex py-1 w-[200px] items-center rounded-[10px] '>
+            : <div className='hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] '>
             </div>
           }
         </div>
 
         <div className='flex items-center '>
-          <p className={`text-xs ${!showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Show all assets</p>
+          <p className={`hidden md:inline-flex text-right text-xs ${!showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Show all assets</p>
 
           <Switch
             checked={showDust}
             className={`${showDust ? 'bg-green-400' : 'bg-gray-400'}
-          relative inline-flex h-[19px] w-[36px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+          relative inline-flex h-[19px] w-[36px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 mx-2`}
             onChange={setShowDust}
           >
             <span className='sr-only'>Use setting</span>
@@ -131,14 +131,29 @@ function Balance ({ balance }: Props): JSX.Element {
             pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
             />
           </Switch>
+          <p className={`flex md:hidden  text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Smaller assets</p>
 
-          <p className={` text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
+          <p className={`hidden md:inline-flex  text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
 
-        <p className='text-black dark:text-gray-400'>Total Balance</p>
+        <p className='text-black dark:text-gray-400 text-right'>Total Balance</p>
       </div>
 
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
+
+        {searchInputOpen
+          ? <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>
+            <input
+              className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder='Search token'
+              type='text'
+              value={searchInput} />
+
+          </div>
+          : <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] '>
+          </div>
+        }
 
         {Object.entries(filtedBalance).map(([_, item], index) => (
           <BalanceRow

@@ -14,13 +14,13 @@ import { QrReader } from 'react-qr-reader';
 import { useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
-import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
+// import AddTokenBox from '@choko-wallet/frontend/components/AddTokenBox';
 import Balance from '@choko-wallet/frontend/components/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import NetworkSelection from '@choko-wallet/frontend/components/NetworkSelection';
-import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
+import { BalanceInfo, CryptoBalance } from '@choko-wallet/frontend/utils/types';
 
-import DropdownForNetwork from '../../components/DropdownForNetwork';
+// import DropdownForNetwork from '../../components/DropdownForNetwork';
 import DropdownForSend from '../../components/DropdownForSend';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
@@ -35,7 +35,7 @@ import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail, toastSuccess } from '../../utils/toast';
 
 /* eslint-disable sort-keys */
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const nodeRef = React.useRef(null);
@@ -52,17 +52,18 @@ export default function Home (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [cryptoToSend, setCryptoToSend] = useState<CryptoBalance | null>(null);
 
   const [amount, setAmount] = useState<number>(0);
-  const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
-  const [openScan, setOpenScan] = useState<boolean>(false);
+  // const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
+  // const [openScan, setOpenScan] = useState<boolean>(false);
   const [addressToSend, setAddressToSend] = useState<string>('');
   const [showCheck, setShowCheck] = useState<boolean>(false);
 
-  const [networkToReceive, setNetworkToReceive] = useState<string>('');
+  // const [networkToReceive, setNetworkToReceive] = useState<string>('');
   const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
 
-  const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
+  // const networks = ['Ethereum (ERC20)', 'BNB Smart Chain (BEP20)', 'Tron (TRC20)'];
 
   useEffect(() => {
     if (loadingText && loadingText.length !== 0) {
@@ -227,10 +228,11 @@ export default function Home (): JSX.Element {
                 </Dialog.Title>
                 <div className='mt-2 '>
 
-                  {/* <DropdownForSend Cryptos={balanceInfo}
-                    defaultValue={cryptoToSend}
-                    onClick={setCryptoToSend} /> */}
-                  {/* 这个位置  cryptoToSend是home中的useState变量 用来发送 不用的话 该怎么办  */}
+                  <DropdownForSend
+                    balanceInfo={balanceInfo}
+                    cryptoToSend={cryptoToSend}
+                    setCryptoToSend={setCryptoToSend} />
+                  {/* 这个位置  cryptoToSend是home中的useState变量 用来发送 不用的话 该怎么办 */}
 
                   <p className=' text-gray-700 dark:text-white '>From</p>
                   <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
@@ -258,7 +260,8 @@ export default function Home (): JSX.Element {
                       value={addressToSend} />
                     <CameraIcon
                       className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
-                      onClick={() => dispatch(toggle('homeQRScanner'))} />
+                      onClick={() => dispatch(toggle('homeQRScanner'))}
+                    />
 
                   </div>
 
@@ -285,27 +288,28 @@ export default function Home (): JSX.Element {
 
                     </div>}
 
-                  <div className='flex items-end'>
-                    <div className='relative'>
+                  <div className='flex items-end '>
+                    <div className='relative w-full'>
                       <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
                       <input
-
-                        className='font-poppins pr-12 input input-bordered input-info w-full '
+                        className='font-poppins input input-bordered input-info w-full '
                         max='10000000'
                         min='0'
-                        // onChange={(e) => {
-                        //   setAmount(parseFloat(e.target.value));
-                        //   setAmountToCurrency(
-                        //     parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
-                        // }}
+                        onChange={(e) => {
+                          setAmount(parseFloat(e.target.value));
+                          // setAmountToCurrency(
+                          //   parseFloat((parseFloat(e.target.value) * cryptoToSend.price).toFixed(2)));
+                        }}
                         placeholder='0.0'
                         type='number'
-                        value={amountToCurrency ? amount : null} />
+                        // value={amountToCurrency ? amount : null} 
+                        value={amount}
+                      />
                       {/* <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend.shortName}</p> */}
                     </div>
 
-                    <p className='mx-1 pb-3'>=</p>
+                    {/* <p className='mx-1 pb-3'>=</p>
                     <div className='relative'>
                       <p className=' text-gray-700'></p>
                       <input
@@ -321,7 +325,7 @@ export default function Home (): JSX.Element {
                         type='number'
                         value={amount ? amountToCurrency : null} />
                       <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
-                    </div>
+                    </div> */}
 
                   </div>
                   {/* <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend.name} price: {cryptoToSend.price}</p> */}
@@ -411,7 +415,8 @@ export default function Home (): JSX.Element {
                   </div>
                   {/* <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p> */}
                   <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {' '}
-                    <span className='text-red-400'>{networkToReceive}</span>.</p>
+                    {/* <span className='text-red-400'>{networkToReceive}</span>. */}
+                  </p>
 
                 </div>
 

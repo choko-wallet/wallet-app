@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
 
@@ -26,7 +26,7 @@ function ConnectDappHandler (): JSX.Element {
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -86,7 +86,8 @@ function ConnectDappHandler (): JSX.Element {
             const s = response.serialize();
 
             setPassword('');
-            setOpenPasswordModal(false);
+            // setOpenPasswordModal(false);
+            dispatch(setClose('connectDappPasswordModal'));
 
             window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
           })();
@@ -106,10 +107,10 @@ function ConnectDappHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
-    setPassword('');
-    setOpenPasswordModal(false);
-  }
+  // function closeModal () {
+  //   setPassword('');
+  //   setOpenPasswordModal(false);
+  // }
 
   if (!mounted) {
     return null;

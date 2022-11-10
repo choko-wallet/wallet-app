@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowLeftIcon, ArrowRightIcon, ArrowSmLeftIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
 import { cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { GetServerSideProps } from 'next';
@@ -70,12 +70,12 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
   return (
     <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >
-      {/* pb-28 配合 my-auto 居中且上调 */}
-      <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center pb-28'>
+
+      <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
         <ProgressBar
           baseBgColor='#AFAFAF'
           bgColor='#4075A9'
-          className='w-full mt-10 md:mt-16'
+          className='w-full '
           completed={step === 1
             ? 0
             : step === 2
@@ -90,7 +90,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
         </div>
 
         {step === 1 &&
-          <div className='w-full max-w-2xl my-auto ' >
+          <div className='w-full max-w-2xl  ' >
             <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
               <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
@@ -146,7 +146,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
 
         {step === 2 &&
 
-          <div className='w-full max-w-2xl my-auto ' >
+          <div className='w-full max-w-2xl ' >
             <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
               <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
@@ -190,7 +190,7 @@ function CreateWallet ({ mnemonic, quizMnemonic }: Props): JSX.Element {
         }
 
         {step === 3 &&
-          <div className='w-full max-w-2xl my-auto'>
+          <div className='w-full max-w-2xl '>
 
             <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
               <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>

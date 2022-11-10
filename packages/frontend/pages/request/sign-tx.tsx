@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
@@ -26,7 +26,7 @@ function SignTxHandler (): JSX.Element {
   const dispatch = useDispatch();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
   const [mounted, setMounted] = useState<boolean>(false);
   const [displayType, setDisplayType] = useState<string>('decoded');
@@ -95,9 +95,10 @@ function SignTxHandler (): JSX.Element {
         });
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
-          console.log('first');
+          // console.log('first');
           setPassword('');
-          setOpenPasswordModal(false);
+          // setOpenPasswordModal(false);
+          dispatch(setClose('signTxPasswordModal'));
 
           void (async () => {
             const signTx = new SignTxDescriptor();
@@ -137,10 +138,10 @@ function SignTxHandler (): JSX.Element {
     }
   }
 
-  function closeModal () {
-    setPassword('');
-    setOpenPasswordModal(false);
-  }
+  // function closeModal () {
+  //   setPassword('');
+  //   setOpenPasswordModal(false);
+  // }
 
   if (!mounted) {
     return null;

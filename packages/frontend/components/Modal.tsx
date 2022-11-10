@@ -13,11 +13,11 @@ interface Props {
   children: JSX.Element;
 }
 
-function Modal ({ children, modalName }: Props): JSX.Element {
+function Modal({ children, modalName }: Props): JSX.Element {
   const dispatch = useDispatch();
   const status = useSelector(selectStatus);
 
-  console.log(status);
+  // console.log(status);
 
   return (
     <Transition appear

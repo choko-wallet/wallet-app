@@ -30,7 +30,7 @@ function Settings (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+  // const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [exportUrl, setExportUrl] = useState<string>('');
 
   const handleCopy = () => {
@@ -58,14 +58,14 @@ function Settings (): JSX.Element {
     return null;
   }
 
-  function closeExportModal () {
-    setExportModalOpen(false);
-    setExportUrl('');
-  }
+  // function closeExportModal () {
+  //   setExportModalOpen(false);
+  //   setExportUrl('');
+  // }
 
   const generateAccountUrl = () => {
     setExportUrl('https://choko.app/import?payload=' + u8aToHex(currentUserAccount?.serializeWithEncryptedKey()));
-    setExportModalOpen(true);
+    // setExportModalOpen(true);
   };
 
   return (
