@@ -15,12 +15,12 @@ interface Props {
   symbol: string;
 }
 
-function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element {
+function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
       <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#0170BF]  hover:bg-[#0170BF] group'>
         <div className='flex justify-between flex-grow'>
-          <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent dark:bg-gray-700'>
+          <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent '>
             {img !== null
               ? <img alt='icon'
                 className='w-[70%] h-[70%] object-contain'

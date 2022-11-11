@@ -21,7 +21,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance ({ balance }: Props): JSX.Element {
+function Balance({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
 
   const knownNetworks = useSelector(selectKnownNetworks);
@@ -64,7 +64,7 @@ function Balance ({ balance }: Props): JSX.Element {
 
   return (
     <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-12'>
-      <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-[10px] p-2 md:p-4'>
+      <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
         <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
@@ -120,7 +120,7 @@ function Balance ({ balance }: Props): JSX.Element {
 
           <Switch
             checked={showDust}
-            className={`${showDust ? 'bg-green-400' : 'bg-gray-400'}
+            className={`${showDust ? 'bg-[#FDF6E3]' : 'bg-[#FDF6E3]'}
           relative inline-flex h-[19px] w-[36px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 mx-2`}
             onChange={setShowDust}
           >
@@ -128,7 +128,7 @@ function Balance ({ balance }: Props): JSX.Element {
             <span
               aria-hidden='true'
               className={`${showDust ? 'translate-x-4' : 'translate-x-0'}
-            pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-[#0170BF] shadow-lg ring-0 transition duration-200 ease-in-out`}
             />
           </Switch>
           <p className={`flex md:hidden text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Smaller assets</p>
