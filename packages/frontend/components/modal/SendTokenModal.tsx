@@ -1,20 +1,32 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import { ethSendTx } from '@choko-wallet/frontend/utils/ethSendTx';
+import { toastFail } from '@choko-wallet/frontend/utils/toast';
 import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, DocumentDuplicateIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { QrReader } from 'react-qr-reader';
-import { useSelector } from 'react-redux';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+import { AccountOption, DappDescriptor, UserAccount } from '@choko-wallet/core';
 
-import { selectStatus } from '../../features/redux/selectors';
+import { selectCurrentNetwork, selectKnownNetworks, selectLoading, selectStatus } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
-import { setClose, toggle } from '../../features/slices/status';
+import { endLoading, setClose, setOpen, startLoading, toggle } from '../../features/slices/status';
 import { BalanceInfo, CryptoBalance } from '../../utils/types';
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
+import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { SignTxDescriptor, SignTxRequest, SignTxRequestPayload } from '@choko-wallet/request-handler';
+import { ethers } from 'ethers';
+import { xxHash } from '@choko-wallet/core/util';
 
 /**
  * Modal wrapper to send crypto to another account
@@ -33,6 +45,16 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
   const [showCheck, setShowCheck] = useState<boolean>(false);
+  const [sendTransactionLoading, setSendTransactionLoading] = useState<boolean>(false);
+  const knownNetworks = useSelector(selectKnownNetworks);
+  const currentNetwork = useSelector(selectCurrentNetwork);
+  const reduxLoadingState = useSelector(selectLoading);
+
+  const privateKey = '6e00e2fb6feb95393f29e0ceeabebc4f7b2d692b4912663546755b9b8f87b938';
+  const seed = 'acoustic hover lyrics object execute unfold father give wing hen remain ship';
+  const contractAddress = '0x238F47e33cD44A7701F2Bb824659D432efD17b41';
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -40,6 +62,99 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
       setShowCheck(false);
     }, 1000);
   };
+
+  const sendTransaction = () => {//参数 cryptoToSend amount addressToSend 
+    if (sendTransactionLoading) return;
+    setSendTransactionLoading(true);
+
+    // no need to await
+    void (async () => {
+      // dispatch(startLoading('Send Transaction ...'));
+
+      const network = knownNetworks[currentNetwork];
+
+      switch (network.networkType) {
+        case 'polkadot':
+          console.log('polkadot')
+          break;
+        case 'ethereum':
+          try {
+            // 先不用抽函数 先弄通 
+            // serialize transaction之后发送过去sign和send
+
+            const dapp = new DappDescriptor({
+              activeNetwork: knownNetworks[u8aToHex(xxHash('goerli'))],
+              displayName: 'Jest Testing',
+              infoName: 'Test',
+              version: 0
+            });
+
+            const account = currentUserAccount;
+
+            const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
+            console.log('1');
+
+            // expect((mnemonicWallet.privateKey).slice(2)).toEqual(privateKey);
+            account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
+            await account.init();
+            account.lock();
+
+            const tx = {
+              chainId: 5,
+              to: '0xE8DAC12f7A4b0a47e8e2Af2b96db6F54e2E2C9C3',
+              value: ethers.utils.parseEther('1'),
+
+            };
+            console.log('2');
+
+            const serializedTx = ethers.utils.serializeTransaction(tx);
+            const request = new SignTxRequest({
+              dappOrigin: dapp,
+              payload: new SignTxRequestPayload({
+                encoded: hexToU8a(serializedTx.slice(2))
+              }),
+              userOrigin: account
+            });
+            console.log('3');
+
+            const serialized = request.serialize();
+
+            // 这个位置发送到/request/sign-tx ？ 剩下的代码也转移到/request/sign-tx中？
+
+            const deserialized = SignTxRequest.deserialize(serialized);
+
+            console.log('deserailized.userOrigin: ', deserialized.userOrigin);
+
+            const signTx = new SignTxDescriptor();
+            console.log('4');
+
+            account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
+            await account.init();
+            console.log('5');
+
+            const response = await signTx.requestHandler(request, account);
+
+            console.log('response: ', response);
+
+
+            // setBalanceInfo(res);
+            dispatch(endLoading());
+            // toastSuccess(`Changed to ${network.text}`);
+          } catch (e) {
+            console.error(e);
+            dispatch(endLoading());
+            toastFail('Someting Wrong! Please Switch To Other Network.');
+          }
+          console.log('eth')
+
+          break;
+      }
+    })();
+
+    dispatch(setClose('homeSend'))//别忘了这个 
+    setSendTransactionLoading(false);
+
+  }
 
   return (
     <Modal modalName='homeSend'>
@@ -169,16 +284,26 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
           </div>
 
-          <div className='mt-4'>
+          <div className='mt-4 bg-transparent rounded-lg'>
+            {!sendTransactionLoading ?
+              <button
+                className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                onClick={() => sendTransaction()}
 
-            <button
-              className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-              onClick={() => dispatch(setClose('homeSend'))}
+                type='button'
+              >
+                Send
+              </button>
 
-              type='button'
-            >
-              Send
-            </button>
+              :
+              (
+                <img
+                  alt=''
+                  className='object-cover w-full h-20'
+                  src='https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif'
+                />
+              )
+            }
 
           </div>
         </Dialog.Panel>

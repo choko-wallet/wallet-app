@@ -180,9 +180,10 @@ const TestRequest: NextPage = () => {
                   const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
                   const api = await ApiPromise.create({ provider: provider });
                   const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
+                  // 这个位置发送 地址和value 
                   const encoded = hexToU8a(tx.toHex().substring(2));
                   const x = buildSignTxUrl(encoded);
-
+                  console.log('x', x)//少个？ 
                   await provider.disconnect();
                   window.location.href = x;
                 }}>Sign Transaction</button><br />
