@@ -84,8 +84,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
           break;
         case 'ethereum':
           try {
-            // 先不用抽函数 先弄通 
-            // serialize transaction之后发送过去sign和send
 
             const dapp = new DappDescriptor({
               activeNetwork: knownNetworks[u8aToHex(xxHash('goerli'))],
@@ -130,28 +128,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             const redirectUrl = `http://localhost:3000/request/sign-tx?requestType=signTx&payload=${hexRequest}&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fhome`
 
             window.location.href = redirectUrl
-
-            // 这个位置发送到/request/sign-tx   剩下的代码也转移到/request/sign-tx中  
-
-            // const deserialized = SignTxRequest.deserialize(serialized);
-            // console.log('deserailized.userOrigin: ', deserialized.userOrigin);
-            // const signTx = new SignTxDescriptor();
-            // console.log('4')
-            // account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
-            // await account.init();
-            // console.log('5');
-
-            // // update the keyType manually
-            // account.option.keyType = 'ethereum';
-
-            // const kr = (new Keyring({
-            //   type: 'ethereum'
-            // })).addFromUri('0x' + u8aToHex(account.privateKey));
-            // console.log("kr address: ", kr.address);
-
-            // const response = await signTx.requestHandler(request, account);//调用这个发送 在sdk中
-            // console.log('response: ', response);
-
 
             // setBalanceInfo(res);
             dispatch(endLoading());
@@ -267,7 +243,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amountToCurrency ? amount : 0}
+                  value={amountToCurrency ? amount : null}
                 // value={amount}
                 />
                 <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
@@ -287,7 +263,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amount ? amountToCurrency : 0} />
+                  value={amount ? amountToCurrency : null} />
                 <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
               </div>
 

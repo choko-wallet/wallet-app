@@ -63,8 +63,19 @@ function SignTxHandler(): JSX.Element {
         setDecodingTx(false);
       } else {
 
+        const requestPayloadHex = u8aToHex(request.payload.encoded);
+        const serializedTx = `0x${requestPayloadHex}`
+        const tx = ethers.utils.parseTransaction(serializedTx)
 
-        setDecodedTx('WIP Ethereum Decode Support');
+        console.log('tx', tx)
+        console.log('tx', ethers.BigNumber.from(tx.value._hex).toNumber())
+        console.log('tx', ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex)))
+
+        const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
+
+        setDecodedTx(`Send ${value} eth to ${tx.to} `);
+
+        // setDecodedTx('WIP Ethereum Decode Support');
         setDecodingTx(false);
       }
     })();
@@ -102,7 +113,6 @@ function SignTxHandler(): JSX.Element {
 
             try {
 
-
               let account = currentUserAccount;
               const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';//0.5goerli 22link
 
@@ -128,14 +138,6 @@ function SignTxHandler(): JSX.Element {
 
               // const response = await signTx.requestHandler(request, currentUserAccount);
               const s = response.serialize();
-
-
-
-
-
-
-
-
 
 
 
