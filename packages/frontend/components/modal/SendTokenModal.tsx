@@ -27,6 +27,7 @@ import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, swi
 import { SignTxDescriptor, SignTxRequest, SignTxRequestPayload } from '@choko-wallet/request-handler';
 import { ethers } from 'ethers';
 import { xxHash } from '@choko-wallet/core/util';
+import Keyring from '@polkadot/keyring';
 
 /**
  * Modal wrapper to send crypto to another account
@@ -89,8 +90,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               version: 0
             });
 
-            const account = currentUserAccount;
-
+            let account = currentUserAccount;
             const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
             console.log('1');
 
@@ -102,8 +102,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             const tx = {
               chainId: 5,
               to: '0xE8DAC12f7A4b0a47e8e2Af2b96db6F54e2E2C9C3',
-              value: ethers.utils.parseEther('1'),
-
+              value: ethers.utils.parseEther('0.0005'),
             };
             console.log('2');
 
@@ -131,6 +130,14 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
             await account.init();
             console.log('5');
+
+            // update the keyType manually
+            account.option.keyType = 'ethereum';
+
+            const kr = (new Keyring({
+              type: 'ethereum'
+            })).addFromUri('0x' + u8aToHex(account.privateKey));
+            console.log("kr address: ", kr.address);
 
             const response = await signTx.requestHandler(request, account);
 
@@ -251,7 +258,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amountToCurrency ? amount : null}
+                  value={amountToCurrency ? amount : 0}
                 // value={amount}
                 />
                 <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
@@ -271,7 +278,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amount ? amountToCurrency : null} />
+                  value={amount ? amountToCurrency : 0} />
                 <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
               </div>
 
