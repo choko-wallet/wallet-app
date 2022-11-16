@@ -292,8 +292,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amountToCurrency ? amount : null}
-                // value={amount}
+                  value={amountToCurrency ? amount : 0}
                 />
                 <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
               </div>
@@ -312,7 +311,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amount ? amountToCurrency : null} />
+                  value={amount ? amountToCurrency : 0} />
                 <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
               </div>
 
