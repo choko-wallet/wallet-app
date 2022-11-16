@@ -51,8 +51,12 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const currentNetwork = useSelector(selectCurrentNetwork);
   const reduxLoadingState = useSelector(selectLoading);
 
-  const privateKey = '6e00e2fb6feb95393f29e0ceeabebc4f7b2d692b4912663546755b9b8f87b938';
-  const seed = 'acoustic hover lyrics object execute unfold father give wing hen remain ship';
+  // const privateKey = '6e00e2fb6feb95393f29e0ceeabebc4f7b2d692b4912663546755b9b8f87b938';
+  const privateKey = '72c7ed523e0084a99d2419a30332dc0d83d6d61f4d4a6b3dc3a38f7cb3588d80';//0.5goerli 22link
+  const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';//0.5goerli 22link
+
+  // const seed = 'acoustic hover lyrics object execute unfold father give wing hen remain ship';
+
   const contractAddress = '0x238F47e33cD44A7701F2Bb824659D432efD17b41';
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
@@ -91,7 +95,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             });
 
             let account = currentUserAccount;
-            const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
+            const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);//用seed生成的 实际上用户账户已经生成了？
             console.log('1');
 
             // expect((mnemonicWallet.privateKey).slice(2)).toEqual(privateKey);
@@ -102,11 +106,13 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             const tx = {
               chainId: 5,
               to: '0xE8DAC12f7A4b0a47e8e2Af2b96db6F54e2E2C9C3',
-              value: ethers.utils.parseEther('0.0005'),
+              value: ethers.utils.parseEther('0.0001'),
             };
             console.log('2');
 
             const serializedTx = ethers.utils.serializeTransaction(tx);
+            console.log('2', serializedTx);//长字符串 
+
             const request = new SignTxRequest({
               dappOrigin: dapp,
               payload: new SignTxRequestPayload({
@@ -116,32 +122,35 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             });
             console.log('3');
 
-            const serialized = request.serialize();
+            const serialized = request.serialize();//uint8 array 767位
+            const hexRequest = u8aToHex(compressParameters(serialized))
 
-            // 这个位置发送到/request/sign-tx ？ 剩下的代码也转移到/request/sign-tx中？
+            console.log('3', hexRequest);
 
-            const deserialized = SignTxRequest.deserialize(serialized);
+            const redirectUrl = `http://localhost:3000/request/sign-tx?requestType=signTx&payload=${hexRequest}&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fhome`
 
-            console.log('deserailized.userOrigin: ', deserialized.userOrigin);
+            window.location.href = redirectUrl
 
-            const signTx = new SignTxDescriptor();
-            console.log('4');
+            // 这个位置发送到/request/sign-tx   剩下的代码也转移到/request/sign-tx中  
 
-            account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
-            await account.init();
-            console.log('5');
+            // const deserialized = SignTxRequest.deserialize(serialized);
+            // console.log('deserailized.userOrigin: ', deserialized.userOrigin);
+            // const signTx = new SignTxDescriptor();
+            // console.log('4')
+            // account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
+            // await account.init();
+            // console.log('5');
 
-            // update the keyType manually
-            account.option.keyType = 'ethereum';
+            // // update the keyType manually
+            // account.option.keyType = 'ethereum';
 
-            const kr = (new Keyring({
-              type: 'ethereum'
-            })).addFromUri('0x' + u8aToHex(account.privateKey));
-            console.log("kr address: ", kr.address);
+            // const kr = (new Keyring({
+            //   type: 'ethereum'
+            // })).addFromUri('0x' + u8aToHex(account.privateKey));
+            // console.log("kr address: ", kr.address);
 
-            const response = await signTx.requestHandler(request, account);
-
-            console.log('response: ', response);
+            // const response = await signTx.requestHandler(request, account);//调用这个发送 在sdk中
+            // console.log('response: ', response);
 
 
             // setBalanceInfo(res);
