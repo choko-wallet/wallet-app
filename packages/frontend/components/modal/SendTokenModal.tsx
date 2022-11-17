@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
-import { ethSendTx } from '@choko-wallet/frontend/utils/ethSendTx';
+import { ethDecodeTxAndRedirect } from '@choko-wallet/frontend/utils/ethSendTx';
 import { toastFail } from '@choko-wallet/frontend/utils/toast';
 import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, DocumentDuplicateIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
@@ -83,8 +83,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     console.log('knownNetworks[currentNetwork];', knownNetworks[currentNetwork])
     // console.log('ethers.utils.parseEther', ethers.utils.parseEther('0.1'))
 
-
-
     // no need to await
     void (async () => {
       // dispatch(startLoading('Send Transaction ...'));
@@ -96,104 +94,13 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
           console.log('polkadot')
           break;
         case 'ethereum':
-          const chainId = 5;
 
           try {
-            const dapp = new DappDescriptor({
-              activeNetwork: knownNetworks[u8aToHex(xxHash('goerli'))],
-              displayName: 'Jest Testing',
-              infoName: 'Test',
-              version: 0
-            });
-
-
-            const account = new UserAccount(new AccountOption({
-              hasEncryptedPrivateKeyExported: false,
-              keyType: 'ethereum',
-              localKeyEncryptionStrategy: 0
-            }));
-            const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);//用seed生成的测试账户 
-            console.log('1');
-
-            account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
-            await account.init();
-            account.lock();
-            let tx = {};
-
-            if (cryptoToSend === balanceInfo.native) {//native token
-              tx = {
-                chainId: chainId,
-                to: addressToSend,
-                value: ethers.utils.parseEther(amount.toString()),
-                // value: ethers.utils.parseEther('0.001'),
-
-              };
-
-            } else {//erc20 token
-              // /* erc20 token balance checking data*/
-              // const data1 = encodeContractCall(
-              //   'erc20',
-              //   'balanceOf',
-              //   ['0xAA1658296e2b770fB793eb8B36E856c8210A566F']
-              // )
-              // /*  approve max balance erc20 token data */
-              // const data2 = encodeContractCall(
-              //   '',
-              //   'approve',
-              //   [
-              //     '0x11760b4950F9981770049B3cC0D83CC8BC133247',
-              //     ethers.constants.MaxUint256
-              //   ],
-              //   LinkTokenABI
-              // )
-
-              /* sending erc20 link token data through abi */
-              const data = encodeContractCall(
-                '',
-                'transfer',
-                [
-                  addressToSend,//接收地址 
-                  '1'  // send （0.1 * decimal).toString Link token  
-                ],
-                LinkTokenABI
-              )
-              console.log("data: ", data);
-
-              tx = {
-                chainId: chainId,
-                to: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB', // goerli link token contract address
-                data: data,//接收地址在这里
-              }
-            }
-
-
-            const serializedTx = ethers.utils.serializeTransaction(tx);
-            console.log('2', serializedTx);//长字符串 
-
-            const request = new SignTxRequest({
-              dappOrigin: dapp,
-              payload: new SignTxRequestPayload({
-                encoded: hexToU8a(serializedTx.slice(2))
-              }),
-              userOrigin: account
-            });
-            console.log('3');
-
-            const serialized = request.serialize();//uint8 array 767位
-            const hexRequest = u8aToHex(compressParameters(serialized))
-
-            console.log('3', hexRequest);
-
-            const redirectUrl = `http://localhost:3000/request/sign-tx?requestType=signTx&payload=${hexRequest}&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fhome`
-
-            window.location.href = redirectUrl
-
-            // setBalanceInfo(res);
-            dispatch(endLoading());
-            // toastSuccess(`Changed to ${network.text}`);
+            await ethDecodeTxAndRedirect(network, cryptoToSend, amount, addressToSend, balanceInfo);// goerli
+            // dispatch(endLoading());
           } catch (e) {
             console.error(e);
-            dispatch(endLoading());
+            // dispatch(endLoading());
             toastFail('Someting Wrong! Please Switch To Other Network.');
           }
           console.log('eth')

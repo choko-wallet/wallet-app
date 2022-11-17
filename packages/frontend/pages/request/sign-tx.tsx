@@ -23,6 +23,7 @@ import Keyring from '@polkadot/keyring';
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 import Loading from '../../components/Loading';
 import { AccountOption, UserAccount } from '@choko-wallet/core';
+import { ethSendTx } from '@choko-wallet/frontend/utils/ethSendTx';
 
 function SignTxHandler(): JSX.Element {
   const router = useRouter();
@@ -120,39 +121,7 @@ function SignTxHandler(): JSX.Element {
           void (async () => {
 
             try {
-
-              const account = new UserAccount(new AccountOption({
-                hasEncryptedPrivateKeyExported: false,
-                keyType: 'ethereum',
-                localKeyEncryptionStrategy: 0
-              }));
-
-              const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';//0.5goerli 22link
-              console.log('account', account);
-
-              const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
-
-              account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
-              await account.init();
-              console.log('5');
-              console.log('account2', account);//私钥没变？
-
-              // update the keyType manually
-              account.option.keyType = 'ethereum';
-              console.log('account3', account);
-
-              const kr = (new Keyring({
-                type: 'ethereum'
-              })).addFromUri('0x' + u8aToHex(account.privateKey));
-              console.log("kr address: ", kr.address);
-
-              // const sendResponse = await signTx.requestHandler(request, account);//调用这个发送 在sdk中
-              // console.log('sendResponse: ', sendResponse);
-
-              const signTx = new SignTxDescriptor();
-              const response = await signTx.requestHandler(request, account);//用测试账户
-
-              // const response = await signTx.requestHandler(request, currentUserAccount);
+              const response = await ethSendTx(request);
               const s = response.serialize();
 
               toast.dismiss(notification);
@@ -166,13 +135,13 @@ function SignTxHandler(): JSX.Element {
                   fontSize: "17px",
                   padding: "20px",
                 }
-              })
+              });
+
               setSendLoading(false);
-
-
 
               dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+
             } catch (err) {
               setSendLoading(false);
 
