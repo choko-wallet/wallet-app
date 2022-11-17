@@ -22,6 +22,7 @@ import Keyring from '@polkadot/keyring';
 
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 import Loading from '../../components/Loading';
+import { AccountOption, UserAccount } from '@choko-wallet/core';
 
 function SignTxHandler(): JSX.Element {
   const router = useRouter();
@@ -31,6 +32,8 @@ function SignTxHandler(): JSX.Element {
   // const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
   const [mounted, setMounted] = useState<boolean>(false);
+  const [sendLoading, setSendLoading] = useState<boolean>(false);
+
   const [displayType, setDisplayType] = useState<string>('decoded');
 
   const [decodingTx, setDecodingTx] = useState<boolean>(true);
@@ -71,9 +74,13 @@ function SignTxHandler(): JSX.Element {
         console.log('tx', ethers.BigNumber.from(tx.value._hex).toNumber())
         console.log('tx', ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex)))
 
+        // 需要encodeContractCall decode 把erc20 token的data拿出来 node中暂时没有这个函数
         const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
 
         setDecodedTx(`Send ${value} eth to ${tx.to} `);
+
+
+
 
         // setDecodedTx('WIP Ethereum Decode Support');
         setDecodingTx(false);
@@ -92,18 +99,19 @@ function SignTxHandler(): JSX.Element {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-        toast('Password Correct, Redirecting...', {
-          duration: 5000,
-          icon: '👏',
+
+        setSendLoading(true);
+        const notification = toast.loading("Send Transaction...", {
           style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
+            background: "white",
+            color: "green",
+            fontWeight: "bolder",
+            fontFamily: "Poppins",
+            fontSize: "17px",
+            padding: "20px",
           }
-        });
+        })
+
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
           setPassword('');
@@ -113,17 +121,25 @@ function SignTxHandler(): JSX.Element {
 
             try {
 
-              let account = currentUserAccount;
+              const account = new UserAccount(new AccountOption({
+                hasEncryptedPrivateKeyExported: false,
+                keyType: 'ethereum',
+                localKeyEncryptionStrategy: 0
+              }));
+
               const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';//0.5goerli 22link
+              console.log('account', account);
 
               const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
 
               account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
               await account.init();
               console.log('5');
+              console.log('account2', account);//私钥没变？
 
               // update the keyType manually
               account.option.keyType = 'ethereum';
+              console.log('account3', account);
 
               const kr = (new Keyring({
                 type: 'ethereum'
@@ -139,14 +155,29 @@ function SignTxHandler(): JSX.Element {
               // const response = await signTx.requestHandler(request, currentUserAccount);
               const s = response.serialize();
 
-
+              toast.dismiss(notification);
+              toast("Successfully Send, redirecting..", {
+                duration: 8000,
+                style: {
+                  background: "green",
+                  color: "white",
+                  fontWeight: "bolder",
+                  fontFamily: "Poppins",
+                  fontSize: "17px",
+                  padding: "20px",
+                }
+              })
+              setSendLoading(false);
 
 
 
               dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
             } catch (err) {
+              setSendLoading(false);
+
               console.log('err', err);
+              toast.dismiss(notification);
               toast('Something Wrong', {
                 style: {
                   background: 'red',
@@ -161,6 +192,8 @@ function SignTxHandler(): JSX.Element {
           })();
         }
       } catch (e) {
+        setSendLoading(false);
+
         toast('Wrong Password!', {
           style: {
             background: 'red',
@@ -249,7 +282,25 @@ function SignTxHandler(): JSX.Element {
       </div>
       <div className='col-span-12 my-2'></div>
 
-      <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
+      {sendLoading ?
+        null
+        :
+        <div className='grid grid-cols-12 col-span-12' >
+          <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
+            <button className='btn btn-success btn-circle btn-lg'
+              onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
+              <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
+          <div className='col-span-4 md:col-span-2'>
+            <button className='btn btn-error btn-circle btn-lg'
+              onClick={() => router.push('/')} >
+              <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
+        </div>
+      }
+      {/* <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
           onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
@@ -260,7 +311,7 @@ function SignTxHandler(): JSX.Element {
           onClick={() => router.push('/')} >
           <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
-      </div>
+      </div> */}
 
       <Modal
         modalName='signTxPasswordModal'

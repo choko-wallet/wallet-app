@@ -64,6 +64,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const contractAddress = '0x238F47e33cD44A7701F2Bb824659D432efD17b41';
   const currentUserAccount = useSelector(selectCurrentUserAccount);
 
+  console.log('balanceInfo', balanceInfo)
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -76,6 +77,14 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     if (sendTransactionLoading) return;
     setSendTransactionLoading(true);
 
+    console.log('addressToSend', addressToSend)
+    console.log('cryptoToSend', cryptoToSend)
+    console.log('amount', amount)
+    console.log('knownNetworks[currentNetwork];', knownNetworks[currentNetwork])
+    // console.log('ethers.utils.parseEther', ethers.utils.parseEther('0.1'))
+
+
+
     // no need to await
     void (async () => {
       // dispatch(startLoading('Send Transaction ...'));
@@ -87,8 +96,9 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
           console.log('polkadot')
           break;
         case 'ethereum':
-          try {
+          const chainId = 5;
 
+          try {
             const dapp = new DappDescriptor({
               activeNetwork: knownNetworks[u8aToHex(xxHash('goerli'))],
               displayName: 'Jest Testing',
@@ -96,66 +106,66 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               version: 0
             });
 
-            let account = currentUserAccount;
-            const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);//用seed生成的 实际上用户账户已经生成了？
+
+            const account = new UserAccount(new AccountOption({
+              hasEncryptedPrivateKeyExported: false,
+              keyType: 'ethereum',
+              localKeyEncryptionStrategy: 0
+            }));
+            const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);//用seed生成的测试账户 
             console.log('1');
 
-            // expect((mnemonicWallet.privateKey).slice(2)).toEqual(privateKey);
             account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
             await account.init();
             account.lock();
+            let tx = {};
 
-            /* 
-            ** sending eth data
-            */
-            // const tx = {
-            //   chainId: 5,
-            //   to: '0xE8DAC12f7A4b0a47e8e2Af2b96db6F54e2E2C9C3',
-            //   value: ethers.utils.parseEther('0.0001'),
-            // };
+            if (cryptoToSend === balanceInfo.native) {//native token
+              tx = {
+                chainId: chainId,
+                to: addressToSend,
+                value: ethers.utils.parseEther(amount.toString()),
+                // value: ethers.utils.parseEther('0.001'),
 
-            /* 
-            ** erc20 token balance checking data
-            */
-            const data1 = encodeContractCall(
-              'erc20', 
-              'balanceOf', 
-              ['0xAA1658296e2b770fB793eb8B36E856c8210A566F']
-            )
+              };
 
-            /* 
-            ** approve max balance erc20 token data
-            */
-            const data2 = encodeContractCall(
-              '', 
-              'approve', 
-              [
-                '0x11760b4950F9981770049B3cC0D83CC8BC133247',
-                 ethers.constants.MaxUint256
-              ],
-              LinkTokenABI
-            )
+            } else {//erc20 token
+              // /* erc20 token balance checking data*/
+              // const data1 = encodeContractCall(
+              //   'erc20',
+              //   'balanceOf',
+              //   ['0xAA1658296e2b770fB793eb8B36E856c8210A566F']
+              // )
+              // /*  approve max balance erc20 token data */
+              // const data2 = encodeContractCall(
+              //   '',
+              //   'approve',
+              //   [
+              //     '0x11760b4950F9981770049B3cC0D83CC8BC133247',
+              //     ethers.constants.MaxUint256
+              //   ],
+              //   LinkTokenABI
+              // )
 
-            /* 
-            ** sending erc20 link token data through abi
-            */
-            const data = encodeContractCall(
-              '', 
-              'transfer', 
-              [
-                '0x11760b4950F9981770049B3cC0D83CC8BC133247',
-                '1000000000000000000'  // send 1 Link token
-              ],
-              LinkTokenABI
-            )
-            console.log("data: ", data);
+              /* sending erc20 link token data through abi */
+              const data = encodeContractCall(
+                '',
+                'transfer',
+                [
+                  addressToSend,//接收地址 
+                  '1'  // send （0.1 * decimal).toString Link token  
+                ],
+                LinkTokenABI
+              )
+              console.log("data: ", data);
 
-            const tx = {
-              chainId: 5,
-              data: data,
-              to: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB' // goerli link token contract address
+              tx = {
+                chainId: chainId,
+                to: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB', // goerli link token contract address
+                data: data,//接收地址在这里
+              }
             }
-            console.log('2');
+
 
             const serializedTx = ethers.utils.serializeTransaction(tx);
             console.log('2', serializedTx);//长字符串 
@@ -292,7 +302,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amountToCurrency ? amount : 0}
+                  value={amount}
                 />
                 <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
               </div>
@@ -306,12 +316,17 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   min='0'
                   onChange={(e) => {
                     setAmountToCurrency(parseFloat(e.target.value));
-                    setAmount(
-                      parseFloat((parseFloat(e.target.value) / cryptoToSend?.priceInUSD).toFixed(8)));
+                    if (cryptoToSend?.priceInUSD === 0) {
+                      setAmount(0);
+                    } else {
+                      setAmount(
+                        parseFloat((parseFloat(e.target.value) / cryptoToSend?.priceInUSD).toFixed(8)));
+                    }
+
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amount ? amountToCurrency : 0} />
+                  value={amountToCurrency} />
                 <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
               </div>
 
@@ -327,9 +342,9 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
           <div className='mt-4 bg-transparent rounded-lg'>
             {!sendTransactionLoading ?
               <button
-                className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
+                className={`font-poppins py-3 px-6 font-medium text-[18px]  rounded-[10px] outline-none' ${amount && amount !== 0 && addressToSend !== '' ? 'text-primary bg-blue-gradient' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
                 onClick={() => sendTransaction()}
-
+                disabled={amount === 0 || amount === null || addressToSend === ''}
                 type='button'
               >
                 Send
