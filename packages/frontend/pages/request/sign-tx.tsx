@@ -72,13 +72,13 @@ function SignTxHandler(): JSX.Element {
         const tx = ethers.utils.parseTransaction(serializedTx)
 
         console.log('tx', tx)
-        console.log('tx', ethers.BigNumber.from(tx.value._hex).toNumber())
-        console.log('tx', ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex)))
+        // console.log('tx', ethers.BigNumber.from(tx.value._hex).toNumber())
+        // console.log('tx', ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex)))
 
         // 需要encodeContractCall decode 把erc20 token的data拿出来 node中暂时没有这个函数
-        const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
+        // const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
 
-        setDecodedTx(`Send ${value} eth to ${tx.to} `);
+        // setDecodedTx(`Send ${value} eth to ${tx.to} `);
 
 
 

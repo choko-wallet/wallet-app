@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
-import { ethDecodeTxAndRedirect } from '@choko-wallet/frontend/utils/ethSendTx';
+import { ethEncodeTxToUrl } from '@choko-wallet/frontend/utils/ethSendTx';
 import { toastFail } from '@choko-wallet/frontend/utils/toast';
 import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, DocumentDuplicateIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
@@ -96,7 +96,8 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
         case 'ethereum':
 
           try {
-            await ethDecodeTxAndRedirect(network, cryptoToSend, amount, addressToSend, balanceInfo);// goerli
+            const redirectUrl = await ethEncodeTxToUrl(network, cryptoToSend, amount, addressToSend, balanceInfo);// goerli
+            window.location.href = redirectUrl;
             // dispatch(endLoading());
           } catch (e) {
             console.error(e);
