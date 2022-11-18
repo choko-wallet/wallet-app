@@ -24,6 +24,7 @@ import Keyring from '@polkadot/keyring';
 import Loading from '../../components/Loading';
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { ethSendTx } from '@choko-wallet/frontend/utils/ethSendTx';
+import { toastFail, toastSuccess } from '@choko-wallet/frontend/utils/toast';
 
 function SignTxHandler(): JSX.Element {
   const router = useRouter();
@@ -75,15 +76,12 @@ function SignTxHandler(): JSX.Element {
         // console.log('tx', ethers.BigNumber.from(tx.value._hex).toNumber())
         // console.log('tx', ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex)))
 
-        // 需要encodeContractCall decode 把erc20 token的data拿出来 node中暂时没有这个函数
+
+        // 需要interface.decodeFunctionData 把erc20 token的data拿出来 node中暂时没有这个函数
         // const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
 
         // setDecodedTx(`Send ${value} eth to ${tx.to} `);
 
-
-
-
-        // setDecodedTx('WIP Ethereum Decode Support');
         setDecodingTx(false);
       }
     })();
@@ -122,57 +120,26 @@ function SignTxHandler(): JSX.Element {
 
             try {
               const response = await ethSendTx(request);
+              console.log('response', u8aToHex(response.payload.txHash))//mumbai搜不到交易
               const s = response.serialize();
 
               toast.dismiss(notification);
-              toast("Successfully Send, redirecting..", {
-                duration: 8000,
-                style: {
-                  background: "green",
-                  color: "white",
-                  fontWeight: "bolder",
-                  fontFamily: "Poppins",
-                  fontSize: "17px",
-                  padding: "20px",
-                }
-              });
-
+              toastSuccess("Successfully Send, redirecting..");
               setSendLoading(false);
-
               dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
 
             } catch (err) {
               setSendLoading(false);
-
               console.log('err', err);
               toast.dismiss(notification);
-              toast('Something Wrong', {
-                style: {
-                  background: 'red',
-                  color: 'white',
-                  fontFamily: 'Poppins',
-                  fontSize: '16px',
-                  fontWeight: 'bolder',
-                  padding: '20px'
-                }
-              });
+              toastFail('Someting Wrong');
             }
           })();
         }
       } catch (e) {
         setSendLoading(false);
-
-        toast('Wrong Password!', {
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '16px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
+        toastFail('Wrong Password!');
       }
     }
   }

@@ -103,6 +103,7 @@ export default function Home(): JSX.Element {
             // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
             const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
 
+
             setBalanceInfo(res);
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
