@@ -101,7 +101,7 @@ export default function Home(): JSX.Element {
           try {
             // const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
             // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-            const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
+            const res = await ethFetchBalance(network, '0xAA1658296e2b770fB793eb8B36E856c8210A566F');//goerli mumbai
 
 
             setBalanceInfo(res);

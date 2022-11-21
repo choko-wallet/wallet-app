@@ -102,6 +102,7 @@ export const ethSendTx = async (request: SignTxRequest): Promise<SignTxResponse>
     localKeyEncryptionStrategy: 0
   }));
 
+  // const privateKey = '72c7ed523e0084a99d2419a30332dc0d83d6d61f4d4a6b3dc3a38f7cb3588d80';
   const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';
   //29ee   0.5goerli 22link   0.18matic 100dai  
   console.log('account', account);
@@ -197,8 +198,8 @@ export const ethEncodeTxToUrl = async (network: Network, cryptoToSend: CryptoBal
         addressToSend,//接收地址 
         (amount * Math.pow(10, 18)).toString(),//18是link-goerli
       ],
-      // MumbaiDaiTokenABI,
       LinkTokenABI
+      // MumbaiDaiTokenABI,
     )
     console.log("data: ", data);
 
