@@ -5,7 +5,7 @@ import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 import { ethEncodeTxToUrl } from '@choko-wallet/frontend/utils/ethSendTx';
 import { toastFail } from '@choko-wallet/frontend/utils/toast';
 import { Dialog } from '@headlessui/react';
-import { CameraIcon, CheckIcon, DocumentDuplicateIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
+import { CameraIcon, CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -16,7 +16,7 @@ import { AccountOption, DappDescriptor, UserAccount } from '@choko-wallet/core';
 import { selectCurrentNetwork, selectKnownNetworks, selectLoading, selectStatus } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { endLoading, setClose, setOpen, startLoading, toggle } from '../../features/slices/status';
-import { BalanceInfo, CryptoBalance } from '../../utils/types';
+import { BalanceInfo, CryptoBalance, CryptoBalanceWithAddress } from '../../utils/types';
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,7 +45,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const { theme } = useTheme();
   const dispatch = useAppThunkDispatch();
   const [addressToSend, setAddressToSend] = useState<string>('');
-  const [cryptoToSend, setCryptoToSend] = useState<CryptoBalance | null>(null);
+  const [cryptoToSend, setCryptoToSend] = useState<CryptoBalanceWithAddress>({ 'native': balanceInfo.native });
   const status = useSelector(selectStatus);
   const [amount, setAmount] = useState<number>(0);
   const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
@@ -63,8 +63,11 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
   const contractAddress = '0x238F47e33cD44A7701F2Bb824659D432efD17b41';
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
   console.log('balanceInfo', balanceInfo)
+  // console.log('currentUserAccount', currentUserAccount)
+
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -96,9 +99,9 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
         case 'ethereum':
 
           try {
-            const redirectUrl = await ethEncodeTxToUrl(network, cryptoToSend, amount, addressToSend, balanceInfo);// goerli
+            const redirectUrl = await ethEncodeTxToUrl(network, Object.entries(cryptoToSend)[0][1], amount, addressToSend, balanceInfo);// goerli
             window.location.href = redirectUrl;
-            // dispatch(endLoading());
+            dispatch(endLoading());
           } catch (e) {
             console.error(e);
             // dispatch(endLoading());
@@ -143,10 +146,17 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
             <p className=' text-gray-700 dark:text-white '>From</p>
             <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
-              <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+              {/* <p className='flex flex-grow dark:text-white font-poppins'>{currentUserAccount.address}</p> */}
+              <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
+                {currentAddress.substring(0, 7)}
+                <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
+                {currentAddress.substring(currentAddress.length - 7, currentAddress.length)}
+              </p>
+
+
 
               <CopyToClipboard
-                text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
+                text={currentUserAccount.address}>
                 <div onClick={handleCopy}>
                   {showCheck
                     ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -206,13 +216,13 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   onChange={(e) => {
                     setAmount(parseFloat(e.target.value));
                     setAmountToCurrency(
-                      parseFloat((parseFloat(e.target.value) * cryptoToSend.priceInUSD).toFixed(2)));
+                      parseFloat((parseFloat(e.target.value) * Object.entries(cryptoToSend)[0][1].priceInUSD).toFixed(2)));
                   }}
                   placeholder='0.0'
                   type='number'
                   value={amount}
                 />
-                <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
+                <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{Object.entries(cryptoToSend)[0][1]?.symbol}</p>
               </div>
 
               <p className='mx-1 pb-3'>=</p>
@@ -224,11 +234,11 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   min='0'
                   onChange={(e) => {
                     setAmountToCurrency(parseFloat(e.target.value));
-                    if (cryptoToSend?.priceInUSD === 0) {
+                    if (Object.entries(cryptoToSend)[0][1]?.priceInUSD === 0) {
                       setAmount(0);
                     } else {
                       setAmount(
-                        parseFloat((parseFloat(e.target.value) / cryptoToSend?.priceInUSD).toFixed(8)));
+                        parseFloat((parseFloat(e.target.value) / Object.entries(cryptoToSend)[0][1]?.priceInUSD).toFixed(8)));
                     }
 
                   }}
@@ -239,7 +249,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               </div>
 
             </div>
-            <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend?.name} price: {cryptoToSend?.priceInUSD}</p>
+            <p className='font-poppins text-gray-700 dark:text-white text-sm'>{Object.entries(cryptoToSend)[0][1]?.name} price: {Object.entries(cryptoToSend)[0][1]?.priceInUSD}</p>
 
             {/* <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p> */}
 

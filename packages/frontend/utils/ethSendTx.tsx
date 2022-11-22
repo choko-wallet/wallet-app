@@ -197,6 +197,7 @@ export const ethEncodeTxToUrl = async (network: Network, cryptoToSend: CryptoBal
       [
         addressToSend,//接收地址 
         (amount * Math.pow(10, 18)).toString(),//18是link-goerli
+        // 'link'//直接这么加不行 
       ],
       LinkTokenABI
       // MumbaiDaiTokenABI,
@@ -209,6 +210,7 @@ export const ethEncodeTxToUrl = async (network: Network, cryptoToSend: CryptoBal
       // to: '0x001B3B4d0F3714Ca98ba10F6042DaEbF0B1B7b6F', // mumbai dai token contract address
 
       data: data,//接收地址在这里
+      // name: 'link'//这么加也不行 
     }
   }
 
