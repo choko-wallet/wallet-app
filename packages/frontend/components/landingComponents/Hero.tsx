@@ -28,11 +28,11 @@ const Hero = (): JSX.Element => {
           /* eslint-enable */
           width={180}
         />
-        <div className='z-20 flex flex-col items-center justify-center'>
-          <p className='text-2xl uppercase text-gray-200 pb-2 tracking-[10px] '>
+        <div className='z-20 flex flex-col items-center justify-center pt-5 md:pt-10 lg:pt-20'>
+          <p className='text-2xl md:text-3xl uppercase text-gray-200 pb-2 tracking-[10px] font-rubik'>
             CHOKO WALLET
           </p>
-          <p className='py-6 text-2xl text-white font-mono'>
+          <p className='py-6 text-3xl text-white font-vt323'>
             Your <Typed
               backSpeed={20}
               loop
@@ -46,14 +46,14 @@ const Hero = (): JSX.Element => {
           </p>
 
           <div className='flex flex-col mt-16'>
-            <button className='py-3 mt-3 text-xl text-black transition duration-150
-                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#F5CBD5]'
-            onClick={() => router.push('/home')}>ENTER
+            <button className='py-3 mt-3 text-xl text-white transition duration-150
+                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
+              onClick={() => router.push('/home')}>ENTER
             </button>
 
             <button className='py-3 text-xl text-white transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
-            onClick={() => router.push('/test-request')}>SAMPLE DAPP
+              onClick={() => router.push('/test-request')}>SAMPLE DAPP
             </button>
           </div>
 

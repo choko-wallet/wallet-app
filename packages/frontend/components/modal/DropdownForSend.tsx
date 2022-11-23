@@ -31,7 +31,7 @@ function DropdownForSend({ balanceInfo, cryptoToSend, setCryptoToSend }: Props):
     console.log('first', Object.entries(balanceInfo))
 
     for (const i of Object.entries(balanceInfo)) {
-      console.log('i', i)
+      // console.log('i', i)
       const crypto: CryptoBalanceWithAddress = {};
       const contractAddress: string = i[0];
       crypto[contractAddress] = i[1];
@@ -44,8 +44,8 @@ function DropdownForSend({ balanceInfo, cryptoToSend, setCryptoToSend }: Props):
 
 
 
-  console.log('filterResult', filterResult)
-  console.log('cryptoToSend', cryptoToSend)
+  // console.log('filterResult', filterResult)
+  // console.log('cryptoToSend', cryptoToSend)
 
 
   useEffect(() => { // array filter

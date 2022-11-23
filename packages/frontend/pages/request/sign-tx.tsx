@@ -59,7 +59,7 @@ function SignTxHandler(): JSX.Element {
     const callbackUrl = router.query.callbackUrl as string;
     const request = SignTxRequest.deserialize(u8aRequest);
 
-    console.log('first', request.dappOrigin.activeNetwork)
+    console.log('first', request.dappOrigin.infoName)
 
     dispatch(loadUserAccount());
     dispatch(switchUserAccount(request.userOrigin.address));
@@ -100,9 +100,8 @@ function SignTxHandler(): JSX.Element {
           const value = ethers.utils.formatEther(ethers.BigNumber.from(result._value))
           console.log("value: ", value);
           console.log("result._to: ", result._to);
-          // 需要把erc20的name或symbol 在encode之前加到tx或result中
 
-          setDecodedTx(`Send ${value}  to ${result._to} `);
+          setDecodedTx(`Send ${value} ${request.dappOrigin.infoName} to ${result._to} `);
 
 
         }
@@ -238,11 +237,11 @@ function SignTxHandler(): JSX.Element {
               {
                 displayType === 'hex'
                   ? (
-                    <div className='textarea h-[20vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400 scrollbar-thin overflow-y-auto'
                       style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
                   )
                   : (
-                    <div className='textarea h-[20vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400 scrollbar-thin overflow-y-auto'
                       style={{ overflowWrap: 'break-word' }}>{decodedTx}</div>
                   )
               }

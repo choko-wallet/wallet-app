@@ -128,6 +128,7 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
         return [address, {
           balance: b.balance,
           balanceInUSD: price[address] * b.balance,
+          decimals: b.decimals,
           img: b.img,
           name: b.name,
           priceInUSD: price[address],
@@ -185,6 +186,7 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
   result.native = {
     balance: nativeBalance,
     img: getTokenImage(network),
+    decimals: decimals,//eth polygon 18 
     name: name,
     symbol: network.nativeTokenSymbol,
     priceInUSD: nativePrice,
@@ -214,6 +216,7 @@ export const fetchTokenBalance = async (network: Network, address: string): Prom
         result[token.contractAddress] = {
           balance: Number(Number(token.tokenBalance) / Math.pow(10, metadata.decimals)),
           balanceInUSD: 0,
+          decimals: metadata.decimals,
           img: metadata.logo,
           name: metadata.name,
           priceInUSD: 0,

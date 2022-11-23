@@ -25,7 +25,11 @@ module.exports = {
       },
       fontFamily: {
         Josefin: ['Josefin Sans', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif']
+        poppins: ['Poppins', 'sans-serif'],
+        rubik: ['Rubik', 'sans-serif'],
+        vt323: ['VT323', 'sans-serif']
+
+
 
       },
       height: {

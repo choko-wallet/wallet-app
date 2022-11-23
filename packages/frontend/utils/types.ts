@@ -5,6 +5,7 @@ export type BalanceInfo = Record<string, CryptoBalance>;
 export type CryptoBalance = {
   balance: number,
   balanceInUSD: number,
+  decimals: number,
   img: string,
   name: string,
   priceInUSD: number,
@@ -15,6 +16,7 @@ export type CryptoBalanceWithAddress = {
   [key: string]: {
     balance: number,
     balanceInUSD: number,
+    decimals: number,
     img: string,
     name: string,
     priceInUSD: number,
