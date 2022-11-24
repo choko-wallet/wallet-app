@@ -7,7 +7,7 @@ import { Switch } from '@headlessui/react';
 import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { useRef } from 'react';
 import { selectCurrentNetwork, selectKnownNetworks } from '../../features/redux/selectors';
 import { setOpen } from '../../features/slices/status';
 import Button from '../Button';
@@ -30,7 +30,7 @@ function Balance({ balance }: Props): JSX.Element {
   const [balanceTotal, setBalanceTotal] = useState<string>('0');
   const [showDust, setShowDust] = useState<boolean>(true);
   const [searchInput, setSearchInput] = useState<string>('');
-
+  const ref = useRef(null);
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false);
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
 
@@ -61,6 +61,11 @@ function Balance({ balance }: Props): JSX.Element {
 
     setBalanceTotal(Number(b).toLocaleString(undefined, { maximumFractionDigits: 2 }));
   }, [balance]);
+
+  const handleClick = () => {
+    setSearchInputOpen(true);
+    ref.current.focus();
+  };
 
   return (
     <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-12'>
@@ -94,25 +99,36 @@ function Balance({ balance }: Props): JSX.Element {
       </div>
 
       <div className='flex items-center justify-between mt-5 px-5 '>
-        <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
 
         <div className='flex items-center justify-center' >
-          <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
-            onClick={() => setSearchInputOpen(!searchInputOpen)} />
-
+          <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
           {searchInputOpen
-            ? <div className='hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5]'>
-              <input
-                className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder='Search token'
-                type='text'
-                value={searchInput} />
-
-            </div>
-            : <div className='hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] '>
-            </div>
+            ?
+            null
+            :
+            <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
+              onClick={() => handleClick()} />
           }
+
+          {/* {searchInputOpen
+            ?  */}
+          <div className={`hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5] ${searchInputOpen ? 'opacity-100' : 'opacity-0'}`}>
+            <input
+              className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder='Search token'
+              type='text'
+              ref={ref}
+              onBlur={() => {
+                setSearchInputOpen(false);
+                setSearchInput('')
+              }}
+              value={searchInput} />
+
+          </div>
+          {/* : <div className='hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] '>
+            </div>
+          } */}
         </div>
 
         <div className='flex items-center '>
@@ -133,7 +149,7 @@ function Balance({ balance }: Props): JSX.Element {
           </Switch>
           <p className={`flex md:hidden text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Smaller assets</p>
 
-          <p className={`hidden md:inline-flex text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
+          <p className={`hidden md:inline-flex text-xs ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
 
         <p className='text-black dark:text-gray-400 text-right'>Total Balance</p>
@@ -142,12 +158,17 @@ function Balance({ balance }: Props): JSX.Element {
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
 
         {searchInputOpen
-          ? <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>
+          ?
+          <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>
             <input
               className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder='Search token'
               type='text'
+              onBlur={() => {
+                setSearchInputOpen(false);
+                setSearchInput('')
+              }}
               value={searchInput} />
 
           </div>

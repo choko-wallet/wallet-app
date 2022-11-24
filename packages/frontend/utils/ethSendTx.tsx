@@ -16,6 +16,7 @@ import { encodeContractCall } from '@choko-wallet/abi';
 import { SignTxDescriptor, SignTxRequest, SignTxRequestPayload, SignTxResponse } from '@choko-wallet/request-handler';
 import { Keyring } from '@polkadot/api';
 
+
 const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';//0.5goerli 22link
 
 
@@ -131,28 +132,28 @@ export const ethSendTx = async (request: SignTxRequest): Promise<SignTxResponse>
 
 }
 
-export const getChainId = (network: Network): number => {
-  if (network.info === 'ethereum') {
-    return 1
-  }
-  if (network.info === 'goerli') {
-    return 5
-  }
-  if (network.info === 'polygon') {
-    return 137
-  }
-  if (network.info === 'polygon-mumbai') {
-    return 80001
-  }
+// export const getChainId = (network: Network): number => {
+//   if (network.info === 'ethereum') {
+//     return 1
+//   }
+//   if (network.info === 'goerli') {
+//     return 5
+//   }
+//   if (network.info === 'polygon') {
+//     return 137
+//   }
+//   if (network.info === 'polygon-mumbai') {
+//     return 80001
+//   }
 
-  return 100000000000000;
-}
+//   return 100000000000000;
+// }
 
 // Entry point
 export const ethEncodeTxToUrl = async (network: Network, tokenContractAddress: string, cryptoBalance: CryptoBalance, amount: number, addressToSend: string): Promise<string> => {
 
-  const chainId = getChainId(network);
-  console.log('chainId', chainId)
+  const chainId = network.chainId;//sdk改type
+  console.log('network', network)
 
   const dapp = new DappDescriptor({
     activeNetwork: knownNetworks[u8aToHex(xxHash(network.info))],
@@ -176,29 +177,31 @@ export const ethEncodeTxToUrl = async (network: Network, tokenContractAddress: s
   let tx = {};
 
   if (tokenContractAddress === 'native') {//native token
-    tx = {
+    tx = {//这里需要加gaslimit
       chainId: chainId,
       to: addressToSend,
       value: ethers.utils.parseEther(amount.toString()),
+      gasLimit: 5000000,
     };
 
   } else {//erc20 token
     const data = encodeContractCall(
-      '',
+      'erc20',
       'transfer',
       [
         addressToSend,//接收地址 
         (amount * Math.pow(10, cryptoBalance.decimals)).toString(),
       ],
-      ERC20TokenABI
-      // MumbaiDaiTokenABI,
+      ERC20TokenABI, //貌似要带 如果给了第一个参数且存在abi内容 这个参数就用不到 
     )
     console.log("data: ", data);
 
-    tx = {
+    tx = {//这里需要加gaslimit
       chainId: chainId,
       to: tokenContractAddress,
       data: data,//接收地址在这里
+      gasLimit: 5000000,
+
     }
   }
 

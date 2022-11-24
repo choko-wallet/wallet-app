@@ -28,11 +28,11 @@ const Hero = (): JSX.Element => {
           /* eslint-enable */
           width={180}
         />
-        <div className='z-20 flex flex-col items-center justify-center pt-5 md:pt-10 lg:pt-20'>
-          <p className='text-2xl md:text-3xl uppercase text-gray-200 pb-2 tracking-[10px] font-rubik'>
+        <div className='z-20 flex flex-col items-center justify-center lg:pt-16 pb-5 md:pb-10 lg:pb-20'>
+          <p className='text-2xl md:text-3xl font-bold uppercase text-gray-200 pb-2 tracking-[5px] font-rubik'>
             CHOKO WALLET
           </p>
-          <p className='py-6 text-3xl text-white font-vt323'>
+          <p className='py-6 text-3xl lg:text-4xl text-white font-vt323'>
             Your <Typed
               backSpeed={20}
               loop
@@ -46,8 +46,8 @@ const Hero = (): JSX.Element => {
           </p>
 
           <div className='flex flex-col mt-16'>
-            <button className='py-3 mt-3 text-xl text-white transition duration-150
-                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
+            <button className='py-3 mt-3 text-xl text-[#0170BF] transition duration-150
+                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#F5CBD5]'
               onClick={() => router.push('/home')}>ENTER
             </button>
 

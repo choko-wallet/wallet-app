@@ -16,7 +16,7 @@ import { store } from '../features/redux/store';
 
 const progress = new ProgressBar({
   className: 'z-50',
-  color: '#3afbef',
+  color: '#F5CBD5',
   delay: 100,
   size: 4
 });

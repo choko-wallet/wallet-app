@@ -64,6 +64,10 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
   console.log('balanceInfo', balanceInfo)
+  console.log('cryptoToSend', cryptoToSend)
+
+  console.log('Object.entries(cryptoToSend)[0][1].priceInUSD', Object.entries(cryptoToSend)[0][1]?.priceInUSD)
+
   // console.log('currentUserAccount', currentUserAccount)
 
 
@@ -213,8 +217,14 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   min='0'
                   onChange={(e) => {
                     setAmount(parseFloat(e.target.value));
-                    setAmountToCurrency(
-                      parseFloat((parseFloat(e.target.value) * Object.entries(cryptoToSend)[0][1].priceInUSD).toFixed(2)));
+                    console.log('first', isNaN(parseFloat(e.target.value)))
+                    if (isNaN(parseFloat(e.target.value))) {
+                      setAmountToCurrency(0);
+                    } else {
+                      setAmountToCurrency(
+                        parseFloat(
+                          (parseFloat(e.target.value) * Object.entries(cryptoToSend)[0][1]?.priceInUSD).toFixed(2)));
+                    }
                   }}
                   placeholder='0.0'
                   type='number'
@@ -235,8 +245,12 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                     if (Object.entries(cryptoToSend)[0][1]?.priceInUSD === 0) {
                       setAmount(0);
                     } else {
-                      setAmount(
-                        parseFloat((parseFloat(e.target.value) / Object.entries(cryptoToSend)[0][1]?.priceInUSD).toFixed(8)));
+                      if (isNaN(parseFloat(e.target.value))) {
+                        setAmount(0);
+                      } else {
+                        setAmount(
+                          parseFloat((parseFloat(e.target.value) / Object.entries(cryptoToSend)[0][1]?.priceInUSD).toFixed(8)));
+                      }
                     }
 
                   }}

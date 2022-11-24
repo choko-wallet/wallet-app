@@ -9,16 +9,16 @@ import { SocialIcon } from 'react-social-icons';
 import discIcon1 from '../images/discord1.svg';
 import discIcon2 from '../images/discord2.svg';
 
-function Footer (): JSX.Element {
+function Footer(): JSX.Element {
   const { theme } = useTheme();
 
   return (
     // <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
     <div className='flex justify-between items-center md:px-10 '>
-      <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
+      <p className='text-black dark:text-white font-poppins text-sm'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>
-          <a className='relative h-7 w-7 m-3'
+          <a className='relative h-5 w-5 m-3'
             href={'https://discord.gg/zkp8UEQctM'}
             rel='noreferrer'
             target='_blank'>
@@ -37,24 +37,31 @@ function Footer (): JSX.Element {
             fgColor='black'
             target='_blank'
             url='https://github.com/choko-wallet'
+            style={{ height: 40, width: 40 }}
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
             target='_blank'
             url='https://t.me/choko_wallet'
+            style={{ height: 40, width: 40 }}
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
             target='_blank'
             url='https://twitter.com/choko_wallet'
+            style={{ height: 40, width: 40 }}
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
             target='_blank'
             url='https://medium.com/@choko_wallet'
+            style={{ height: 40, width: 40 }}
+
           />
           <SocialIcon
             bgColor='transparent'
@@ -62,10 +69,12 @@ function Footer (): JSX.Element {
             fgColor='black'
             network='email'
             url='mailto:contact@choko.app'
+            style={{ height: 40, width: 40 }}
+
           />
         </div>
         : <div className='flex items-center justify-center'>
-          <a className='relative h-7 w-7 m-3'
+          <a className='relative h-5 w-5 m-3'
             href={'https://discord.gg/zkp8UEQctM'}
             rel='noreferrer'
             target='_blank'>
@@ -84,24 +93,32 @@ function Footer (): JSX.Element {
             fgColor='white'
             target='_blank'
             url='https://github.com/choko-wallet'
+            style={{ height: 40, width: 40 }}
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
             target='_blank'
             url='https://t.me/choko_wallet'
+            style={{ height: 40, width: 40 }}
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
             target='_blank'
             url='https://twitter.com/choko_wallet'
+            style={{ height: 40, width: 40 }}
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
             target='_blank'
             url='https://medium.com/@choko_wallet'
+            style={{ height: 40, width: 40 }}
+
           />
 
           <SocialIcon
@@ -110,6 +127,8 @@ function Footer (): JSX.Element {
             fgColor='white'
             network='email'
             url='mailto:contact@choko.app'
+            style={{ height: 40, width: 40 }}
+
           />
         </div>}
 

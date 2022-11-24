@@ -65,6 +65,7 @@ function ImportWallet(): JSX.Element {
 
       <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
         <ProgressBar
+          height='13px'
           baseBgColor='#AFAFAF'
           bgColor='#4075A9'
           className='w-full '
@@ -73,10 +74,9 @@ function ImportWallet(): JSX.Element {
             : step === 2 ? (password && repeatPassword && password === repeatPassword) ? 100 : 50 : 50}
         />
 
-        <div className='w-full max-w-2xl justify-between mt-2 flex'>
-          <p className='text-white text-xs md:text-sm font-poppins'>Type In Your Mnemonic</p>
-          {/* <p className='text-white text-xs md:text-sm font-poppins pr-10'>Verify</p> */}
-          <p className='text-white text-xs md:text-sm font-poppins'>Set Password</p>
+        <div className='w-full max-w-2xl justify-between mt-2 flex md:mb-10'>
+          <p className={` text-xs md:text-sm font-poppins ${step > 1 ? 'text-[#4075A9]' : 'text-white'}`}>Type In Your Mnemonic</p>
+          <p className={` text-xs md:text-sm font-poppins ${step > 1 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
         </div>
 
 
@@ -85,7 +85,7 @@ function ImportWallet(): JSX.Element {
           <div className='w-full max-w-2xl  ' >
             <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+              <p className=' text-black font-semibold text-xl md:text-2xl font-poppins  mb-6'>
                 Import a 12 words mnemonic. </p>
 
               <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>

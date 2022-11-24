@@ -87,28 +87,17 @@ function SignTxHandler(): JSX.Element {
 
         } else {//发送erc20
           const result = decodeContractCall(
-            '',
-            'transfer',
-            tx.data,
+            'erc20',
+            // 'transfer',
+            tx,
             ERC20TokenABI
           )
           console.log("result: ", result);
-          const value = ethers.utils.formatEther(ethers.BigNumber.from(result._value))
+          const value = ethers.utils.formatEther(ethers.BigNumber.from(result.args._value))
           console.log("value: ", value);
-          console.log("result._to: ", result._to);
-
-          setDecodedTx(`Send ${value} ${request.dappOrigin.infoName} to ${result._to} `);
-
-
+          console.log("result._to: ", result.args._to);
+          setDecodedTx(`Send ${value} ${request.dappOrigin.infoName} to ${result.args._to} `);
         }
-        // console.log('tx', ethers.BigNumber.from(tx.value._hex).toNumber())
-        // console.log('tx', ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex)))
-
-
-        // 需要interface.decodeFunctionData 把erc20 token的data拿出来 node中暂时没有这个函数
-        // const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
-
-        // setDecodedTx(`Send ${value} eth to ${tx.to} `);
 
         setDecodingTx(false);
       }
