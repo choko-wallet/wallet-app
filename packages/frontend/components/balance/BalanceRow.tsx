@@ -45,11 +45,11 @@ function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
               {name}
             </p>
             {price === undefined
-              ? <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
+              ? <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[10px]  font-poppins group-hover:text-[#F5CBD5]'>
                 {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
                 0{' '}USD
               </p>
-              : <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
+              : <p className='text-left font-normal text-gray-700 dark:text-gray-300 text-[10px]  font-poppins group-hover:text-[#F5CBD5]'>
                 {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
                 {price}
                 {' '}USD
@@ -58,18 +58,18 @@ function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
           </div>
         </div>
         <div className=' flex flex-col justify-between '>
-          <p className='font-semibold text-black dark:text-white flex flex-grow text-[18px] mt-2 font-poppins justify-end group-hover:text-[#F5CBD5]'>
+          <p className='font-semibold text-black dark:text-white flex flex-grow text-[14px] mt-2 font-poppins justify-end group-hover:text-[#F5CBD5]'>
             {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}
             {'  '}{symbol}
 
           </p>
 
           {price === undefined
-            ? <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
+            ? <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[10px]  font-poppins group-hover:text-[#F5CBD5]'>
               {/* {Number(price).toLocaleString(undefined, { maximumFractionDigits: 10 })} */}
               0{' '}USD
             </p>
-            : <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[14px]  font-poppins group-hover:text-[#F5CBD5]'>
+            : <p className=' font-normal  text-gray-700 dark:text-gray-300  text-[10px]  font-poppins group-hover:text-[#F5CBD5]'>
               {Number(balance * price).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
             </p>
           }

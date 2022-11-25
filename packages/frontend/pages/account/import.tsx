@@ -93,7 +93,7 @@ function ImportWallet(): JSX.Element {
                   <div className='border border-[#94C5E3] rounded-lg flex items-center justify-center p-3 py-2'
                     key={index}>
                     {/* <p className='text-black text-sm font-poppins'>{seed}</p> */}
-                    <input className='w-full outline-none text-black font-poppins'
+                    <input className='w-full outline-none text-black bg-transparent font-poppins'
                       onChange={(e) => handleMnemonicInput(e.target.value, index)}
                       placeholder={`Word #${index + 1}`}
                       type='text'

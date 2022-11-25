@@ -157,7 +157,7 @@ function CreateWallet(): JSX.Element {
           <div className='w-full max-w-2xl ' >
             <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20 font-poppins'>
+              <p className=' text-black font-semibold text-xl md:text-2xl -mt-5 mb-16 font-poppins'>
                 Verify your mnemonic seed:
               </p>
               <p className=' text-black text-sm md:text-xl md:-mt-5 font-poppins'>

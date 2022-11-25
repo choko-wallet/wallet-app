@@ -68,11 +68,11 @@ function Balance({ balance }: Props): JSX.Element {
   };
 
   return (
-    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-12'>
+    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-16 lg:py-8'>
       <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
-        <p className='text-2xl my-1 text-black dark:text-white font-poppins font-semibold'>
+        <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
-        <p className='text-sm text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
+        <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
       </div>
 
       <div className='flex items-center justify-evenly mt-6'>
@@ -100,8 +100,8 @@ function Balance({ balance }: Props): JSX.Element {
 
       <div className='flex items-center justify-between mt-5 px-5 '>
 
-        <div className='flex items-center justify-center' >
-          <p className='text-black text-sm font-poppins dark:text-gray-400'>Your Portfolio</p>
+        <div className='flex items-center justify-start xl:w-72' >
+          <p className='text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>
           {searchInputOpen
             ?
             null
@@ -114,7 +114,7 @@ function Balance({ balance }: Props): JSX.Element {
             ?  */}
           <div className={`hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5] ${searchInputOpen ? 'opacity-100' : 'opacity-0'}`}>
             <input
-              className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
+              className=' pl-5 text-xs text-gray-600 placeholder-gray-400 bg-transparent outline-none '
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder='Search token'
               type='text'
@@ -152,7 +152,7 @@ function Balance({ balance }: Props): JSX.Element {
           <p className={`hidden md:inline-flex text-xs ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
 
-        <p className='text-black dark:text-gray-400 text-right'>Total Balance</p>
+        <p className='text-black dark:text-gray-400 text-right  xl:w-64'>Total Balance</p>
       </div>
 
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
@@ -161,7 +161,7 @@ function Balance({ balance }: Props): JSX.Element {
           ?
           <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>
             <input
-              className=' pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
+              className=' pl-5 text-xs text-gray-600 placeholder-gray-400 bg-transparent outline-none '
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder='Search token'
               type='text'

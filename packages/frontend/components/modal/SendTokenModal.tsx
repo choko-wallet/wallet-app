@@ -53,13 +53,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const currentNetwork = useSelector(selectCurrentNetwork);
   const reduxLoadingState = useSelector(selectLoading);
 
-  // const privateKey = '6e00e2fb6feb95393f29e0ceeabebc4f7b2d692b4912663546755b9b8f87b938';
-  const privateKey = '72c7ed523e0084a99d2419a30332dc0d83d6d61f4d4a6b3dc3a38f7cb3588d80';//0.5goerli 22link
-  const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';//0.5goerli 22link
 
-  // const seed = 'acoustic hover lyrics object execute unfold father give wing hen remain ship';
-
-  const contractAddress = '0x238F47e33cD44A7701F2Bb824659D432efD17b41';
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
@@ -101,7 +95,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
         case 'ethereum':
 
           try {
-            const redirectUrl = await ethEncodeTxToUrl(network, Object.entries(cryptoToSend)[0][0], Object.entries(cryptoToSend)[0][1], amount, addressToSend);
+            const redirectUrl = await ethEncodeTxToUrl(network, Object.entries(cryptoToSend)[0][0], Object.entries(cryptoToSend)[0][1], amount, addressToSend, currentUserAccount);
             window.location.href = redirectUrl;
             dispatch(endLoading());
           } catch (e) {
@@ -123,7 +117,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   return (
     <Modal modalName='homeSend'>
       <div className={theme}>
-        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
+        <Dialog.Panel className='w-[360px] md:w-[500px]  transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
           <Dialog.Title
             as='h3'
             className='text-lg  font-medium leading-6 flex items-center mb-6 '
@@ -158,7 +152,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
 
               <CopyToClipboard
-                text={currentUserAccount.address}>
+                text={currentAddress}>
                 <div onClick={handleCopy}>
                   {showCheck
                     ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -168,14 +162,15 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               </CopyToClipboard>
             </div>
 
-            <div className='relative'>
+            <div className='relative '>
 
               <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-              <input className='font-poppins input input-bordered input-info w-full '
+              <textarea className='font-poppins input input-bordered input-info w-full pr-12'
                 onChange={(e) => setAddressToSend(e.target.value)}
                 placeholder='Destination Address'
-                type='text'
+                // type="textarea"
+                rows={3}
                 value={addressToSend} />
               <CameraIcon
                 className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
@@ -207,8 +202,8 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
               </div>}
 
-            <div className='flex items-end mb-1'>
-              <div className='relative grow'>
+            <div className='flex flex-col items-center justify-center mb-1'>
+              <div className='relative w-full'>
                 <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
                 <input
@@ -233,9 +228,9 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{Object.entries(cryptoToSend)[0][1]?.symbol}</p>
               </div>
 
-              <p className='mx-1 pb-3'>=</p>
+              <p className='my-1 '>=</p>
 
-              <div className='relative grow'>
+              <div className='relative w-full'>
                 <input
                   className='font-poppins  input input-bordered input-info w-full '
                   max='10000000'

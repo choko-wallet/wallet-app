@@ -99,9 +99,9 @@ export default function Home(): JSX.Element {
           break;
         case 'ethereum':
           try {
-            // const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
+            const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
             // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-            const res = await ethFetchBalance(network, '0xAA1658296e2b770fB793eb8B36E856c8210A566F');//goerli mumbai
+            // const res = await ethFetchBalance(network, '0xAA1658296e2b770fB793eb8B36E856c8210A566F');//goerli mumbai
 
 
             setBalanceInfo(res);
@@ -138,8 +138,8 @@ export default function Home(): JSX.Element {
         <Header />
         <NetworkSidebarMobile />
 
-        < main className='min-h-[750px] bg-transparent h-80v w-full dark:bg-[#22262f] max-w-7xl mx-auto' >
-          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8'>
+        < main className='min-h-[750px] bg-transparent h-75v w-full dark:bg-[#22262f] max-w-screen-2xl mx-auto' >
+          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
             <NetworkSidebar />
             <Balance balance={balanceInfo} />
           </div>

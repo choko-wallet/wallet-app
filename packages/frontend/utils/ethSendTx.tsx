@@ -94,40 +94,31 @@ const getAlchemy = (network: Network): Alchemy => {
 };
 
 
-export const ethSendTx = async (request: SignTxRequest): Promise<SignTxResponse> => {
-  const account = new UserAccount(new AccountOption({
-    hasEncryptedPrivateKeyExported: false,
-    keyType: 'ethereum',
-    localKeyEncryptionStrategy: 0
-  }));
+export const ethSendTx = async (request: SignTxRequest, currentUserAccount: UserAccount): Promise<SignTxResponse> => {
+
+  // const account = new UserAccount(new AccountOption({
+  //   hasEncryptedPrivateKeyExported: false,
+  //   keyType: 'ethereum',
+  //   localKeyEncryptionStrategy: 0
+  // }));
 
   // const privateKey = '72c7ed523e0084a99d2419a30332dc0d83d6d61f4d4a6b3dc3a38f7cb3588d80';
-  const seed = 'humor cook snap sunny ticket distance leaf unusual join business obey below';
-  //29ee   0.5goerli 22link   0.18matic 100dai  
-  console.log('account', account);
+  // const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
+  // account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
+  // await account.init();
+  // // update the keyType manually
+  // account.option.keyType = 'ethereum';
+  // console.log('account3', account);
+  // const kr = (new Keyring({
+  //   type: 'ethereum'
+  // })).addFromUri('0x' + u8aToHex(account.privateKey));
+  // console.log("kr address: ", kr.address);
 
-  const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);
-
-  account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
-  await account.init();
-  console.log('5');
-  console.log('account2', account);//私钥没变？
-
-  // update the keyType manually
-  account.option.keyType = 'ethereum';
-  console.log('account3', account);
-
-  const kr = (new Keyring({
-    type: 'ethereum'
-  })).addFromUri('0x' + u8aToHex(account.privateKey));
-  console.log("kr address: ", kr.address);
-
-  // const sendResponse = await signTx.requestHandler(request, account);//调用这个发送 在sdk中
-  // console.log('sendResponse: ', sendResponse);
+  currentUserAccount.option.keyType = 'ethereum';
 
   const signTx = new SignTxDescriptor();
-  const response = await signTx.requestHandler(request, account);//用测试账户
-  // const response = await signTx.requestHandler(request, currentUserAccount);
+  // const response = await signTx.requestHandler(request, account);
+  const response = await signTx.requestHandler(request, currentUserAccount);
   return response;
 
 }
@@ -150,7 +141,7 @@ export const ethSendTx = async (request: SignTxRequest): Promise<SignTxResponse>
 // }
 
 // Entry point
-export const ethEncodeTxToUrl = async (network: Network, tokenContractAddress: string, cryptoBalance: CryptoBalance, amount: number, addressToSend: string): Promise<string> => {
+export const ethEncodeTxToUrl = async (network: Network, tokenContractAddress: string, cryptoBalance: CryptoBalance, amount: number, addressToSend: string, currentUserAccount: UserAccount): Promise<string> => {
 
   const chainId = network.chainId;//sdk改type
   console.log('network', network)
@@ -163,17 +154,21 @@ export const ethEncodeTxToUrl = async (network: Network, tokenContractAddress: s
   });
 
 
-  const account = new UserAccount(new AccountOption({
-    hasEncryptedPrivateKeyExported: false,
-    keyType: 'ethereum',
-    localKeyEncryptionStrategy: 0
-  }));
-  const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);//用seed生成的测试账户 
-  console.log('1');
+  // const account = new UserAccount(new AccountOption({
+  //   hasEncryptedPrivateKeyExported: false,
+  //   keyType: 'ethereum',
+  //   localKeyEncryptionStrategy: 0
+  // }));
+  // const mnemonicWallet = ethers.Wallet.fromMnemonic(seed);//用seed生成的测试账户 
+  // console.log('1');
 
-  account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
-  await account.init();
-  account.lock();
+  // account.unlock(hexToU8a((mnemonicWallet.privateKey).slice(2)));
+  // await account.init();
+  // account.lock();
+
+  // console.log('account', account)
+  // console.log('currentUserAccount', currentUserAccount)
+
   let tx = {};
 
   if (tokenContractAddress === 'native') {//native token
@@ -214,7 +209,8 @@ export const ethEncodeTxToUrl = async (network: Network, tokenContractAddress: s
     payload: new SignTxRequestPayload({
       encoded: hexToU8a(serializedTx.slice(2))
     }),
-    userOrigin: account
+    // userOrigin: account //这个account是用seed生成测试的 
+    userOrigin: currentUserAccount
   });
   console.log('3');
 

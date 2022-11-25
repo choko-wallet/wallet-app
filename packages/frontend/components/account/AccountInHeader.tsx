@@ -16,7 +16,7 @@ import AccountRow from './AccountRow';
 /**
  * Render currentUserAccount address on Header & a drop down of all UserAccount
  */
-export default function AccountInHeader (): JSX.Element {
+export default function AccountInHeader(): JSX.Element {
   const dispatch = useDispatch();
 
   const userAccount = useSelector(selectUserAccount);
@@ -70,9 +70,9 @@ export default function AccountInHeader (): JSX.Element {
                 {({ active }) => (
                   <button
                     className={`${active
-                      ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white'
+                      ? 'font-poppins bg-[#F5CBD5] dark:bg-[#0170BF] text-white'
                       : 'font-poppins text-gray-900'
-                    } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => router.push('/account')}
                   >
 
@@ -85,8 +85,8 @@ export default function AccountInHeader (): JSX.Element {
               <Menu.Item >
                 {({ active }) => (
                   <button
-                    className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
-                    } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                    className={`${active ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
+                      } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={removeAccounts}
                   >
                     <p className='font-poppins text-black dark:text-white text-center'>Remove All Accounts</p>

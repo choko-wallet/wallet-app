@@ -53,10 +53,10 @@ function NetworkSelection(): JSX.Element {
                       }}
                     >
                       <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between  cursor-pointer  focus:outline-none w-full h-[75px] '>
-                        <div className='text-sm'>
+                        <div className='text-xs'>
                           <RadioGroup.Label
                             as='p'
-                            className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
+                            className={`text-base font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                           >
                             {/* {text.substring(0, text.length - 8)} */}
                             {text}
@@ -65,10 +65,10 @@ function NetworkSelection(): JSX.Element {
                       </div>
                     </motion.div>
                     : <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between bg-white dark:bg-[#2E323C] cursor-pointer  focus:outline-none w-full h-[75px] '>
-                      <div className='text-sm'>
+                      <div className='text-xs'>
                         <RadioGroup.Label
                           as='p'
-                          className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
+                          className={`text-base font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                         >
                           {text.split(' ')[0]}
                         </RadioGroup.Label>
@@ -89,9 +89,9 @@ function NetworkSelection(): JSX.Element {
 
                       </div>
                       <div
-                        className='absolute top-0 right-0 p-1 rounded-full items-center w-[16px] h-[16px] cursor-pointer flex justify-center bg-white'
+                        className='absolute -top-1 right-0 p-1 rounded-full items-center w-[26px] h-[26px] cursor-pointer flex justify-center bg-transparent'
                         onClick={() => dispatch(removeNetworkAndSave(hash))}>
-                        <XIcon className=' text-red-500 z-50 w-5 h-5' />
+                        <XIcon className=' text-gray-500 z-50 w-8 h-8' />
 
                       </div>
                     </div>
@@ -119,7 +119,7 @@ function NetworkSelection(): JSX.Element {
           <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
             <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
           </div>
-          <p className='absolute top-[60px] -left-6 whitespace-nowrap text-lg font-poppins text-black dark:text-white'>Add Network</p>
+          <p className='absolute top-[60px] -left-4 whitespace-nowrap text-base font-poppins text-black dark:text-white'>Add Network</p>
         </div>
 
       </div>
@@ -127,7 +127,7 @@ function NetworkSelection(): JSX.Element {
       <div className='flex justify-center mt-3'>
         {currentNetwork === networkSelection
           ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 text-center'>
-            <p className=' font-semibold font-poppins dark:text-white'>current on </p>
+            <p className=' font-semibold font-poppins dark:text-white'>current:  </p>
             <p className=' font-semibold font-poppins dark:text-white'>{knownNetworks[networkSelection]?.text}</p>
 
           </div>
@@ -136,7 +136,7 @@ function NetworkSelection(): JSX.Element {
             className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#FDF6E3] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
             onClick={() => dispatch(setCurrentNetwork(networkSelection))}
           >
-            <p className='text-black dark:text-white text-md whitespace-nowrap font-poppins'>Switch Network</p>
+            <p className='text-black dark:text-white text-sm whitespace-nowrap font-poppins'>Switch Network</p>
 
           </button>}
 

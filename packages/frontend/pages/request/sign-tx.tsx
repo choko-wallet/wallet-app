@@ -137,7 +137,7 @@ function SignTxHandler(): JSX.Element {
           void (async () => {
 
             try {
-              const response = await ethSendTx(request);
+              const response = await ethSendTx(request, currentUserAccount);
               console.log('response', u8aToHex(response.payload.txHash))
               const s = response.serialize();
 
