@@ -29,6 +29,7 @@ import { ethers } from 'ethers';
 import { xxHash } from '@choko-wallet/core/util';
 import Keyring from '@polkadot/keyring';
 import { encodeContractCall } from '@choko-wallet/abi';
+import { polkadotEncodeTxToUrl } from '@choko-wallet/frontend/utils/polkadotSendTx';
 
 
 /**
@@ -57,10 +58,10 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
-  console.log('balanceInfo', balanceInfo)
-  console.log('cryptoToSend', cryptoToSend)
+  // console.log('balanceInfo', balanceInfo)
+  // console.log('cryptoToSend', cryptoToSend)
 
-  console.log('Object.entries(cryptoToSend)[0][1].priceInUSD', Object.entries(cryptoToSend)[0][1]?.priceInUSD)
+  // console.log('Object.entries(cryptoToSend)[0][1].priceInUSD', Object.entries(cryptoToSend)[0][1]?.priceInUSD)
 
   // console.log('currentUserAccount', currentUserAccount)
 
@@ -80,6 +81,10 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     console.log('cryptoToSend', cryptoToSend)
     console.log('amount', amount)
     console.log('knownNetworks[currentNetwork];', knownNetworks[currentNetwork])
+    console.log('Object.entries(cryptoToSend)[0][0]', Object.entries(cryptoToSend)[0][0])
+    console.log('Object.entries(cryptoToSend)[0][1]', Object.entries(cryptoToSend)[0][1])
+
+
     // console.log('ethers.utils.parseEther', ethers.utils.parseEther('0.1'))
 
     // no need to await
@@ -91,6 +96,18 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
       switch (network.networkType) {
         case 'polkadot':
           console.log('polkadot')
+
+          try {
+            const redirectUrl = await polkadotEncodeTxToUrl(network, Object.entries(cryptoToSend)[0][1], amount, addressToSend, currentUserAccount);
+            console.log('redirectUrl', redirectUrl)
+            window.location.href = redirectUrl;
+            dispatch(endLoading());
+          } catch (e) {
+            console.error(e);
+            // dispatch(endLoading());
+            toastFail('Someting Wrong! Please Switch To Other Network.');
+          }
+
           break;
         case 'ethereum':
 

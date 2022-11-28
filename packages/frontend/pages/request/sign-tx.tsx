@@ -62,14 +62,22 @@ function SignTxHandler(): JSX.Element {
     dispatch(switchUserAccount(request.userOrigin.address));
 
     void (async () => {
+
       if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {
         const provider = new WsProvider(request.dappOrigin.activeNetwork.defaultProvider);
         const api = await ApiPromise.create({ provider: provider });
         const tx = api.tx(request.payload.encoded).toHuman();
 
+
         /* eslint-disable */
         // @ts-ignore
-        setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
+        // setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
+        const value = Number(tx.method.args.value.toString().replaceAll(",", '')) / Math.pow(10, request.dappOrigin.activeNetwork.nativeTokenDecimal)
+
+        // console.log('tx', Number(tx.method.args.value.toString().replaceAll(",", '')))
+        // @ts-ignore
+        setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `);
+
         /* eslint-enable */
 
         setDecodingTx(false);
@@ -137,7 +145,16 @@ function SignTxHandler(): JSX.Element {
           void (async () => {
 
             try {
-              const response = await ethSendTx(request, currentUserAccount);
+              let response;
+
+              if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {//polkadot
+                const signTx = new SignTxDescriptor();
+                response = await signTx.requestHandler(request, currentUserAccount);
+
+              } else {//eth
+                response = await ethSendTx(request, currentUserAccount);
+              }
+
               console.log('response', u8aToHex(response.payload.txHash))
               const s = response.serialize();
 
@@ -159,6 +176,8 @@ function SignTxHandler(): JSX.Element {
         setSendLoading(false);
         toastFail('Wrong Password!');
       }
+
+
     }
   }
 
