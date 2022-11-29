@@ -24,8 +24,8 @@ function NetworkSelection(): JSX.Element {
   const [networkSelection, setNetworkSelection] = useState(currentNetwork);
 
   return (
-    <div className=' w-full h-full min-h-[700px]  dark:bg-[#22262f]'>
-      <div className='scrollbar-thin max-h-[500px] overflow-y-scroll  mt-10 pr-2'>
+    <div className=' w-full h-full  dark:bg-[#22262f] flex flex-col justify-between'>
+      <div className='scrollbar-thin max-h-[400px] md:max-h-[450px] overflow-y-scroll  mt-10 pr-2'>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
           {Object.entries(knownNetworks).map(([hash, { color, isDevelopment, isDisabled, text }]) => {
@@ -91,14 +91,14 @@ function NetworkSelection(): JSX.Element {
                       <div
                         className='absolute -top-1 right-0 p-1 rounded-full items-center w-[26px] h-[26px] cursor-pointer flex justify-center bg-transparent'
                         onClick={() => dispatch(removeNetworkAndSave(hash))}>
-                        <XIcon className=' text-gray-500 z-50 w-8 h-8' />
+                        <XIcon className=' text-gray-500 z-50 w-6 h-6' />
 
                       </div>
                     </div>
                   )}
 
                   {isDevelopment === true
-                    ? <div className={'absolute top-1 right-6 items-center bg-slate-300 rounded-lg p-[2px] cursor-pointer flex justify-center'}>
+                    ? <div className={'absolute bottom-0 left-4 items-center bg-slate-300 rounded-lg p-[2px] cursor-pointer flex justify-center'}>
                       <p className='text-gray-500 text-xs font-semibold font-poppins m-1'>TestNet</p>
                     </div>
                     : null}
@@ -111,37 +111,38 @@ function NetworkSelection(): JSX.Element {
 
       </div>
 
-      <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
-        onClick={() => dispatch(setOpen('homeAddNetwork'))}>
-        <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
-        >
+      <div className=''>
+        <div className='cursor-pointer mx-auto rounded-lg my-3 w-[180px] h-[100px] border-2 border-[#4798B3] border-dashed '
+          onClick={() => dispatch(setOpen('homeAddNetwork'))}>
+          <div className='mx-auto flex relative items-center w-[70px] h-[70px] my-auto  cursor-pointer justify-center'
+          >
 
-          <div className='h-[40px] w-[40px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
-            <PlusSmIcon className=' text-white z-50 h-6 w-6 ' />
+            <div className='h-[32px] w-[32px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
+              <PlusSmIcon className=' text-white z-50 h-5 w-5 ' />
+            </div>
+            <p className='absolute top-[60px] -left-4 whitespace-nowrap text-base font-poppins text-black dark:text-white'>Add Network</p>
           </div>
-          <p className='absolute top-[60px] -left-4 whitespace-nowrap text-base font-poppins text-black dark:text-white'>Add Network</p>
+
         </div>
 
+        <div className='flex justify-center mt-3'>
+          {currentNetwork === networkSelection
+            ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 text-center'>
+              <p className=' font-semibold font-poppins dark:text-white'>current:  </p>
+              <p className=' font-semibold font-poppins dark:text-white'>{knownNetworks[networkSelection]?.text}</p>
+
+            </div>
+            : <button
+
+              className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#FDF6E3] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
+              onClick={() => dispatch(setCurrentNetwork(networkSelection))}
+            >
+              <p className='text-black dark:text-white text-sm whitespace-nowrap font-poppins'>Switch Network</p>
+
+            </button>}
+
+        </div>
       </div>
-
-      <div className='flex justify-center mt-3'>
-        {currentNetwork === networkSelection
-          ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 text-center'>
-            <p className=' font-semibold font-poppins dark:text-white'>current:  </p>
-            <p className=' font-semibold font-poppins dark:text-white'>{knownNetworks[networkSelection]?.text}</p>
-
-          </div>
-          : <button
-
-            className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#FDF6E3] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
-            onClick={() => dispatch(setCurrentNetwork(networkSelection))}
-          >
-            <p className='text-black dark:text-white text-sm whitespace-nowrap font-poppins'>Switch Network</p>
-
-          </button>}
-
-      </div>
-
     </div>
   );
 }

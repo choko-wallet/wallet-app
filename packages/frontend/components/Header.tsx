@@ -1,9 +1,11 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BellIcon, CogIcon,
+import {
+  BellIcon, CogIcon,
   MenuIcon,
-  MoonIcon, SunIcon } from '@heroicons/react/outline';
+  MoonIcon, SunIcon
+} from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -18,7 +20,7 @@ import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
 import AccountInHeader from './account/AccountInHeader';
 
-function Header (): JSX.Element {
+function Header(): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -44,7 +46,7 @@ function Header (): JSX.Element {
 
       <div className='flex justify-between p-2 '>
         <div className='flex items-center justify-center ' >
-          <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
+          <div className='flex md:m-1 relative items-center w-[45px] h-[45px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
             {theme === 'dark'
               ? <Image

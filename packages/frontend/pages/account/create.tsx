@@ -113,7 +113,7 @@ function CreateWallet(): JSX.Element {
                 )}
               </div>
 
-              <div className='flex space-x-5 items-center pt-5'>
+              <div className='flex space-x-5 items-center pt-1 pb-8'>
                 <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
                   onClick={refreshMnemonic}>
@@ -155,9 +155,9 @@ function CreateWallet(): JSX.Element {
         {step === 2 &&
 
           <div className='w-full max-w-2xl ' >
-            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
+            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl -mt-5 mb-16 font-poppins'>
+              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
                 Verify your mnemonic seed:
               </p>
               <p className=' text-black text-sm md:text-xl md:-mt-5 font-poppins'>
@@ -200,12 +200,15 @@ function CreateWallet(): JSX.Element {
         {step === 3 &&
           <div className='w-full max-w-2xl '>
 
-            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
-              <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20  font-poppins'>
+            {/* <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'> */}
+            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
+
+              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
+                {/* <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20  font-poppins'> */}
                 Set a local password for your wallet:
               </p>
 
-              <div className='flex items-center justify-between px-10 py-5'>
+              <div className='flex items-center justify-between px-10 '>
                 <p className=' text-black text-xl font-poppins'>
                   Set Password
                 </p>
@@ -217,7 +220,7 @@ function CreateWallet(): JSX.Element {
                 />
               </div>
 
-              <div className='flex items-center justify-between px-10'>
+              <div className='flex items-center justify-between px-10 pt-6'>
                 <p className=' text-black text-xl font-poppins'>
                   Repeat Password
                 </p>

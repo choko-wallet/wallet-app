@@ -138,7 +138,7 @@ export default function Home(): JSX.Element {
         <Header />
         <NetworkSidebarMobile />
 
-        < main className='min-h-[750px] bg-transparent h-75v w-full dark:bg-[#22262f] max-w-screen-2xl mx-auto' >
+        < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#22262f] max-w-screen-xl mx-auto' >
           <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
             <NetworkSidebar />
             <Balance balance={balanceInfo} />

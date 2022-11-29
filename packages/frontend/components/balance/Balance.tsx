@@ -69,13 +69,13 @@ function Balance({ balance }: Props): JSX.Element {
 
   return (
     <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-16 lg:py-8'>
-      <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[500px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
+      <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[320px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
         <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
       </div>
 
-      <div className='flex items-center justify-evenly mt-6'>
+      <div className='flex items-center justify-evenly mt-6 md:mt-10 lg:mt-12 lg:px-12'>
         <div className='flex items-center justify-center '
           onClick={() => dispatch(setOpen('homeSend'))} >
           <Button Icon={PaperAirplaneIcon}
@@ -98,7 +98,7 @@ function Balance({ balance }: Props): JSX.Element {
 
       </div>
 
-      <div className='flex items-center justify-between mt-5 px-5 '>
+      <div className='flex items-center justify-between mt-5 md:mt-10 md:h-16 px-5 '>
 
         <div className='flex items-center justify-start xl:w-72' >
           <p className='text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>

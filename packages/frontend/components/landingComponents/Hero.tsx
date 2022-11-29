@@ -1,13 +1,13 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowDownIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Typed from 'react-typed';
 
-import logo3 from '../../images/logo3.svg';
+import logo1 from '../../images/logo1.svg';
 import BackgroundCircle from './BackgroundCircle';
 
 const Hero = (): JSX.Element => {
@@ -24,15 +24,15 @@ const Hero = (): JSX.Element => {
           height={180}
           /* eslint-disable */
           // @ts-ignore
-          src={logo3}
+          src={logo1}
           /* eslint-enable */
           width={180}
         />
-        <div className='z-20 flex flex-col items-center justify-center lg:pt-16 pb-5 md:pb-10 lg:pb-20'>
-          <p className='text-2xl md:text-3xl font-bold uppercase text-gray-200 pb-2 tracking-[5px] font-rubik'>
+        <div className='z-20 flex flex-col items-center justify-center lg:pt-6 pb-5 md:pb-10 lg:pb-28'>
+          <p className='text-2xl md:text-3xl font-bold uppercase text-gray-200 pb-2 tracking-[2px] font-rubik'>
             CHOKO WALLET
           </p>
-          <p className='py-6 text-3xl lg:text-4xl text-white font-vt323'>
+          <p className='py-6 text-[35px] lg:text-[50px] text-white font-vt323'>
             Your <Typed
               backSpeed={20}
               loop
@@ -45,7 +45,7 @@ const Hero = (): JSX.Element => {
               typeSpeed={100} />crypto wallet
           </p>
 
-          <div className='flex flex-col mt-16'>
+          <div className='flex flex-col lg:mt-6'>
             <button className='py-3 mt-3 text-xl text-[#0170BF] transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#F5CBD5]'
               onClick={() => router.push('/home')}>ENTER
@@ -67,7 +67,7 @@ const Hero = (): JSX.Element => {
       <div className='absolute bottom-8 left-0 right-0 h-10 flex items-center justify-center '>
         <a className=''
           href={'#about'}>
-          <ArrowDownIcon className='h-8 text-[#888888] cursor-pointer ' />
+          <ChevronDownIcon className='h-8 text-white cursor-pointer ' />
         </a>
       </div>
     </section>
