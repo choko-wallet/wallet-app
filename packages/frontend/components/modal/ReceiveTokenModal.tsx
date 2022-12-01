@@ -32,8 +32,6 @@ const ReceiveTokenModal = (): JSX.Element => {
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
-  console.log('knownNetworks[currentNetwork', knownNetworks[currentNetwork])
-
   const handleCopy = () => {
     setShowCheck(true);
     setTimeout(() => {

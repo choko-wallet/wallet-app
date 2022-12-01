@@ -76,6 +76,7 @@ export default function Home(): JSX.Element {
     if (!currentNetwork) return;
 
     // no need to await
+    /** Fetch Balance */
     void (async () => {
       dispatch(startLoading('Fetching Balance ...'));
 
@@ -102,7 +103,6 @@ export default function Home(): JSX.Element {
             const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
             // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
             // const res = await ethFetchBalance(network, '0xAA1658296e2b770fB793eb8B36E856c8210A566F');//goerli mumbai
-
 
             setBalanceInfo(res);
             dispatch(endLoading());

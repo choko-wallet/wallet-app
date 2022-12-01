@@ -16,6 +16,7 @@ import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/front
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
+import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 
 // http://localhost:3000/request/connect-dapp?requestType=connectDapp&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf124d809006db70e53&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
@@ -33,33 +34,32 @@ function ConnectDappHandler (): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
 
-  const [selectedUserAccount, setSelectedUserAccount] = useState<string>('');
+  const [selectedUserAccount, setSelectedUserAccount] = useState<number>(0);
   const [request, setRequest] = useState<ConnectDappRequest>(null);
   const [callback, setCallback] = useState<string>('');
-
-  useEffect(() => {
-    if (!localStorage.getItem('serialziedUserAccount')) {
-      void router.push('/account');
-    } else {
-      dispatch(loadUserAccount());
-    }
-
-    setMounted(true);
-  }, [dispatch, router]);// initialization
 
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
     const callbackUrl = router.query.callbackUrl as string;
     const u8aRequest = decompressParameters(hexToU8a(payload));
+    const request = ConnectDappRequest.deserialize(u8aRequest);
+
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
+      void router.push('/account');
+    } else {
+      dispatch(loadUserAccount());
+    }
 
     setCallback(callbackUrl);
-    setRequest(ConnectDappRequest.deserialize(u8aRequest));
+    setRequest(request);
+    setMounted(true);
   }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (userAccount && currentUserAccount) {
-      setSelectedUserAccount(currentUserAccount.address);
+      setSelectedUserAccount(0);
     }
   }, [router, dispatch, userAccount, currentUserAccount]);
 
@@ -140,15 +140,15 @@ function ConnectDappHandler (): JSX.Element {
             <RadioGroup className='col-span-12'
               onChange={setSelectedUserAccount}
               value={selectedUserAccount}>
-              {Object.keys(userAccount).map((name, index) => (
+              {userAccount.map((acct, index) => (
                 <RadioGroup.Option
                   className={({ checked }) =>
                     `${checked ? 'bg-gray-500 bg-opacity-75 text-white' : 'bg-white'}
                       m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
                   }
                   key={index}
-                  onClick={() => dispatch(switchUserAccount(name))}
-                  value={name}
+                  onClick={() => dispatch(switchUserAccount(index))}
+                  value={index}
                 >
                   {({ checked }) => (
                     <div className='flex w-full items-center justify-between'>
@@ -159,7 +159,7 @@ function ConnectDappHandler (): JSX.Element {
                             className={`font-medium ${checked ? 'text-white' : 'text-gray-900'}`}
                           >
                             <div className='w-1/2 md:w-full'
-                              style={{ overflowWrap: 'break-word' }}>{name}</div>
+                              style={{ overflowWrap: 'break-word' }}>{encodeAddr(request.dappOrigin.activeNetwork, acct)}</div>
                           </RadioGroup.Label>
                         </div>
                       </div>
@@ -191,11 +191,7 @@ function ConnectDappHandler (): JSX.Element {
         </button>
       </div>
 
-      <Modal
-        modalName='connectDappPasswordModal'
-      // closeModal={closeModal}
-      //   isOpen={openPasswordModal}
-      >
+      <Modal modalName='connectDappPasswordModal' >
 
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title

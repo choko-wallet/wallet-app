@@ -19,6 +19,8 @@ import { AccountOption, UserAccount } from '@choko-wallet/core';
  * password is an user input password
  * @Second use importKey which should always be an UserAccount.serializeWithEncryptedKey()
  */
+
+// humor cook snap sunny ticket distance leaf unusual join business obey below
 export const addUserAccount = createAsyncThunk(
   'users/add',
   async (payload: {
@@ -35,13 +37,11 @@ export const addUserAccount = createAsyncThunk(
       if (!accountOption) {
         accountOption = new AccountOption({
           hasEncryptedPrivateKeyExported: false,
-          keyType: 'sr25519',
           localKeyEncryptionStrategy: 1
         });
       }
-
-      const userAccount = UserAccount.seedToUserAccount(seeds, accountOption);
-
+      const userAccount = new UserAccount(accountOption);
+      userAccount.unlock(seeds);
       await userAccount.init();
       userAccount.encryptUserAccount(blake2AsU8a(password));
 
@@ -65,13 +65,15 @@ export const addUserAccount = createAsyncThunk(
 
 // User slice
 interface UserSliceItem {
-  userAccount: { [key: string]: UserAccount };
+  userAccount: UserAccount[];
   currentUserAccount: UserAccount | null;
+  currentUserAccountIndex: number;
 }
 
 const initialState: UserSliceItem = {
   currentUserAccount: null,
-  userAccount: {}
+  currentUserAccountIndex: 0,
+  userAccount: [],
 };
 
 /* eslint-disable sort-keys */
@@ -84,6 +86,7 @@ export const userSlice = createSlice({
         const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
 
         let offset = 0;
+        let accountIndex = 0;
         const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
 
         while (offset < serializedUserAccount.length) {
@@ -91,16 +94,17 @@ export const userSlice = createSlice({
 
           offset += serializedLength;
           const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
-
-          state.userAccount[account.address] = account;
+          state.userAccount[accountIndex] = account
+          accountIndex ++;
         }
-
-        state.currentUserAccount = state.userAccount[Object.keys(state.userAccount)[0]];
+        state.currentUserAccount = state.userAccount[0];
+        state.currentUserAccountIndex = 0;
       } catch (e) {
         console.log('error', e);
-        localStorage.clear();
+        localStorage.removeItem('serialziedUserAccount');
         state.currentUserAccount = null;
-        state.userAccount = {};
+        state.currentUserAccountIndex = 0;
+        state.userAccount = [];
       }
     },
 
@@ -115,9 +119,10 @@ export const userSlice = createSlice({
       }
     },
 
-    switchUserAccount: (state, action: PayloadAction<string>) => {
+    switchUserAccount: (state, action: PayloadAction<number>) => {
       if (state.userAccount[action.payload] !== undefined) {
         state.currentUserAccount = state.userAccount[action.payload];
+        state.currentUserAccountIndex = action.payload;
       }
     },
 
@@ -125,7 +130,7 @@ export const userSlice = createSlice({
       localStorage.removeItem('serialziedUserAccount');
 
       state.currentUserAccount = null;
-      state.userAccount = {};
+      state.userAccount = [];
     }
   },
   extraReducers: (builder) => {
@@ -145,7 +150,9 @@ export const userSlice = createSlice({
 
             offset += len;
 
-            if (account.address === userAccount.address) {
+            // Here we only care about the first publicKey 
+            // might need to be changed later
+            if (account.publicKeys[0] === userAccount.publicKeys[0]) {
               throw new Error('User Account Already Exists');
             }
           }

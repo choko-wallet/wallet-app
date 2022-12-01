@@ -3,38 +3,25 @@
 
 import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 import { ethEncodeTxToUrl } from '@choko-wallet/frontend/utils/ethSendTx';
-import { toastFail } from '@choko-wallet/frontend/utils/toast';
 import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { QrReader } from 'react-qr-reader';
-import { hexToU8a, u8aToHex } from '@skyekiwi/util';
-import { AccountOption, DappDescriptor, UserAccount } from '@choko-wallet/core';
 
-import { selectCurrentNetwork, selectKnownNetworks, selectLoading, selectStatus } from '../../features/redux/selectors';
-import { useAppThunkDispatch } from '../../features/redux/store';
-import { endLoading, setClose, setOpen, startLoading, toggle } from '../../features/slices/status';
-import { BalanceInfo, CryptoBalance, CryptoBalanceWithAddress } from '../../utils/types';
+import { selectCurrentNetwork, selectKnownNetworks, selectStatus } from '../../features/redux/selectors';
+import { endLoading, setClose, startLoading, toggle } from '../../features/slices/status';
+import { BalanceInfo } from '../../utils/types';
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
-import { SignTxDescriptor, SignTxRequest, SignTxRequestPayload } from '@choko-wallet/request-handler';
-import { ethers } from 'ethers';
-import { xxHash } from '@choko-wallet/core/util';
-import Keyring from '@polkadot/keyring';
-import { encodeContractCall } from '@choko-wallet/abi';
 import { polkadotEncodeTxToUrl } from '@choko-wallet/frontend/utils/polkadotSendTx';
-
 
 /**
  * Modal wrapper to send crypto to another account
- * NOT FUNCTIONAL YET.
  */
 interface Props {
   balanceInfo: BalanceInfo;
@@ -42,29 +29,25 @@ interface Props {
 
 const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const { theme } = useTheme();
-  const dispatch = useAppThunkDispatch();
-  const [addressToSend, setAddressToSend] = useState<string>('');
-  const [cryptoToSend, setCryptoToSend] = useState<CryptoBalanceWithAddress>({ 'native': balanceInfo.native });
+  const dispatch = useDispatch();
   const status = useSelector(selectStatus);
+  
+  const [loading, setLaoding] = useState(true);
+
+  const [addressToSend, setAddressToSend] = useState<string>('');
+  const [cryptoAddress, setCryptoAddress] = useState<string>('native');
+
+  // Value to be sent
   const [amount, setAmount] = useState<number>(0);
-  const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
+  const [amountInUsd, setAmountInUsd] = useState<number>(0);
+  
   const [showCheck, setShowCheck] = useState<boolean>(false);
   const [sendTransactionLoading, setSendTransactionLoading] = useState<boolean>(false);
+
   const knownNetworks = useSelector(selectKnownNetworks);
   const currentNetwork = useSelector(selectCurrentNetwork);
-  const reduxLoadingState = useSelector(selectLoading);
-
-
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
-
-  // console.log('balanceInfo', balanceInfo)
-  // console.log('cryptoToSend', cryptoToSend)
-
-  // console.log('Object.entries(cryptoToSend)[0][1].priceInUSD', Object.entries(cryptoToSend)[0][1]?.priceInUSD)
-
-  // console.log('currentUserAccount', currentUserAccount)
-
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -77,60 +60,55 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     if (sendTransactionLoading) return;
     setSendTransactionLoading(true);
 
-    console.log('addressToSend', addressToSend)
-    console.log('cryptoToSend', cryptoToSend)
-    console.log('amount', amount)
-    console.log('knownNetworks[currentNetwork];', knownNetworks[currentNetwork])
-    console.log('Object.entries(cryptoToSend)[0][0]', Object.entries(cryptoToSend)[0][0])
-    console.log('Object.entries(cryptoToSend)[0][1]', Object.entries(cryptoToSend)[0][1])
-
-
-    // console.log('ethers.utils.parseEther', ethers.utils.parseEther('0.1'))
+    // console.log('addressToSend', addressToSend)
+    // console.log('cryptoToSend', cryptoToSend)
+    // console.log('amount', amount)
+    // console.log('knownNetworks[currentNetwork];', knownNetworks[currentNetwork])
+    // console.log('Object.entries(cryptoToSend)[0][0]', Object.entries(cryptoToSend)[0][0])
+    // console.log('Object.entries(cryptoToSend)[0][1]', Object.entries(cryptoToSend)[0][1])
 
     // no need to await
     void (async () => {
-      // dispatch(startLoading('Send Transaction ...'));
+      dispatch(startLoading('Generating Payload ...'));
 
       const network = knownNetworks[currentNetwork];
 
       switch (network.networkType) {
-        case 'polkadot':
-          console.log('polkadot')
+        case 'polkadot': {
+          const requestUrl = await polkadotEncodeTxToUrl(
+            network, currentUserAccount,
+            addressToSend, amount
+          )
 
-          try {
-            const redirectUrl = await polkadotEncodeTxToUrl(network, Object.entries(cryptoToSend)[0][1], amount, addressToSend, currentUserAccount);
-            console.log('redirectUrl', redirectUrl)
-            window.location.href = redirectUrl;
-            dispatch(endLoading());
-          } catch (e) {
-            console.error(e);
-            // dispatch(endLoading());
-            toastFail('Someting Wrong! Please Switch To Other Network.');
-          }
-
+          console.log('requestUrl', requestUrl);
+          dispatch(endLoading());
           break;
-        case 'ethereum':
+        }
+        case 'ethereum': {
+          const requestUrl = ethEncodeTxToUrl(
+            network, currentUserAccount,
+            cryptoAddress,
+            addressToSend, amount, 10
+          )
 
-          try {
-            const redirectUrl = await ethEncodeTxToUrl(network, Object.entries(cryptoToSend)[0][0], Object.entries(cryptoToSend)[0][1], amount, addressToSend, currentUserAccount);
-            window.location.href = redirectUrl;
-            dispatch(endLoading());
-          } catch (e) {
-            console.error(e);
-            // dispatch(endLoading());
-            toastFail('Someting Wrong! Please Switch To Other Network.');
-          }
-          console.log('eth')
-
+          console.log('requestUrl', requestUrl);
+          dispatch(endLoading());
           break;
+        }
       }
     })();
 
-    dispatch(setClose('homeSend'))//别忘了这个 
+    dispatch(setClose('homeSend'))
     setSendTransactionLoading(false);
-
   }
 
+  useEffect(() => {
+    if(balanceInfo && balanceInfo['native'] !== undefined) {
+      setLaoding(false);
+    }
+  }, [])
+
+  if (loading) { return null; }
   return (
     <Modal modalName='homeSend'>
       <div className={theme}>
@@ -151,11 +129,10 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             </div>
           </Dialog.Title>
           <div className='mt-2 '>
-            <b>unimplemented!()</b>
             <DropdownForSend
               balanceInfo={balanceInfo}
-              cryptoToSend={cryptoToSend}
-              setCryptoToSend={setCryptoToSend} />
+              cryptoAddress={cryptoAddress}
+              setCryptoAddress={setCryptoAddress} />
 
             <p className=' text-gray-700 dark:text-white '>From</p>
             <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
@@ -165,8 +142,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
                 {currentAddress.substring(currentAddress.length - 7, currentAddress.length)}
               </p>
-
-
 
               <CopyToClipboard
                 text={currentAddress}>
@@ -229,20 +204,22 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   min='0'
                   onChange={(e) => {
                     setAmount(parseFloat(e.target.value));
-                    console.log('first', isNaN(parseFloat(e.target.value)))
+                    // console.log('first', isNaN(parseFloat(e.target.value)))
                     if (isNaN(parseFloat(e.target.value))) {
-                      setAmountToCurrency(0);
+                      setAmountInUsd(0.0);
                     } else {
-                      setAmountToCurrency(
+                      setAmountInUsd(
                         parseFloat(
-                          (parseFloat(e.target.value) * Object.entries(cryptoToSend)[0][1]?.priceInUSD).toFixed(2)));
+                          (
+                            parseFloat(e.target.value) * balanceInfo[cryptoAddress].priceInUSD
+                          ).toFixed(2)));
                     }
                   }}
                   placeholder='0.0'
                   type='number'
                   value={amount}
                 />
-                <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{Object.entries(cryptoToSend)[0][1]?.symbol}</p>
+                <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{balanceInfo[cryptoAddress].symbol}</p>
               </div>
 
               <p className='my-1 '>=</p>
@@ -253,27 +230,24 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   max='10000000'
                   min='0'
                   onChange={(e) => {
-                    setAmountToCurrency(parseFloat(e.target.value));
-                    if (Object.entries(cryptoToSend)[0][1]?.priceInUSD === 0) {
-                      setAmount(0);
-                    } else {
-                      if (isNaN(parseFloat(e.target.value))) {
-                        setAmount(0);
-                      } else {
-                        setAmount(
-                          parseFloat((parseFloat(e.target.value) / Object.entries(cryptoToSend)[0][1]?.priceInUSD).toFixed(8)));
-                      }
+                    const inUsd = parseFloat(e.target.value)
+                    setAmountInUsd(inUsd);
+                    if (isNaN(inUsd)) { setAmountInUsd(0.0) } 
+                    else if (balanceInfo[cryptoAddress].priceInUSD === 0) { setAmount(0.0) } 
+                    else {
+                      setAmount(
+                        parseFloat( ( inUsd / balanceInfo[cryptoAddress].priceInUSD ).toFixed(8) )
+                      )
                     }
-
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amountToCurrency} />
+                  value={amountInUsd} />
                 <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
               </div>
 
             </div>
-            <p className='font-poppins text-gray-700 dark:text-white text-sm'>{Object.entries(cryptoToSend)[0][1]?.name} price: {Object.entries(cryptoToSend)[0][1]?.priceInUSD}</p>
+            <p className='font-poppins text-gray-700 dark:text-white text-sm'>{balanceInfo[cryptoAddress].name} price: {balanceInfo[cryptoAddress].priceInUSD}</p>
 
             {/* <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p> */}
 

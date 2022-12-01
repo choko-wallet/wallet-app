@@ -12,16 +12,4 @@ export type CryptoBalance = {
   symbol: string,
 };
 
-export type CryptoBalanceWithAddress = {
-  [key: string]: {
-    balance: number,
-    balanceInUSD: number,
-    decimals: number,
-    img: string,
-    name: string,
-    priceInUSD: number,
-    symbol: string,
-  }
-};
-
 export type CoingeckoAPIResponse = Record<string, { [key: string]: number }>;

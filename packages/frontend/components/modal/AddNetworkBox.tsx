@@ -52,7 +52,6 @@ const AddNetworkBox = (): JSX.Element => {
         const chainInfo = api.registry.getChainProperties();
         const [chain] = await Promise.all([api.rpc.system.chain()]);
 
-        console.log(chainInfo.toHuman());
         const networkForAdding: Network = {
           /* eslint-disable */
           defaultProvider: formData.netWorkRPC,

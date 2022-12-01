@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Network, UserAccount } from '@choko-wallet/core';
 
-import { selectCurrentUserAccount } from '../../features/redux/selectors';
+import { selectCurrentUserAccount, selectCurrentUserAccountIndex } from '../../features/redux/selectors';
 import { switchUserAccount } from '../../features/slices/user';
 import encodeAddr from '../../utils/encodeAddr';
 
@@ -18,15 +18,16 @@ import encodeAddr from '../../utils/encodeAddr';
  */
 
 interface Props {
+  accountIndex: number;
   account: UserAccount;
   network: Network;
 }
 
-export default function AccountRow ({ account, network }: Props): JSX.Element {
+export default function AccountRow ({ accountIndex, account, network }: Props): JSX.Element {
   const dispatch = useDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  const currentUserAccount = useSelector(selectCurrentUserAccount);
-
+  
+  const currentUserAccountIndex = useSelector(selectCurrentUserAccountIndex);
   const handleCopy = () => {
     setShowCheck(true);
     setTimeout(() => {
@@ -34,9 +35,13 @@ export default function AccountRow ({ account, network }: Props): JSX.Element {
     }, 1000);
   };
 
+  const isCurrentAccount = (): boolean => {
+    return accountIndex === currentUserAccountIndex;
+  }
+
   const changeAccountInHeader = () => {
-    if (account.address !== currentUserAccount.address) {
-      dispatch(switchUserAccount(account.address));
+    if (!isCurrentAccount()) {
+      dispatch(switchUserAccount(accountIndex));
     }
   };
 
@@ -44,12 +49,12 @@ export default function AccountRow ({ account, network }: Props): JSX.Element {
 
   return (
 
-    <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${Object.keys(currentUserAccount)[0] === account.address ? 'bg-blue-gradient' : ''} `}>
+    <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${isCurrentAccount() ? 'bg-blue-gradient' : ''} `}>
       <p
-        className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${Object.keys(currentUserAccount)[0] === account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `}
+        className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${isCurrentAccount() ? 'text-black' : 'text-gray-800 dark:text-white'} `}
         onClick={() => changeAccountInHeader()}>
         {address.substring(0, 7)}
-        <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${Object.keys(currentUserAccount)[0] === account.address ? 'text-black' : 'text-gray-800 dark:text-white'} `} />
+        <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${isCurrentAccount() ? 'text-black' : 'text-gray-800 dark:text-white'} `} />
 
         {address.substring(address.length - 7, address.length)}
       </p>

@@ -12,10 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
+import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
 
 /**
  * Handler for DecryptMesasgeRequest
@@ -23,7 +24,10 @@ import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/r
 function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const userAccount = useSelector(selectUserAccount);
+
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -40,13 +44,31 @@ function DecryptMessageHandler (): JSX.Element {
     const request = DecryptMessageRequest.deserialize(u8aRequest);
 
     dispatch(loadUserAccount());
-    dispatch(switchUserAccount(request.userOrigin.address));
     setCallback(callbackUrl);
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
+
+  // set the account right
   useEffect(() => {
-    if (request) setMounted(true);
+    if (userAccount.length === 0) return;
+    let accountIndex = 0;
+    const accountLength = userAccount.length;
+    const target = encodeAddr( request.dappOrigin.activeNetwork, request.userOrigin );
+
+    for (let i = 0; i < accountLength; ++ i) {
+      if ( target === encodeAddr(request.dappOrigin.activeNetwork, userAccount[i])) {
+        accountIndex = i;
+        break;
+      }
+    }
+
+    console.log(userAccount, accountIndex)
+    dispatch(switchUserAccount(accountIndex));
+
+    if (request) {
+      setMounted(true);
+    }
   }, [request]);
 
   function unlock () {
@@ -149,7 +171,9 @@ function DecryptMessageHandler (): JSX.Element {
             </div>
             <div className='col-span-12'>
               <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
+                  style={{ overflowWrap: 'break-word' }}>{
+                    encodeAddr(request.dappOrigin.activeNetwork, currentUserAccount)
+                }</code>
             </div>
             <div className='col-span-12'>
               Client Ephemeral Key:

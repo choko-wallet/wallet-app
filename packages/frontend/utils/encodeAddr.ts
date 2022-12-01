@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 import { Network, UserAccount } from '@choko-wallet/core';
 
@@ -10,7 +10,7 @@ const encodeAddr = (network: Network, account: UserAccount): string => {
     return encodeAddress(account.publicKeys[0],
       network.ss58Prefix === undefined ? 42 : network.ss58Prefix);
   } else {
-    return ethereumEncode(account.publicKeys[2]);
+    return account.getAddress('ethereum');
   }
 };
 

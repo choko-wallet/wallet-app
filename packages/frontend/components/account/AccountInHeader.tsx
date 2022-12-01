@@ -5,7 +5,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { DotsHorizontalIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '../../features/redux/selectors';
@@ -19,8 +19,11 @@ import AccountRow from './AccountRow';
 export default function AccountInHeader(): JSX.Element {
   const dispatch = useDispatch();
 
+  const [ready, setReady] = useState(false);
+
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+
   const router = useRouter();
 
   const knownNetworks = useSelector(selectKnownNetworks);
@@ -31,8 +34,16 @@ export default function AccountInHeader(): JSX.Element {
     void router.push('/');
   };
 
+  useEffect(() => {
+    if (knownNetworks && currentNetwork) {
+      setReady(true);
+    }
+  }, [knownNetworks, currentNetwork])
+  
+
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
+  if (!ready) return null;
   return (
     <div className='w-24 md:w-64 text-right'>
       <Menu as='div'
@@ -63,7 +74,8 @@ export default function AccountInHeader(): JSX.Element {
         >
           <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
             <div className='px-1 py-1 '>
-              {Object.values(userAccount).map((account, index) => (<AccountRow account={account}
+              {userAccount.map((account, index) => (<AccountRow accountIndex={index}
+                account={account}
                 key={index}
                 network={knownNetworks[currentNetwork]} />))}
               <Menu.Item >

@@ -13,36 +13,30 @@ import React, { useEffect, useState } from 'react';
 import tweetnacl from 'tweetnacl';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
-import { decompressParameters } from '@choko-wallet/core/util';
+import { decompressParameters, xxHash } from '@choko-wallet/core/util';
 import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
-import { hasUserAccountStored } from '@choko-wallet/sdk/store';
+import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
 import getWalletUrl from '@choko-wallet/sdk/walletUrl';
+import { encodeContractCall, encodeTransaction } from '@choko-wallet/abi';
 
 import Loading from './../components/Loading';
+import { InMemoryStorage } from '@choko-wallet/sdk/type';
+import { SignMessageType, SignTxType } from '@choko-wallet/core/types';
+import encodeAddr from '../utils/encodeAddr';
+import { ethers } from 'ethers';
 
 const walletUrl = getWalletUrl();
 const callbackUrl = `${walletUrl}/test-request`;
-
-const accountOption = new AccountOption({
-  hasEncryptedPrivateKeyExported: false,
-  keyType: 'sr25519',
-  localKeyEncryptionStrategy: 0
-});
-const sdkConfig = {
-  accountOption: accountOption,
-  activeNetworkHash: '847e7b7fa160d85f', // skyekiwi
-  callbackUrlBase: callbackUrl,
-  displayName: 'Choko Wallet Sample Dapp',
-  infoName: 'test',
-  version: 0
-};
 
 const TestRequest: NextPage = () => {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
+  const [sdkStorage, setSdkStorage] = useState<InMemoryStorage>({
+    dappDescriptor: '', userAccount: ''
+  });
   const [account, setAccount] = useState<UserAccount>(null);
   const [response, setResponse] = useState<Uint8Array>(new Uint8Array(0));
 
@@ -65,7 +59,14 @@ const TestRequest: NextPage = () => {
 
         console.log(resp);
 
-        alert(JSON.stringify(resp.payload));
+        // stringToU8a('Test Messaage')
+        const msg = `Use Etherscan To verify this: 
+          msg = 'Test Messaage',
+          address = ${encodeAddr(resp.dappOrigin.activeNetwork, resp.userOrigin)},
+          sig = 0x${u8aToHex(resp.payload.signature)}
+        `
+        console.log(msg)
+        alert(msg);
       } else if (router.query.responseType === 'decryptMessage') {
         const resp = DecryptMessageResponse.deserialize(response);
 
@@ -77,7 +78,8 @@ const TestRequest: NextPage = () => {
         const resp = ConnectDappResponse.deserialize(response);
 
         console.log(resp.payload.userAccount);
-        storeUserAccount(resp.payload.userAccount);
+        storeUserAccount(sdkStorage, resp.payload.userAccount);
+        persistStorage(sdkStorage);
         setAccount(resp.payload.userAccount);
       }
     }
@@ -88,36 +90,53 @@ const TestRequest: NextPage = () => {
       setResponse(decompressParameters(hexToU8a(router.query.response as string)));
     } else {
       try {
-        const a = getUserAccount();
+        const localStorageAccount = localStorage.getItem('userAccount');
+        const store: InMemoryStorage = {
+          dappDescriptor: localStorage.getItem('dappDescriptor'),
+          userAccount: localStorageAccount === 'null' ? null : localStorageAccount
+        };
 
+        const a = getUserAccount(store);
         if (a) setAccount(a);
       } catch (e) {
         console.error(e);
         // pass
+        // no account stored
       }
     }
   }, [router]);
 
   // configSDK and store in localStorage
   useEffect(() => {
-    configSDK(sdkConfig);
-
-    if (hasUserAccountStored()) {
-      const a = getUserAccount();
+    const store = configSDK({
+      accountOption: new AccountOption({
+        hasEncryptedPrivateKeyExported: false,
+        localKeyEncryptionStrategy: 0
+      }),
+      activeNetworkHash: u8aToHex( xxHash('goerli') ),
+      displayName: 'Choko Wallet Sample Dapp',
+      infoName: 'native-sample-dapp',
+      version: 0
+    });
+    if (store.userAccount && store.userAccount !== 'null') {
+      const a = getUserAccount(store);
 
       if (!loading) {
         const orignalMessage = stringToU8a('A Clear Text Message');
-        const encryptedMessage = AsymmetricEncryption.encryptWithCurveType('sr25519', orignalMessage, a.publicKey);
-
+        const encryptedMessage = AsymmetricEncryption.encryptWithCurveType(
+          'sr25519', 
+          orignalMessage, 
+          a.publicKeys[0]
+        );
         setEncryptedMessage(encryptedMessage);
       }
     }
-
     void (async () => {
       await cryptoWaitReady();
       setLoading(false);
     })();
 
+    setSdkStorage(store);
     setMounted(true);
   }, [loading]);
 
@@ -155,7 +174,7 @@ const TestRequest: NextPage = () => {
           <h1>Connect This Testing Page with an Address! </h1><br />
           <button className='btn m-2 btn-error'
             onClick={() => {
-              const x = buildConnectDappUrl();
+              const x = buildConnectDappUrl(sdkStorage, callbackUrl);
 
               window.location.href = x;
             }}>Connect Wallet</button>
@@ -163,11 +182,13 @@ const TestRequest: NextPage = () => {
           <div className='divider'></div>
 
           {
-            account && account.address !== '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' &&
+            account &&
             <>
               <h2 className='text-black'>Claim Some Faucet Token First ... </h2><br />
               <h3 className='text-black'
-                style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.address}</b></span></h3> <br />
+                style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.getAddress('sr25519')}</b></span></h3> <br />
+              <h3 className='text-black'
+                style={{ overflowWrap: 'break-word' }}><span>Ethereum Style Address of your account is: <b>{account.getAddress('ethereum')}</b></span></h3> <br />
               <h3 className='text-black'>Follow SkyeKiwi on their <a className='text-sky-400'
                 href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.</h3>
               <br />
@@ -180,19 +201,79 @@ const TestRequest: NextPage = () => {
                   const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
                   const api = await ApiPromise.create({ provider: provider });
                   const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
-                  // 这个位置发送 地址和value 
+
+                  const store = configSDK({
+                    accountOption: new AccountOption({
+                      hasEncryptedPrivateKeyExported: false,
+                      localKeyEncryptionStrategy: 0
+                    }),
+                    activeNetworkHash: u8aToHex( xxHash('skyekiwi') ),
+                    displayName: 'Choko Wallet Sample Dapp',
+                    infoName: 'native-sample-dapp',
+                    version: 0
+                  }, false);
+
                   const encoded = hexToU8a(tx.toHex().substring(2));
-                  const x = buildSignTxUrl(encoded);
-                  console.log('x', x)//少个？ 
+                  const x = buildSignTxUrl(
+                    store, 
+                    encoded, 
+                    SignTxType.Ordinary, 
+                    callbackUrl
+                  );
                   await provider.disconnect();
                   window.location.href = x;
                 }}>Sign Transaction</button><br />
 
               <div className='divider'></div>
+
+              <h2 className='text-black'>Sign A Transaction - On Goerli</h2><br />
+              <button className='btn m-5 btn-error'
+                onClick={async () => {
+                  const tx = {
+                    to: '0xAA1658296e2b770fB793eb8B36E856c8210A566F',
+                    value: ethers.utils.parseEther('0.1')
+                  }
+
+                  const x = buildSignTxUrl(
+                    sdkStorage, 
+                    hexToU8a(encodeTransaction(tx).slice(2)),
+                    SignTxType.Ordinary, 
+                    callbackUrl
+                  );
+                  window.location.href = x;
+                }}>Sign Transaction</button><br />
+
+              <h2 className='text-black'>Sign A Transaction - On Goerli / ERC20</h2><br />
+                <button className='btn m-5 btn-error'
+                  onClick={async () => {
+                    const tx = {
+                      to: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
+                      value: ethers.utils.parseEther('0'),
+                      data: encodeContractCall('erc20', 'transfer', [
+                        '0xAA1658296e2b770fB793eb8B36E856c8210A566F', 
+                        10000
+                      ])
+                    }
+
+                    const x = buildSignTxUrl(
+                      sdkStorage, 
+                      hexToU8a(encodeTransaction(tx).slice(2)),
+                      SignTxType.Ordinary, 
+                      callbackUrl
+                    );
+                    window.location.href = x;
+                  }}>Sign Transaction</button><br />
+
+              <div className='divider'></div>
               <h2 className='text-black'>Sign A Message</h2><br />
               <button className='btn m-5 btn-error'
                 onClick={() => {
-                  const x = buildSignMessageUrl(stringToU8a('Test Messaage'));
+                  const x = buildSignMessageUrl(
+                    sdkStorage, 
+                    stringToU8a('Test Messaage'), 
+                    SignMessageType.EthereumPersonalSign, 
+                    callbackUrl
+                  );
 
                   window.location.href = x;
                 }}>Sign Message</button><br />
@@ -203,13 +284,19 @@ const TestRequest: NextPage = () => {
 
               <h2>
                 Message - A Clear Text Message - encoded into {'0x' + u8aToHex(stringToU8a('A Clear Text Message'))} <br />
-                Send to {'0x' + u8aToHex(account.publicKey)} on sr25519 and address is {encodeAddress(account.publicKey)} <br />
+                Send to {'0x' + u8aToHex(account.publicKeys[0])} on sr25519 and address is {encodeAddress(account.publicKeys[0])} <br />
                 Encrypted Message is {encryptedMessage} <br />
                 Client Ephermeral Private Key is {'0x' + u8aToHex(clientPrivateKey)} and public key is {'0x' + u8aToHex(AsymmetricEncryption.getPublicKey(clientPrivateKey))}
               </h2>
               <button className='btn m-5 btn-error'
                 onClick={() => {
-                  const x = buildDecryptMessageUrl('sr25519', encryptedMessage, AsymmetricEncryption.getPublicKey(clientPrivateKey));
+                  const x = buildDecryptMessageUrl(
+                    sdkStorage,
+                    'sr25519', 
+                    encryptedMessage, 
+                    AsymmetricEncryption.getPublicKey(clientPrivateKey),
+                    callbackUrl
+                  );
 
                   window.location.href = x;
                 }}>Decrypt Message</button><br />

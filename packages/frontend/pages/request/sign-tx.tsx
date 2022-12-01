@@ -10,29 +10,27 @@ import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
+import { decodeTransaction, decodeContractCall } from '@choko-wallet/abi';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { endLoading, setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
-import { ethers } from 'ethers';
-import Keyring from '@polkadot/keyring';
 
 // http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 import Loading from '../../components/Loading';
-import { AccountOption, UserAccount } from '@choko-wallet/core';
-import { ethSendTx } from '@choko-wallet/frontend/utils/ethSendTx';
-import { toastFail, toastSuccess } from '@choko-wallet/frontend/utils/toast';
-import { decodeContractCall } from '@choko-wallet/abi';
+import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import { ethers } from 'ethers';
 
 function SignTxHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const userAccount = useSelector(selectUserAccount);
+
   const [password, setPassword] = useState('');
   const [mounted, setMounted] = useState<boolean>(false);
   const [sendLoading, setSendLoading] = useState<boolean>(false);
@@ -45,10 +43,6 @@ function SignTxHandler(): JSX.Element {
   const [request, setRequest] = useState<SignTxRequest>(null);
   const [callback, setCallback] = useState<string>('');
 
-  const ERC20TokenABI = '[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"transferAndCall","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"data","type":"bytes"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]'
-
-
-
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
@@ -56,128 +50,130 @@ function SignTxHandler(): JSX.Element {
     const callbackUrl = router.query.callbackUrl as string;
     const request = SignTxRequest.deserialize(u8aRequest);
 
-    console.log('first', request.dappOrigin.infoName)
-
     dispatch(loadUserAccount());
-    dispatch(switchUserAccount(request.userOrigin.address));
-
-    void (async () => {
-
-      if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {
-        const provider = new WsProvider(request.dappOrigin.activeNetwork.defaultProvider);
-        const api = await ApiPromise.create({ provider: provider });
-        const tx = api.tx(request.payload.encoded).toHuman();
-
-
-        /* eslint-disable */
-        // @ts-ignore
-        // setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
-        const value = Number(tx.method.args.value.toString().replaceAll(",", '')) / Math.pow(10, request.dappOrigin.activeNetwork.nativeTokenDecimal)
-
-        // console.log('tx', Number(tx.method.args.value.toString().replaceAll(",", '')))
-        // @ts-ignore
-        setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `);
-
-        /* eslint-enable */
-
-        setDecodingTx(false);
-      } else {
-
-        const requestPayloadHex = u8aToHex(request.payload.encoded);
-        const serializedTx = `0x${requestPayloadHex}`
-        const tx = ethers.utils.parseTransaction(serializedTx)
-
-        console.log('tx', tx)
-        if (tx.data === '0x') {//发送native
-          const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
-
-          setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.to} `);
-
-        } else {//发送erc20
-          const result = decodeContractCall(
-            'erc20',
-            // 'transfer',
-            tx,
-            ERC20TokenABI
-          )
-          console.log("result: ", result);
-          const value = ethers.utils.formatEther(ethers.BigNumber.from(result.args._value))
-          console.log("value: ", value);
-          console.log("result._to: ", result.args._to);
-          setDecodedTx(`Send ${value} ${request.dappOrigin.infoName} to ${result.args._to} `);
-        }
-
-        setDecodingTx(false);
-      }
-    })();
-
     setCallback(callbackUrl);
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
 
+  // set the account right
+  useEffect(() => {
+    if (userAccount.length === 0) return;
+    if (!request) return;
+
+    let accountIndex = 0;
+    const accountLength = userAccount.length;
+    const target = encodeAddr( request.dappOrigin.activeNetwork, request.userOrigin );
+
+    for (let i = 0; i < accountLength; ++ i) {
+      if ( target === encodeAddr(request.dappOrigin.activeNetwork, userAccount[i])) {
+        accountIndex = i;
+        break;
+      }
+    }
+    dispatch(switchUserAccount(accountIndex));
+
+    void (async () => {
+      if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {
+        const provider = new WsProvider(request.dappOrigin.activeNetwork.defaultProvider);
+        const api = await ApiPromise.create({ provider: provider });
+        const tx = api.tx(request.payload.encoded).toHuman();
+
+        /* eslint-disable */
+        // @ts-ignore
+        // setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
+        const value = Number(tx.method.args.value.toString().replaceAll(",", '')) / Math.pow(10, request.dappOrigin.activeNetwork.nativeTokenDecimal)
+        // @ts-ignore
+        setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `);
+        // @ts-ignore
+        console.log(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `)
+        /* eslint-enable */
+
+        setDecodingTx(false);
+      } else {
+
+        const encodedTx = `0x${u8aToHex(request.payload.encoded)}`;
+        const tx = decodeTransaction(encodedTx);
+
+        if (tx.data === '0x') {
+          const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex))
+          setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.to} `);
+        } else {
+          const result = decodeContractCall( 'erc20', tx )
+          const value = ethers.utils.formatEther(ethers.BigNumber.from(result.args._value))
+          setDecodedTx(`Send ${value} ${request.dappOrigin.infoName} to ${result.args._to} `);
+        }
+
+        setDecodingTx(false);
+      }
+
+      dispatch(endLoading())
+    })();
+
+    setMounted(true);
+  }, [request]);
+
   useEffect(() => {
     if (request) setMounted(true);
   }, [request]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       try {
         dispatch(decryptCurrentUserAccount(password));
-
-        setSendLoading(true);
-        const notification = toast.loading("Send Transaction...", {
+        toast('Password Correct, Redirecting...', {
+          duration: 5000,
+          icon: '👏',
           style: {
-            background: "white",
-            color: "green",
-            fontWeight: "bolder",
-            fontFamily: "Poppins",
-            fontSize: "17px",
-            padding: "20px",
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
           }
-        })
-
+        });
 
         if (currentUserAccount && !currentUserAccount.isLocked) {
           setPassword('');
           dispatch(setClose('signTxPasswordModal'));
 
           void (async () => {
+            const signTx = new SignTxDescriptor();
 
             try {
-              let response;
-
-              if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {//polkadot
-                const signTx = new SignTxDescriptor();
-                response = await signTx.requestHandler(request, currentUserAccount);
-
-              } else {//eth
-                response = await ethSendTx(request, currentUserAccount);
-              }
-
-              console.log('response', u8aToHex(response.payload.txHash))
+              const response = await signTx.requestHandler(request, currentUserAccount);
               const s = response.serialize();
 
-              toast.dismiss(notification);
-              toastSuccess("Successfully Send, redirecting..");
-              setSendLoading(false);
               dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-
             } catch (err) {
-              setSendLoading(false);
               console.log('err', err);
-              toast.dismiss(notification);
-              toastFail('Someting Wrong');
+              toast('Something Wrong', {
+                style: {
+                  background: 'red',
+                  color: 'white',
+                  fontFamily: 'Poppins',
+                  fontSize: '16px',
+                  fontWeight: 'bolder',
+                  padding: '20px'
+                }
+              });
             }
           })();
         }
       } catch (e) {
-        setSendLoading(false);
-        toastFail('Wrong Password!');
+        toast('Wrong Password!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
       }
-
-
     }
   }
 
@@ -217,8 +213,10 @@ function SignTxHandler(): JSX.Element {
               Your Orign:
             </div>
             <div className='col-span-12'>
-              <code className='underline'
-                style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
+              <code className='underline text-clip'
+                style={{ overflowWrap: 'break-word' }}>{
+                  encodeAddr(request.dappOrigin.activeNetwork, currentUserAccount)
+                }</code>
             </div>
 
             <div className='col-span-12'>
@@ -286,11 +284,7 @@ function SignTxHandler(): JSX.Element {
         </button>
       </div> */}
 
-      <Modal
-        modalName='signTxPasswordModal'
-      // closeModal={closeModal}
-      //   isOpen={openPasswordModal}
-      >
+      <Modal modalName='signTxPasswordModal'>
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
             as='h3'
