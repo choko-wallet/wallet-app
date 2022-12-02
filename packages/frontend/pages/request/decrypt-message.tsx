@@ -16,7 +16,7 @@ import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/front
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 /**
  * Handler for DecryptMesasgeRequest

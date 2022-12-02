@@ -37,15 +37,17 @@ function CreateWallet(): JSX.Element {
     setSeeds(mnemonic);
     setSeedsStringForCopy(mnemonic);
   };
+  // love cover fruit amateur only disorder exhibit injury resist jeans dinner that
 
   const handleSetPassword = () => {
     dispatch(addUserAccount({ password: password, seeds: seeds }));
-
-    if (redirectRequest) {
-      void router.push('/request?' + redirectRequest);
-    } else {
-      void router.push('/home');
-    }
+    setTimeout(() => {
+      if (redirectRequest) {
+        void router.push('/request?' + redirectRequest);
+      } else {
+        void router.push('/home');
+      }
+    }, 3000);
   };
 
   useEffect(() => {

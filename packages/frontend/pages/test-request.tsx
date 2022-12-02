@@ -17,14 +17,14 @@ import { decompressParameters, xxHash } from '@choko-wallet/core/util';
 import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, getUserAccount, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
-import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
+import { persistStorage } from '@choko-wallet/sdk/store';
 import getWalletUrl from '@choko-wallet/sdk/walletUrl';
 import { encodeContractCall, encodeTransaction } from '@choko-wallet/abi';
 
 import Loading from './../components/Loading';
 import { InMemoryStorage } from '@choko-wallet/sdk/type';
 import { SignMessageType, SignTxType } from '@choko-wallet/core/types';
-import encodeAddr from '../utils/encodeAddr';
+import encodeAddr from '../utils/aaUtils';
 import { ethers } from 'ethers';
 
 const walletUrl = getWalletUrl();

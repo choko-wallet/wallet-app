@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '../../features/redux/selectors';
 import { removeAllAccounts } from '../../features/slices/user';
-import encodeAddr from '../../utils/encodeAddr';
+import encodeAddr from '../../utils/aaUtils';
 import AccountRow from './AccountRow';
 
 /**

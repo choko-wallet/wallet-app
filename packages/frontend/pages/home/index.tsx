@@ -15,19 +15,21 @@ import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTo
 import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
 import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebar';
 import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
 
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading } from '../../features/redux/selectors';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadAllNetworks } from '../../features/slices/network';
 import { endLoading, startLoading } from '../../features/slices/status';
-import { loadUserAccount } from '../../features/slices/user';
+import { loadUserAccount, noteAAWalletAddress } from '../../features/slices/user';
 import { ethFetchBalance } from '../../utils/ethFetchBalance';
 import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail } from '../../utils/toast';
+import { getSmartWalletAddress } from '@choko-wallet/account-abstraction';
+import { chainIdToProvider, UserAccount } from '@choko-wallet/core';
 
 /**
  * Main dashboard
@@ -39,6 +41,7 @@ export default function Home(): JSX.Element {
   const { setTheme, theme } = useTheme();
   const router = useRouter();
 
+  const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const currentNetwork = useSelector(selectCurrentNetwork);
   const knownNetworks = useSelector(selectKnownNetworks);
@@ -100,6 +103,17 @@ export default function Home(): JSX.Element {
           break;
         case 'ethereum':
           try {
+
+            const aaAddress = [];
+            const userAccountLength = userAccount.length;
+            for (let i = 0; i < userAccountLength; ++ i) {
+              aaAddress[i] = await getSmartWalletAddress(
+                chainIdToProvider[network.chainId], userAccount[i].getAddress('ethereum')
+              );
+            }
+
+            dispatch( noteAAWalletAddress(aaAddress) );
+
             const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
             // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
             // const res = await ethFetchBalance(network, '0xAA1658296e2b770fB793eb8B36E856c8210A566F');//goerli mumbai

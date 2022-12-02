@@ -16,7 +16,7 @@ import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/front
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 // http://localhost:3000/request/connect-dapp?requestType=connectDapp&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf124d809006db70e53&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 

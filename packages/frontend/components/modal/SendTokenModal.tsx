@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 import { ethEncodeTxToUrl } from '@choko-wallet/frontend/utils/ethSendTx';
 import { Dialog } from '@headlessui/react';
 import { CameraIcon, CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';

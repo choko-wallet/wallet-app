@@ -81,6 +81,13 @@ export const userSlice = createSlice({
   initialState,
   name: 'user',
   reducers: {
+    noteAAWalletAddress: (state, action: PayloadAction<string[]>) => {
+      const userAccountLength = action.payload.length;
+      for (let i = 0; i < userAccountLength; i ++) {
+        state.userAccount[i].aaWalletAddress = action.payload[i];
+      }
+      state.currentUserAccount.aaWalletAddress = action.payload[state.currentUserAccountIndex];
+    },
     loadUserAccount: (state) => {
       try {
         const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
@@ -107,7 +114,6 @@ export const userSlice = createSlice({
         state.userAccount = [];
       }
     },
-
     // Use with caution! Always lock the account when done.
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
       state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
@@ -138,6 +144,7 @@ export const userSlice = createSlice({
       .addCase(addUserAccount.fulfilled, (state, action) => {
         const userAccount = action.payload;
 
+        console.log(userAccount);
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
 
         if (maybeCurrentSerializedAccount) {
@@ -165,5 +172,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
+export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount, noteAAWalletAddress } = userSlice.actions;
 export default userSlice.reducer;

@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { setClose } from '../../features/slices/status';

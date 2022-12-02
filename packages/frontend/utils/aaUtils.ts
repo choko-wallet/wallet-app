@@ -3,16 +3,20 @@
 
 import { encodeAddress } from '@polkadot/util-crypto';
 
-import { Network, UserAccount } from '@choko-wallet/core';
+import { chainIdToProvider, INetwork, Network, UserAccount } from '@choko-wallet/core';
+import { biconomyFixtures, callDataDeployWallet, sendBiconomyTxPayload } from '@choko-wallet/account-abstraction';
+import { sleep } from '@skyekiwi/util';
 
 const encodeAddr = (network: Network, account: UserAccount): string => {
+  console.log(account);
   if (network.networkType === 'polkadot') {
     return encodeAddress(account.publicKeys[0],
       network.ss58Prefix === undefined ? 42 : network.ss58Prefix);
   } else {
-    return account.getAddress('ethereum');
+    return account.aaWalletAddress;
   }
 };
+
 
 // const encodeAddr = async(network: Network, account: UserAccount): Promise<string> => {
 //   if (network.networkType === 'polkadot') {
@@ -28,4 +32,6 @@ const encodeAddr = (network: Network, account: UserAccount): string => {
 //     return ethereumEncode(account.publicKeys[2]);
 //   }
 // }
+// export { encodeAddr, deployAAContracct };
+
 export default encodeAddr;

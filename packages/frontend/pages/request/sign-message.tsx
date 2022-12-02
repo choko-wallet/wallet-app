@@ -17,7 +17,7 @@ import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 function SignMessageHandler (): JSX.Element {
   const router = useRouter();
