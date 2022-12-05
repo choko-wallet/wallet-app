@@ -25,7 +25,7 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function Root({ Component, pageProps }: AppProps): JSX.Element {
+function Root ({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <Provider store={store}>
       <Head>
@@ -40,8 +40,10 @@ function Root({ Component, pageProps }: AppProps): JSX.Element {
           rel='stylesheet' />
         <link href='https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap'
           rel='stylesheet' />
-        <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+        <link href='https://fonts.googleapis.com/css2?family=Rubik&display=swap'
+          rel='stylesheet' />
+        <link href='https://fonts.googleapis.com/css2?family=VT323&display=swap'
+          rel='stylesheet' />
       </Head>
       <ThemeProvider>
         <Component {...pageProps} />

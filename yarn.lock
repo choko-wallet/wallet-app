@@ -1467,42 +1467,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/abi@npm:0.1.8-16":
-  version: 0.1.8-16
-  resolution: "@choko-wallet/abi@npm:0.1.8-16"
+"@choko-wallet/abi@npm:0.1.8-18":
+  version: 0.1.8-18
+  resolution: "@choko-wallet/abi@npm:0.1.8-18"
   dependencies:
-    "@choko-wallet/core": 0.1.8-16
+    "@choko-wallet/core": 0.1.8-18
     ethers: ^5.7.2
-  checksum: 80b5b6b17739cbe31a3af3dc44a40895a982f506fe5427b77923c03c66fc0df8c7b33acfa6384cf6e48f5f7c2cee0615053083dd20dbf6b1a6cc59aa0ee76878
+  checksum: 11b91f3281aa265d93c279f7235a517324ccfdb4658633e884715c4519da543fac0459f4090bfbd888177ac21d936ab96dda5dfe713586eafc4a9b91622abcd6
   languageName: node
   linkType: hard
 
-"@choko-wallet/account-abstraction@npm:0.1.8-16":
-  version: 0.1.8-16
-  resolution: "@choko-wallet/account-abstraction@npm:0.1.8-16"
+"@choko-wallet/account-abstraction@npm:0.1.8-18":
+  version: 0.1.8-18
+  resolution: "@choko-wallet/account-abstraction@npm:0.1.8-18"
   dependencies:
-    "@choko-wallet/core": 0.1.8-16
+    "@choko-wallet/core": 0.1.8-18
     "@skyekiwi/util": ^1.0.1
     ethers: ^5.7.2
     isomorphic-ws: ^5.0.0
     messaging-sdk: ^0.0.3
     superagent: ^8.0.4
-  checksum: 6aca789e03b672726c8ce6cb12f9c6fe3d4fe578719b3ef1bb65059e265fecc4b8ddd7aa655f06c62c049712f9e25336b890db68b0decb54d4593480eec5c7af
+  checksum: cb26435b4c5b9f4d10882e8c7490523a67e7434d5220c26a31123f8a5406ae4e0ead5163aa65fc7d31165740117ef9e09f9f250833fcafa0579bd27b1f16f21f
   languageName: node
   linkType: hard
 
-"@choko-wallet/core@npm:0.1.8-16":
-  version: 0.1.8-16
-  resolution: "@choko-wallet/core@npm:0.1.8-16"
+"@choko-wallet/core@npm:0.1.8-18":
+  version: 0.1.8-18
+  resolution: "@choko-wallet/core@npm:0.1.8-18"
   dependencies:
-    "@choko-wallet/account-abstraction": 0.1.8-16
-    "@choko-wallet/known-networks": 0.1.8-16
+    "@choko-wallet/account-abstraction": 0.1.8-18
+    "@choko-wallet/known-networks": 0.1.8-18
     "@polkadot/util-crypto": ^10.1.11
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
     ethers: ^5.7.2
     pako: ^2.0.4
-  checksum: 4a8029f7304c1be90a8d9772dcb41f66f8b01cbb34e0bb4d342eeed420ea6f6f6785ad0e0d407034ecd915d42aa60ed90c14238335d453d2dcb12ba86c0a0157
+  checksum: 8c55948fcf51d51ee0c8ff5850380821f5cb8ec97a370f07bbfbd444988023044e0e025adab82f0a1da2bcbe6eb65044a0d09b4fdfd3d4cf01dcaeff4bd92564
   languageName: node
   linkType: hard
 
@@ -1511,11 +1511,11 @@ __metadata:
   resolution: "@choko-wallet/frontend@workspace:packages/frontend"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
-    "@choko-wallet/account-abstraction": 0.1.8-16
-    "@choko-wallet/core": 0.1.8-16
-    "@choko-wallet/known-networks": 0.1.8-16
-    "@choko-wallet/request-handler": 0.1.8-16
-    "@choko-wallet/sdk": 0.1.8-16
+    "@choko-wallet/account-abstraction": 0.1.8-18
+    "@choko-wallet/core": 0.1.8-18
+    "@choko-wallet/known-networks": 0.1.8-18
+    "@choko-wallet/request-handler": 0.1.8-18
+    "@choko-wallet/sdk": 0.1.8-18
     "@headlessui/react": ^1.6.6
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^8.13.1
@@ -1554,38 +1554,38 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/known-networks@npm:0.1.8-16":
-  version: 0.1.8-16
-  resolution: "@choko-wallet/known-networks@npm:0.1.8-16"
+"@choko-wallet/known-networks@npm:0.1.8-18":
+  version: 0.1.8-18
+  resolution: "@choko-wallet/known-networks@npm:0.1.8-18"
   dependencies:
-    "@choko-wallet/core": 0.1.8-16
+    "@choko-wallet/core": 0.1.8-18
     "@skyekiwi/util": 1.0.2-5
-  checksum: 7074a16b005b60ad164972a83e22e928ff90f4f7e05c3efffd983f55332117d3362150b11d8a7d7d1be5bfa9993c589c442f071932d2df9390c477b43b7ba780
+  checksum: b4fdb3526bb5365b06c35a237a414c13bbc6118d16137b33fdcf2021796eb9b5c33958622beca1b28f53f71ae3950266bd33da42f363317ce2a0f2b9ef9b26c2
   languageName: node
   linkType: hard
 
-"@choko-wallet/request-handler@npm:0.1.8-16":
-  version: 0.1.8-16
-  resolution: "@choko-wallet/request-handler@npm:0.1.8-16"
+"@choko-wallet/request-handler@npm:0.1.8-18":
+  version: 0.1.8-18
+  resolution: "@choko-wallet/request-handler@npm:0.1.8-18"
   dependencies:
-    "@choko-wallet/abi": 0.1.8-16
-    "@choko-wallet/account-abstraction": 0.1.8-16
-    "@choko-wallet/core": 0.1.8-16
+    "@choko-wallet/abi": 0.1.8-18
+    "@choko-wallet/account-abstraction": 0.1.8-18
+    "@choko-wallet/core": 0.1.8-18
     "@polkadot/keyring": ^10.1.11
     "@polkadot/util-crypto": ^10.1.11
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
     ethers: ^5.7.2
-  checksum: 7cb7acf784f94febb69f581f2e417ce43af5827179dc1fcd73f5e4513c96aebd11b18d9a331a47a32afb35d6de3976f2100832b582967e2a4bc54ec21ff0e07d
+  checksum: d4cb3b8ef7a8ae96725c7066ee0ce4b04eac71941eb2f6bd698037419101a48d510a5536cd78f2b6449eb2d8f446ef5248bdf9ca31ad244dede38a0e2779151e
   languageName: node
   linkType: hard
 
-"@choko-wallet/sdk@npm:0.1.8-16":
-  version: 0.1.8-16
-  resolution: "@choko-wallet/sdk@npm:0.1.8-16"
+"@choko-wallet/sdk@npm:0.1.8-18":
+  version: 0.1.8-18
+  resolution: "@choko-wallet/sdk@npm:0.1.8-18"
   dependencies:
-    "@choko-wallet/core": 0.1.8-16
-  checksum: 9619bb01c5bb8f474317bb822dfe6c7c231a46068fa28fe813c287524d1929580a8659314879f4547df0f1af8c69b97324396e557a8d12764a70b690b54aada6
+    "@choko-wallet/core": 0.1.8-18
+  checksum: 4092a141faaf59ba4004b3f48dd3417b2b504d12959982e55d42068bfb04858eab683bcdee3d51f31b8344faa985be397f0661a5972f29323b1db120d56f00d0
   languageName: node
   linkType: hard
 

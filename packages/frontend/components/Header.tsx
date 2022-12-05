@@ -1,17 +1,16 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {
-  BellIcon, CogIcon,
+import { BellIcon, CogIcon,
   MenuIcon,
-  MoonIcon, SunIcon
-} from '@heroicons/react/outline';
+  MoonIcon, SunIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { toggle } from '../features/slices/status';
 import { removeAllAccounts } from '../features/slices/user';
 import icon1 from '../images/icon1.png';
 import logo from '../images/logo.png';
@@ -20,7 +19,7 @@ import logout from '../images/logout.png';
 import logout2 from '../images/logout2.png';
 import AccountInHeader from './account/AccountInHeader';
 
-function Header(): JSX.Element {
+function Header (): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -76,7 +75,7 @@ function Header(): JSX.Element {
             </div>
 
             <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              onClick={() => router.push('/settings')}
+              onClick={() => dispatch(toggle('settingsExportUrl'))}
             >
 
               <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />

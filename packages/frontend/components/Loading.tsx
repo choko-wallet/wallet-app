@@ -12,7 +12,7 @@ interface Props {
   title?: string
 }
 
-function Loading({ title }: Props): JSX.Element {
+function Loading ({ title }: Props): JSX.Element {
   const loading = useSelector(selectLoading);
 
   return (

@@ -12,7 +12,7 @@ import { toggle } from '@choko-wallet/frontend/features/slices/status';
  * wrapper of the NetworkSelection list for widescreen devices
  */
 
-export default function NetworkSidebar(): JSX.Element {
+export default function NetworkSidebar (): JSX.Element {
   const dispatch = useDispatch();
 
   return (
@@ -24,7 +24,6 @@ export default function NetworkSidebar(): JSX.Element {
         <p className='ml-1  text-white text-base font-bold font-poppins '>NETWORK</p>
         <ChevronRightIcon className=' text-white h-6 w-6 ml-6' />
       </button>
-
 
       <div className='hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f]  md:h-full mr-10' >
         <p className='ml-1 hidden md:block text-gray-800 dark:text-white text-md font-semibold font-poppins '>NETWORK</p>

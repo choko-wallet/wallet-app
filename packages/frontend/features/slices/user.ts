@@ -40,7 +40,9 @@ export const addUserAccount = createAsyncThunk(
           localKeyEncryptionStrategy: 1
         });
       }
+
       const userAccount = new UserAccount(accountOption);
+
       userAccount.unlock(seeds);
       await userAccount.init();
       userAccount.encryptUserAccount(blake2AsU8a(password));
@@ -73,7 +75,7 @@ interface UserSliceItem {
 const initialState: UserSliceItem = {
   currentUserAccount: null,
   currentUserAccountIndex: 0,
-  userAccount: [],
+  userAccount: []
 };
 
 /* eslint-disable sort-keys */
@@ -83,16 +85,23 @@ export const userSlice = createSlice({
   reducers: {
     noteAAWalletAddress: (state, action: PayloadAction<string[]>) => {
       const userAccountLength = action.payload.length;
-      for (let i = 0; i < userAccountLength; i ++) {
+
+      for (let i = 0; i < userAccountLength; i++) {
         state.userAccount[i].aaWalletAddress = action.payload[i];
       }
+
       state.currentUserAccount.aaWalletAddress = action.payload[state.currentUserAccountIndex];
     },
     loadUserAccount: (state) => {
       try {
         const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
+        const aaWalletCache = localStorage.getItem('AAWalletCache');
 
-        let offset = 0;
+        if (!aaWalletCache || aaWalletCache.length === 0) {
+          throw new Error('cache non-exist or corrupted');
+        }
+
+        let offset = 0; let aaOffset = 0;
         let accountIndex = 0;
         const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
 
@@ -101,14 +110,19 @@ export const userSlice = createSlice({
 
           offset += serializedLength;
           const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
-          state.userAccount[accountIndex] = account
-          accountIndex ++;
+
+          state.userAccount[accountIndex] = account;
+          state.userAccount[accountIndex].aaWalletAddress = aaWalletCache.slice(aaOffset, aaOffset + 42);
+          aaOffset += 42;
+          accountIndex++;
         }
+
         state.currentUserAccount = state.userAccount[0];
         state.currentUserAccountIndex = 0;
       } catch (e) {
         console.log('error', e);
         localStorage.removeItem('serialziedUserAccount');
+        localStorage.removeItem('AAWalletCache');
         state.currentUserAccount = null;
         state.currentUserAccountIndex = 0;
         state.userAccount = [];
@@ -118,22 +132,20 @@ export const userSlice = createSlice({
     decryptCurrentUserAccount: (state, action: PayloadAction<string>) => {
       state.currentUserAccount.decryptUserAccount(blake2AsU8a(action.payload));
     },
-
     lockCurrentUserAccount: (state) => {
       if (state.currentUserAccount) {
         state.currentUserAccount.lock();
       }
     },
-
     switchUserAccount: (state, action: PayloadAction<number>) => {
       if (state.userAccount[action.payload] !== undefined) {
         state.currentUserAccount = state.userAccount[action.payload];
         state.currentUserAccountIndex = action.payload;
       }
     },
-
     removeAllAccounts: (state) => {
       localStorage.removeItem('serialziedUserAccount');
+      localStorage.removeItem('AAWalletCache');
 
       state.currentUserAccount = null;
       state.userAccount = [];
@@ -144,7 +156,6 @@ export const userSlice = createSlice({
       .addCase(addUserAccount.fulfilled, (state, action) => {
         const userAccount = action.payload;
 
-        console.log(userAccount);
         const maybeCurrentSerializedAccount = localStorage.getItem('serialziedUserAccount');
 
         if (maybeCurrentSerializedAccount) {
@@ -157,9 +168,9 @@ export const userSlice = createSlice({
 
             offset += len;
 
-            // Here we only care about the first publicKey 
+            // Here we only care about the first publicKey
             // might need to be changed later
-            if (account.publicKeys[0] === userAccount.publicKeys[0]) {
+            if (account.getAddress('ethereum') === userAccount.getAddress('ethereum')) {
               throw new Error('User Account Already Exists');
             }
           }
@@ -168,9 +179,21 @@ export const userSlice = createSlice({
         const localStorageContent = maybeCurrentSerializedAccount || '';
 
         localStorage.setItem('serialziedUserAccount', localStorageContent + u8aToHex(userAccount.serializeWithEncryptedKey()));
+
+        // store the AA cache
+        let aaWalletCache = localStorage.getItem('AAWalletCache');
+
+        if (!aaWalletCache || aaWalletCache.length === 0) {
+          // first account
+          aaWalletCache = '';
+        }
+
+        aaWalletCache = aaWalletCache + userAccount.aaWalletAddress;
+
+        localStorage.setItem('AAWalletCache', aaWalletCache);
       });
   }
 });
 
-export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, removeAllAccounts, switchUserAccount, noteAAWalletAddress } = userSlice.actions;
+export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, removeAllAccounts, switchUserAccount } = userSlice.actions;
 export default userSlice.reducer;

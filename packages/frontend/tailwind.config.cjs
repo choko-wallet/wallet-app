@@ -29,8 +29,6 @@ module.exports = {
         rubik: ['Rubik', 'sans-serif'],
         vt323: ['VT323', 'sans-serif']
 
-
-
       },
       height: {
         '70v': '70vh',

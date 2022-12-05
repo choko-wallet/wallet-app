@@ -15,7 +15,7 @@ const notShitcoinFilter = (metadata: TokenMetadataResponse): boolean => {
     metadata.symbol.indexOf('.') === -1;
 };
 
-const getAlchemy = (network: Network): Alchemy => {
+export const getAlchemy = (network: Network): Alchemy => {
   let config = {};
 
   switch (network.info) {
@@ -186,7 +186,7 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
   result.native = {
     balance: nativeBalance,
     img: getTokenImage(network),
-    decimals: decimals,//eth polygon 18 
+    decimals: decimals, // eth polygon 18
     name: name,
     symbol: network.nativeTokenSymbol,
     priceInUSD: nativePrice,

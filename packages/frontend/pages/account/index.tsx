@@ -5,7 +5,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-function AccountRouter(): JSX.Element {
+function AccountRouter (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -33,7 +33,7 @@ function AccountRouter(): JSX.Element {
 
           <button className='w-40 md:w-48 h-12 md:h-16 font-bold text-[#F5CBD5] transition duration-150
                 bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '
-            onClick={() => router.push('account/create')}>
+          onClick={() => router.push('account/create')}>
             <p>Create New </p>
             <p>Mnemonic Seed</p>
 
@@ -41,7 +41,7 @@ function AccountRouter(): JSX.Element {
 
           <button className='w-40 md:w-48 h-12 md:h-16 text-white transition duration-150
                 bg-[#88BADA] rounded-md hover:shadow-sm active:scale-95 '
-            onClick={() => router.push('account/import')}>
+          onClick={() => router.push('account/import')}>
             Import Mnemonic
           </button>
 

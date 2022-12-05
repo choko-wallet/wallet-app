@@ -15,7 +15,7 @@ import { addUserAccount } from '../../features/slices/user';
 /**
  * Guide user to create an account with seed phrase
  */
-function CreateWallet(): JSX.Element {
+function CreateWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -46,7 +46,7 @@ function CreateWallet(): JSX.Element {
         void router.push('/request?' + redirectRequest);
       } else {
         void router.push('/home');
-      }
+      } // venture brass dune glare join business spice various armed front clay types
     }, 3000);
   };
 
@@ -82,7 +82,6 @@ function CreateWallet(): JSX.Element {
 
       <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
         <ProgressBar
-          height='13px'
           baseBgColor='#AFAFAF'
           bgColor='#4075A9'
           className='w-full '
@@ -91,6 +90,7 @@ function CreateWallet(): JSX.Element {
             : step === 2
               ? 50
               : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 80 : 80}
+          height='13px'
         />
 
         <div className='w-full max-w-2xl justify-between mt-2 flex md:mb-10'>
@@ -118,7 +118,7 @@ function CreateWallet(): JSX.Element {
               <div className='flex space-x-5 items-center pt-1 pb-8'>
                 <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
-                  onClick={refreshMnemonic}>
+                onClick={refreshMnemonic}>
                   <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
                   <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
                 </button>
@@ -246,8 +246,8 @@ function CreateWallet(): JSX.Element {
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                disabled={(!password || !repeatPassword || password !== repeatPassword)}
-                onClick={() => handleSetPassword()}
+              disabled={(!password || !repeatPassword || password !== repeatPassword)}
+              onClick={() => handleSetPassword()}
               >
 
                 <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />

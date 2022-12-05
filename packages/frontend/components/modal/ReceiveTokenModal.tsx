@@ -7,13 +7,14 @@ import { useTheme } from 'next-themes';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
+import { useSelector } from 'react-redux';
+
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks } from '@choko-wallet/frontend/features/redux/selectors';
 import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';
-import { useSelector } from 'react-redux';
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks } from '@choko-wallet/frontend/features/redux/selectors';
 
 /**
  * The dropdown to receive crypto and display a QR code

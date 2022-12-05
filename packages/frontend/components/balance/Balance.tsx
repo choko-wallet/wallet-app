@@ -5,9 +5,9 @@ import type { BalanceInfo } from '../../utils/types';
 
 import { Switch } from '@headlessui/react';
 import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRef } from 'react';
+
 import { selectCurrentNetwork, selectKnownNetworks } from '../../features/redux/selectors';
 import { setOpen } from '../../features/slices/status';
 import Button from '../Button';
@@ -21,8 +21,9 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance({ balance }: Props): JSX.Element {
+function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
+  const ref = useRef(null);
 
   const knownNetworks = useSelector(selectKnownNetworks);
   const currentNetwork = useSelector(selectCurrentNetwork);
@@ -30,7 +31,6 @@ function Balance({ balance }: Props): JSX.Element {
   const [balanceTotal, setBalanceTotal] = useState<string>('0');
   const [showDust, setShowDust] = useState<boolean>(true);
   const [searchInput, setSearchInput] = useState<string>('');
-  const ref = useRef(null);
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false);
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
 
@@ -64,7 +64,12 @@ function Balance({ balance }: Props): JSX.Element {
 
   const handleClick = () => {
     setSearchInputOpen(true);
-    ref.current.focus();
+
+    // TODO: what's this for?
+    /* eslint-disable */
+    // @ts-ignore
+    // ref.current.focus();
+    /* eslint-enable */
   };
 
   return (
@@ -103,10 +108,8 @@ function Balance({ balance }: Props): JSX.Element {
         <div className='flex items-center justify-start xl:w-72' >
           <p className='text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>
           {searchInputOpen
-            ?
-            null
-            :
-            <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
+            ? null
+            : <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
               onClick={() => handleClick()} />
           }
 
@@ -115,14 +118,14 @@ function Balance({ balance }: Props): JSX.Element {
           <div className={`hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5] ${searchInputOpen ? 'opacity-100' : 'opacity-0'}`}>
             <input
               className=' pl-5 text-xs text-gray-600 placeholder-gray-400 bg-transparent outline-none '
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder='Search token'
-              type='text'
-              ref={ref}
               onBlur={() => {
                 setSearchInputOpen(false);
-                setSearchInput('')
+                setSearchInput('');
               }}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder='Search token'
+              ref={ref}
+              type='text'
               value={searchInput} />
 
           </div>
@@ -158,17 +161,16 @@ function Balance({ balance }: Props): JSX.Element {
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
 
         {searchInputOpen
-          ?
-          <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>
+          ? <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>
             <input
               className=' pl-5 text-xs text-gray-600 placeholder-gray-400 bg-transparent outline-none '
+              onBlur={() => {
+                setSearchInputOpen(false);
+                setSearchInput('');
+              }}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder='Search token'
               type='text'
-              onBlur={() => {
-                setSearchInputOpen(false);
-                setSearchInput('')
-              }}
               value={searchInput} />
 
           </div>

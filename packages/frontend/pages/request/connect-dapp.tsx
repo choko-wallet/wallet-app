@@ -14,9 +14,9 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 import Modal from '@choko-wallet/frontend/components/Modal';
 import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
 import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request-handler';
-import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 // http://localhost:3000/request/connect-dapp?requestType=connectDapp&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf124d809006db70e53&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 
@@ -49,23 +49,42 @@ function ConnectDappHandler (): JSX.Element {
       localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
       void router.push('/account');
     } else {
-      dispatch(loadUserAccount());
-    }
+      try {
+        dispatch(loadUserAccount());
+        setMounted(true);
+      } catch (e) {
+        void (async () => {
+          const aaAddresses = await fetchAAWalletAddress(userAccount);
 
-    setCallback(callbackUrl);
-    setRequest(request);
-    setMounted(true);
-  }, [router.isReady, router.query]);
+          dispatch(noteAAWalletAddress(aaAddresses));
+          setMounted(true);
+        })();
+      }
+
+      setRequest(request);
+      setCallback(callbackUrl);
+    }
+  }, [router.isReady, router.query, dispatch, router, userAccount]);
 
   useEffect(() => {
-    if (userAccount && currentUserAccount) {
-      setSelectedUserAccount(0);
+    if (currentUserAccount && !currentUserAccount.isLocked) {
+      void (async () => {
+        const connectDapp = new ConnectDappDescriptor();
+        const response = await connectDapp.requestHandler(request, currentUserAccount);
+        const s = response.serialize();
+
+        setPassword('');
+        dispatch(setClose('connectDappPasswordModal'));
+        dispatch(lockCurrentUserAccount());
+        window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
+      })();
     }
-  }, [router, dispatch, userAccount, currentUserAccount]);
+  }, [currentUserAccount, dispatch, request, callback]);
 
   function unlock () {
     if (request) {
       try {
+        dispatch(switchUserAccount(selectedUserAccount));
         dispatch(decryptCurrentUserAccount(password));
         toast('Password Correct, Redirecting...', {
           duration: 5000,
@@ -79,19 +98,6 @@ function ConnectDappHandler (): JSX.Element {
             padding: '20px'
           }
         });
-
-        if (currentUserAccount && !currentUserAccount.isLocked) {
-          void (async () => {
-            const connectDapp = new ConnectDappDescriptor();
-            const response = await connectDapp.requestHandler(request, currentUserAccount);
-            const s = response.serialize();
-
-            setPassword('');
-            dispatch(setClose('connectDappPasswordModal'));
-            dispatch(lockCurrentUserAccount());
-            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=connectDapp`;
-          })();
-        }
       } catch (e) {
         toast('Wrong Password!', {
           style: {

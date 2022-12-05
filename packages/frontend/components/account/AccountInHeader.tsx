@@ -16,7 +16,7 @@ import AccountRow from './AccountRow';
 /**
  * Render currentUserAccount address on Header & a drop down of all UserAccount
  */
-export default function AccountInHeader(): JSX.Element {
+export default function AccountInHeader (): JSX.Element {
   const dispatch = useDispatch();
 
   const [ready, setReady] = useState(false);
@@ -38,12 +38,12 @@ export default function AccountInHeader(): JSX.Element {
     if (knownNetworks && currentNetwork) {
       setReady(true);
     }
-  }, [knownNetworks, currentNetwork])
-  
+  }, [knownNetworks, currentNetwork]);
 
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
   if (!ready) return null;
+
   return (
     <div className='w-24 md:w-64 text-right'>
       <Menu as='div'
@@ -74,8 +74,8 @@ export default function AccountInHeader(): JSX.Element {
         >
           <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
             <div className='px-1 py-1 '>
-              {userAccount.map((account, index) => (<AccountRow accountIndex={index}
-                account={account}
+              {userAccount.map((account, index) => (<AccountRow account={account}
+                accountIndex={index}
                 key={index}
                 network={knownNetworks[currentNetwork]} />))}
               <Menu.Item >
@@ -84,7 +84,7 @@ export default function AccountInHeader(): JSX.Element {
                     className={`${active
                       ? 'font-poppins bg-[#F5CBD5] dark:bg-[#0170BF] text-white'
                       : 'font-poppins text-gray-900'
-                      } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                    } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => router.push('/account')}
                   >
 
@@ -98,7 +98,7 @@ export default function AccountInHeader(): JSX.Element {
                 {({ active }) => (
                   <button
                     className={`${active ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
-                      } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                    } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={removeAccounts}
                   >
                     <p className='font-poppins text-black dark:text-white text-center'>Remove All Accounts</p>

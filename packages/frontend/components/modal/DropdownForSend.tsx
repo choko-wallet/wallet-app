@@ -14,25 +14,25 @@ import { BalanceInfo } from '../../utils/types';
 
 interface Props {
   balanceInfo: BalanceInfo;
-  cryptoAddress: string;
   setCryptoAddress: (value: string) => void;
 }
 
-function DropdownForSend({ balanceInfo, cryptoAddress, setCryptoAddress }: Props): JSX.Element {
+function DropdownForSend ({ balanceInfo, setCryptoAddress }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   const [filterResult, setFilterResult] = useState<BalanceInfo>(balanceInfo);
 
   useEffect(() => {
-    if(searchInput && searchInput.length !== 0) {
+    if (searchInput && searchInput.length !== 0) {
       const result = Object.fromEntries(
-        Object.entries( balanceInfo )
-          .filter(([address, info]) => {
+        Object.entries(balanceInfo)
+          .filter(([_, info]) => {
             return info.name.toLowerCase().indexOf(searchInput.toLowerCase()) !== -1;
           })
       );
+
       setFilterResult(result);
     }
-  }, [searchInput]);
+  }, [searchInput, balanceInfo]);
 
   return (
     <div className=' w-full  text-right'>
@@ -48,10 +48,10 @@ function DropdownForSend({ balanceInfo, cryptoAddress, setCryptoAddress }: Props
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png';
                 }}
-                src={balanceInfo['native'].img ||  'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
+                src={balanceInfo.native.img || 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/gold.png'}
               />
             </div>
-            <p className='flex flex-grow mx-3 text-black dark:text-white font-poppins'> {balanceInfo['native'].name}</p>
+            <p className='flex flex-grow mx-3 text-black dark:text-white font-poppins'> {balanceInfo.native.name}</p>
             <ChevronDownIcon className='ml-2 -mr-1 h-5 w-5 text-gray-700 dark:text-white' />
           </Menu.Button>
         </div>
@@ -81,8 +81,8 @@ function DropdownForSend({ balanceInfo, cryptoAddress, setCryptoAddress }: Props
                 <Menu.Item key={i}>
                   {({ active }) => (
                     <button className={`${active ? 'bg-violet-500 dark:bg-gray-700 text-white font-poppins' : 'font-poppins text-gray-900'
-                      } group flex w-full items-center dark:text-white rounded-md px-2 py-2 text-sm`}
-                      onClick={() => setCryptoAddress(address)}
+                    } group flex w-full items-center dark:text-white rounded-md px-2 py-2 text-sm`}
+                    onClick={() => setCryptoAddress(address)}
                     >
                       <div className='relative h-5 w-5 ml-2 mr-3'>
                         <img alt='icon'

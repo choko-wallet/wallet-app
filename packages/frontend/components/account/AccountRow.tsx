@@ -23,11 +23,12 @@ interface Props {
   network: Network;
 }
 
-export default function AccountRow ({ accountIndex, account, network }: Props): JSX.Element {
+export default function AccountRow ({ account, accountIndex, network }: Props): JSX.Element {
   const dispatch = useDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
-  
+
   const currentUserAccountIndex = useSelector(selectCurrentUserAccountIndex);
+
   const handleCopy = () => {
     setShowCheck(true);
     setTimeout(() => {
@@ -37,7 +38,7 @@ export default function AccountRow ({ accountIndex, account, network }: Props): 
 
   const isCurrentAccount = (): boolean => {
     return accountIndex === currentUserAccountIndex;
-  }
+  };
 
   const changeAccountInHeader = () => {
     if (!isCurrentAccount()) {

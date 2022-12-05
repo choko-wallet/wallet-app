@@ -1,14 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { encodeAddress } from '@polkadot/util-crypto';
+import { encodeAddress, ethereumEncode } from '@polkadot/util-crypto';
 
-import { chainIdToProvider, INetwork, Network, UserAccount } from '@choko-wallet/core';
-import { biconomyFixtures, callDataDeployWallet, sendBiconomyTxPayload } from '@choko-wallet/account-abstraction';
-import { sleep } from '@skyekiwi/util';
+import { getSmartWalletAddress } from '@choko-wallet/account-abstraction';
+import { chainIdToProvider, Network, UserAccount } from '@choko-wallet/core';
 
 const encodeAddr = (network: Network, account: UserAccount): string => {
-  console.log(account);
   if (network.networkType === 'polkadot') {
     return encodeAddress(account.publicKeys[0],
       network.ss58Prefix === undefined ? 42 : network.ss58Prefix);
@@ -17,6 +15,22 @@ const encodeAddr = (network: Network, account: UserAccount): string => {
   }
 };
 
+const fetchAAWalletAddress = async (account: UserAccount[]): Promise<string[]> => {
+  const len = account.length;
+  const res = [];
+
+  for (let i = 0; i < len; ++i) {
+    const eoa = ethereumEncode(account[i].publicKeys[2]);
+    const aa = await getSmartWalletAddress(
+      chainIdToProvider[5], // TOOD: remove this shit as it's all the same for accounts
+      eoa
+    );
+
+    res[i] = aa;
+  }
+
+  return res;
+};
 
 // const encodeAddr = async(network: Network, account: UserAccount): Promise<string> => {
 //   if (network.networkType === 'polkadot') {
@@ -34,4 +48,5 @@ const encodeAddr = (network: Network, account: UserAccount): string => {
 // }
 // export { encodeAddr, deployAAContracct };
 
+export { fetchAAWalletAddress, encodeAddr };
 export default encodeAddr;

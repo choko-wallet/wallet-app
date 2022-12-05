@@ -17,7 +17,6 @@ import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
-import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 function SignMessageHandler (): JSX.Element {
   const router = useRouter();
@@ -45,28 +44,23 @@ function SignMessageHandler (): JSX.Element {
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
-
   // set the account right
+  // Note: for SignMessage - always use EOA on request payload!
   useEffect(() => {
     if (userAccount.length === 0) return;
-    let accountIndex = 0;
     const accountLength = userAccount.length;
-    const target = encodeAddr( request.dappOrigin.activeNetwork, request.userOrigin );
 
-    for (let i = 0; i < accountLength; ++ i) {
-      if ( target === encodeAddr(request.dappOrigin.activeNetwork, userAccount[i])) {
-        accountIndex = i;
+    for (let i = 0; i < accountLength; ++i) {
+      if (request.userOrigin.getAddress('ethereum') === userAccount[i].getAddress('ethereum')) {
+        dispatch(switchUserAccount(i));
         break;
       }
     }
 
-    console.log(userAccount, accountIndex)
-    dispatch(switchUserAccount(accountIndex));
-
     if (request) {
       setMounted(true);
     }
-  }, [request]);
+  }, [request, dispatch, userAccount]);
 
   function unlock () {
     if (request) {
@@ -170,8 +164,11 @@ function SignMessageHandler (): JSX.Element {
             <div className='col-span-12'>
               <code className='underline text-clip'
                 style={{ overflowWrap: 'break-word' }}>{
-                  encodeAddr(request.dappOrigin.activeNetwork, currentUserAccount)
-                }</code>
+                  currentUserAccount.getAddress('ethereum')
+                }</code><br/><br/>
+              <code className='text-clip'
+                style={{ overflowWrap: 'break-word' }}>NOTE: This is your EOA Address</code>
+
             </div>
             <div className='col-span-12'>
               <div className='divider'></div>

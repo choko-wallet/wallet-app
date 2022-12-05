@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowLeftIcon, ArrowRightIcon, ArrowSmLeftIcon, ArrowSmRightIcon, CheckIcon, XIcon } from '@heroicons/react/outline';
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, XIcon } from '@heroicons/react/outline';
 import { mnemonicValidate } from '@polkadot/util-crypto';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ import { addUserAccount } from '../../features/slices/user';
  * Guide user to import an account
  * Paste a seed into any space will automatically try to render the whole seed phrase
  */
-function ImportWallet(): JSX.Element {
+function ImportWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -28,12 +28,13 @@ function ImportWallet(): JSX.Element {
 
   const handleSetPassword = () => {
     dispatch(addUserAccount({ password: password, seeds: seeds.join(' ') }));
+    setTimeout(() => {
+      if (redirectRequest) {
+        void router.push('/request?' + redirectRequest);
+      }
 
-    if (redirectRequest) {
-      void router.push('/request?' + redirectRequest);
-    }
-
-    void router.push('/home');
+      void router.push('/home');
+    }, 3000);
   };
 
   useEffect(() => {
@@ -65,20 +66,19 @@ function ImportWallet(): JSX.Element {
 
       <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
         <ProgressBar
-          height='13px'
           baseBgColor='#AFAFAF'
           bgColor='#4075A9'
           className='w-full '
           completed={step === 1
             ? 0
             : step === 2 ? (password && repeatPassword && password === repeatPassword) ? 100 : 50 : 50}
+          height='13px'
         />
 
         <div className='w-full max-w-2xl justify-between mt-2 flex md:mb-10'>
           <p className={` text-xs md:text-sm font-poppins ${step > 1 ? 'text-[#4075A9]' : 'text-white'}`}>Type In Your Mnemonic</p>
           <p className={` text-xs md:text-sm font-poppins ${step > 1 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
         </div>
-
 
         {step === 1 &&
 
@@ -114,16 +114,14 @@ function ImportWallet(): JSX.Element {
                 <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
               </button>
 
-
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${(mnemonicValidate(seeds.join(' '))) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                disabled={(mnemonicValidate(seeds.join(' '))) ? false : true}
+                disabled={!(mnemonicValidate(seeds.join(' ')))}
                 onClick={() => setStep(step + 1)}
               >
                 <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
               </button>
 
             </div>
-
 
           </div>
         }
@@ -172,14 +170,13 @@ function ImportWallet(): JSX.Element {
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                disabled={(!password || !repeatPassword || password !== repeatPassword)}
-                onClick={() => handleSetPassword()}
+              disabled={(!password || !repeatPassword || password !== repeatPassword)}
+              onClick={() => handleSetPassword()}
               >
 
                 <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
               </button>
             </div>
-
 
           </div>
         }

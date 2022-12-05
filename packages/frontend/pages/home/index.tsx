@@ -11,11 +11,12 @@ import Balance from '@choko-wallet/frontend/components/balance/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
 import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
+import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAccountModal';
 import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
 import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
 import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebar';
 import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
-import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
+import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
 
 import Header from '../../components/Header';
@@ -28,14 +29,12 @@ import { loadUserAccount, noteAAWalletAddress } from '../../features/slices/user
 import { ethFetchBalance } from '../../utils/ethFetchBalance';
 import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail } from '../../utils/toast';
-import { getSmartWalletAddress } from '@choko-wallet/account-abstraction';
-import { chainIdToProvider, UserAccount } from '@choko-wallet/core';
 
 /**
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();
@@ -59,10 +58,19 @@ export default function Home(): JSX.Element {
       void router.push('/account');
     } else {
       // We are all good. Load UserAccount & Networks
-      dispatch(loadUserAccount());
       dispatch(loadAllNetworks());
+
+      try {
+        dispatch(loadUserAccount());
+      } catch (e) {
+        void (async () => {
+          const aaAddresses = await fetchAAWalletAddress(userAccount);
+
+          dispatch(noteAAWalletAddress(aaAddresses));
+        })();
+      }
     }
-  }, [dispatch, router]);
+  }, [dispatch, router, userAccount]);
 
   useEffect(() => {
     if (loadingText && loadingText.length !== 0) {
@@ -79,7 +87,7 @@ export default function Home(): JSX.Element {
     if (!currentNetwork) return;
 
     // no need to await
-    /** Fetch Balance */
+    /** Fetch Balance && AAWallet Address */
     void (async () => {
       dispatch(startLoading('Fetching Balance ...'));
 
@@ -88,7 +96,6 @@ export default function Home(): JSX.Element {
       switch (network.networkType) {
         case 'polkadot':
           try {
-            // const res = await polkadotFetchBalance(network, '16aThbzrsb2ohiLXJLqN8jLST6JgUPRi3BqyHxUW4yVHBQ44')
             const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
 
             setBalanceInfo(res);
@@ -103,20 +110,7 @@ export default function Home(): JSX.Element {
           break;
         case 'ethereum':
           try {
-
-            const aaAddress = [];
-            const userAccountLength = userAccount.length;
-            for (let i = 0; i < userAccountLength; ++ i) {
-              aaAddress[i] = await getSmartWalletAddress(
-                chainIdToProvider[network.chainId], userAccount[i].getAddress('ethereum')
-              );
-            }
-
-            dispatch( noteAAWalletAddress(aaAddress) );
-
             const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
-            // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-            // const res = await ethFetchBalance(network, '0xAA1658296e2b770fB793eb8B36E856c8210A566F');//goerli mumbai
 
             setBalanceInfo(res);
             dispatch(endLoading());
@@ -132,7 +126,7 @@ export default function Home(): JSX.Element {
     })();
 
     setMounted(true);
-  }, [currentNetwork, currentUserAccount, knownNetworks, dispatch]);
+  }, [currentNetwork, currentUserAccount, knownNetworks, dispatch, userAccount]);
 
   useEffect(() => {
     if (theme !== 'dark' && theme !== 'light') {
@@ -166,6 +160,7 @@ export default function Home(): JSX.Element {
 
           <AddTokenModal />
 
+          <ExportAccountModal />
         </main >
         <Footer />
 

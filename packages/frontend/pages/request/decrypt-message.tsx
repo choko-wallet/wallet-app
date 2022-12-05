@@ -16,7 +16,6 @@ import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/front
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
-import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 /**
  * Handler for DecryptMesasgeRequest
@@ -48,28 +47,22 @@ function DecryptMessageHandler (): JSX.Element {
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
-
   // set the account right
   useEffect(() => {
     if (userAccount.length === 0) return;
-    let accountIndex = 0;
     const accountLength = userAccount.length;
-    const target = encodeAddr( request.dappOrigin.activeNetwork, request.userOrigin );
 
-    for (let i = 0; i < accountLength; ++ i) {
-      if ( target === encodeAddr(request.dappOrigin.activeNetwork, userAccount[i])) {
-        accountIndex = i;
+    for (let i = 0; i < accountLength; ++i) {
+      if (request.userOrigin.getAddress('ethereum') === userAccount[i].getAddress('ethereum')) {
+        dispatch(switchUserAccount(i));
         break;
       }
     }
 
-    console.log(userAccount, accountIndex)
-    dispatch(switchUserAccount(accountIndex));
-
     if (request) {
       setMounted(true);
     }
-  }, [request]);
+  }, [request, dispatch, userAccount]);
 
   function unlock () {
     if (request) {
@@ -171,9 +164,12 @@ function DecryptMessageHandler (): JSX.Element {
             </div>
             <div className='col-span-12'>
               <code className='underline text-clip'
-                  style={{ overflowWrap: 'break-word' }}>{
-                    encodeAddr(request.dappOrigin.activeNetwork, currentUserAccount)
-                }</code>
+                style={{ overflowWrap: 'break-word' }}>{
+                  currentUserAccount.getAddress('ethereum')
+                }</code><br/><br/>
+              <code className='text-clip'
+                style={{ overflowWrap: 'break-word' }}>NOTE: This is your EOA Address</code>
+
             </div>
             <div className='col-span-12'>
               Client Ephemeral Key:

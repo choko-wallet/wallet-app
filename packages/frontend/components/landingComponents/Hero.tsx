@@ -48,12 +48,12 @@ const Hero = (): JSX.Element => {
           <div className='flex flex-col lg:mt-6'>
             <button className='py-3 mt-3 text-xl text-[#0170BF] transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#F5CBD5]'
-              onClick={() => router.push('/home')}>ENTER
+            onClick={() => router.push('/home')}>ENTER
             </button>
 
             <button className='py-3 text-xl text-white transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
-              onClick={() => router.push('/test-request')}>SAMPLE DAPP
+            onClick={() => router.push('/test-request')}>SAMPLE DAPP
             </button>
           </div>
 

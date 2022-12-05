@@ -9,7 +9,7 @@ import { SocialIcon } from 'react-social-icons';
 import discIcon1 from '../images/discord1.svg';
 import discIcon2 from '../images/discord2.svg';
 
-function Footer(): JSX.Element {
+function Footer (): JSX.Element {
   const { theme } = useTheme();
 
   return (
@@ -35,32 +35,32 @@ function Footer(): JSX.Element {
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://github.com/choko-wallet'
-            style={{ height: 40, width: 40 }}
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://t.me/choko_wallet'
-            style={{ height: 40, width: 40 }}
 
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://twitter.com/choko_wallet'
-            style={{ height: 40, width: 40 }}
 
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://medium.com/@choko_wallet'
-            style={{ height: 40, width: 40 }}
 
           />
           <SocialIcon
@@ -68,8 +68,8 @@ function Footer(): JSX.Element {
             className='cursor-pointer'
             fgColor='black'
             network='email'
-            url='mailto:contact@choko.app'
             style={{ height: 40, width: 40 }}
+            url='mailto:contact@choko.app'
 
           />
         </div>
@@ -91,33 +91,33 @@ function Footer(): JSX.Element {
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://github.com/choko-wallet'
-            style={{ height: 40, width: 40 }}
 
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://t.me/choko_wallet'
-            style={{ height: 40, width: 40 }}
 
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://twitter.com/choko_wallet'
-            style={{ height: 40, width: 40 }}
 
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://medium.com/@choko_wallet'
-            style={{ height: 40, width: 40 }}
 
           />
 
@@ -126,8 +126,8 @@ function Footer(): JSX.Element {
             className='cursor-pointer'
             fgColor='white'
             network='email'
-            url='mailto:contact@choko.app'
             style={{ height: 40, width: 40 }}
+            url='mailto:contact@choko.app'
 
           />
         </div>}

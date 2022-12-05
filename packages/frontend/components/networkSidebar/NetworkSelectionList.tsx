@@ -15,7 +15,7 @@ import { setOpen } from '../../features/slices/status';
  * Renders a list of all network avaliable
  */
 
-function NetworkSelection(): JSX.Element {
+function NetworkSelection (): JSX.Element {
   const dispatch = useDispatch();
 
   const currentNetwork = useSelector(selectCurrentNetwork);
