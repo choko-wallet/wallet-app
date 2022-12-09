@@ -20,7 +20,7 @@ import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/front
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
-import { getAlchemy } from '@choko-wallet/frontend/utils/ethFetchBalance';
+import { getAlchemy } from '@choko-wallet/frontend/utils/env';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';
@@ -44,7 +44,7 @@ function SignTxHandler (): JSX.Element {
   const [request, setRequest] = useState<SignTxRequest>(null);
   const [callback, setCallback] = useState<string>('');
 
-  // parse query
+  // 1. parse query
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
@@ -56,42 +56,51 @@ function SignTxHandler (): JSX.Element {
       localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
       void router.push('/account');
     } else {
-      try {
-        dispatch(loadUserAccount());
-        const len = userAccount.length;
-
-        for (let i = 0; i < len; ++i) {
-          if (userAccount[i].getAddress('ethereum') === request.userOrigin.getAddress('ethereum')) {
-            dispatch(switchUserAccount(i));
-            setMounted(true);
-            break;
-          }
-        }
-
-        setMounted(true);
-      } catch (e) {
-        void (async () => {
-          const aaAddresses = await fetchAAWalletAddress(userAccount);
-
-          dispatch(noteAAWalletAddress(aaAddresses));
-          const len = userAccount.length;
-
-          for (let i = 0; i < len; ++i) {
-            if (userAccount[i].getAddress('ethereum') === request.userOrigin.getAddress('ethereum')) {
-              dispatch(switchUserAccount(i));
-              setMounted(true);
-              break;
-            }
-          }
-        })();
-      }
-
       setCallback(callbackUrl);
       setRequest(request);
     }
-  }, [router.isReady, router.query, dispatch, router, userAccount]);
+  }, [router.isReady, router.query, dispatch, router]);
 
-  // parse the transaction
+  // 2. load accounts and switch account is not matching origin
+  useEffect(() => {
+    if (!request) return;
+
+    dispatch(loadUserAccount());
+  }, [request, dispatch]);
+
+  useEffect(() => {
+    if (!userAccount) return;
+    if (!request) return;
+
+    const len = userAccount.length;
+
+    for (let i = 0; i < len; ++i) {
+      if (userAccount[i].getAddress('ethereum') === request.userOrigin.getAddress('ethereum')) {
+        dispatch(switchUserAccount(i));
+        break;
+      }
+    }
+  }, [request, userAccount, dispatch]);
+
+  // 2+. fetch AA wallet address if not set
+  useEffect(() => {
+    if (!request) return;
+    if (!currentUserAccount) return;
+
+    // check if the AA address is correctly populated
+    if (!currentUserAccount.aaWalletAddress) {
+      void (async () => {
+        const aaAddresses = await fetchAAWalletAddress(userAccount);
+
+        dispatch(noteAAWalletAddress(aaAddresses));
+        setMounted(true);
+      })();
+    } else {
+      setMounted(true);
+    }
+  }, [request, currentUserAccount, dispatch, userAccount]);
+
+  // parse the transaction and display
   useEffect(() => {
     if (!mounted) return;
 
@@ -103,12 +112,9 @@ function SignTxHandler (): JSX.Element {
 
         /* eslint-disable */
         // @ts-ignore
-        // setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
         const value = Number(tx.method.args.value.toString().replaceAll(",", '')) / Math.pow(10, request.dappOrigin.activeNetwork.nativeTokenDecimal)
         // @ts-ignore
         setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `);
-        // @ts-ignore
-        console.log(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `)
         /* eslint-enable */
 
         setDecodingTx(false);
@@ -138,70 +144,70 @@ function SignTxHandler (): JSX.Element {
   }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
   function unlock () {
-    if (request) {
-      try {
-        dispatch(decryptCurrentUserAccount(password));
+    if (!request) return;
 
-        if (currentUserAccount && !currentUserAccount.isLocked) {
-          setPassword('');
-          dispatch(setClose('signTxPasswordModal'));
+    try {
+      dispatch(decryptCurrentUserAccount(password));
 
-          void (async () => {
-            const signTx = new SignTxDescriptor();
+      if (currentUserAccount && !currentUserAccount.isLocked) {
+        setPassword('');
+        dispatch(setClose('signTxPasswordModal'));
+
+        void (async () => {
+          const signTx = new SignTxDescriptor();
+
+          try {
+            setSendingTx(true);
 
             try {
-              setSendingTx(true);
+              const response = await signTx.requestHandler(request, currentUserAccount);
+              const s = response.serialize();
 
-              try {
-                const response = await signTx.requestHandler(request, currentUserAccount);
-                const s = response.serialize();
-
-                dispatch(lockCurrentUserAccount());
-                setSendingTx(false);
-                window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-              } catch (e) {
-                console.error(e);
-              }
-            } catch (err) {
-              console.log('err', err);
-              toast('Something Wrong', {
-                style: {
-                  background: 'red',
-                  color: 'white',
-                  fontFamily: 'Poppins',
-                  fontSize: '16px',
-                  fontWeight: 'bolder',
-                  padding: '20px'
-                }
-              });
+              dispatch(lockCurrentUserAccount());
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+              setSendingTx(false);
+            } catch (e) {
+              console.error(e);
             }
-          })();
-        }
-
-        toast('Password Correct, Redirecting...', {
-          duration: 5000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
+          } catch (err) {
+            console.log('err', err);
+            toast('Something Wrong', {
+              style: {
+                background: 'red',
+                color: 'white',
+                fontFamily: 'Poppins',
+                fontSize: '16px',
+                fontWeight: 'bolder',
+                padding: '20px'
+              }
+            });
           }
-        });
-      } catch (e) {
-        toast('Wrong Password!', {
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '16px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
+        })();
       }
+
+      toast('Password Correct, Redirecting...', {
+        duration: 5000,
+        icon: '👏',
+        style: {
+          background: 'green',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '17px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
+    } catch (e) {
+      toast('Wrong Password!', {
+        style: {
+          background: 'red',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '16px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
     }
   }
 

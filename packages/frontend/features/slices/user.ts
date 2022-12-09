@@ -21,6 +21,39 @@ import { AccountOption, UserAccount } from '@choko-wallet/core';
  */
 
 // humor cook snap sunny ticket distance leaf unusual join business obey below
+const parseUserAccount = (rawData: Uint8Array): UserAccount[] => {
+  let offset = 0;
+  let accountIndex = 0;
+  const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
+  const res = [];
+
+  while (offset < rawData.length) {
+    const currentSerializedUserAccount = rawData.slice(offset, offset + serializedLength);
+
+    offset += serializedLength;
+    const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
+
+    res[accountIndex] = account;
+    accountIndex++;
+  }
+
+  return res;
+};
+
+const parseAAWalletCache = (rawData: string): string[] => {
+  let offset = 0;
+  let accountIndex = 0;
+  const res = [];
+
+  while (offset < rawData.length) {
+    res[accountIndex] = rawData.slice(offset, offset + 42);
+    offset += 42;
+    accountIndex++;
+  }
+
+  return res;
+};
+
 export const addUserAccount = createAsyncThunk(
   'users/add',
   async (payload: {
@@ -91,41 +124,28 @@ export const userSlice = createSlice({
       }
 
       state.currentUserAccount.aaWalletAddress = action.payload[state.currentUserAccountIndex];
+      localStorage.setItem('AAWalletCache', action.payload.join(''));
     },
     loadUserAccount: (state) => {
-      try {
-        const serializedUserAccount = hexToU8a(localStorage.getItem('serialziedUserAccount'));
-        const aaWalletCache = localStorage.getItem('AAWalletCache');
+      const rawSerializedUserAccount = localStorage.getItem('serialziedUserAccount');
+      const aaWalletCache = localStorage.getItem('AAWalletCache');
 
-        if (!aaWalletCache || aaWalletCache.length === 0) {
-          throw new Error('cache non-exist or corrupted');
+      // User land
+      if (!rawSerializedUserAccount || rawSerializedUserAccount === 'null') {
+        throw new Error('empty localStorage for serializedUserAccount');
+      }
+
+      state.userAccount = parseUserAccount(hexToU8a(rawSerializedUserAccount));
+      state.currentUserAccount = state.userAccount[0];
+      state.currentUserAccountIndex = 0;
+
+      // AA Wallet land
+      if (aaWalletCache && aaWalletCache.length !== 0) {
+        const aaWalletAddresses = parseAAWalletCache(aaWalletCache);
+
+        for (let i = 0; i < aaWalletAddresses.length; ++i) {
+          state.userAccount[i].aaWalletAddress = aaWalletAddresses[i];
         }
-
-        let offset = 0; let aaOffset = 0;
-        let accountIndex = 0;
-        const serializedLength = UserAccount.serializedLengthWithEncryptedKey();
-
-        while (offset < serializedUserAccount.length) {
-          const currentSerializedUserAccount = serializedUserAccount.slice(offset, offset + serializedLength);
-
-          offset += serializedLength;
-          const account = UserAccount.deserializeWithEncryptedKey(currentSerializedUserAccount);
-
-          state.userAccount[accountIndex] = account;
-          state.userAccount[accountIndex].aaWalletAddress = aaWalletCache.slice(aaOffset, aaOffset + 42);
-          aaOffset += 42;
-          accountIndex++;
-        }
-
-        state.currentUserAccount = state.userAccount[0];
-        state.currentUserAccountIndex = 0;
-      } catch (e) {
-        console.log('error', e);
-        localStorage.removeItem('serialziedUserAccount');
-        localStorage.removeItem('AAWalletCache');
-        state.currentUserAccount = null;
-        state.currentUserAccountIndex = 0;
-        state.userAccount = [];
       }
     },
     // Use with caution! Always lock the account when done.

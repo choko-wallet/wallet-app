@@ -38,6 +38,7 @@ function ConnectDappHandler (): JSX.Element {
   const [request, setRequest] = useState<ConnectDappRequest>(null);
   const [callback, setCallback] = useState<string>('');
 
+  // 1. get the request params & load user account
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
@@ -49,23 +50,34 @@ function ConnectDappHandler (): JSX.Element {
       localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
       void router.push('/account');
     } else {
-      try {
-        dispatch(loadUserAccount());
-        setMounted(true);
-      } catch (e) {
-        void (async () => {
-          const aaAddresses = await fetchAAWalletAddress(userAccount);
-
-          dispatch(noteAAWalletAddress(aaAddresses));
-          setMounted(true);
-        })();
-      }
-
+      dispatch(loadUserAccount());
       setRequest(request);
       setCallback(callbackUrl);
     }
   }, [router.isReady, router.query, dispatch, router, userAccount]);
 
+  // 1+. fetch AA wallet address if not set before
+  useEffect(() => {
+    if (!request) return;
+    if (!currentUserAccount) return;
+
+    // check if the AA address is correctly populated
+    if (!currentUserAccount.aaWalletAddress) {
+      void (async () => {
+        const aaAddresses = await fetchAAWalletAddress(userAccount);
+
+        dispatch(noteAAWalletAddress(aaAddresses));
+        setMounted(true);
+      })();
+    } else {
+      setMounted(true);
+    }
+  }, [request, currentUserAccount, dispatch, userAccount]);
+
+  /**
+   * when currentUserAccount is unlcoked
+   * we process the request
+  */
   useEffect(() => {
     if (currentUserAccount && !currentUserAccount.isLocked) {
       void (async () => {

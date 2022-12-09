@@ -63,63 +63,63 @@ function SignMessageHandler (): JSX.Element {
   }, [request, dispatch, userAccount]);
 
   function unlock () {
-    if (request) {
-      try {
-        dispatch(decryptCurrentUserAccount(password));
-        toast('Password Correct, Redirecting...', {
-          duration: 5000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
+    if (!request) return;
 
-        if (currentUserAccount && !currentUserAccount.isLocked) {
-          void (async () => {
-            setPassword('');
-            dispatch(setClose('signMessagePasswordModal'));
-
-            const signMessage = new SignMessageDescriptor();
-
-            try {
-              const response = await signMessage.requestHandler(request, currentUserAccount);
-              const s = response.serialize();
-
-              dispatch(lockCurrentUserAccount());
-
-              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
-            } catch (err) {
-              console.log('err', err);
-              toast('Something Wrong', {
-                style: {
-                  background: 'red',
-                  color: 'white',
-                  fontFamily: 'Poppins',
-                  fontSize: '16px',
-                  fontWeight: 'bolder',
-                  padding: '20px'
-                }
-              });
-            }
-          })();
+    try {
+      dispatch(decryptCurrentUserAccount(password));
+      toast('Password Correct, Redirecting...', {
+        duration: 5000,
+        icon: '👏',
+        style: {
+          background: 'green',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '17px',
+          fontWeight: 'bolder',
+          padding: '20px'
         }
-      } catch (e) {
-        toast('Wrong Password!', {
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '16px',
-            fontWeight: 'bolder',
-            padding: '20px'
+      });
+
+      if (currentUserAccount && !currentUserAccount.isLocked) {
+        void (async () => {
+          setPassword('');
+          dispatch(setClose('signMessagePasswordModal'));
+
+          const signMessage = new SignMessageDescriptor();
+
+          try {
+            const response = await signMessage.requestHandler(request, currentUserAccount);
+            const s = response.serialize();
+
+            dispatch(lockCurrentUserAccount());
+
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signMessage`;
+          } catch (err) {
+            console.log('err', err);
+            toast('Something Wrong', {
+              style: {
+                background: 'red',
+                color: 'white',
+                fontFamily: 'Poppins',
+                fontSize: '16px',
+                fontWeight: 'bolder',
+                padding: '20px'
+              }
+            });
           }
-        });
+        })();
       }
+    } catch (e) {
+      toast('Wrong Password!', {
+        style: {
+          background: 'red',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '16px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
     }
   }
 

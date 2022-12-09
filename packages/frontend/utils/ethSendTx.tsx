@@ -10,6 +10,8 @@ import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters } from '@choko-wallet/core/util';
 import { buildSignTxUrl } from '@choko-wallet/sdk';
 
+import { deploymentEnv, walletUrl } from './env';
+
 export const encodeEthNativeTransaction = (
   receipientAddress: string,
   value: number
@@ -72,8 +74,6 @@ export const ethEncodeTxToUrl = (
     userAccount: u8aToHex(compressParameters(userOrigin.serialize()))
   },
   hexToU8a(tx.slice(2)),
-  SignTxType.Gasless,
-  'http://localhost:3000/home',
-  'LOCAL'
+  SignTxType.Gasless, `${walletUrl}/home`, deploymentEnv
   );
 };

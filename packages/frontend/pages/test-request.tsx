@@ -22,12 +22,11 @@ import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignT
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, storeUserAccount } from '@choko-wallet/sdk';
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
-import getWalletUrl from '@choko-wallet/sdk/walletUrl';
 
 import { fetchAAWalletAddress } from '../utils/aaUtils';
+import { deploymentEnv, walletUrl } from '../utils/env';
 import Loading from './../components/Loading';
 
-const walletUrl = getWalletUrl();
 const callbackUrl = `${walletUrl}/test-request`;
 
 const TestRequest: NextPage = () => {
@@ -175,7 +174,7 @@ const TestRequest: NextPage = () => {
               const s = loadStorage();
 
               console.log(s);
-              const x = buildConnectDappUrl(s, callbackUrl);
+              const x = buildConnectDappUrl(s, callbackUrl, deploymentEnv);
 
               window.location.href = x;
             }}>Connect Wallet</button>
@@ -222,7 +221,8 @@ const TestRequest: NextPage = () => {
                     store,
                     encoded,
                     SignTxType.Ordinary,
-                    callbackUrl
+                    callbackUrl,
+                    deploymentEnv
                   );
 
                   await provider.disconnect();
@@ -245,7 +245,8 @@ const TestRequest: NextPage = () => {
                     s,
                     hexToU8a(encodeTransaction(tx).slice(2)),
                     SignTxType.Gasless,
-                    callbackUrl
+                    callbackUrl,
+                    deploymentEnv
                   );
 
                   window.location.href = x;
@@ -257,7 +258,7 @@ const TestRequest: NextPage = () => {
                   const tx = {
                     data: encodeContractCall('erc20', 'transfer', [
                       '0xAA1658296e2b770fB793eb8B36E856c8210A566F',
-                      BigNumber.from('1000000000000000000')
+                      BigNumber.from('1000000000000000')
                     ]),
                     gasLimit: 2000000,
                     to: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
@@ -270,7 +271,8 @@ const TestRequest: NextPage = () => {
                     s,
                     hexToU8a(encodeTransaction(tx).slice(2)),
                     SignTxType.AACall,
-                    callbackUrl
+                    callbackUrl,
+                    deploymentEnv
                   );
 
                   window.location.href = x;
@@ -287,7 +289,8 @@ const TestRequest: NextPage = () => {
                     s,
                     stringToU8a('Test Messaage'),
                     SignMessageType.EthereumPersonalSign,
-                    callbackUrl
+                    callbackUrl,
+                    deploymentEnv
                   );
 
                   window.location.href = x;
@@ -313,7 +316,8 @@ const TestRequest: NextPage = () => {
                     'sr25519',
                     encryptedMessage,
                     AsymmetricEncryption.getPublicKey(clientPrivateKey),
-                    callbackUrl
+                    callbackUrl,
+                    deploymentEnv
                   );
 
                   window.location.href = x;

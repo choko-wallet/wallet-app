@@ -47,38 +47,37 @@ export default function Home (): JSX.Element {
   const loadingText = useSelector(selectLoading);
 
   const [mounted, setMounted] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
 
-  // Init user account & networks
+  /**
+   * We are loading three things here:
+   * 1. the network config (sync)
+   * 2. the user account && AA Wallet (async)
+   * 3. balance info of the user on this network
+   */
+
+  // 1. init the network config
   useEffect(() => {
+    dispatch(loadAllNetworks());
+  }, [dispatch]);
+
+  // 2. init user account
+  useEffect(() => {
+    if (!currentNetwork) return;
+
     // IF account is not in localStorage - redirect to account creation page
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
-      // We are all good. Load UserAccount & Networks
-      dispatch(loadAllNetworks());
-
       try {
         dispatch(loadUserAccount());
       } catch (e) {
-        void (async () => {
-          const aaAddresses = await fetchAAWalletAddress(userAccount);
-
-          dispatch(noteAAWalletAddress(aaAddresses));
-        })();
+        // This means that the AA Wallet info is not arranged as expected.
+        // We gotta fetch from chain
+        console.log(e);
       }
     }
-  }, [dispatch, router, userAccount]);
-
-  useEffect(() => {
-    if (loadingText && loadingText.length !== 0) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [loadingText]);
+  }, [currentNetwork, dispatch, router]);
 
   useEffect(() => {
     // Fetch balance and price once the network & user account is loaded in Redux
@@ -86,10 +85,23 @@ export default function Home (): JSX.Element {
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
 
+    console.log('fetching balance ', userAccount, knownNetworks, currentNetwork);
+
     // no need to await
     /** Fetch Balance && AAWallet Address */
-    void (async () => {
+    (async () => {
       dispatch(startLoading('Fetching Balance ...'));
+
+      // 1. Fetch AA Wallet Info when needed.
+      if (!currentUserAccount.aaWalletAddress) {
+        const populateAAWalletInfo = async () => {
+          const aaAddresses = await fetchAAWalletAddress(userAccount);
+
+          dispatch(noteAAWalletAddress(aaAddresses));
+        };
+
+        await populateAAWalletInfo();
+      }
 
       const network = knownNetworks[currentNetwork];
 
@@ -123,20 +135,20 @@ export default function Home (): JSX.Element {
 
           break;
       }
-    })();
+    })().catch(console.error);
 
     setMounted(true);
-  }, [currentNetwork, currentUserAccount, knownNetworks, dispatch, userAccount]);
+  }, [knownNetworks, currentUserAccount, currentNetwork, dispatch, userAccount]);
 
-  useEffect(() => {
-    if (theme !== 'dark' && theme !== 'light') {
-      setTheme('light');
-    }
-  }, [setTheme, theme]);
+  if (theme !== 'dark' && theme !== 'light') {
+    setTheme('light');
+  }
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
-  if (loading) return <Loading />;
+  if (loadingText) return <Loading />;
+
+  console.log(knownNetworks, userAccount);
 
   return (
     <div className={theme}>

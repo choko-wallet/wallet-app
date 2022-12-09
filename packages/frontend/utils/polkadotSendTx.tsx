@@ -8,6 +8,10 @@ import { DappDescriptor, Network, UserAccount } from '@choko-wallet/core';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters } from '@choko-wallet/core/util';
 import { buildSignTxUrl } from '@choko-wallet/sdk';
+import getWalletUrl from '@choko-wallet/sdk/walletUrl';
+
+const e = 'STAGING';
+const walletUrl = getWalletUrl(e);
 
 export const polkadotEncodeTxToUrl = async (
   network: Network, userOrigin: UserAccount,
@@ -35,8 +39,5 @@ export const polkadotEncodeTxToUrl = async (
     userAccount: u8aToHex(compressParameters(userOrigin.serialize()))
   },
   hexToU8a(tx.slice(2)),
-  SignTxType.Ordinary,
-  'http://localhost:3000/home',
-  'LOCAL'
-  );
+  SignTxType.Ordinary, `${walletUrl}/home`, e);
 };

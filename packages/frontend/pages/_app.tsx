@@ -30,7 +30,7 @@ function Root ({ Component, pageProps }: AppProps): JSX.Element {
     <Provider store={store}>
       <Head>
         {
-          process.env.ENABLE_TRACKING &&
+          process.env.NEXT_PUBLIC_ENABLE_TRACKING &&
           <script async
             data-website-id='c309f7b0-7e50-4944-b73b-1e779ac13207'
             defer
