@@ -23,7 +23,7 @@ import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request
 /**
  * Handler for ConnectDappRequest
  */
-function ConnectDappHandler (): JSX.Element {
+function ConnectDappHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -93,7 +93,7 @@ function ConnectDappHandler (): JSX.Element {
     }
   }, [currentUserAccount, dispatch, request, callback]);
 
-  function unlock () {
+  function unlock() {
     if (request) {
       try {
         dispatch(switchUserAccount(selectedUserAccount));

@@ -34,7 +34,7 @@ import { toastFail } from '../../utils/toast';
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();
@@ -92,16 +92,18 @@ export default function Home (): JSX.Element {
     (async () => {
       dispatch(startLoading('Fetching Balance ...'));
 
+      console.log('aaWalletAddress', currentUserAccount.aaWalletAddress);
+
       // 1. Fetch AA Wallet Info when needed.
-      if (!currentUserAccount.aaWalletAddress) {
-        const populateAAWalletInfo = async () => {
-          const aaAddresses = await fetchAAWalletAddress(userAccount);
+      // if (!currentUserAccount.aaWalletAddress) {
+      const populateAAWalletInfo = async () => {
+        const aaAddresses = await fetchAAWalletAddress(userAccount);
 
-          dispatch(noteAAWalletAddress(aaAddresses));
-        };
+        dispatch(noteAAWalletAddress(aaAddresses));
+      };
 
-        await populateAAWalletInfo();
-      }
+      await populateAAWalletInfo();
+      // }
 
       const network = knownNetworks[currentNetwork];
 

@@ -20,14 +20,16 @@ const fetchAAWalletAddress = async (account: UserAccount[]): Promise<string[]> =
   const res = [];
 
   for (let i = 0; i < len; ++i) {
+    console.log('fetchAAWalletAddress', i)
     const eoa = ethereumEncode(account[i].publicKeys[2]);
-    const aa = await getSmartWalletAddress(
+    const aa = await getSmartWalletAddress(// 调用biconomy 
       chainIdToProvider[5], // TOOD: remove this shit as it's all the same for accounts
       eoa
     );
 
     res[i] = aa;
   }
+  console.log('fetchAAWalletAddress', res)// add []
 
   return res;
 };
