@@ -28,7 +28,8 @@ const initialState: StatusSliceItem = {
     signTxPasswordModal: false,
     signMessagePasswordModal: false,
     decryptMessagePasswordModal: false,
-    requestPassword: false
+    requestPassword: false,
+    testRequest: false
   },
   loading: ''
 };

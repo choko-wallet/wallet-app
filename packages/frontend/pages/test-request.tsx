@@ -29,8 +29,16 @@ import { deploymentEnv, walletUrl } from '../utils/env';
 import Loading from './../components/Loading';
 import toast from 'react-hot-toast';
 
-
+import { staggerContainer, fadeIn, planetVariants, textContainer, textVariant2 } from '../utils/motion';
 import ball from '../images/ball.png';
+import Modal from '../components/Modal';
+import { Dialog } from '@headlessui/react';
+import { DownloadIcon, XIcon } from '@heroicons/react/outline';
+
+import { useAppThunkDispatch } from '../features/redux/store';
+import { setClose, setOpen } from '../features/slices/status';
+import TestRequestModal from '../components/modal/TestRequestModal';
+import ReceiveTokenModal from '../components/modal/ReceiveTokenModal';
 
 const callbackUrl = `${walletUrl}/test-request`;
 
@@ -40,12 +48,15 @@ const TestRequest: NextPage = () => {
 
   const [account, setAccount] = useState<UserAccount>(null);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
+  const { theme } = useTheme();
 
   const [encryptedMessage, setEncryptedMessage] = useState<Uint8Array>(new Uint8Array(0));
   const [clientPrivateKey, setClientPrivateKey] = useState<Uint8Array>(new Uint8Array(32));
   const [aaAddress, setAAAddress] = useState('');
 
   const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useAppThunkDispatch();
+  const [modalString, setModalString] = useState<string>('');
 
   // set up Dapp account storage
   useEffect(() => {// 解密参数要加try catch 
@@ -56,10 +67,13 @@ const TestRequest: NextPage = () => {
         if (response && response.length > 0) {
           if (router.query.responseType === 'signTx') {
             const resp = SignTxResponse.deserialize(response);
-
             console.log(resp);
+            console.log('signTx');
+            setWalletConnected(true);
+            setModalString(JSON.stringify(resp.payload));
+            dispatch(setOpen('testRequest'))
+            // alert(JSON.stringify(resp.payload));// 改modal
 
-            alert(JSON.stringify(resp.payload));
           } else if (router.query.responseType === 'signMessage') {
             const resp = SignMessageResponse.deserialize(response);
 
@@ -73,14 +87,23 @@ const TestRequest: NextPage = () => {
           `;
 
             console.log(msg);
-            alert(msg);
+            console.log('signMessage');
+            setWalletConnected(true);
+            setModalString(msg);
+            dispatch(setOpen('testRequest'))
+            // alert(msg);// 改modal
+
           } else if (router.query.responseType === 'decryptMessage') {
             const resp = DecryptMessageResponse.deserialize(response);
 
             console.log(resp);
             const decryptMsg = u8aToString(AsymmetricEncryption.decrypt(clientPrivateKey, resp.payload.message));
+            console.log('decryptMessage');
+            setWalletConnected(true);
+            setModalString(decryptMsg);
+            dispatch(setOpen('testRequest'))
+            // alert('Decrypt Message: ' + decryptMsg);// 改modal
 
-            alert('Decrypt Message: ' + decryptMsg);
           } else if (router.query.responseType === 'connectDapp') {//如果连接钱包回到成功 给状态 显示账户
             const resp = ConnectDappResponse.deserialize(response);
             console.log(resp);
@@ -88,7 +111,7 @@ const TestRequest: NextPage = () => {
             storeUserAccount(store, resp.payload.userAccount);
             persistStorage(store);
 
-            console.log('1111');
+            console.log('connectDapp');
             setWalletConnected(true);
           }
         }
@@ -166,79 +189,7 @@ const TestRequest: NextPage = () => {
 
   if (loading) return <Loading title='Initializing ... ' />;
 
-
-  const staggerContainer = () => ({
-    hidden: {
-    },
-    show: {
-      transition: {
-      },
-    },
-  });
-
-  const planetVariants = (direction: string) => ({
-    hidden: {
-      x: direction === 'left' ? '-100%' : '100%',
-      rotate: 120,//旋转进入 
-    },
-    show: {
-      x: 0,
-      rotate: 0,
-      transition: {
-        type: 'spring',//有刹车效果 
-        duration: 1.8,
-        delay: 0.5,
-      },
-    },
-  });
-
-
-  const fadeIn = (direction: string, type: string, delay: number, duration: number) => ({
-    hidden: {
-      x: direction === 'left' ? 100 : direction === 'right' ? -100 : 0,
-      y: direction === 'up' ? 100 : direction === 'down' ? -100 : 0,
-      opacity: 0,
-    },
-    show: {
-      x: 0,
-      y: 0,
-      opacity: 1,
-      transition: {
-        type,
-        delay,
-        duration,
-        ease: 'easeOut',
-      },
-    },
-  });
-
-  const textContainer = {
-    hidden: {
-      opacity: 0,
-    },
-    show: (i = 1) => ({
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: i * 0.1 },
-    }),
-  };
-
-  const textVariant2 = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-    },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: 'tween',
-        ease: 'easeIn',
-      },
-    },
-  };
-
-
-
+  console.log('modalString', modalString)
 
   return (
     <div className="overflow-hidden min-h-screen bg-[#1A232E]">
@@ -275,8 +226,6 @@ const TestRequest: NextPage = () => {
 
             <motion.p
               variants={textContainer}
-              // transition: { staggerChildren: 0.1, delayChildren: i * 0.1 },
-              // staggerChildren每个字母 delayChildren 整体出现的延迟
               className='font-normal text-[14px] text-white'
             >
               {Array.from("| Test Page for Request Handler").map((letter, index) => (
@@ -581,6 +530,8 @@ const TestRequest: NextPage = () => {
 
       }
 
+
+      <TestRequestModal modalString={modalString} />
 
 
 
