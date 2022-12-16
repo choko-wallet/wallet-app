@@ -39,6 +39,7 @@ import { useAppThunkDispatch } from '../features/redux/store';
 import { setClose, setOpen } from '../features/slices/status';
 import TestRequestModal from '../components/modal/TestRequestModal';
 import ReceiveTokenModal from '../components/modal/ReceiveTokenModal';
+import superagent from 'superagent';
 
 const callbackUrl = `${walletUrl}/test-request`;
 
@@ -49,6 +50,7 @@ const TestRequest: NextPage = () => {
   const [account, setAccount] = useState<UserAccount>(null);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
   const { theme } = useTheme();
+  const [accessToken, setAccessToken] = useState<string>('');
 
   const [encryptedMessage, setEncryptedMessage] = useState<Uint8Array>(new Uint8Array(0));
   const [clientPrivateKey, setClientPrivateKey] = useState<Uint8Array>(new Uint8Array(32));
@@ -67,12 +69,38 @@ const TestRequest: NextPage = () => {
         if (response && response.length > 0) {
           if (router.query.responseType === 'signTx') {
             const resp = SignTxResponse.deserialize(response);
-            console.log(resp);
+            console.log('resp', resp);
             console.log('signTx');
             setWalletConnected(true);
             setModalString(JSON.stringify(resp.payload));
-            dispatch(setOpen('testRequest'))
+            dispatch(setOpen('testRequest'));
             // alert(JSON.stringify(resp.payload));// 改modal
+
+            // 发送给数据库
+            if (aaAddress !== '') {
+              (async () => {
+                const r = await superagent
+                  .post('http://localhost:3333/choko/beta/newData')
+                  .send({
+                    accessToken: 'ChokoWallet1226',
+                    isSuccessful: resp.isSuccessful,
+                    blockNumber: resp.payload.blockNumber,
+                    gaslessTxId: u8aToHex(resp.payload.gaslessTxId),
+                    txHash: u8aToHex(resp.payload.txHash),
+                    type: resp.type,
+                    address: account.getAddress('sr25519'),
+                    eoaAddress: account.getAddress('ethereum'),
+                    aaAddress: aaAddress,
+                  });
+                if (r.body.error === "None") {
+                  console.log("All Done! Data is recorded to our database.")
+                }
+              })();
+            }
+
+
+
+
 
           } else if (router.query.responseType === 'signMessage') {
             const resp = SignMessageResponse.deserialize(response);
@@ -120,7 +148,7 @@ const TestRequest: NextPage = () => {
       }
 
     }
-  }, [router, clientPrivateKey]);
+  }, [router, clientPrivateKey, aaAddress]);
 
   useEffect(() => {
     const lsSK = localStorage.getItem('ephemeralKey');

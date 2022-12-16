@@ -1,19 +1,19 @@
-export const staggerContainer = () => ({
-  hidden: {},
-  show: {
-    transition: {
-    },
+
+export const staggerContainer = {
+  hidden: {
   },
-});
+  show: {
+  },
+};
 
 
 export const textContainer = {
   hidden: {
     opacity: 0,
   },
-  show: (i = 1) => ({
+  show: () => ({
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: i * 0.1 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.3 },
   }),
 };
 
@@ -36,7 +36,7 @@ export const textVariant = (delay: string) => ({
 export const textVariant2 = {
   hidden: {
     opacity: 0,
-    y: 20,
+    y: 0,
   },
   show: {
     opacity: 1,
@@ -69,7 +69,7 @@ export const fadeIn = (direction: string, type: string, delay: number, duration:
 
 export const planetVariants = (direction: string) => ({
   hidden: {
-    x: direction === 'left' ? '-100%' : '100%',
+    x: direction === 'left' ? -500 : 0,
     rotate: 120,
   },
   show: {
