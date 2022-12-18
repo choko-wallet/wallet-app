@@ -4,14 +4,11 @@
 import type { NextPage } from 'next';
 import Image from 'next/image';
 
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import { cryptoWaitReady, encodeAddress } from '@polkadot/util-crypto';
 import { AsymmetricEncryption } from '@skyekiwi/crypto';
 import { hexToU8a, stringToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 import { BigNumber, ethers } from 'ethers';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import tweetnacl from 'tweetnacl';
 import { motion } from 'framer-motion';
@@ -27,21 +24,18 @@ import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
 import { fetchAAWalletAddress } from '../utils/aaUtils';
 import { deploymentEnv, walletUrl } from '../utils/env';
 import Loading from './../components/Loading';
-import toast from 'react-hot-toast';
 
 import { staggerContainer, fadeIn, planetVariants, textContainer, textVariant2 } from '../utils/motion';
 import ball from '../images/ball.png';
-import Modal from '../components/Modal';
-import { Dialog } from '@headlessui/react';
-import { DownloadIcon, XIcon } from '@heroicons/react/outline';
 
 import { useAppThunkDispatch } from '../features/redux/store';
 import { setClose, setOpen } from '../features/slices/status';
 import TestRequestModal from '../components/modal/TestRequestModal';
-import ReceiveTokenModal from '../components/modal/ReceiveTokenModal';
 import superagent from 'superagent';
 
 const callbackUrl = `${walletUrl}/test-request`;
+const apiUrl = `http://localhost:3333/choko/beta`;
+// const apiUrl = `https://formapi.skye.kiwi/choko/beta`;
 
 const TestRequest: NextPage = () => {
   const router = useRouter();
@@ -49,20 +43,112 @@ const TestRequest: NextPage = () => {
 
   const [account, setAccount] = useState<UserAccount>(null);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
-  const { theme } = useTheme();
-  const [accessToken, setAccessToken] = useState<string>('');
 
-  const [encryptedMessage, setEncryptedMessage] = useState<Uint8Array>(new Uint8Array(0));
-  const [clientPrivateKey, setClientPrivateKey] = useState<Uint8Array>(new Uint8Array(32));
   const [aaAddress, setAAAddress] = useState('');
 
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useAppThunkDispatch();
   const [modalString, setModalString] = useState<string>('');
 
+  const [claimFaucet, setClaimFaucet] = useState(false);
+  const [connect, setConnect] = useState(false);
+  const [recordGasless, setRecordGasless] = useState(false);
+
+  const [discordHandler, setDiscordHandler] = useState("");
+
+  const apiConnect = async (polkadotAddress: string, eoaAddress: string, aaAddress: string) => {
+    
+    if (!polkadotAddress || !eoaAddress || !aaAddress) {
+      throw new Error("address not ready");
+    }
+
+    const r = await superagent
+      .post(`${apiUrl}/connect`)
+      .send({
+        polkadotAddress: polkadotAddress, 
+        eoaAddress: eoaAddress, 
+        aaAddress: aaAddress,
+      });
+
+    if (r.body.error === "None") {
+      console.log("All Done! Wallet connected ")
+      setConnect(false);
+    }
+  }
+
+  const apiFaucet = async (aaAddress: string) => {
+    
+    if (!aaAddress) {
+      throw new Error("address not ready");
+    }
+
+    console.log(aaAddress)
+    try {
+      const r = await superagent
+        .post(`${apiUrl}/faucet`)
+        .send({ aaAddress: aaAddress });
+      if (r.body.error === "None") {
+        console.log("All Done! Faucet sent")
+        setClaimFaucet(false);
+      }
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
+  const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
+    
+    if (!aaAddress) {
+      throw new Error("address not ready");
+    }
+
+    const r = await superagent
+      .post(`${apiUrl}/recordDiscord`)
+      .send({
+        eoaAddress,
+        sig, discordHandler
+      });
+    if (r.body.error === "None") {
+      console.log("All Done! Data is recorded to our database.")
+    }
+  }
+
+  const apiRecordGasless = async (aaAddress: string, gaslessTxId: string) => {
+    
+    if (!aaAddress) {
+      throw new Error("address not ready");
+    }
+
+    const r = await superagent
+      .post(`${apiUrl}/recordGasless`)
+      .send({
+        aaAddress, gaslessTxId
+      });
+    if (r.body.error === "None") {
+      console.log("All Done! Gasless Data is recorded to our database.")
+    }
+  }
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    console.log("claimFaucet", claimFaucet)
+    if (connect) {
+      apiConnect(
+        account.getAddress('sr25519'),
+        account.getAddress('ethereum'),
+        aaAddress 
+      )
+    } else if (claimFaucet) {
+      apiFaucet(
+        aaAddress
+      );
+    }
+  }, [mounted, connect, claimFaucet])
+
   // set up Dapp account storage
-  useEffect(() => {// 解密参数要加try catch 
-    if (router.query && router.query.response) {
+  useEffect(() => {
+    if (router.query && router.query.response && aaAddress) {
       try {
         const response = decompressParameters(hexToU8a(router.query.response as string));
 
@@ -74,40 +160,15 @@ const TestRequest: NextPage = () => {
             setWalletConnected(true);
             setModalString(JSON.stringify(resp.payload));
             dispatch(setOpen('testRequest'));
-            // alert(JSON.stringify(resp.payload));// 改modal
 
-            // 发送给数据库
-            if (aaAddress !== '') {
-              (async () => {
-                const r = await superagent
-                  .post('http://localhost:3333/choko/beta/newData')
-                  .send({
-                    accessToken: 'ChokoWallet1226',
-                    isSuccessful: resp.isSuccessful,
-                    blockNumber: resp.payload.blockNumber,
-                    gaslessTxId: u8aToHex(resp.payload.gaslessTxId),
-                    txHash: u8aToHex(resp.payload.txHash),
-                    type: resp.type,
-                    address: account.getAddress('sr25519'),
-                    eoaAddress: account.getAddress('ethereum'),
-                    aaAddress: aaAddress,
-                  });
-                if (r.body.error === "None") {
-                  console.log("All Done! Data is recorded to our database.")
-                }
-              })();
-            }
-
-
-
-
-
+            apiRecordGasless(
+              aaAddress, `0x${u8aToHex(resp.payload.gaslessTxId)}`,
+            )
           } else if (router.query.responseType === 'signMessage') {
             const resp = SignMessageResponse.deserialize(response);
 
             console.log(resp);
 
-            // stringToU8a('Test Messaage')
             const msg = `Use Etherscan To verify this: 
             msg = 'Test Messaage',
             address = ${resp.userOrigin.getAddress('ethereum')},
@@ -119,28 +180,22 @@ const TestRequest: NextPage = () => {
             setWalletConnected(true);
             setModalString(msg);
             dispatch(setOpen('testRequest'))
-            // alert(msg);// 改modal
 
-          } else if (router.query.responseType === 'decryptMessage') {
-            const resp = DecryptMessageResponse.deserialize(response);
+            apiRecord(
+              resp.userOrigin.getAddress('ethereum'),
+              `0x${u8aToHex(resp.payload.signature)}`,
+              discordHandler
+            )
 
-            console.log(resp);
-            const decryptMsg = u8aToString(AsymmetricEncryption.decrypt(clientPrivateKey, resp.payload.message));
-            console.log('decryptMessage');
-            setWalletConnected(true);
-            setModalString(decryptMsg);
-            dispatch(setOpen('testRequest'))
-            // alert('Decrypt Message: ' + decryptMsg);// 改modal
-
-          } else if (router.query.responseType === 'connectDapp') {//如果连接钱包回到成功 给状态 显示账户
+          } else if (router.query.responseType === 'connectDapp') {
             const resp = ConnectDappResponse.deserialize(response);
             console.log(resp);
             const store = loadStorage();
             storeUserAccount(store, resp.payload.userAccount);
             persistStorage(store);
-
             console.log('connectDapp');
             setWalletConnected(true);
+            setConnect(true);
           }
         }
       } catch (err) {
@@ -148,22 +203,7 @@ const TestRequest: NextPage = () => {
       }
 
     }
-  }, [router, clientPrivateKey, aaAddress]);
-
-  useEffect(() => {
-    const lsSK = localStorage.getItem('ephemeralKey');
-
-    if (!lsSK) {
-      console.log('Generating ephermeral key');
-      const sk = tweetnacl.randomBytes(32);
-
-      localStorage.setItem('ephemeralKey', '0x' + u8aToHex(sk));
-    }
-
-    const sk = localStorage.getItem('ephemeralKey');
-
-    setClientPrivateKey(hexToU8a(sk.substring(2)));
-  }, []);
+  }, [router, aaAddress]);
 
   // configSDK and store in localStorage
   useEffect(() => {
@@ -173,8 +213,8 @@ const TestRequest: NextPage = () => {
         localKeyEncryptionStrategy: 0
       }),
       activeNetworkHash: u8aToHex(xxHash('goerli')),
-      displayName: 'Choko Wallet Sample Dapp',
-      infoName: 'native-sample-dapp',
+      displayName: 'Choko Wallet Beta Test',
+      infoName: 'beta-test',
       version: 0
     });
 
@@ -185,25 +225,20 @@ const TestRequest: NextPage = () => {
 
       setAccount(a);
 
-      if (!loading) {
-        const orignalMessage = stringToU8a('A Clear Text Message');
-        const msg = AsymmetricEncryption.encryptWithCurveType(
-          'sr25519',
-          orignalMessage,
-          a.publicKeys[0]
-        );
-
-        setEncryptedMessage(msg);
-      }
-
       void (async () => {
         await cryptoWaitReady();
         const res = await fetchAAWalletAddress([a]);
         // const res = ['0x89898989898989']
 
         setAAAddress(res[0]);
+        const discord = localStorage.getItem("discordHandler");
+        if (discord) {
+          setDiscordHandler(discord);
+        }
+
         setMounted(true);
         setLoading(false);
+
       })();
     } else {
       setLoading(false);
@@ -216,8 +251,6 @@ const TestRequest: NextPage = () => {
   }
 
   if (loading) return <Loading title='Initializing ... ' />;
-
-  console.log('modalString', modalString)
 
   return (
     <div className="overflow-hidden min-h-screen bg-[#1A232E]">
@@ -272,7 +305,7 @@ const TestRequest: NextPage = () => {
                 className='mt-[8px] font-bold md:text-[10px] text-[10px] text-white '
               >
                 {<>
-                  <span className="font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]">Your Account address: </span><br />
+                  <span className="font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]">Your Polkadot Account address: </span><br />
                   {account.getAddress('sr25519')}<br />
                   <span className="font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]">Your Ethereum EOA address: </span><br />
                   {account.getAddress('ethereum')}<br />
@@ -297,8 +330,6 @@ const TestRequest: NextPage = () => {
                   className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 max-w-[300px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
                   onClick={() => {
                     const s = loadStorage();
-
-                    console.log(s);
                     const x = buildConnectDappUrl(s, callbackUrl, deploymentEnv);
 
                     window.location.href = x;
@@ -307,11 +338,6 @@ const TestRequest: NextPage = () => {
                 </button>
               </div>
             }
-
-
-
-
-
           </motion.div>
         </motion.div>
       </section>
@@ -337,102 +363,17 @@ const TestRequest: NextPage = () => {
                 </p>
 
                 <p className="mt-[16px] font-normal lg:text-[20px] text-[14px] text-white">
-                  Follow SkyeKiwi on their <a className='text-sky-400'
-                    href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.
+                  We will send you 0.1DAI on Goerli
                 </p>
               </div>
 
               <a
                 className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
-                href='https://discord.com/invite/m7tFX8u43J'>
+                onClick={() => {
+                  setClaimFaucet(true)
+                }}>
                 Claim Faucet
               </a>
-
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={fadeIn('up', 'spring', 0.8, 1)}
-            className="flex md:flex-row flex-col gap-4"
-          >
-
-            <div className="w-full flex justify-between items-center">
-              <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
-                <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Sign A Transaction - Polkadot Style
-                </p>
-              </div>
-
-              <button
-                className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
-                onClick={async () => {
-                  const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
-                  const api = await ApiPromise.create({ provider: provider });
-                  const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
-
-                  const store = configSDK({
-                    accountOption: new AccountOption({
-                      hasEncryptedPrivateKeyExported: false,
-                      localKeyEncryptionStrategy: 0
-                    }),
-                    activeNetworkHash: u8aToHex(xxHash('skyekiwi')),
-                    displayName: 'Choko Wallet Sample Dapp',
-                    infoName: 'native-sample-dapp',
-                    version: 0
-                  }, false);
-
-                  const encoded = hexToU8a(tx.toHex().substring(2));
-                  const x = buildSignTxUrl(
-                    store,
-                    encoded,
-                    SignTxType.Ordinary,
-                    callbackUrl,
-                    deploymentEnv
-                  );
-
-                  await provider.disconnect();
-                  window.location.href = x;
-                }}>
-                Sign Tx
-              </button>
-
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={fadeIn('up', 'spring', 1.1, 1)}
-            className="flex md:flex-row flex-col gap-4"
-          >
-            <div className="w-full flex justify-between items-center">
-              <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
-                <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Sign A Transaction - On Goerli, Gasless
-                </p>
-              </div>
-
-              <button
-                className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
-                onClick={() => {
-                  const tx = {
-                    to: '0xAA1658296e2b770fB793eb8B36E856c8210A566F',
-                    value: ethers.utils.parseEther('0.00001')
-                  };
-                  const s = loadStorage();
-
-                  console.log(s);
-                  const x = buildSignTxUrl(
-                    s,
-                    hexToU8a(encodeTransaction(tx).slice(2)),
-                    SignTxType.Gasless,
-                    callbackUrl,
-                    deploymentEnv
-                  );
-
-                  window.location.href = x;
-                }}
-              >
-                Sign Tx
-              </button>
 
             </div>
           </motion.div>
@@ -444,7 +385,7 @@ const TestRequest: NextPage = () => {
             <div className="w-full flex justify-between items-center">
               <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
                 <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Sign A Transaction - On Goerli / ERC20 - AA Contract Call With Gas
+                  Sign A Gasless Transaction
                 </p>
               </div>
 
@@ -454,7 +395,7 @@ const TestRequest: NextPage = () => {
                   const tx = {
                     data: encodeContractCall('erc20', 'transfer', [
                       '0xAA1658296e2b770fB793eb8B36E856c8210A566F',
-                      BigNumber.from('1000000000000000')
+                      BigNumber.from('1000000000000000000')
                     ]),
                     gasLimit: 2000000,
                     to: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
@@ -462,11 +403,10 @@ const TestRequest: NextPage = () => {
                   };
                   const s = loadStorage();
 
-                  console.log(s);
                   const x = buildSignTxUrl(
                     s,
                     hexToU8a(encodeTransaction(tx).slice(2)),
-                    SignTxType.AACall,
+                    SignTxType.Gasless,
                     callbackUrl,
                     deploymentEnv
                   );
@@ -488,17 +428,27 @@ const TestRequest: NextPage = () => {
                 <p className="font-normal lg:text-[42px] text-[26px] text-white">
                   Sign A Message
                 </p>
-              </div>
 
+                <p className="m-2 font-normal lg:text-[20px] text-[20px] text-white">
+                  <span className='m-2'>Your Discord Handler: </span>
+                  <input className='m-2 p-2 w-full input input-bordered input-info bg-transparent font-poppins text-white'
+                    onChange={(e) => setDiscordHandler(e.target.value)}
+                    placeholder={`choko wallet#3218`}
+                    type='text'
+                    value={discordHandler}
+                  />
+                </p>
+              </div>
+              
               <button
                 className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
                 onClick={() => {
                   const s = loadStorage();
 
-                  console.log(s);
+                  localStorage.setItem("discordHandler", discordHandler);
                   const x = buildSignMessageUrl(
                     s,
-                    stringToU8a('Test Messaage'),
+                    stringToU8a(discordHandler),
                     SignMessageType.EthereumPersonalSign,
                     callbackUrl,
                     deploymentEnv
@@ -506,238 +456,17 @@ const TestRequest: NextPage = () => {
 
                   window.location.href = x;
                 }}>
-                Sign Tx
+                Sign Message
               </button>
 
             </div>
           </motion.div>
-
-
-          <motion.div
-            variants={fadeIn('up', 'spring', 2.0, 1)}
-            className="flex md:flex-row flex-col gap-4"
-          >
-            <div className="w-full flex justify-between items-center">
-              <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
-                <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Decrypt A Message
-                </p>
-
-                <p className="font-normal text-[6px] text-white stringWrap ">
-                  Message - A Clear Text Message - encoded into {'0x' + u8aToHex(stringToU8a('A Clear Text Message'))} <br />
-                  Send to {'0x' + u8aToHex(account.publicKeys[0])} on sr25519 and address is {encodeAddress(account.publicKeys[0])} <br />
-                  Encrypted Message is {encryptedMessage} <br />
-                  Client Ephermeral Private Key is {'0x' + u8aToHex(clientPrivateKey)} and public key is {'0x' + u8aToHex(AsymmetricEncryption.getPublicKey(clientPrivateKey))}
-                </p>
-              </div>
-
-              <button
-                className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
-                onClick={() => {
-                  const s = loadStorage();
-
-                  console.log(s);
-                  const x = buildDecryptMessageUrl(
-                    s,
-                    'sr25519',
-                    encryptedMessage,
-                    AsymmetricEncryption.getPublicKey(clientPrivateKey),
-                    callbackUrl,
-                    deploymentEnv
-                  );
-
-                  window.location.href = x;
-                }}>
-                Decrypt Msg
-              </button>
-
-            </div>
-          </motion.div>
-
         </motion.div>
 
       }
 
 
       <TestRequestModal modalString={modalString} />
-
-
-
-
-      {/* <main className='grid grid-cols-12 gap-4 '>
-
-        <div className='grid grid-cols-12 col-span-12 md:col-span-10 md:col-start-2 p-3'>
-          <div className='col-span-12 shadow-xl rounded-lg card p-5 md:p-6 bg-white'>
-            <h3 className='card-title mb-3'>Test Page for Request Handler</h3>
-
-            <div className='col-span-12 px-5'>
-              <div className='divider'></div>
-              <h1>Connect This Testing Page with an Address! </h1><br />
-              <button className='btn m-2 btn-error'
-                onClick={() => {
-                  const s = loadStorage();
-
-                  console.log(s);
-                  const x = buildConnectDappUrl(s, callbackUrl, deploymentEnv);
-
-                  window.location.href = x;
-                }}>
-                Connect Wallet
-              </button>
-
-
-
-              <div className='divider'></div>
-
-              {
-                account && walletConnected &&
-                <>
-                  <h2 className='text-black'>Claim Some Faucet Token First ... </h2><br />
-                  <h3 className='text-black'
-                    style={{ overflowWrap: 'break-word' }}><span>Address of your account is: <b>{account.getAddress('sr25519')}</b></span></h3> <br />
-                  <h3 className='text-black'
-                    style={{ overflowWrap: 'break-word' }}><span>Your Ethereum EOA(Master) address is: <b>{account.getAddress('ethereum')}</b></span> . Do not fund this address unless you know what you are trying to do. </h3> <br />
-                  <h3 className='text-black'
-                    style={{ overflowWrap: 'break-word' }}><span>Your AA address is: <b>{aaAddress}</b></span> . </h3> <br />
-
-                  <h3 className='text-black'>Follow SkyeKiwi on their <a className='text-sky-400'
-                    href='https://discord.com/invite/m7tFX8u43J'>Discord server</a> and go to <b>“#alpha-testnet-faucet”</b> channel to generate test tokens. Send <b>“!faucet </b> with your created account address to receive testnet tokens.</h3>
-                  <br />
-
-                  <div className='divider'></div>
-
-                  <h2 className='text-black'>Sign A Transaction - Polkadot Style</h2><br />
-                  <button className='btn m-5 btn-error'
-                    onClick={async () => {
-                      const provider = new WsProvider('wss://staging.rpc.skye.kiwi');
-                      const api = await ApiPromise.create({ provider: provider });
-                      const tx = api.tx.balances.transfer('5CQ5PxbmUkAzRnLPUkU65fZtkypqpx8MrKnAfXkSy9eiSeoM', 1);
-
-                      const store = configSDK({
-                        accountOption: new AccountOption({
-                          hasEncryptedPrivateKeyExported: false,
-                          localKeyEncryptionStrategy: 0
-                        }),
-                        activeNetworkHash: u8aToHex(xxHash('skyekiwi')),
-                        displayName: 'Choko Wallet Sample Dapp',
-                        infoName: 'native-sample-dapp',
-                        version: 0
-                      }, false);
-
-                      const encoded = hexToU8a(tx.toHex().substring(2));
-                      const x = buildSignTxUrl(
-                        store,
-                        encoded,
-                        SignTxType.Ordinary,
-                        callbackUrl,
-                        deploymentEnv
-                      );
-
-                      await provider.disconnect();
-                      window.location.href = x;
-                    }}>Sign Transaction</button><br />
-
-                  <div className='divider'></div>
-
-                  <h2 className='text-black'>Sign A Transaction - On Goerli, Gasless</h2><br />
-                  <button className='btn m-5 btn-error'
-                    onClick={() => {
-                      const tx = {
-                        to: '0xAA1658296e2b770fB793eb8B36E856c8210A566F',
-                        value: ethers.utils.parseEther('0.00001')
-                      };
-                      const s = loadStorage();
-
-                      console.log(s);
-                      const x = buildSignTxUrl(
-                        s,
-                        hexToU8a(encodeTransaction(tx).slice(2)),
-                        SignTxType.Gasless,
-                        callbackUrl,
-                        deploymentEnv
-                      );
-
-                      window.location.href = x;
-                    }}>Sign Transaction</button><br />
-
-                  <h2 className='text-black'>Sign A Transaction - On Goerli / ERC20 - AA Contract Call With Gas</h2><br />
-                  <button className='btn m-5 btn-error'
-                    onClick={() => {
-                      const tx = {
-                        data: encodeContractCall('erc20', 'transfer', [
-                          '0xAA1658296e2b770fB793eb8B36E856c8210A566F',
-                          BigNumber.from('1000000000000000')
-                        ]),
-                        gasLimit: 2000000,
-                        to: '0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844',
-                        value: ethers.utils.parseEther('0')
-                      };
-                      const s = loadStorage();
-
-                      console.log(s);
-                      const x = buildSignTxUrl(
-                        s,
-                        hexToU8a(encodeTransaction(tx).slice(2)),
-                        SignTxType.AACall,
-                        callbackUrl,
-                        deploymentEnv
-                      );
-
-                      window.location.href = x;
-                    }}>Sign Transaction</button><br />
-
-                  <div className='divider'></div>
-                  <h2 className='text-black'>Sign A Message</h2><br />
-                  <button className='btn m-5 btn-error'
-                    onClick={() => {
-                      const s = loadStorage();
-
-                      console.log(s);
-                      const x = buildSignMessageUrl(
-                        s,
-                        stringToU8a('Test Messaage'),
-                        SignMessageType.EthereumPersonalSign,
-                        callbackUrl,
-                        deploymentEnv
-                      );
-
-                      window.location.href = x;
-                    }}>Sign Message</button><br />
-
-                  <div className='divider'></div>
-
-                  <h2 className='text-black'>Decrypt A Message</h2><br />
-
-                  <h2>
-                    Message - A Clear Text Message - encoded into {'0x' + u8aToHex(stringToU8a('A Clear Text Message'))} <br />
-                    Send to {'0x' + u8aToHex(account.publicKeys[0])} on sr25519 and address is {encodeAddress(account.publicKeys[0])} <br />
-                    Encrypted Message is {encryptedMessage} <br />
-                    Client Ephermeral Private Key is {'0x' + u8aToHex(clientPrivateKey)} and public key is {'0x' + u8aToHex(AsymmetricEncryption.getPublicKey(clientPrivateKey))}
-                  </h2>
-                  <button className='btn m-5 btn-error'
-                    onClick={() => {
-                      const s = loadStorage();
-
-                      console.log(s);
-                      const x = buildDecryptMessageUrl(
-                        s,
-                        'sr25519',
-                        encryptedMessage,
-                        AsymmetricEncryption.getPublicKey(clientPrivateKey),
-                        callbackUrl,
-                        deploymentEnv
-                      );
-
-                      window.location.href = x;
-                    }}>Decrypt Message</button><br />
-                </>
-              }
-            </div>
-
-          </div>
-        </div>
-      </main> */}
-
     </div>
   );
 };
