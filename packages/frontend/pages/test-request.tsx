@@ -3,7 +3,6 @@
 
 import type { NextPage } from 'next';
 
-import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { hexToU8a, stringToU8a, u8aToHex } from '@skyekiwi/util';
 import { BigNumber, ethers } from 'ethers';
 import { motion } from 'framer-motion';
@@ -31,7 +30,7 @@ import { FormAPIResponse } from '../utils/types';
 
 const callbackUrl = `${walletUrl}/test-request`;
 // const apiUrl = 'http://localhost:3333/choko/beta';
-const apiUrl = `https://formapi.skye.kiwi/choko/beta`;
+const apiUrl = `https://betaapi.choko.app/choko/beta`;
 
 const TestRequest: NextPage = () => {
   const router = useRouter();
@@ -44,7 +43,9 @@ const TestRequest: NextPage = () => {
 
   const apiConnect = async (polkadotAddress: string, eoaAddress: string, aaAddress: string) => {
     if (!polkadotAddress || !eoaAddress || !aaAddress) {
-      throw new Error('address not ready');
+      console.log("wrong hook")
+      return
+      // throw new Error('address not ready');
     }
 
     await superagent
@@ -114,114 +115,121 @@ const TestRequest: NextPage = () => {
       });
   };
 
-  const loadUserAccount = async () => {
-    const store = loadStorage();
-    const data = store.userAccount;
-
-    if (data && data !== 'null') {
-      const a = UserAccount.deserialize(decompressParameters(hexToU8a(data)));
-
-      setAccount(a);
-
-      await cryptoWaitReady();
-      const res = await fetchAAWalletAddress([a]);
-
-      setAAAddress(res[0]);
-      const discord = localStorage.getItem('discordHandler');
-
-      if (discord) {
-        setDiscordHandler(discord);
-      }
-    } else {
-      throw new Error('user acount not found');
+  const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
+    if (!aaAddress) {
+      throw new Error('address not ready');
     }
+
+    const notification = toast.loading('Sending Discord Message ...');
+
+    // console.log(discordHandler, eoaAddress, sig);
+    await superagent
+      .post(`${apiUrl}/recordDiscord`)
+      .send({
+        discordHandler,
+        eoaAddress,
+        sig
+      })
+      .then((res) => {
+        const resp = res.body as FormAPIResponse;
+
+        if (resp.error === 'no gaslessTxId') {
+          toast.error('Failure: You have not sent a gasless Tx yet.', {
+            id: notification
+          });
+        } else if (resp.error === 'sig wrong') {
+          toast.error('Failure: Signature verification wrong. Make sure you have use the same account for signing.', {
+            id: notification
+          });
+        } else if (resp.error === 'discord error') {
+          toast.error('Failure: Failed to sent a discrod message. Make sure you have typed in the right discord handler.', {
+            id: notification
+          });
+        } else if (resp.error === 'None') {
+          toast.success('Success. You have finished the whole test. No further action needed.', {
+            id: notification
+          });
+        }
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        toastFail('Someting Wrong! Please try again.');
+      });
   };
 
   // set up Dapp account storage
   useEffect(() => {
-    const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
-      if (!aaAddress) {
-        throw new Error('address not ready');
-      }
+    if (!router.query || !router.query.response) return;
 
-      await superagent
-        .post(`${apiUrl}/recordDiscord`)
-        .send({
-          discordHandler,
-          eoaAddress,
-          sig
-        })
-        .then((res) => {
-          const resp = res.body as FormAPIResponse;
+    const response = decompressParameters(hexToU8a(router.query.response as string));
+    try {
+      if (response && response.length > 0 && aaAddress) {
+        if (router.query.responseType === 'signTx') {
+          const resp = SignTxResponse.deserialize(response);
 
-          if (resp.error === 'no gaslessTxId') {
-            toastFail('Failure: You have not sent a gasless Tx yet.');
-          } else if (resp.error === 'sig wrong') {
-            toastFail('Failure: Signature verification wrong. Make sure you have use the same account for signing.');
-          } else if (resp.error === 'discord error') {
-            toastFail('Failure: Failed to sent a discrod message. Make sure you have typed in the right discord handler.');
-          } else if (resp.error === 'None') {
-            toastSuccess('Success. You have finished the whole test. No further action needed.');
-          }
-        })
-        .catch((err) => {
-          console.log('Error', err);
-          toastFail('Someting Wrong! Please try again.');
-        });
-    };
-
-    if (router.query && router.query.response) {
-      const response = decompressParameters(hexToU8a(router.query.response as string));
-
-      if (router.query.responseType === 'connectDapp') {
-        const resp = ConnectDappResponse.deserialize(response);
-
-        const store = loadStorage();
-
-        storeUserAccount(store, resp.payload.userAccount);
-        persistStorage(store);
-
-        setLoading(true);
-        loadUserAccount().then(() => {
-          setLoading(false);
-          void apiConnect(
-            account.getAddress('sr25519'),
-            account.getAddress('ethereum'),
-            aaAddress
+          void apiRecordGasless(
+            aaAddress, `0x${u8aToHex(resp.payload.gaslessTxId)}`
           );
-        }).catch((_) => {
-          // pass
-          setLoading(false);
-        });
-        void router.replace('/test-request', undefined, { shallow: true });
-      }
+          void router.replace('/test-request', undefined, { shallow: true });
+        } else if (router.query.responseType === 'signMessage') {
+          const resp = SignMessageResponse.deserialize(response);
 
-      try {
-        if (response && response.length > 0 && aaAddress) {
-          if (router.query.responseType === 'signTx') {
-            const resp = SignTxResponse.deserialize(response);
-
-            void apiRecordGasless(
-              aaAddress, `0x${u8aToHex(resp.payload.gaslessTxId)}`
-            );
-            void router.replace('/test-request', undefined, { shallow: true });
-          } else if (router.query.responseType === 'signMessage') {
-            const resp = SignMessageResponse.deserialize(response);
-
-            void apiRecord(
-              resp.userOrigin.getAddress('ethereum'),
-              `0x${u8aToHex(resp.payload.signature)}`,
-              discordHandler
-            );
-            void router.replace('/test-request', undefined, { shallow: true });
-          }
+          void apiRecord(
+            resp.userOrigin.getAddress('ethereum'),
+            `0x${u8aToHex(resp.payload.signature)}`,
+            discordHandler
+          );
+          void router.replace('/test-request', undefined, { shallow: true });
         }
-      } catch (err) {
-        console.error('central-err', err);
-        toastFail('Someting Wrong! Please try again.');
       }
+    } catch (err) {
+      console.error('central-err', err);
+      toastFail('Someting Wrong! Please try again.');
     }
-  }, [router, aaAddress, account, discordHandler]);
+  }, [router, aaAddress, account, discordHandler, loading]);
+
+  useEffect(() => {
+    if (router.query && router.query.responseType === 'connectDapp') {
+      const response = decompressParameters(hexToU8a(router.query.response as string));
+      const resp = ConnectDappResponse.deserialize(response);
+
+      const store = loadStorage();
+      storeUserAccount(store, resp.payload.userAccount);
+      persistStorage(store);
+
+      setLoading(true);
+      void router.replace('/test-request', undefined, { shallow: true })
+        .then(() => window.location.reload());
+    }
+  }, [router]);
+
+  useEffect(() => {
+    setLoading(true);
+    const d = localStorage.getItem('userAccount');
+
+    if (d && d !== 'null') {
+      const a = UserAccount.deserialize(decompressParameters(hexToU8a(d)));
+      setAccount(a);
+
+      void (async() => {
+        const res = await fetchAAWalletAddress([a]);
+        setAAAddress(res[0]);
+        await apiConnect(
+          a.getAddress('sr25519'),
+          a.getAddress('ethereum'),
+          res[0]
+        );
+        setLoading(false)
+      })()
+
+      const discord = localStorage.getItem('discordHandler');
+      if (discord) {
+        setDiscordHandler(discord);
+      }
+    } else {
+      setLoading(false)
+    }
+  }, []);
 
   // configSDK and store in localStorage
   useEffect(() => {
@@ -235,16 +243,7 @@ const TestRequest: NextPage = () => {
       infoName: 'beta-test',
       version: 0
     });
-
-    setLoading(true);
-    loadUserAccount().then(() => {
-      setLoading(false);
-      setMounted(true);
-    }).catch((_) => {
-      // pass
-      setLoading(false);
-      setMounted(true);
-    });
+    setMounted(true);
   }, []);
 
   if (!mounted) {
@@ -364,7 +363,7 @@ const TestRequest: NextPage = () => {
                 </p>
 
                 <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
-                  We will send you 0.1DAI on Goerli. You may only claim this once.
+                  We will send you 1DAI on Goerli. You may only claim this once.
                 </p>
                 <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
                   Once you have claimed the faucet. You click on the the purple sphere above to navigate to the wallet home and see your balance.
@@ -440,7 +439,7 @@ const TestRequest: NextPage = () => {
                     href='https://www.remote.tools/remote-work/discord-tag'
                     rel='noreferrer'
                     target='_blank'>this article</a> on what is your discord handler. Upon finish signing, a bot will mention you in the discord channel. If you are able to receive it, you have completed the whole test. You are more than welcome to poke around the wallet and find bugs!
-                </p>
+                </p><br/>
 
                 <p className='m-2 font-normal lg:text-[20px] text-[20px] text-white'>
                   <span>Your Discord Handler: </span>

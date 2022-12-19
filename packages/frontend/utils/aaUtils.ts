@@ -21,6 +21,7 @@ const fetchAAWalletAddress = async (account: UserAccount[]): Promise<string[]> =
 
   for (let i = 0; i < len; ++i) {
     const eoa = ethereumEncode(account[i].publicKeys[2]);
+
     const aa = await getSmartWalletAddress(
       chainIdToProvider[5], // TOOD: remove this shit as it's all the same for accounts
       eoa
