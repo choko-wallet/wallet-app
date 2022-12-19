@@ -32,6 +32,8 @@ import { useAppThunkDispatch } from '../features/redux/store';
 import { setClose, setOpen } from '../features/slices/status';
 import TestRequestModal from '../components/modal/TestRequestModal';
 import superagent from 'superagent';
+import { toastFail } from '../utils/toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 const callbackUrl = `${walletUrl}/test-request`;
 const apiUrl = `http://localhost:3333/choko/beta`;
@@ -57,93 +59,139 @@ const TestRequest: NextPage = () => {
   const [discordHandler, setDiscordHandler] = useState("");
 
   const apiConnect = async (polkadotAddress: string, eoaAddress: string, aaAddress: string) => {
-    
+
     if (!polkadotAddress || !eoaAddress || !aaAddress) {
       throw new Error("address not ready");
     }
 
-    const r = await superagent
+    await superagent
       .post(`${apiUrl}/connect`)
       .send({
-        polkadotAddress: polkadotAddress, 
-        eoaAddress: eoaAddress, 
+        polkadotAddress: polkadotAddress,
+        eoaAddress: eoaAddress,
         aaAddress: aaAddress,
+      })
+      .then((res) => {
+        console.log('All Done! Wallet connected', res);
+        setConnect(false);// 触发第一个useEffect
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        toastFail('Someting Wrong! Please try again.');
       });
 
-    if (r.body.error === "None") {
-      console.log("All Done! Wallet connected ")
-      setConnect(false);
-    }
+    // if (r.body.error === "None") {
+    //   console.log("All Done! Wallet connected ")
+    //   setConnect(false);// 触发第一个useEffect
+    // }
   }
 
   const apiFaucet = async (aaAddress: string) => {
-    
+    const notification = toast.loading('Claming Faucet...');
+
     if (!aaAddress) {
       throw new Error("address not ready");
     }
 
-    console.log(aaAddress)
-    try {
-      const r = await superagent
-        .post(`${apiUrl}/faucet`)
-        .send({ aaAddress: aaAddress });
-      if (r.body.error === "None") {
-        console.log("All Done! Faucet sent")
+    console.log('apiFaucet-aaAddress', aaAddress)
+
+    await superagent
+      .post(`${apiUrl}/faucet`)
+      .send({ aaAddress: aaAddress })
+      .then((res) => {
+        console.log("All Done! Faucet sent", res);
         setClaimFaucet(false);
-      }
-    } catch(e) {
-      console.log(e)
-    }
+        toast.success('Faucet Sent', {
+          id: notification
+        });
+
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        setClaimFaucet(false);
+        toast.error('Already Sent', {// 这里可能要根据返回状态判断toast 
+          id: notification
+        });
+
+      });
+
+    // if (r.body.error === "None") {
+    //   console.log("All Done! Faucet sent")
+    // }
+    // setClaimFaucet(false);
   }
 
+
   const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
-    
+
     if (!aaAddress) {
       throw new Error("address not ready");
     }
 
-    const r = await superagent
+    await superagent
       .post(`${apiUrl}/recordDiscord`)
       .send({
         eoaAddress,
         sig, discordHandler
+      })
+      .then((res) => {
+        console.log("All Done! ", res);
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        toastFail('Someting Wrong! Please try again.');
       });
-    if (r.body.error === "None") {
-      console.log("All Done! Data is recorded to our database.")
-    }
+
+    // if (r.body.error === "None") {
+    //   console.log("All Done! Data is recorded to our database.")
+    // }
+
   }
 
   const apiRecordGasless = async (aaAddress: string, gaslessTxId: string) => {
-    
+
     if (!aaAddress) {
       throw new Error("address not ready");
     }
 
-    const r = await superagent
+    await superagent
       .post(`${apiUrl}/recordGasless`)
       .send({
         aaAddress, gaslessTxId
+      })
+      .then((res) => {
+        console.log("All Done! ", res);
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        toastFail('Someting Wrong! Please try again.');
       });
-    if (r.body.error === "None") {
-      console.log("All Done! Gasless Data is recorded to our database.")
-    }
+
+    // if (r.body.error === "None") {
+    //   console.log("All Done! Gasless Data is recorded to our database.")
+    // }
   }
 
-  useEffect(() => {
+  useEffect(() => {// 初始化最后跑这个useEffect 连接数据库
     if (!mounted) return;
 
-    console.log("claimFaucet", claimFaucet)
-    if (connect) {
+    console.log("useEffect--claimFaucet", claimFaucet)
+    console.log("useEffect--connect", connect)
+
+    if (connect) {// connect 变量的作用是触发useEffect
       apiConnect(
         account.getAddress('sr25519'),
         account.getAddress('ethereum'),
-        aaAddress 
+        aaAddress
       )
     } else if (claimFaucet) {
+
       apiFaucet(
         aaAddress
       );
+
     }
+
   }, [mounted, connect, claimFaucet])
 
   // set up Dapp account storage
@@ -157,13 +205,15 @@ const TestRequest: NextPage = () => {
             const resp = SignTxResponse.deserialize(response);
             console.log('resp', resp);
             console.log('signTx');
-            setWalletConnected(true);
+            setWalletConnected(true);// 页面渲染用的 不触发useEffect
             setModalString(JSON.stringify(resp.payload));
             dispatch(setOpen('testRequest'));
 
             apiRecordGasless(
               aaAddress, `0x${u8aToHex(resp.payload.gaslessTxId)}`,
             )
+
+
           } else if (router.query.responseType === 'signMessage') {
             const resp = SignMessageResponse.deserialize(response);
 
@@ -177,7 +227,7 @@ const TestRequest: NextPage = () => {
 
             console.log(msg);
             console.log('signMessage');
-            setWalletConnected(true);
+            setWalletConnected(true);// 页面渲染用的 不触发useEffect
             setModalString(msg);
             dispatch(setOpen('testRequest'))
 
@@ -187,6 +237,8 @@ const TestRequest: NextPage = () => {
               discordHandler
             )
 
+
+
           } else if (router.query.responseType === 'connectDapp') {
             const resp = ConnectDappResponse.deserialize(response);
             console.log(resp);
@@ -194,12 +246,13 @@ const TestRequest: NextPage = () => {
             storeUserAccount(store, resp.payload.userAccount);
             persistStorage(store);
             console.log('connectDapp');
-            setWalletConnected(true);
-            setConnect(true);
+            setWalletConnected(true);// 页面渲染用的 不触发useEffect
+            setConnect(true);// 触发第一个useEffect 且发送api 
           }
         }
       } catch (err) {
-        console.error('err', err);
+        console.error('central-err', err);
+        toastFail('Someting Wrong! Please try again.');
       }
 
     }
@@ -236,24 +289,25 @@ const TestRequest: NextPage = () => {
           setDiscordHandler(discord);
         }
 
-        setMounted(true);
-        setLoading(false);
+        setMounted(true);// 
+        // setLoading(false);
 
       })();
     } else {
-      setLoading(false);
+      // setLoading(false);
       setMounted(true);
     }
-  }, [loading]);
+  }, []);
 
   if (!mounted) {
     return null;
   }
 
-  if (loading) return <Loading title='Initializing ... ' />;
+  // if (loading) return <Loading title='Initializing ... ' />;
 
   return (
     <div className="overflow-hidden min-h-screen bg-[#1A232E]">
+      <Toaster />
 
       <section className='sm:p-16 xs:p-8 px-6 py-12 relative z-10'>
         <motion.div
@@ -379,7 +433,7 @@ const TestRequest: NextPage = () => {
           </motion.div>
 
           <motion.div
-            variants={fadeIn('up', 'spring', 1.4, 1)}
+            variants={fadeIn('up', 'spring', 0.8, 1)}
             className="flex md:flex-row flex-col gap-4"
           >
             <div className="w-full flex justify-between items-center">
@@ -420,7 +474,7 @@ const TestRequest: NextPage = () => {
           </motion.div>
 
           <motion.div
-            variants={fadeIn('up', 'spring', 1.7, 1)}
+            variants={fadeIn('up', 'spring', 1.1, 1)}
             className="flex md:flex-row flex-col gap-4"
           >
             <div className="w-full flex justify-between items-center">
@@ -439,7 +493,7 @@ const TestRequest: NextPage = () => {
                   />
                 </p>
               </div>
-              
+
               <button
                 className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
                 onClick={() => {
