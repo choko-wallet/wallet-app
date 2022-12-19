@@ -30,8 +30,8 @@ import { toastFail, toastSuccess } from '../utils/toast';
 import { FormAPIResponse } from '../utils/types';
 
 const callbackUrl = `${walletUrl}/test-request`;
-const apiUrl = 'http://localhost:3333/choko/beta';
-// const apiUrl = `https://formapi.skye.kiwi/choko/beta`;
+// const apiUrl = 'http://localhost:3333/choko/beta';
+const apiUrl = `https://formapi.skye.kiwi/choko/beta`;
 
 const TestRequest: NextPage = () => {
   const router = useRouter();

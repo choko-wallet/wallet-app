@@ -53,7 +53,7 @@ const Hero = (): JSX.Element => {
 
             <button className='py-3 text-xl text-white transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
-            onClick={() => router.push('/test-request')}>SAMPLE DAPP
+            onClick={() => router.push('/test-request')}>BETA TEST
             </button>
           </div>
 
