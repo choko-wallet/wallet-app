@@ -34,7 +34,7 @@ import { toastFail } from '../../utils/toast';
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();

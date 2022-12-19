@@ -16,39 +16,42 @@ function RequestRouter (): JSX.Element {
     if (!router.isReady) return;
     const requestType = router.query.requestType as string;
 
-    if (!localStorage.getItem('serialziedUserAccount')) {
+    const localAccount = localStorage.getItem('serialziedUserAccount');
+
+    if (!localAccount || localAccount.length === 0) {
+      console.log(`requestType=${router.query.requestType as string}&payload=${router.query.payload as string}&callbackUrl=${encodeURIComponent(router.query.callbackUrl as string)}`);
       localStorage.setItem('requestParams', `requestType=${router.query.requestType as string}&payload=${router.query.payload as string}&callbackUrl=${encodeURIComponent(router.query.callbackUrl as string)}`);
       void router.push('/account');
-    }
-
-    switch (requestType) {
-      case 'connectDapp':
-        void router.push({
-          pathname: '/request/connect-dapp',
-          query: router.query
-        });
-        break;
-      case 'signMessage':
-        void router.push({
-          pathname: '/request/sign-message',
-          query: router.query
-        });
-        break;
-      case 'signTx':
-        void router.push({
-          pathname: '/request/sign-tx',
-          query: router.query
-        });
-        break;
-      case 'decryptMessage':
-        void router.push({
-          pathname: '/request/decrypt-message',
-          query: router.query
-        });
-        break;
-      default:
-        alert('unkown request');
-        break;
+    } else {
+      switch (requestType) {
+        case 'connectDapp':
+          void router.push({
+            pathname: '/request/connect-dapp',
+            query: router.query
+          });
+          break;
+        case 'signMessage':
+          void router.push({
+            pathname: '/request/sign-message',
+            query: router.query
+          });
+          break;
+        case 'signTx':
+          void router.push({
+            pathname: '/request/sign-tx',
+            query: router.query
+          });
+          break;
+        case 'decryptMessage':
+          void router.push({
+            pathname: '/request/decrypt-message',
+            query: router.query
+          });
+          break;
+        default:
+          alert('unkown request');
+          break;
+      }
     }
   }, [router, router.isReady, router.query]);
 

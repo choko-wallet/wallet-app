@@ -10,6 +10,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 // redux
 import { useDispatch } from 'react-redux';
 
+import Loading from '@choko-wallet/frontend/components/Loading';
+
 import { addUserAccount } from '../../features/slices/user';
 
 /**
@@ -30,6 +32,7 @@ function CreateWallet (): JSX.Element {
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
   const [redirectRequest, setRedirectRequest] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const refreshMnemonic = () => {
     const mnemonic = mnemonicGenerate();
@@ -37,17 +40,20 @@ function CreateWallet (): JSX.Element {
     setSeeds(mnemonic);
     setSeedsStringForCopy(mnemonic);
   };
-  // love cover fruit amateur only disorder exhibit injury resist jeans dinner that
 
   const handleSetPassword = () => {
-    dispatch(addUserAccount({ password: password, seeds: seeds }));
-    setTimeout(() => {
+    setLoading(true);
+
+    /* eslint-disable */
+    // @ts-ignore
+    dispatch(addUserAccount({ password: password, seeds: seeds })).then(() => {
       if (redirectRequest) {
         void router.push('/request?' + redirectRequest);
       } else {
         void router.push('/home');
-      } // venture brass dune glare join business spice various armed front clay types
-    }, 3000);
+      }
+    })
+    /* eslint-enable */
   };
 
   useEffect(() => {
@@ -71,11 +77,13 @@ function CreateWallet (): JSX.Element {
     }).catch((e) => {
       console.error(e);
     });
-  }, [router]);
+  }, []);
 
   if (!mounted) {
     return null;
   }
+
+  if (loading) return <Loading title='Creating Account ... ' />;
 
   return (
     <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >

@@ -23,7 +23,7 @@ import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request
 /**
  * Handler for ConnectDappRequest
  */
-function ConnectDappHandler(): JSX.Element {
+function ConnectDappHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -46,14 +46,9 @@ function ConnectDappHandler(): JSX.Element {
     const u8aRequest = decompressParameters(hexToU8a(payload));
     const request = ConnectDappRequest.deserialize(u8aRequest);
 
-    if (!localStorage.getItem('serialziedUserAccount')) {
-      localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
-      void router.push('/account');
-    } else {
-      dispatch(loadUserAccount());
-      setRequest(request);
-      setCallback(callbackUrl);
-    }
+    dispatch(loadUserAccount());
+    setRequest(request);
+    setCallback(callbackUrl);
   }, [router.isReady, router.query, dispatch, router, userAccount]);
 
   // 1+. fetch AA wallet address if not set before
@@ -93,7 +88,7 @@ function ConnectDappHandler(): JSX.Element {
     }
   }, [currentUserAccount, dispatch, request, callback]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       try {
         dispatch(switchUserAccount(selectedUserAccount));

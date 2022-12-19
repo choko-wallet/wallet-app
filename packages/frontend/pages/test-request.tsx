@@ -2,41 +2,35 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { NextPage } from 'next';
-import Image from 'next/image';
 
-import { cryptoWaitReady, encodeAddress } from '@polkadot/util-crypto';
-import { AsymmetricEncryption } from '@skyekiwi/crypto';
-import { hexToU8a, stringToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
+import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { hexToU8a, stringToU8a, u8aToHex } from '@skyekiwi/util';
 import { BigNumber, ethers } from 'ethers';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import tweetnacl from 'tweetnacl';
-import { motion } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
+import superagent from 'superagent';
+
 import { encodeContractCall, encodeTransaction } from '@choko-wallet/abi';
 import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { SignMessageType, SignTxType } from '@choko-wallet/core/types';
 import { decompressParameters, xxHash } from '@choko-wallet/core/util';
-import { ConnectDappResponse, DecryptMessageResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
+import { ConnectDappResponse, SignMessageResponse, SignTxResponse } from '@choko-wallet/request-handler';
 import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, storeUserAccount } from '@choko-wallet/sdk';
-import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
 
+import Loading from '../components/Loading';
+import ball from '../images/ball.png';
 import { fetchAAWalletAddress } from '../utils/aaUtils';
 import { deploymentEnv, walletUrl } from '../utils/env';
-import Loading from './../components/Loading';
-
-import { staggerContainer, fadeIn, planetVariants, textContainer, textVariant2 } from '../utils/motion';
-import ball from '../images/ball.png';
-
-import { useAppThunkDispatch } from '../features/redux/store';
-import { setClose, setOpen } from '../features/slices/status';
-import TestRequestModal from '../components/modal/TestRequestModal';
-import superagent from 'superagent';
-import { toastFail } from '../utils/toast';
-import toast, { Toaster } from 'react-hot-toast';
+import { fadeIn, planetVariants, staggerContainer, textContainer, textVariant2 } from '../utils/motion';
+import { toastFail, toastSuccess } from '../utils/toast';
+import { FormAPIResponse } from '../utils/types';
 
 const callbackUrl = `${walletUrl}/test-request`;
-const apiUrl = `http://localhost:3333/choko/beta`;
+const apiUrl = 'http://localhost:3333/choko/beta';
 // const apiUrl = `https://formapi.skye.kiwi/choko/beta`;
 
 const TestRequest: NextPage = () => {
@@ -44,114 +38,65 @@ const TestRequest: NextPage = () => {
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [account, setAccount] = useState<UserAccount>(null);
-  const [walletConnected, setWalletConnected] = useState<boolean>(false);
-
   const [aaAddress, setAAAddress] = useState('');
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const dispatch = useAppThunkDispatch();
-  const [modalString, setModalString] = useState<string>('');
-
-  const [claimFaucet, setClaimFaucet] = useState(false);
-  const [connect, setConnect] = useState(false);
-  const [recordGasless, setRecordGasless] = useState(false);
-
-  const [discordHandler, setDiscordHandler] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [discordHandler, setDiscordHandler] = useState('');
 
   const apiConnect = async (polkadotAddress: string, eoaAddress: string, aaAddress: string) => {
-
     if (!polkadotAddress || !eoaAddress || !aaAddress) {
-      throw new Error("address not ready");
+      throw new Error('address not ready');
     }
 
     await superagent
       .post(`${apiUrl}/connect`)
       .send({
-        polkadotAddress: polkadotAddress,
-        eoaAddress: eoaAddress,
         aaAddress: aaAddress,
+        eoaAddress: eoaAddress,
+        polkadotAddress: polkadotAddress
       })
       .then((res) => {
         console.log('All Done! Wallet connected', res);
-        setConnect(false);// 触发第一个useEffect
       })
       .catch((err) => {
         console.log('Error', err);
+
+        // Fail condition: DB write error. Should not happen
         toastFail('Someting Wrong! Please try again.');
       });
-
-    // if (r.body.error === "None") {
-    //   console.log("All Done! Wallet connected ")
-    //   setConnect(false);// 触发第一个useEffect
-    // }
-  }
+  };
 
   const apiFaucet = async (aaAddress: string) => {
     const notification = toast.loading('Claming Faucet...');
 
     if (!aaAddress) {
-      throw new Error("address not ready");
+      throw new Error('address not ready');
     }
-
-    console.log('apiFaucet-aaAddress', aaAddress)
 
     await superagent
       .post(`${apiUrl}/faucet`)
       .send({ aaAddress: aaAddress })
       .then((res) => {
-        console.log("All Done! Faucet sent", res);
-        setClaimFaucet(false);
-        toast.success('Faucet Sent', {
-          id: notification
-        });
+        const resp = res.body as FormAPIResponse;
 
+        if (resp.error === 'already sent') {
+          toast.error('Already Sent', {
+            id: notification
+          });
+        } else {
+          console.log('All Done! Faucet sent', res);
+          toast.success('Faucet Sent', {
+            id: notification
+          });
+        }
       })
       .catch((err) => {
         console.log('Error', err);
-        setClaimFaucet(false);
-        toast.error('Already Sent', {// 这里可能要根据返回状态判断toast 
-          id: notification
-        });
-
       });
-
-    // if (r.body.error === "None") {
-    //   console.log("All Done! Faucet sent")
-    // }
-    // setClaimFaucet(false);
-  }
-
-
-  const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
-
-    if (!aaAddress) {
-      throw new Error("address not ready");
-    }
-
-    await superagent
-      .post(`${apiUrl}/recordDiscord`)
-      .send({
-        eoaAddress,
-        sig, discordHandler
-      })
-      .then((res) => {
-        console.log("All Done! ", res);
-      })
-      .catch((err) => {
-        console.log('Error', err);
-        toastFail('Someting Wrong! Please try again.');
-      });
-
-    // if (r.body.error === "None") {
-    //   console.log("All Done! Data is recorded to our database.")
-    // }
-
-  }
+  };
 
   const apiRecordGasless = async (aaAddress: string, gaslessTxId: string) => {
-
     if (!aaAddress) {
-      throw new Error("address not ready");
+      throw new Error('address not ready');
     }
 
     await superagent
@@ -160,107 +105,127 @@ const TestRequest: NextPage = () => {
         aaAddress, gaslessTxId
       })
       .then((res) => {
-        console.log("All Done! ", res);
+        console.log('Gasless Tx ID recorded', res.body);
+        toastSuccess('Finish Sending a Tx. DB Recorded.');
       })
       .catch((err) => {
         console.log('Error', err);
         toastFail('Someting Wrong! Please try again.');
       });
+  };
 
-    // if (r.body.error === "None") {
-    //   console.log("All Done! Gasless Data is recorded to our database.")
-    // }
-  }
+  const loadUserAccount = async () => {
+    const store = loadStorage();
+    const data = store.userAccount;
 
-  useEffect(() => {// 初始化最后跑这个useEffect 连接数据库
-    if (!mounted) return;
+    if (data && data !== 'null') {
+      const a = UserAccount.deserialize(decompressParameters(hexToU8a(data)));
 
-    console.log("useEffect--claimFaucet", claimFaucet)
-    console.log("useEffect--connect", connect)
+      setAccount(a);
 
-    if (connect) {// connect 变量的作用是触发useEffect
-      apiConnect(
-        account.getAddress('sr25519'),
-        account.getAddress('ethereum'),
-        aaAddress
-      )
-    } else if (claimFaucet) {
+      await cryptoWaitReady();
+      const res = await fetchAAWalletAddress([a]);
 
-      apiFaucet(
-        aaAddress
-      );
+      setAAAddress(res[0]);
+      const discord = localStorage.getItem('discordHandler');
 
+      if (discord) {
+        setDiscordHandler(discord);
+      }
+    } else {
+      throw new Error('user acount not found');
     }
-
-  }, [mounted, connect, claimFaucet])
+  };
 
   // set up Dapp account storage
   useEffect(() => {
-    if (router.query && router.query.response && aaAddress) {
-      try {
-        const response = decompressParameters(hexToU8a(router.query.response as string));
+    const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
+      if (!aaAddress) {
+        throw new Error('address not ready');
+      }
 
-        if (response && response.length > 0) {
+      await superagent
+        .post(`${apiUrl}/recordDiscord`)
+        .send({
+          discordHandler,
+          eoaAddress,
+          sig
+        })
+        .then((res) => {
+          const resp = res.body as FormAPIResponse;
+
+          if (resp.error === 'no gaslessTxId') {
+            toastFail('Failure: You have not sent a gasless Tx yet.');
+          } else if (resp.error === 'sig wrong') {
+            toastFail('Failure: Signature verification wrong. Make sure you have use the same account for signing.');
+          } else if (resp.error === 'discord error') {
+            toastFail('Failure: Failed to sent a discrod message. Make sure you have typed in the right discord handler.');
+          } else if (resp.error === 'None') {
+            toastSuccess('Success. You have finished the whole test. No further action needed.');
+          }
+        })
+        .catch((err) => {
+          console.log('Error', err);
+          toastFail('Someting Wrong! Please try again.');
+        });
+    };
+
+    if (router.query && router.query.response) {
+      const response = decompressParameters(hexToU8a(router.query.response as string));
+
+      if (router.query.responseType === 'connectDapp') {
+        const resp = ConnectDappResponse.deserialize(response);
+
+        const store = loadStorage();
+
+        storeUserAccount(store, resp.payload.userAccount);
+        persistStorage(store);
+
+        setLoading(true);
+        loadUserAccount().then(() => {
+          setLoading(false);
+          void apiConnect(
+            account.getAddress('sr25519'),
+            account.getAddress('ethereum'),
+            aaAddress
+          );
+        }).catch((_) => {
+          // pass
+          setLoading(false);
+        });
+        void router.replace('/test-request', undefined, { shallow: true });
+      }
+
+      try {
+        if (response && response.length > 0 && aaAddress) {
           if (router.query.responseType === 'signTx') {
             const resp = SignTxResponse.deserialize(response);
-            console.log('resp', resp);
-            console.log('signTx');
-            setWalletConnected(true);// 页面渲染用的 不触发useEffect
-            setModalString(JSON.stringify(resp.payload));
-            dispatch(setOpen('testRequest'));
 
-            apiRecordGasless(
-              aaAddress, `0x${u8aToHex(resp.payload.gaslessTxId)}`,
-            )
-
-
+            void apiRecordGasless(
+              aaAddress, `0x${u8aToHex(resp.payload.gaslessTxId)}`
+            );
+            void router.replace('/test-request', undefined, { shallow: true });
           } else if (router.query.responseType === 'signMessage') {
             const resp = SignMessageResponse.deserialize(response);
 
-            console.log(resp);
-
-            const msg = `Use Etherscan To verify this: 
-            msg = 'Test Messaage',
-            address = ${resp.userOrigin.getAddress('ethereum')},
-            sig = 0x${u8aToHex(resp.payload.signature)}
-          `;
-
-            console.log(msg);
-            console.log('signMessage');
-            setWalletConnected(true);// 页面渲染用的 不触发useEffect
-            setModalString(msg);
-            dispatch(setOpen('testRequest'))
-
-            apiRecord(
+            void apiRecord(
               resp.userOrigin.getAddress('ethereum'),
               `0x${u8aToHex(resp.payload.signature)}`,
               discordHandler
-            )
-
-
-
-          } else if (router.query.responseType === 'connectDapp') {
-            const resp = ConnectDappResponse.deserialize(response);
-            console.log(resp);
-            const store = loadStorage();
-            storeUserAccount(store, resp.payload.userAccount);
-            persistStorage(store);
-            console.log('connectDapp');
-            setWalletConnected(true);// 页面渲染用的 不触发useEffect
-            setConnect(true);// 触发第一个useEffect 且发送api 
+            );
+            void router.replace('/test-request', undefined, { shallow: true });
           }
         }
       } catch (err) {
         console.error('central-err', err);
         toastFail('Someting Wrong! Please try again.');
       }
-
     }
-  }, [router, aaAddress]);
+  }, [router, aaAddress, account, discordHandler]);
 
   // configSDK and store in localStorage
   useEffect(() => {
-    const store = configSDK({
+    configSDK({
       accountOption: new AccountOption({
         hasEncryptedPrivateKeyExported: false,
         localKeyEncryptionStrategy: 0
@@ -271,55 +236,39 @@ const TestRequest: NextPage = () => {
       version: 0
     });
 
-    const data = store.userAccount;
-
-    if (data && data !== 'null') {
-      const a = UserAccount.deserialize(decompressParameters(hexToU8a(data)));
-
-      setAccount(a);
-
-      void (async () => {
-        await cryptoWaitReady();
-        const res = await fetchAAWalletAddress([a]);
-        // const res = ['0x89898989898989']
-
-        setAAAddress(res[0]);
-        const discord = localStorage.getItem("discordHandler");
-        if (discord) {
-          setDiscordHandler(discord);
-        }
-
-        setMounted(true);// 
-        // setLoading(false);
-
-      })();
-    } else {
-      // setLoading(false);
+    setLoading(true);
+    loadUserAccount().then(() => {
+      setLoading(false);
       setMounted(true);
-    }
+    }).catch((_) => {
+      // pass
+      setLoading(false);
+      setMounted(true);
+    });
   }, []);
 
   if (!mounted) {
     return null;
   }
 
-  // if (loading) return <Loading title='Initializing ... ' />;
+  if (loading) return <Loading title='Loading Account ... ' />;
 
   return (
-    <div className="overflow-hidden min-h-screen bg-[#1A232E]">
+    <div className='overflow-hidden min-h-screen bg-[#1A232E]'>
       <Toaster />
 
       <section className='sm:p-16 xs:p-8 px-6 py-12 relative z-10'>
         <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.25 }}
           className='2xl:max-w-[1280px] w-full mx-auto flex md:flex-row flex-col gap-8'
+          initial='hidden'
+          variants={staggerContainer}
+          viewport={{ amount: 0.25, once: false }}
+          whileInView='show'
         >
           <motion.div
-            variants={planetVariants('left')}
             className='flex-1 flex justify-center items-center'
+            onClick={() => router.push('/home')}
+            variants={planetVariants('left')}
           >
 
             <Image
@@ -335,53 +284,51 @@ const TestRequest: NextPage = () => {
           </motion.div>
 
           <motion.div
+            className='flex justify-center flex-col'
             variants={fadeIn('left', 'tween', 0.2, 1)}
-            className="flex justify-center flex-col"
           >
 
             <motion.p
-              variants={textContainer}
               className='font-normal text-[14px] text-white'
+              variants={textContainer}
             >
-              {Array.from("| Test Page for Request Handler").map((letter, index) => (
-                <motion.span variants={textVariant2} key={index}>
+              {Array.from('| Choko Wallet Beta Test').map((letter, index) => (
+                <motion.span key={index}
+                  variants={textVariant2}>
                   {letter === ' ' ? '\u00A0' : letter}
                 </motion.span>
               ))}
             </motion.p>
 
-            {walletConnected ?
-
-              <motion.p
-                variants={textVariant2}
-                initial="hidden"
-                whileInView="show"
+            {account
+              ? <motion.p
                 className='mt-[8px] font-bold md:text-[10px] text-[10px] text-white '
+                initial='hidden'
+                variants={textVariant2}
+                whileInView='show'
               >
                 {<>
-                  <span className="font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]">Your Polkadot Account address: </span><br />
+                  <span className='font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]'>Your Polkadot Account address: </span><br />
                   {account.getAddress('sr25519')}<br />
-                  <span className="font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]">Your Ethereum EOA address: </span><br />
+                  <span className='font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]'>Your Ethereum EOA address: </span><br />
                   {account.getAddress('ethereum')}<br />
-                  <span className="font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]">Your AA address: </span><br />
+                  <span className='font-normal text-[15px] text-[#B0B0B0] leading-[32.4px]'>Your AA address: </span><br />
                   {aaAddress}<br />
                 </>}
               </motion.p>
 
-              :
-
-              <div>
+              : <div>
                 <motion.p
-                  variants={textVariant2}
-                  initial="hidden"
-                  whileInView="show"
                   className='mt-[8px] font-bold md:text-[24px] text-[16px] text-white '
+                  initial='hidden'
+                  variants={textVariant2}
+                  whileInView='show'
                 >
-                  {<>Connect This Testing Page with an Address!</>}
+                  {<>Connect The Beta Test Dapp with an Address!</>}
                 </motion.p>
 
                 <button
-                  className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 max-w-[300px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
+                  className='flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 max-w-[300px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] '
                   onClick={() => {
                     const s = loadStorage();
                     const x = buildConnectDappUrl(s, callbackUrl, deploymentEnv);
@@ -397,34 +344,37 @@ const TestRequest: NextPage = () => {
       </section>
 
       {
-        account && walletConnected &&
+        account &&
         <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.25 }}
           className='2xl:max-w-[1280px] w-full mx-auto flex flex-col gap-8 mb-10  px-6 sm:p-8'
+          initial='hidden'
+          variants={staggerContainer}
+          viewport={{ amount: 0.25, once: false }}
+          whileInView='show'
         >
           <motion.div
+            className='flex md:flex-row flex-col gap-4'
             variants={fadeIn('up', 'spring', 0.5, 1)}
-            className="flex md:flex-row flex-col gap-4"
           >
 
-            <div className="w-full flex justify-between items-center">
-              <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
-                <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Claim Faucet
+            <div className='w-full flex justify-between items-center'>
+              <div className='flex-1 md:ml-[62px] flex flex-col max-w-[650px]'>
+                <p className='font-normal lg:text-[42px] text-[26px] text-white'>
+                  Step 1: Claim Faucet
                 </p>
 
-                <p className="mt-[16px] font-normal lg:text-[20px] text-[14px] text-white">
-                  We will send you 0.1DAI on Goerli
+                <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
+                  We will send you 0.1DAI on Goerli. You may only claim this once.
+                </p>
+                <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
+                  Once you have claimed the faucet. You click on the the purple sphere above to navigate to the wallet home and see your balance.
                 </p>
               </div>
 
               <a
-                className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
+                className='flex items-center m-5 justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] '
                 onClick={() => {
-                  setClaimFaucet(true)
+                  void apiFaucet(aaAddress);
                 }}>
                 Claim Faucet
               </a>
@@ -433,18 +383,21 @@ const TestRequest: NextPage = () => {
           </motion.div>
 
           <motion.div
+            className='flex md:flex-row flex-col gap-4'
             variants={fadeIn('up', 'spring', 0.8, 1)}
-            className="flex md:flex-row flex-col gap-4"
           >
-            <div className="w-full flex justify-between items-center">
-              <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
-                <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Sign A Gasless Transaction
+            <div className='w-full flex justify-between items-center'>
+              <div className='flex-1 md:ml-[62px] flex flex-col max-w-[650px]'>
+                <p className='font-normal lg:text-[42px] text-[26px] text-white'>
+                  Step 2: Sign A Gasless Transaction
+                </p>
+                <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
+                It will send some DAI back to the faucet home. You do not need to hold any tokens for gas as the transaction will be processed gasless.
                 </p>
               </div>
 
               <button
-                className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
+                className='flex items-center justify-center shadow-md hover:shadow-xl m-5 active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] '
                 onClick={() => {
                   const tx = {
                     data: encodeContractCall('erc20', 'transfer', [
@@ -474,20 +427,26 @@ const TestRequest: NextPage = () => {
           </motion.div>
 
           <motion.div
+            className='flex md:flex-row flex-col gap-4'
             variants={fadeIn('up', 'spring', 1.1, 1)}
-            className="flex md:flex-row flex-col gap-4"
           >
-            <div className="w-full flex justify-between items-center">
-              <div className="flex-1 md:ml-[62px] flex flex-col max-w-[650px]">
-                <p className="font-normal lg:text-[42px] text-[26px] text-white">
-                  Sign A Message
+            <div className='w-full flex justify-between items-center'>
+              <div className='flex-1 md:ml-[62px] flex flex-col max-w-[650px]'>
+                <p className='font-normal lg:text-[42px] text-[26px] text-white'>
+                  Step 3: Sign Your Discord Handler
+                </p>
+                <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
+                Check <a className='text-indigo-500'
+                    href='https://www.remote.tools/remote-work/discord-tag'
+                    rel='noreferrer'
+                    target='_blank'>this article</a> on what is your discord handler. Upon finish signing, a bot will mention you in the discord channel. If you are able to receive it, you have completed the whole test. You are more than welcome to poke around the wallet and find bugs!
                 </p>
 
-                <p className="m-2 font-normal lg:text-[20px] text-[20px] text-white">
-                  <span className='m-2'>Your Discord Handler: </span>
-                  <input className='m-2 p-2 w-full input input-bordered input-info bg-transparent font-poppins text-white'
+                <p className='m-2 font-normal lg:text-[20px] text-[20px] text-white'>
+                  <span>Your Discord Handler: </span>
+                  <input className='p-2 w-full input input-bordered input-info bg-transparent font-poppins text-white'
                     onChange={(e) => setDiscordHandler(e.target.value)}
-                    placeholder={`choko wallet#3218`}
+                    placeholder={'choko wallet#3218'}
                     type='text'
                     value={discordHandler}
                   />
@@ -495,11 +454,11 @@ const TestRequest: NextPage = () => {
               </div>
 
               <button
-                className="flex items-center justify-center shadow-md hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] "
+                className='flex items-center justify-center shadow-md m-5 hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-[#25618B] rounded-[32px] '
                 onClick={() => {
                   const s = loadStorage();
 
-                  localStorage.setItem("discordHandler", discordHandler);
+                  localStorage.setItem('discordHandler', discordHandler);
                   const x = buildSignMessageUrl(
                     s,
                     stringToU8a(discordHandler),
@@ -518,9 +477,6 @@ const TestRequest: NextPage = () => {
         </motion.div>
 
       }
-
-
-      <TestRequestModal modalString={modalString} />
     </div>
   );
 };

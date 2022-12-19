@@ -124,11 +124,6 @@ function DecryptMessageHandler (): JSX.Element {
     }
   }
 
-  // function closeModal () {
-  //   setPassword('');
-  //   setOpenPasswordModal(false);
-  // }
-
   if (!mounted) {
     return null;
   }

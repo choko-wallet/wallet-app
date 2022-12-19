@@ -9,6 +9,8 @@ import React, { useEffect, useState } from 'react';
 // redux
 import { useDispatch } from 'react-redux';
 
+import Loading from '@choko-wallet/frontend/components/Loading';
+
 import { addUserAccount } from '../../features/slices/user';
 
 /**
@@ -25,16 +27,21 @@ function ImportWallet (): JSX.Element {
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
   const [redirectRequest, setRedirectRequest] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const handleSetPassword = () => {
-    dispatch(addUserAccount({ password: password, seeds: seeds.join(' ') }));
-    setTimeout(() => {
+    setLoading(true);
+
+    /* eslint-disable */
+    // @ts-ignore
+    dispatch(addUserAccount({ password: password, seeds: seeds })).then(() => {
       if (redirectRequest) {
         void router.push('/request?' + redirectRequest);
+      } else {
+        void router.push('/home');
       }
-
-      void router.push('/home');
-    }, 3000);
+    })
+    /* eslint-enable */
   };
 
   useEffect(() => {
@@ -60,6 +67,8 @@ function ImportWallet (): JSX.Element {
       setSeeds(seeds.map((seed, i) => i === index ? text : seed));
     }
   };
+
+  if (loading) return <Loading title='Creating Account ... ' />;
 
   return (
     <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >

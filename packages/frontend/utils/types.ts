@@ -13,3 +13,7 @@ export type CryptoBalance = {
 };
 
 export type CoingeckoAPIResponse = Record<string, { [key: string]: number }>;
+export type FormAPIResponse = {
+  error: string,
+  data: string,
+}

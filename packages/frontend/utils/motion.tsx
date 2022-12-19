@@ -1,26 +1,29 @@
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+
+/* eslint-disable */
 
 export const staggerContainer = {
   hidden: {
   },
   show: {
-  },
+  }
 };
-
 
 export const textContainer = {
   hidden: {
-    opacity: 0,
+    opacity: 0
   },
   show: () => ({
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-  }),
+    transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+  })
 };
 
 export const textVariant = (delay: string) => ({
   hidden: {
     y: 50,
-    opacity: 0,
+    opacity: 0
   },
   show: {
     y: 0,
@@ -28,31 +31,31 @@ export const textVariant = (delay: string) => ({
     transition: {
       type: 'spring',
       duration: 1.25,
-      delay,
-    },
-  },
+      delay
+    }
+  }
 });
 
 export const textVariant2 = {
   hidden: {
     opacity: 0,
-    y: 0,
+    y: 0
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
       type: 'tween',
-      ease: 'easeIn',
-    },
-  },
+      ease: 'easeIn'
+    }
+  }
 };
 
 export const fadeIn = (direction: string, type: string, delay: number, duration: number) => ({
   hidden: {
     x: direction === 'left' ? 100 : direction === 'right' ? -100 : 0,
     y: direction === 'up' ? 100 : direction === 'down' ? -100 : 0,
-    opacity: 0,
+    opacity: 0
   },
   show: {
     x: 0,
@@ -62,15 +65,15 @@ export const fadeIn = (direction: string, type: string, delay: number, duration:
       type,
       delay,
       duration,
-      ease: 'easeOut',
-    },
-  },
+      ease: 'easeOut'
+    }
+  }
 });
 
 export const planetVariants = (direction: string) => ({
   hidden: {
     x: direction === 'left' ? -500 : 0,
-    rotate: 120,
+    rotate: 120
   },
   show: {
     x: 0,
@@ -78,8 +81,7 @@ export const planetVariants = (direction: string) => ({
     transition: {
       type: 'spring',
       duration: 1.8,
-      delay: 0.5,
-    },
-  },
+      delay: 0.5
+    }
+  }
 });
-
