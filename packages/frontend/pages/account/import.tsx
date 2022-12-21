@@ -31,10 +31,9 @@ function ImportWallet (): JSX.Element {
 
   const handleSetPassword = () => {
     setLoading(true);
-
     /* eslint-disable */
     // @ts-ignore
-    dispatch(addUserAccount({ password: password, seeds: seeds })).then(() => {
+    dispatch(addUserAccount({ password: password, seeds: seeds.join(' ') })).then(() => {
       if (redirectRequest) {
         void router.push('/request?' + redirectRequest);
       } else {

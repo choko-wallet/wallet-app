@@ -30,7 +30,7 @@ import { FormAPIResponse } from '../utils/types';
 
 const callbackUrl = `${walletUrl}/test-request`;
 // const apiUrl = 'http://localhost:3333/choko/beta';
-const apiUrl = `https://betaapi.choko.app/choko/beta`;
+const apiUrl = 'https://betaapi.choko.app/choko/beta';
 
 const TestRequest: NextPage = () => {
   const router = useRouter();
@@ -43,8 +43,9 @@ const TestRequest: NextPage = () => {
 
   const apiConnect = async (polkadotAddress: string, eoaAddress: string, aaAddress: string) => {
     if (!polkadotAddress || !eoaAddress || !aaAddress) {
-      console.log("wrong hook")
-      return
+      console.log('wrong hook');
+
+      return;
       // throw new Error('address not ready');
     }
 
@@ -115,53 +116,54 @@ const TestRequest: NextPage = () => {
       });
   };
 
-  const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
-    if (!aaAddress) {
-      throw new Error('address not ready');
-    }
-
-    const notification = toast.loading('Sending Discord Message ...');
-
-    // console.log(discordHandler, eoaAddress, sig);
-    await superagent
-      .post(`${apiUrl}/recordDiscord`)
-      .send({
-        discordHandler,
-        eoaAddress,
-        sig
-      })
-      .then((res) => {
-        const resp = res.body as FormAPIResponse;
-
-        if (resp.error === 'no gaslessTxId') {
-          toast.error('Failure: You have not sent a gasless Tx yet.', {
-            id: notification
-          });
-        } else if (resp.error === 'sig wrong') {
-          toast.error('Failure: Signature verification wrong. Make sure you have use the same account for signing.', {
-            id: notification
-          });
-        } else if (resp.error === 'discord error') {
-          toast.error('Failure: Failed to sent a discrod message. Make sure you have typed in the right discord handler.', {
-            id: notification
-          });
-        } else if (resp.error === 'None') {
-          toast.success('Success. You have finished the whole test. No further action needed.', {
-            id: notification
-          });
-        }
-      })
-      .catch((err) => {
-        console.log('Error', err);
-        toastFail('Someting Wrong! Please try again.');
-      });
-  };
-
   // set up Dapp account storage
   useEffect(() => {
     if (!router.query || !router.query.response) return;
 
     const response = decompressParameters(hexToU8a(router.query.response as string));
+
+    const apiRecord = async (eoaAddress: string, sig: string, discordHandler: string) => {
+      if (!aaAddress) {
+        throw new Error('address not ready');
+      }
+
+      const notification = toast.loading('Sending Discord Message ...');
+
+      // console.log(discordHandler, eoaAddress, sig);
+      await superagent
+        .post(`${apiUrl}/recordDiscord`)
+        .send({
+          discordHandler,
+          eoaAddress,
+          sig
+        })
+        .then((res) => {
+          const resp = res.body as FormAPIResponse;
+
+          if (resp.error === 'no gaslessTxId') {
+            toast.error('Failure: You have not sent a gasless Tx yet.', {
+              id: notification
+            });
+          } else if (resp.error === 'sig wrong') {
+            toast.error('Failure: Signature verification wrong. Make sure you have use the same account for signing.', {
+              id: notification
+            });
+          } else if (resp.error === 'discord error') {
+            toast.error('Failure: Failed to sent a discrod message. Make sure you have typed in the right discord handler.', {
+              id: notification
+            });
+          } else if (resp.error === 'None') {
+            toast.success('Success. You have finished the whole test. No further action needed.', {
+              id: notification
+            });
+          }
+        })
+        .catch((err) => {
+          console.log('Error', err);
+          toastFail('Someting Wrong! Please try again.');
+        });
+    };
+
     try {
       if (response && response.length > 0 && aaAddress) {
         if (router.query.responseType === 'signTx') {
@@ -194,6 +196,7 @@ const TestRequest: NextPage = () => {
       const resp = ConnectDappResponse.deserialize(response);
 
       const store = loadStorage();
+
       storeUserAccount(store, resp.payload.userAccount);
       persistStorage(store);
 
@@ -209,25 +212,28 @@ const TestRequest: NextPage = () => {
 
     if (d && d !== 'null') {
       const a = UserAccount.deserialize(decompressParameters(hexToU8a(d)));
+
       setAccount(a);
 
-      void (async() => {
+      void (async () => {
         const res = await fetchAAWalletAddress([a]);
+
         setAAAddress(res[0]);
         await apiConnect(
           a.getAddress('sr25519'),
           a.getAddress('ethereum'),
           res[0]
         );
-        setLoading(false)
-      })()
+        setLoading(false);
+      })();
 
       const discord = localStorage.getItem('discordHandler');
+
       if (discord) {
         setDiscordHandler(discord);
       }
     } else {
-      setLoading(false)
+      setLoading(false);
     }
   }, []);
 
