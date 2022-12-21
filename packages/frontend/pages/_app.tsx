@@ -16,7 +16,7 @@ import { store } from '../features/redux/store';
 
 const progress = new ProgressBar({
   className: 'z-50',
-  color: '#3afbef',
+  color: '#F5CBD5',
   delay: 100,
   size: 4
 });
@@ -30,7 +30,7 @@ function Root ({ Component, pageProps }: AppProps): JSX.Element {
     <Provider store={store}>
       <Head>
         {
-          process.env.ENABLE_TRACKING &&
+          process.env.NEXT_PUBLIC_ENABLE_TRACKING &&
           <script async
             data-website-id='c309f7b0-7e50-4944-b73b-1e779ac13207'
             defer
@@ -39,6 +39,10 @@ function Root ({ Component, pageProps }: AppProps): JSX.Element {
         <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap'
           rel='stylesheet' />
         <link href='https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap'
+          rel='stylesheet' />
+        <link href='https://fonts.googleapis.com/css2?family=Rubik&display=swap'
+          rel='stylesheet' />
+        <link href='https://fonts.googleapis.com/css2?family=VT323&display=swap'
           rel='stylesheet' />
       </Head>
       <ThemeProvider>

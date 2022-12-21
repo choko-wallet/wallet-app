@@ -23,7 +23,7 @@ function Loading ({ title }: Props): JSX.Element {
           <span className='text-[#0170BF] font-poppins w-36 '>{title || loading}</span>
         </p>
       </div>
-      <PacmanLoader color='#ffffff'
+      <PacmanLoader color='#F5CBD5'
         size={30} />
     </div>
   );

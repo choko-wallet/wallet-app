@@ -31,7 +31,7 @@ function Import (): JSX.Element {
         setTimeout(() => {
           dispatch(endLoading());
           void router.push('/home');
-        }, 2000);
+        }, 3000);
       }).catch((e) => {
         console.error(e);
         dispatch(startLoading('Error ... Check console for details.'));

@@ -5,20 +5,24 @@ import { Dialog } from '@headlessui/react';
 import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+import { BigNumber, ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
+import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
+import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
+import { getAlchemy } from '@choko-wallet/frontend/utils/env';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
-// http://localhost:3000/request/sign-tx?requestType=signTx&payload=01789c6360606029492d2e61a00c883b67e467e72b8427e6e4a4962838e61464242a8490626c4b5d75fdc2841bf10c0c29b72e16caacc8eaa94bd0eaf9b843a9747e5f76be814769fa8f39da417b4b7772c274a84d61616160e03ba67dc6887bfff6dfe5ffbc7beedf28bc7643d08fd5e907735d5cee6ce922ef34160a3d360a063500005a9e2de5&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Falpha
 import Loading from '../../components/Loading';
 
 function SignTxHandler (): JSX.Element {
@@ -26,9 +30,12 @@ function SignTxHandler (): JSX.Element {
   const dispatch = useDispatch();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  // const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const userAccount = useSelector(selectUserAccount);
+
   const [password, setPassword] = useState('');
   const [mounted, setMounted] = useState<boolean>(false);
+  const [sendingTx, setSendingTx] = useState<boolean>(false);
+
   const [displayType, setDisplayType] = useState<string>('decoded');
 
   const [decodingTx, setDecodingTx] = useState<boolean>(true);
@@ -37,15 +44,65 @@ function SignTxHandler (): JSX.Element {
   const [request, setRequest] = useState<SignTxRequest>(null);
   const [callback, setCallback] = useState<string>('');
 
+  // 1. parse query
   useEffect(() => {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
-    const u8aRequest = decompressParameters(hexToU8a(payload));
     const callbackUrl = router.query.callbackUrl as string;
+    const u8aRequest = decompressParameters(hexToU8a(payload));
     const request = SignTxRequest.deserialize(u8aRequest);
 
+    if (!localStorage.getItem('serialziedUserAccount')) {
+      localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
+      void router.push('/account');
+    } else {
+      setCallback(callbackUrl);
+      setRequest(request);
+    }
+  }, [router.isReady, router.query, dispatch, router]);
+
+  // 2. load accounts and switch account is not matching origin
+  useEffect(() => {
+    if (!request) return;
+
     dispatch(loadUserAccount());
-    dispatch(switchUserAccount(request.userOrigin.address));
+  }, [request, dispatch]);
+
+  useEffect(() => {
+    if (!userAccount) return;
+    if (!request) return;
+
+    const len = userAccount.length;
+
+    for (let i = 0; i < len; ++i) {
+      if (userAccount[i].getAddress('ethereum') === request.userOrigin.getAddress('ethereum')) {
+        dispatch(switchUserAccount(i));
+        break;
+      }
+    }
+  }, [request, userAccount, dispatch]);
+
+  // 2+. fetch AA wallet address if not set
+  useEffect(() => {
+    if (!request) return;
+    if (!currentUserAccount) return;
+
+    // check if the AA address is correctly populated
+    if (!currentUserAccount.aaWalletAddress) {
+      void (async () => {
+        const aaAddresses = await fetchAAWalletAddress(userAccount);
+
+        dispatch(noteAAWalletAddress(aaAddresses));
+        setMounted(true);
+      })();
+    } else {
+      setMounted(true);
+    }
+  }, [request, currentUserAccount, dispatch, userAccount]);
+
+  // parse the transaction and display
+  useEffect(() => {
+    if (!mounted) return;
 
     void (async () => {
       if (request.dappOrigin.activeNetwork.networkType === 'polkadot') {
@@ -55,81 +112,102 @@ function SignTxHandler (): JSX.Element {
 
         /* eslint-disable */
         // @ts-ignore
-        setDecodedTx(`METHOD = ${tx.method.section}.${tx.method.method} =  ARGUMENTS: ${JSON.stringify(tx.method.args)}`);
+        const value = Number(tx.method.args.value.toString().replaceAll(",", '')) / Math.pow(10, request.dappOrigin.activeNetwork.nativeTokenDecimal)
+        // @ts-ignore
+        setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.method.args.dest.Id} `);
         /* eslint-enable */
 
         setDecodingTx(false);
       } else {
-        setDecodedTx('WIP Ethereum Decode Support');
+        const encodedTx = `0x${u8aToHex(request.payload.encoded)}`;
+        const tx = decodeTransaction(encodedTx);
+
+        if (tx.data === '0x') {
+          const value = ethers.utils.formatEther(ethers.BigNumber.from(tx.value._hex));
+
+          setDecodedTx(`Send ${value} ${request.dappOrigin.activeNetwork.nativeTokenSymbol} to ${tx.to} `);
+        } else {
+          const result = decodeContractCall('erc20', tx);
+          const tokenContractAddress = tx.to;
+          const alchemy = getAlchemy(request.dappOrigin.activeNetwork);
+
+          const metadata = await alchemy.core.getTokenMetadata(tokenContractAddress);
+          const value = ethers.BigNumber.from(result.args._value);
+          const humanValue = value.div(BigNumber.from('10').pow(metadata.decimals));
+
+          setDecodedTx(`Send ${humanValue.toString()} ${metadata.name} to ${result.args._to as string} `);
+        }
+
         setDecodingTx(false);
       }
     })();
-
-    setCallback(callbackUrl);
-    setRequest(request);
-  }, [dispatch, router.isReady, router.query]);
-
-  useEffect(() => {
-    if (request) setMounted(true);
-  }, [request]);
+  }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
   function unlock () {
-    if (request) {
-      try {
-        dispatch(decryptCurrentUserAccount(password));
-        toast('Password Correct, Redirecting...', {
-          duration: 5000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
+    if (!request) return;
 
-        if (currentUserAccount && !currentUserAccount.isLocked) {
-          setPassword('');
-          dispatch(setClose('signTxPasswordModal'));
+    try {
+      dispatch(decryptCurrentUserAccount(password));
 
-          void (async () => {
-            const signTx = new SignTxDescriptor();
+      if (currentUserAccount && !currentUserAccount.isLocked) {
+        setPassword('');
+        dispatch(setClose('signTxPasswordModal'));
+
+        void (async () => {
+          const signTx = new SignTxDescriptor();
+
+          try {
+            setSendingTx(true);
 
             try {
-              const response = await signTx.requestHandler(request, currentUserAccount);
+              const response = await signTx.requestHandler(request, currentUserAccount);// 这一步是发送
               const s = response.serialize();
 
               dispatch(lockCurrentUserAccount());
               window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-            } catch (err) {
-              console.log('err', err);
-              toast('Something Wrong', {
-                style: {
-                  background: 'red',
-                  color: 'white',
-                  fontFamily: 'Poppins',
-                  fontSize: '16px',
-                  fontWeight: 'bolder',
-                  padding: '20px'
-                }
-              });
+              setSendingTx(false);
+            } catch (e) {
+              console.error(e);
             }
-          })();
-        }
-      } catch (e) {
-        toast('Wrong Password!', {
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '16px',
-            fontWeight: 'bolder',
-            padding: '20px'
+          } catch (err) {
+            console.log('err', err);
+            toast('Something Wrong', {
+              style: {
+                background: 'red',
+                color: 'white',
+                fontFamily: 'Poppins',
+                fontSize: '16px',
+                fontWeight: 'bolder',
+                padding: '20px'
+              }
+            });
           }
-        });
+        })();
       }
+
+      toast('Password Correct, Redirecting...', {
+        duration: 5000,
+        icon: '👏',
+        style: {
+          background: 'green',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '17px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
+    } catch (e) {
+      toast('Wrong Password!', {
+        style: {
+          background: 'red',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '16px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
     }
   }
 
@@ -138,6 +216,7 @@ function SignTxHandler (): JSX.Element {
   }
 
   if (decodingTx) return <Loading title='Decoding Transaction ...' />;
+  if (sendingTx) return <Loading title='Sending Transaction ...' />;
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
@@ -169,8 +248,19 @@ function SignTxHandler (): JSX.Element {
               Your Orign:
             </div>
             <div className='col-span-12'>
-              <code className='underline'
-                style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
+              <code className='underline text-clip'
+                style={{ overflowWrap: 'break-word' }}>{
+                  encodeAddr(request.dappOrigin.activeNetwork, currentUserAccount)
+                }</code>
+            </div>
+            <div className='col-span-12'>
+              Trasnaction Type:
+            </div>
+            <div className='col-span-12'>
+              <code className='underline text-clip'
+                style={{ overflowWrap: 'break-word' }}>{
+                  SignTxType[request.payload.signTxType]
+                }</code>
             </div>
 
             <div className='col-span-12'>
@@ -193,11 +283,11 @@ function SignTxHandler (): JSX.Element {
               {
                 displayType === 'hex'
                   ? (
-                    <div className='textarea h-[20vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400 scrollbar-thin overflow-y-auto'
                       style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
                   )
                   : (
-                    <div className='textarea h-[20vh] font-mono border-gray-400'
+                    <div className='textarea h-[20vh] font-mono border-gray-400 scrollbar-thin overflow-y-auto'
                       style={{ overflowWrap: 'break-word' }}>{decodedTx}</div>
                   )
               }
@@ -207,6 +297,24 @@ function SignTxHandler (): JSX.Element {
       </div>
       <div className='col-span-12 my-2'></div>
 
+      {/* {sendLoading ?
+        null
+        :
+        <div className='grid grid-cols-12 col-span-12' >
+          <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
+            <button className='btn btn-success btn-circle btn-lg'
+              onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
+              <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
+          <div className='col-span-4 md:col-span-2'>
+            <button className='btn btn-error btn-circle btn-lg'
+              onClick={() => router.push('/')} >
+              <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+            </button>
+          </div>
+        </div>
+      } */}
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
           onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
@@ -220,11 +328,7 @@ function SignTxHandler (): JSX.Element {
         </button>
       </div>
 
-      <Modal
-        modalName='signTxPasswordModal'
-      // closeModal={closeModal}
-      //   isOpen={openPasswordModal}
-      >
+      <Modal modalName='signTxPasswordModal'>
         <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white from-gray-900 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff] '>
           <Dialog.Title
             as='h3'

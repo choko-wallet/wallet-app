@@ -15,10 +15,10 @@ function Footer (): JSX.Element {
   return (
     // <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
     <div className='flex justify-between items-center md:px-10 '>
-      <p className='text-black dark:text-white font-poppins text-md'>© 2022 Choko Wallet</p>
+      <p className='text-black dark:text-white font-poppins text-sm'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>
-          <a className='relative h-7 w-7 m-3'
+          <a className='relative h-5 w-5 m-3'
             href={'https://discord.gg/zkp8UEQctM'}
             rel='noreferrer'
             target='_blank'>
@@ -35,37 +35,46 @@ function Footer (): JSX.Element {
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://github.com/choko-wallet'
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://t.me/choko_wallet'
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://twitter.com/choko_wallet'
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='black'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://medium.com/@choko_wallet'
+
           />
           <SocialIcon
             bgColor='transparent'
             className='cursor-pointer'
             fgColor='black'
             network='email'
+            style={{ height: 40, width: 40 }}
             url='mailto:contact@choko.app'
+
           />
         </div>
         : <div className='flex items-center justify-center'>
-          <a className='relative h-7 w-7 m-3'
+          <a className='relative h-5 w-5 m-3'
             href={'https://discord.gg/zkp8UEQctM'}
             rel='noreferrer'
             target='_blank'>
@@ -82,26 +91,34 @@ function Footer (): JSX.Element {
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://github.com/choko-wallet'
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://t.me/choko_wallet'
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://twitter.com/choko_wallet'
+
           />
           <SocialIcon
             bgColor='transparent'
             fgColor='white'
+            style={{ height: 40, width: 40 }}
             target='_blank'
             url='https://medium.com/@choko_wallet'
+
           />
 
           <SocialIcon
@@ -109,7 +126,9 @@ function Footer (): JSX.Element {
             className='cursor-pointer'
             fgColor='white'
             network='email'
+            style={{ height: 40, width: 40 }}
             url='mailto:contact@choko.app'
+
           />
         </div>}
 

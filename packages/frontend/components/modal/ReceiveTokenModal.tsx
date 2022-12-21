@@ -7,6 +7,10 @@ import { useTheme } from 'next-themes';
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
+import { useSelector } from 'react-redux';
+
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks } from '@choko-wallet/frontend/features/redux/selectors';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
 
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { setClose } from '../../features/slices/status';
@@ -23,6 +27,11 @@ const ReceiveTokenModal = (): JSX.Element => {
   const { theme } = useTheme();
   const dispatch = useAppThunkDispatch();
   const [showCheck, setShowCheck] = useState<boolean>(false);
+
+  const currentNetwork = useSelector(selectCurrentNetwork);
+  const knownNetworks = useSelector(selectKnownNetworks);
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -49,15 +58,18 @@ const ReceiveTokenModal = (): JSX.Element => {
 
           </Dialog.Title>
           <div className='mt-2 '>
-            <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network <b>unimplemented!()</b></p>
+            {/* <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Network <b>unimplemented!()</b></p> */}
 
             <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
-            <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center  border border-gray-300 rounded-lg dark:border-blue-300'>
-              <p className='flex flex-grow text-gray-700 dark:text-white mb-1 font-poppins'></p>
+            <p className='p-2 border border-blue-300 rounded-md font-poppins text-gray-800 dark:text-white stringWrap text-center items-center justify-certer flex-grow  ml-2 '>
+              {currentAddress}
+            </p>
+
+            <div className=' items-center flex justify-center p-2'>
 
               <CopyToClipboard
-                text={' '}>
+                text={currentAddress}>
                 <div onClick={handleCopy}>
                   {showCheck
                     ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -71,12 +83,12 @@ const ReceiveTokenModal = (): JSX.Element => {
               <QRCode
                 size={256}
                 style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-                value={' '} />
+                value={currentAddress} />
             </div>
 
             {/* <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p> */}
             <p className='dark:text-white text-gray-700 text-sm font-poppins'>Ensure the network is {' '}
-              {/* <span className='text-red-400'>{networkToReceive}</span>. */}
+              <span className='text-red-400'>{knownNetworks[currentNetwork].info}</span>
             </p>
 
           </div>

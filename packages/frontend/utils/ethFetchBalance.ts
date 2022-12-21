@@ -4,85 +4,15 @@
 import type { TokenMetadataResponse } from 'alchemy-sdk';
 import type { BalanceInfo, CoingeckoAPIResponse } from './types';
 
-import { Alchemy, Network as alchemyNetwork } from 'alchemy-sdk';
-
 import { Network } from '@choko-wallet/core';
+
+import { getAlchemy } from './env';
 
 /* eslint-disable sort-keys */
 const notShitcoinFilter = (metadata: TokenMetadataResponse): boolean => {
   return metadata.symbol && metadata.name &&
     metadata.symbol.length <= 8 &&
     metadata.symbol.indexOf('.') === -1;
-};
-
-const getAlchemy = (network: Network): Alchemy => {
-  let config = {};
-
-  switch (network.info) {
-    case 'ethereum':
-      config = {
-        apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_MAIN,
-        network: alchemyNetwork.ETH_MAINNET
-      };
-
-      return new Alchemy(config);
-    case 'goerli':
-      config = {
-        apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_ETH_GOERLI,
-        network: alchemyNetwork.ETH_GOERLI
-      };
-
-      return new Alchemy(config);
-    case 'optimism':
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.OPT_MAINNET
-      };
-
-      return new Alchemy(config);
-    case 'optimism-goerli':
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.OPT_GOERLI
-      };
-
-      return new Alchemy(config);
-    case 'arbitrum':
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.ARB_MAINNET
-      };
-
-      return new Alchemy(config);
-    case 'arbitrum-goerli':
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.ARB_GOERLI
-      };
-
-      return new Alchemy(config);
-    case 'polygon':
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.MATIC_MAINNET
-      };
-
-      return new Alchemy(config);
-    case 'polygon-mumbai':
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.MATIC_MUMBAI
-      };
-
-      return new Alchemy(config);
-    default:
-      config = {
-        apiKey: process.env.ALCHEMY_API_KEY,
-        network: alchemyNetwork.ETH_MAINNET
-      };
-
-      return new Alchemy(config);
-  }
 };
 
 const getTokenImage = (network: Network): string => {
@@ -128,6 +58,7 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
         return [address, {
           balance: b.balance,
           balanceInUSD: price[address] * b.balance,
+          decimals: b.decimals,
           img: b.img,
           name: b.name,
           priceInUSD: price[address],
@@ -185,6 +116,7 @@ export const fetchNativeAssetBalanceAndPrice = async (network: Network, address:
   result.native = {
     balance: nativeBalance,
     img: getTokenImage(network),
+    decimals: decimals, // eth polygon 18
     name: name,
     symbol: network.nativeTokenSymbol,
     priceInUSD: nativePrice,
@@ -214,6 +146,7 @@ export const fetchTokenBalance = async (network: Network, address: string): Prom
         result[token.contractAddress] = {
           balance: Number(Number(token.tokenBalance) / Math.pow(10, metadata.decimals)),
           balanceInUSD: 0,
+          decimals: metadata.decimals,
           img: metadata.logo,
           name: metadata.name,
           priceInUSD: 0,

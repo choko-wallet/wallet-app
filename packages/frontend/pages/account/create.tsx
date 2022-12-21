@@ -10,6 +10,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 // redux
 import { useDispatch } from 'react-redux';
 
+import Loading from '@choko-wallet/frontend/components/Loading';
+
 import { addUserAccount } from '../../features/slices/user';
 
 /**
@@ -30,6 +32,7 @@ function CreateWallet (): JSX.Element {
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
   const [redirectRequest, setRedirectRequest] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const refreshMnemonic = () => {
     const mnemonic = mnemonicGenerate();
@@ -39,13 +42,18 @@ function CreateWallet (): JSX.Element {
   };
 
   const handleSetPassword = () => {
-    dispatch(addUserAccount({ password: password, seeds: seeds }));
+    setLoading(true);
 
-    if (redirectRequest) {
-      void router.push('/request?' + redirectRequest);
-    } else {
-      void router.push('/home');
-    }
+    /* eslint-disable */
+    // @ts-ignore
+    dispatch(addUserAccount({ password: password, seeds: seeds })).then(() => {
+      if (redirectRequest) {
+        void router.push('/request?' + redirectRequest);
+      } else {
+        void router.push('/home');
+      }
+    })
+    /* eslint-enable */
   };
 
   useEffect(() => {
@@ -69,11 +77,13 @@ function CreateWallet (): JSX.Element {
     }).catch((e) => {
       console.error(e);
     });
-  }, [router]);
+  }, []);
 
   if (!mounted) {
     return null;
   }
+
+  if (loading) return <Loading title='Creating Account ... ' />;
 
   return (
     <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >
@@ -88,19 +98,20 @@ function CreateWallet (): JSX.Element {
             : step === 2
               ? 50
               : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 80 : 80}
+          height='13px'
         />
 
-        <div className='w-full max-w-2xl justify-between mt-2 flex'>
-          <p className='text-white text-xs md:text-sm font-poppins'>Generate Mnemonic</p>
-          <p className='text-white text-xs md:text-sm font-poppins pr-10'>Verify</p>
-          <p className='text-white text-xs md:text-sm font-poppins'>Set Password</p>
+        <div className='w-full max-w-2xl justify-between mt-2 flex md:mb-10'>
+          <p className={`text-xs md:text-sm font-poppins ${step > 1 ? 'text-[#4075A9]' : 'text-white'}`}>Generate Mnemonic</p>
+          <p className={` text-xs md:text-sm font-poppins pr-10 ${step > 2 ? 'text-[#4075A9]' : 'text-white'}`}>Verify</p>
+          <p className={` text-xs md:text-sm font-poppins ${step > 2 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
         </div>
 
         {step === 1 &&
           <div className='w-full max-w-2xl  ' >
-            <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
+            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+              <p className=' text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6'>
                 Generated 12-word mnemonic seed: </p>
 
               <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>
@@ -112,7 +123,7 @@ function CreateWallet (): JSX.Element {
                 )}
               </div>
 
-              <div className='flex space-x-5 items-center pt-5'>
+              <div className='flex space-x-5 items-center pt-1 pb-8'>
                 <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
                 onClick={refreshMnemonic}>
@@ -154,9 +165,9 @@ function CreateWallet (): JSX.Element {
         {step === 2 &&
 
           <div className='w-full max-w-2xl ' >
-            <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
+            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
                 Verify your mnemonic seed:
               </p>
               <p className=' text-black text-sm md:text-xl md:-mt-5 font-poppins'>
@@ -199,12 +210,15 @@ function CreateWallet (): JSX.Element {
         {step === 3 &&
           <div className='w-full max-w-2xl '>
 
-            <div className='mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
-              <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
+            {/* <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'> */}
+            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
+
+              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
+                {/* <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20  font-poppins'> */}
                 Set a local password for your wallet:
               </p>
 
-              <div className='flex items-center justify-between px-10 py-5'>
+              <div className='flex items-center justify-between px-10 '>
                 <p className=' text-black text-xl font-poppins'>
                   Set Password
                 </p>
@@ -216,7 +230,7 @@ function CreateWallet (): JSX.Element {
                 />
               </div>
 
-              <div className='flex items-center justify-between px-10'>
+              <div className='flex items-center justify-between px-10 pt-6'>
                 <p className=' text-black text-xl font-poppins'>
                   Repeat Password
                 </p>

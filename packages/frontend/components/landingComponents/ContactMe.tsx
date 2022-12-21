@@ -18,10 +18,10 @@ const ContactMe = (): JSX.Element => {
 
         <div className='flex flex-col space-y-10'>
 
-          <h4 className='text-4xl font-semibold text-center md:text-5xl'>
+          <p className='text-4xl font-semibold text-center md:text-5xl mb-10 md:mb-20'>
             Let&apos;s{' '}
             <span className='underline decoration-[#F7AB0A]/50'>Talk!</span>
-          </h4>
+          </p>
           {/* <div className='flex items-center justify-center space-x-4'>
 
             <SocialIcon

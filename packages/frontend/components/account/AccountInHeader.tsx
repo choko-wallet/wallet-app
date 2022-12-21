@@ -5,12 +5,12 @@ import { Menu, Transition } from '@headlessui/react';
 import { DotsHorizontalIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '../../features/redux/selectors';
 import { removeAllAccounts } from '../../features/slices/user';
-import encodeAddr from '../../utils/encodeAddr';
+import encodeAddr from '../../utils/aaUtils';
 import AccountRow from './AccountRow';
 
 /**
@@ -19,8 +19,11 @@ import AccountRow from './AccountRow';
 export default function AccountInHeader (): JSX.Element {
   const dispatch = useDispatch();
 
+  const [ready, setReady] = useState(false);
+
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+
   const router = useRouter();
 
   const knownNetworks = useSelector(selectKnownNetworks);
@@ -31,7 +34,15 @@ export default function AccountInHeader (): JSX.Element {
     void router.push('/');
   };
 
+  useEffect(() => {
+    if (knownNetworks && currentNetwork) {
+      setReady(true);
+    }
+  }, [knownNetworks, currentNetwork]);
+
   const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
+
+  if (!ready) return null;
 
   return (
     <div className='w-24 md:w-64 text-right'>
@@ -61,16 +72,17 @@ export default function AccountInHeader (): JSX.Element {
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
         >
-          <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border dark:border-[#00f6ff]'>
+          <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
             <div className='px-1 py-1 '>
-              {Object.values(userAccount).map((account, index) => (<AccountRow account={account}
+              {userAccount.map((account, index) => (<AccountRow account={account}
+                accountIndex={index}
                 key={index}
                 network={knownNetworks[currentNetwork]} />))}
               <Menu.Item >
                 {({ active }) => (
                   <button
                     className={`${active
-                      ? 'font-poppins bg-violet-500 dark:bg-gray-900 text-white'
+                      ? 'font-poppins bg-[#F5CBD5] dark:bg-[#0170BF] text-white'
                       : 'font-poppins text-gray-900'
                     } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => router.push('/account')}
@@ -85,7 +97,7 @@ export default function AccountInHeader (): JSX.Element {
               <Menu.Item >
                 {({ active }) => (
                   <button
-                    className={`${active ? 'bg-violet-500 dark:bg-gray-900 text-white' : 'text-gray-900'
+                    className={`${active ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
                     } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={removeAccounts}
                   >

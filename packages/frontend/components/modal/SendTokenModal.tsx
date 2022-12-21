@@ -2,23 +2,26 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Dialog } from '@headlessui/react';
-import { CameraIcon, CheckIcon, DocumentDuplicateIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
+import { CameraIcon, CheckIcon, DocumentDuplicateIcon, DotsHorizontalIcon, PaperAirplaneIcon, XIcon } from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { QrReader } from 'react-qr-reader';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectStatus } from '../../features/redux/selectors';
-import { useAppThunkDispatch } from '../../features/redux/store';
-import { setClose, toggle } from '../../features/slices/status';
-import { BalanceInfo, CryptoBalance } from '../../utils/types';
+import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import encodeAddr from '@choko-wallet/frontend/utils/aaUtils';
+import { ethEncodeTxToUrl } from '@choko-wallet/frontend/utils/ethSendTx';
+import { polkadotEncodeTxToUrl } from '@choko-wallet/frontend/utils/polkadotSendTx';
+
+import { selectCurrentNetwork, selectKnownNetworks, selectStatus } from '../../features/redux/selectors';
+import { endLoading, setClose, startLoading, toggle } from '../../features/slices/status';
+import { BalanceInfo } from '../../utils/types';
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
 
 /**
  * Modal wrapper to send crypto to another account
- * NOT FUNCTIONAL YET.
  */
 interface Props {
   balanceInfo: BalanceInfo;
@@ -26,13 +29,25 @@ interface Props {
 
 const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   const { theme } = useTheme();
-  const dispatch = useAppThunkDispatch();
-  const [addressToSend, setAddressToSend] = useState<string>('');
-  const [cryptoToSend, setCryptoToSend] = useState<CryptoBalance | null>(null);
+  const dispatch = useDispatch();
   const status = useSelector(selectStatus);
+
+  const [loading, setLaoding] = useState(true);
+
+  const [addressToSend, setAddressToSend] = useState<string>('');
+  const [cryptoAddress, setCryptoAddress] = useState<string>('native');
+
+  // Value to be sent
   const [amount, setAmount] = useState<number>(0);
-  const [amountToCurrency, setAmountToCurrency] = useState<number>(0);
+  const [amountInUsd, setAmountInUsd] = useState<number>(0);
+
   const [showCheck, setShowCheck] = useState<boolean>(false);
+  const [sendTransactionLoading, setSendTransactionLoading] = useState<boolean>(false);
+
+  const knownNetworks = useSelector(selectKnownNetworks);
+  const currentNetwork = useSelector(selectCurrentNetwork);
+  const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const currentAddress = encodeAddr(knownNetworks[currentNetwork], currentUserAccount);
 
   const handleCopy = () => {
     setShowCheck(true);
@@ -41,10 +56,59 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     }, 1000);
   };
 
+  const sendTransaction = () => { // 参数 cryptoToSend amount addressToSend
+    if (sendTransactionLoading) return;
+    setSendTransactionLoading(true);
+
+    // no need to await
+    void (async () => {
+      dispatch(startLoading('Generating Payload ...'));
+
+      const network = knownNetworks[currentNetwork];
+
+      switch (network.networkType) {
+        case 'polkadot': {
+          const requestUrl = await polkadotEncodeTxToUrl(
+            network, currentUserAccount,
+            addressToSend, amount
+          );
+
+          console.log('requestUrl', requestUrl);
+          dispatch(endLoading());
+          break;
+        }
+
+        case 'ethereum': {
+          const requestUrl = ethEncodeTxToUrl(
+            network, currentUserAccount,
+            cryptoAddress,
+            addressToSend, amount, balanceInfo[cryptoAddress].decimals
+          );
+
+          window.location.href = requestUrl;
+          // console.log('requestUrl', requestUrl);
+          dispatch(endLoading());
+          break;
+        }
+      }
+    })();
+
+    dispatch(setClose('homeSend'));
+    setSendTransactionLoading(false);
+  };
+
+  useEffect(() => {
+    if (balanceInfo && balanceInfo.native !== undefined) {
+      setLaoding(false);
+    }
+  }, [balanceInfo]);
+
+  if (loading) { return null; }
+
   return (
     <Modal modalName='homeSend'>
       <div className={theme}>
-        <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
+        <Dialog.Panel className='w-[360px] md:w-[500px]  transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
           <Dialog.Title
             as='h3'
             className='text-lg  font-medium leading-6 flex items-center mb-6 '
@@ -61,18 +125,21 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             </div>
           </Dialog.Title>
           <div className='mt-2 '>
-            <b>unimplemented!()</b>
             <DropdownForSend
               balanceInfo={balanceInfo}
-              cryptoToSend={cryptoToSend}
-              setCryptoToSend={setCryptoToSend} />
+              setCryptoAddress={setCryptoAddress} />
 
             <p className=' text-gray-700 dark:text-white '>From</p>
             <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
-              <p className='flex flex-grow dark:text-white font-poppins'>5G16tBnZEmtnL6A5nxZJpJtUw</p>
+              {/* <p className='flex flex-grow dark:text-white font-poppins'>{currentUserAccount.address}</p> */}
+              <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
+                {currentAddress.substring(0, 7)}
+                <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
+                {currentAddress.substring(currentAddress.length - 7, currentAddress.length)}
+              </p>
 
               <CopyToClipboard
-                text={'5G16tBnZEmtnL6A5nxZJpJtUw'}>
+                text={currentAddress}>
                 <div onClick={handleCopy}>
                   {showCheck
                     ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
@@ -82,14 +149,15 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               </CopyToClipboard>
             </div>
 
-            <div className='relative'>
+            <div className='relative '>
 
               <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-              <input className='font-poppins input input-bordered input-info w-full '
+              <textarea className='font-poppins input input-bordered input-info w-full pr-12'
                 onChange={(e) => setAddressToSend(e.target.value)}
                 placeholder='Destination Address'
-                type='text'
+                // type="textarea"
+                rows={3}
                 value={addressToSend} />
               <CameraIcon
                 className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
@@ -121,8 +189,8 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
               </div>}
 
-            <div className='flex items-end mb-1'>
-              <div className='relative grow'>
+            <div className='flex flex-col items-center justify-center mb-1'>
+              <div className='relative w-full'>
                 <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
                 <input
@@ -131,37 +199,51 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   min='0'
                   onChange={(e) => {
                     setAmount(parseFloat(e.target.value));
-                    setAmountToCurrency(
-                      parseFloat((parseFloat(e.target.value) * cryptoToSend.priceInUSD).toFixed(2)));
+
+                    // console.log('first', isNaN(parseFloat(e.target.value)))
+                    if (isNaN(parseFloat(e.target.value))) {
+                      setAmountInUsd(0.0);
+                    } else {
+                      setAmountInUsd(
+                        parseFloat(
+                          (
+                            parseFloat(e.target.value) * balanceInfo[cryptoAddress].priceInUSD
+                          ).toFixed(2)));
+                    }
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amountToCurrency ? amount : null}
-                // value={amount}
+                  value={amount}
                 />
-                <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{cryptoToSend?.symbol}</p>
+                <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{balanceInfo[cryptoAddress].symbol}</p>
               </div>
 
-              <p className='mx-1 pb-3'>=</p>
+              <p className='my-1 '>=</p>
 
-              <div className='relative grow'>
+              <div className='relative w-full'>
                 <input
                   className='font-poppins  input input-bordered input-info w-full '
                   max='10000000'
                   min='0'
                   onChange={(e) => {
-                    setAmountToCurrency(parseFloat(e.target.value));
-                    setAmount(
-                      parseFloat((parseFloat(e.target.value) / cryptoToSend?.priceInUSD).toFixed(8)));
+                    const inUsd = parseFloat(e.target.value);
+
+                    setAmountInUsd(inUsd);
+
+                    if (isNaN(inUsd)) { setAmountInUsd(0.0); } else if (balanceInfo[cryptoAddress].priceInUSD === 0) { setAmount(0.0); } else {
+                      setAmount(
+                        parseFloat((inUsd / balanceInfo[cryptoAddress].priceInUSD).toFixed(8))
+                      );
+                    }
                   }}
                   placeholder='0.0'
                   type='number'
-                  value={amount ? amountToCurrency : null} />
+                  value={amountInUsd} />
                 <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
               </div>
 
             </div>
-            <p className='font-poppins text-gray-700 dark:text-white text-sm'>{cryptoToSend?.name} price: {cryptoToSend?.priceInUSD}</p>
+            <p className='font-poppins text-gray-700 dark:text-white text-sm'>{balanceInfo[cryptoAddress].name} price: {balanceInfo[cryptoAddress].priceInUSD}</p>
 
             {/* <p className=' text-gray-700 dark:text-white py-1 pt-3 font-poppins'>Network Fee {' '} {cryptoToSend.networkFee}</p> */}
 
@@ -169,16 +251,25 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
           </div>
 
-          <div className='mt-4'>
+          <div className='mt-4 bg-transparent rounded-lg'>
+            {!sendTransactionLoading
+              ? <button
+                className={`font-poppins py-3 px-6 font-medium text-[18px]  rounded-[10px] outline-none' ${amount && amount !== 0 && addressToSend !== '' ? 'text-primary bg-blue-gradient' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+                disabled={amount === 0 || amount === null || addressToSend === ''}
+                onClick={() => sendTransaction()}
+                type='button'
+              >
+                Send
+              </button>
 
-            <button
-              className='font-poppins py-3 px-6 font-medium text-[18px] text-primary bg-blue-gradient rounded-[10px] outline-none'
-              onClick={() => dispatch(setClose('homeSend'))}
-
-              type='button'
-            >
-              Send
-            </button>
+              : (
+                <img
+                  alt=''
+                  className='object-cover w-full h-20'
+                  src='https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif'
+                />
+              )
+            }
 
           </div>
         </Dialog.Panel>

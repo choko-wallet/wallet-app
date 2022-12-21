@@ -10,6 +10,7 @@ import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { toggle } from '../features/slices/status';
 import { removeAllAccounts } from '../features/slices/user';
 import icon1 from '../images/icon1.png';
 import logo from '../images/logo.png';
@@ -44,7 +45,7 @@ function Header (): JSX.Element {
 
       <div className='flex justify-between p-2 '>
         <div className='flex items-center justify-center ' >
-          <div className='flex md:m-1 relative items-center w-[50px] h-[50px] md:w-[60px] md:h-[60px] my-auto cursor-pointer'
+          <div className='flex md:m-1 relative items-center w-[45px] h-[45px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
             {theme === 'dark'
               ? <Image
@@ -74,7 +75,7 @@ function Header (): JSX.Element {
             </div>
 
             <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              onClick={() => router.push('/settings')}
+              onClick={() => dispatch(toggle('settingsExportUrl'))}
             >
 
               <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />

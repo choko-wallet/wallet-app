@@ -5,10 +5,15 @@ export type BalanceInfo = Record<string, CryptoBalance>;
 export type CryptoBalance = {
   balance: number,
   balanceInUSD: number,
+  decimals?: number,
   img: string,
   name: string,
   priceInUSD: number,
   symbol: string,
 };
 
-export type CoingeckoAPIResponse = Record<string, {[key: string]: number}>;
+export type CoingeckoAPIResponse = Record<string, { [key: string]: number }>;
+export type FormAPIResponse = {
+  error: string,
+  data: string,
+}

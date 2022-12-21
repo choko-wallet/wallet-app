@@ -25,7 +25,7 @@ function AccountRouter (): JSX.Element {
         <p className=' text-black font-semibold text-xl md:text-2xl md:-mt-5 font-poppins'>
           Create An Account
         </p>
-        <p className=' text-black font-poppins '>
+        <p className=' text-black font-poppins text-center'>
           Import your mnemonic seed or generate a new 12-word mnemonic seed. You will be asked to create a password for your wallet.
         </p>
 

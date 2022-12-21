@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
 import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
 import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/request-handler/decryptMessage';
@@ -23,7 +23,10 @@ import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/r
 function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+  const userAccount = useSelector(selectUserAccount);
+
   const [password, setPassword] = useState('');
 
   const [mounted, setMounted] = useState<boolean>(false);
@@ -40,79 +43,86 @@ function DecryptMessageHandler (): JSX.Element {
     const request = DecryptMessageRequest.deserialize(u8aRequest);
 
     dispatch(loadUserAccount());
-    dispatch(switchUserAccount(request.userOrigin.address));
     setCallback(callbackUrl);
     setRequest(request);
   }, [dispatch, router.isReady, router.query]);
 
+  // set the account right
   useEffect(() => {
-    if (request) setMounted(true);
-  }, [request]);
+    if (userAccount.length === 0) return;
+    const accountLength = userAccount.length;
 
-  function unlock () {
-    if (request) {
-      try {
-        dispatch(decryptCurrentUserAccount(password));
-        toast('Password Correct, Redirecting...', {
-          duration: 5000,
-          icon: '👏',
-          style: {
-            background: 'green',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '17px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
-
-        if (currentUserAccount && !currentUserAccount.isLocked) {
-          setPassword('');
-          dispatch(setClose('decryptMessagePasswordModal'));
-
-          void (async () => {
-            const decryptMessage = new DecryptMessageDescriptor();
-
-            try {
-              const response = await decryptMessage.requestHandler(request, currentUserAccount);
-              const s = response.serialize();
-
-              dispatch(lockCurrentUserAccount());
-              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
-            } catch (err) {
-              console.error('err', err);
-              toast('Something Wrong', {
-                style: {
-                  background: 'red',
-                  color: 'white',
-                  fontFamily: 'Poppins',
-                  fontSize: '16px',
-                  fontWeight: 'bolder',
-                  padding: '20px'
-                }
-              });
-            }
-          })();
-        }
-      } catch (e) {
-        toast('Wrong Password!', {
-          style: {
-            background: 'red',
-            color: 'white',
-            fontFamily: 'Poppins',
-            fontSize: '16px',
-            fontWeight: 'bolder',
-            padding: '20px'
-          }
-        });
+    for (let i = 0; i < accountLength; ++i) {
+      if (request.userOrigin.getAddress('ethereum') === userAccount[i].getAddress('ethereum')) {
+        dispatch(switchUserAccount(i));
+        break;
       }
     }
-  }
 
-  // function closeModal () {
-  //   setPassword('');
-  //   setOpenPasswordModal(false);
-  // }
+    if (request) {
+      setMounted(true);
+    }
+  }, [request, dispatch, userAccount]);
+
+  function unlock () {
+    if (!request) return;
+
+    try {
+      dispatch(decryptCurrentUserAccount(password));
+      toast('Password Correct, Redirecting...', {
+        duration: 5000,
+        icon: '👏',
+        style: {
+          background: 'green',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '17px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
+
+      if (currentUserAccount && !currentUserAccount.isLocked) {
+        setPassword('');
+        dispatch(setClose('decryptMessagePasswordModal'));
+
+        void (async () => {
+          const decryptMessage = new DecryptMessageDescriptor();
+
+          try {
+            const response = await decryptMessage.requestHandler(request, currentUserAccount);
+            const s = response.serialize();
+
+            dispatch(lockCurrentUserAccount());
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=decryptMessage`;
+          } catch (err) {
+            console.error('err', err);
+            toast('Something Wrong', {
+              style: {
+                background: 'red',
+                color: 'white',
+                fontFamily: 'Poppins',
+                fontSize: '16px',
+                fontWeight: 'bolder',
+                padding: '20px'
+              }
+            });
+          }
+        })();
+      }
+    } catch (e) {
+      toast('Wrong Password!', {
+        style: {
+          background: 'red',
+          color: 'white',
+          fontFamily: 'Poppins',
+          fontSize: '16px',
+          fontWeight: 'bolder',
+          padding: '20px'
+        }
+      });
+    }
+  }
 
   if (!mounted) {
     return null;
@@ -149,7 +159,12 @@ function DecryptMessageHandler (): JSX.Element {
             </div>
             <div className='col-span-12'>
               <code className='underline text-clip'
-                style={{ overflowWrap: 'break-word' }}>{request.userOrigin.address}</code>
+                style={{ overflowWrap: 'break-word' }}>{
+                  currentUserAccount.getAddress('ethereum')
+                }</code><br/><br/>
+              <code className='text-clip'
+                style={{ overflowWrap: 'break-word' }}>NOTE: This is your EOA Address</code>
+
             </div>
             <div className='col-span-12'>
               Client Ephemeral Key:

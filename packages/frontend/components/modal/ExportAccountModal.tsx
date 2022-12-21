@@ -10,7 +10,7 @@ import QRCode from 'react-qr-code';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectCurrentUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import getWalletUrl from '@choko-wallet/sdk/walletUrl';
+import { walletUrl } from '@choko-wallet/frontend/utils/env';
 
 import { setClose } from '../../features/slices/status';
 import Modal from '../Modal';
@@ -18,7 +18,6 @@ import Modal from '../Modal';
 /**
  * Modal wrapper to generate an exportAccount in Setting
  */
-
 const ExportAccountModal = (): JSX.Element => {
   const dispatch = useDispatch();
   const currentUserAccount = useSelector(selectCurrentUserAccount);
@@ -35,7 +34,7 @@ const ExportAccountModal = (): JSX.Element => {
 
   useEffect(() => {
     if (currentUserAccount) {
-      setExportUrl(`${getWalletUrl()}/import?payload=${u8aToHex(currentUserAccount?.serializeWithEncryptedKey())}`);
+      setExportUrl(`${walletUrl}/import?payload=${u8aToHex(currentUserAccount?.serializeWithEncryptedKey())}`);
     }
   }, [currentUserAccount]);
 

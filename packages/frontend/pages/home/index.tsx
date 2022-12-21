@@ -11,20 +11,21 @@ import Balance from '@choko-wallet/frontend/components/balance/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
 import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
+import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAccountModal';
 import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
 import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
 import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebar';
 import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
-import encodeAddr from '@choko-wallet/frontend/utils/encodeAddr';
+import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
 
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading } from '../../features/redux/selectors';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadAllNetworks } from '../../features/slices/network';
 import { endLoading, startLoading } from '../../features/slices/status';
-import { loadUserAccount } from '../../features/slices/user';
+import { loadUserAccount, noteAAWalletAddress } from '../../features/slices/user';
 import { ethFetchBalance } from '../../utils/ethFetchBalance';
 import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
 import { toastFail } from '../../utils/toast';
@@ -39,35 +40,44 @@ export default function Home (): JSX.Element {
   const { setTheme, theme } = useTheme();
   const router = useRouter();
 
+  const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const currentNetwork = useSelector(selectCurrentNetwork);
   const knownNetworks = useSelector(selectKnownNetworks);
   const loadingText = useSelector(selectLoading);
 
   const [mounted, setMounted] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
 
-  // Init user account & networks
+  /**
+   * We are loading three things here:
+   * 1. the network config (sync)
+   * 2. the user account && AA Wallet (async)
+   * 3. balance info of the user on this network
+   */
+
+  // 1. init the network config
   useEffect(() => {
+    dispatch(loadAllNetworks());
+  }, [dispatch]);
+
+  // 2. init user account
+  useEffect(() => {
+    if (!currentNetwork) return;
+
     // IF account is not in localStorage - redirect to account creation page
     if (!localStorage.getItem('serialziedUserAccount')) {
       void router.push('/account');
     } else {
-      // We are all good. Load UserAccount & Networks
-      dispatch(loadUserAccount());
-      dispatch(loadAllNetworks());
+      try {
+        dispatch(loadUserAccount());
+      } catch (e) {
+        // This means that the AA Wallet info is not arranged as expected.
+        // We gotta fetch from chain
+        console.log(e);
+      }
     }
-  }, [dispatch, router]);
-
-  useEffect(() => {
-    if (loadingText && loadingText.length !== 0) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [loadingText]);
+  }, [currentNetwork, dispatch, router]);
 
   useEffect(() => {
     // Fetch balance and price once the network & user account is loaded in Redux
@@ -75,16 +85,31 @@ export default function Home (): JSX.Element {
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
 
+    console.log('fetching balance ', userAccount, knownNetworks, currentNetwork);
+
     // no need to await
-    void (async () => {
+    /** Fetch Balance && AAWallet Address */
+    (async () => {
       dispatch(startLoading('Fetching Balance ...'));
+
+      console.log('aaWalletAddress', currentUserAccount.aaWalletAddress);
+
+      // 1. Fetch AA Wallet Info when needed.
+      // if (!currentUserAccount.aaWalletAddress) {
+      const populateAAWalletInfo = async () => {
+        const aaAddresses = await fetchAAWalletAddress(userAccount);
+
+        dispatch(noteAAWalletAddress(aaAddresses));
+      };
+
+      await populateAAWalletInfo();
+      // }
 
       const network = knownNetworks[currentNetwork];
 
       switch (network.networkType) {
         case 'polkadot':
           try {
-            // const res = await polkadotFetchBalance(network, '16aThbzrsb2ohiLXJLqN8jLST6JgUPRi3BqyHxUW4yVHBQ44')
             const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
 
             setBalanceInfo(res);
@@ -100,8 +125,6 @@ export default function Home (): JSX.Element {
         case 'ethereum':
           try {
             const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
-            // const res = await ethFetchBalance(network, '0xa5E4E1BB29eE2D16B07545CCf565868aE34F92a2');
-            // const res = await ethFetchBalance(network, '0xBF544eBd099Fa1797Ed06aD4665646c1995629EE');// goerli
 
             setBalanceInfo(res);
             dispatch(endLoading());
@@ -114,20 +137,20 @@ export default function Home (): JSX.Element {
 
           break;
       }
-    })();
+    })().catch(console.error);
 
     setMounted(true);
-  }, [currentNetwork, currentUserAccount, knownNetworks, dispatch]);
+  }, [knownNetworks, currentUserAccount, currentNetwork, dispatch, userAccount]);
 
-  useEffect(() => {
-    if (theme !== 'dark' && theme !== 'light') {
-      setTheme('light');
-    }
-  }, [setTheme, theme]);
+  if (theme !== 'dark' && theme !== 'light') {
+    setTheme('light');
+  }
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
-  if (loading) return <Loading />;
+  if (loadingText) return <Loading />;
+
+  console.log(knownNetworks, userAccount);
 
   return (
     <div className={theme}>
@@ -137,8 +160,8 @@ export default function Home (): JSX.Element {
         <Header />
         <NetworkSidebarMobile />
 
-        < main className='min-h-[750px] bg-transparent h-80v w-full dark:bg-[#22262f] max-w-7xl mx-auto' >
-          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8'>
+        < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#22262f] max-w-screen-xl mx-auto' >
+          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
             <NetworkSidebar />
             <Balance balance={balanceInfo} />
           </div>
@@ -151,6 +174,7 @@ export default function Home (): JSX.Element {
 
           <AddTokenModal />
 
+          <ExportAccountModal />
         </main >
         <Footer />
 
