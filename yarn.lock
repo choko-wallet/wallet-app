@@ -1491,6 +1491,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@choko-wallet/balance-module@0.1.0, @choko-wallet/balance-module@workspace:packages/balance-module":
+  version: 0.0.0-use.local
+  resolution: "@choko-wallet/balance-module@workspace:packages/balance-module"
+  dependencies:
+    react: 18.1.0
+  languageName: unknown
+  linkType: soft
+
 "@choko-wallet/core@npm:0.1.10-0":
   version: 0.1.10-0
   resolution: "@choko-wallet/core@npm:0.1.10-0"
@@ -1512,6 +1520,7 @@ __metadata:
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
     "@choko-wallet/account-abstraction": 0.1.10-0
+    "@choko-wallet/balance-module": 0.1.0
     "@choko-wallet/core": 0.1.10-0
     "@choko-wallet/known-networks": 0.1.10-0
     "@choko-wallet/request-handler": 0.1.10-0

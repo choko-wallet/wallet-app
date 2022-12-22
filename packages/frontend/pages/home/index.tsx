@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
+import BalanceModule from '@choko-wallet/balance-module';
 import Balance from '@choko-wallet/frontend/components/balance/Balance';
 import Footer from '@choko-wallet/frontend/components/Footer';
 import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
@@ -154,7 +155,7 @@ export default function Home (): JSX.Element {
 
   return (
     <div className={theme}>
-
+      <BalanceModule />
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen flex flex-col justify-between'>
         <Toaster />
         <Header />

@@ -11,6 +11,7 @@
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.1",
     "@choko-wallet/account-abstraction": "0.1.10-0",
+    "@choko-wallet/balance-module": "0.1.0",
     "@choko-wallet/core": "0.1.10-0",
     "@choko-wallet/known-networks": "0.1.10-0",
     "@choko-wallet/request-handler": "0.1.10-0",

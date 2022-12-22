@@ -8,6 +8,8 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
+      "@choko-wallet/balance-module": [ "packages/balance-module/src" ],
+      "@choko-wallet/balance-module/*": [ "packages/balance-module/src/*" ],
       "@choko-wallet/frontend": [ "packages/frontend/" ],
       "@choko-wallet/frontend/*": [ "packages/frontend/*" ],
     },

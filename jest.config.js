@@ -5,7 +5,8 @@ const config = require('@skyekiwi/dev/config/jest.cjs');
 
 module.exports = Object.assign({}, config, {
   modulePathIgnorePatterns: [
-    '<rootDir>/packages/frontend/build'
+    '<rootDir>/packages/frontend/build',
+    '<rootDir>/packages/balance-module/build'
   ],
   testTimeout: 3_000_000,
   transformIgnorePatterns: [
