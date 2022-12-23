@@ -7,21 +7,36 @@ import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
-import BalanceModule from '@choko-wallet/balance-module';
-import Balance from '@choko-wallet/frontend/components/balance/Balance';
-import Footer from '@choko-wallet/frontend/components/Footer';
-import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
-import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
-import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAccountModal';
-import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
-import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
-import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebar';
-import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
+import BalanceModule from '@choko-wallet/balance-module/Balance';
+// import Balance from '@choko-wallet/frontend/components/balance/Balance';
+import NetworkSidebar from '@choko-wallet/network-sidebar-module/NetworkSidebar';
+import NetworkSidebarMobile from '@choko-wallet/network-sidebar-module/NetworkSidebarMobile';
+// import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebar';
+// import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
+
+// import Footer from '@choko-wallet/frontend/components/Footer';
+// import Header from '../../components/Header';
+// import Loading from '../../components/Loading';
+import Footer from '@choko-wallet/footer-module/Footer';
+import Header from '@choko-wallet/header-module/Header';
+import Loading from '@choko-wallet/loading-module/Loading';
+
+import AddNetworkModal from '@choko-wallet/modal-module/AddNetworkModal';
+import AddTokenModal from '@choko-wallet/modal-module/AddTokenModal';
+import ExportAccountModal from '@choko-wallet/modal-module/ExportAccountModal';
+import ReceiveTokenModal from '@choko-wallet/modal-module/ReceiveTokenModal';
+import SendTokenModal from '@choko-wallet/modal-module/SendTokenModal';
+
+// import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
+// import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
+// import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAccountModal';
+// import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
+// import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
+
+
 import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
 import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
 
-import Header from '../../components/Header';
-import Loading from '../../components/Loading';
 import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '../../features/redux/selectors';
 import { useAppThunkDispatch } from '../../features/redux/store';
 import { loadAllNetworks } from '../../features/slices/network';
@@ -35,7 +50,7 @@ import { toastFail } from '../../utils/toast';
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();
@@ -155,7 +170,7 @@ export default function Home (): JSX.Element {
 
   return (
     <div className={theme}>
-      <BalanceModule />
+
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen flex flex-col justify-between'>
         <Toaster />
         <Header />
@@ -164,7 +179,8 @@ export default function Home (): JSX.Element {
         < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#22262f] max-w-screen-xl mx-auto' >
           <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
             <NetworkSidebar />
-            <Balance balance={balanceInfo} />
+            {/* <Balance balance={balanceInfo} /> */}
+            <BalanceModule balance={balanceInfo} />
           </div>
 
           <SendTokenModal balanceInfo={balanceInfo} />

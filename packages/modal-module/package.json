@@ -1,0 +1,14 @@
+{
+  "name": "@choko-wallet/modal-module",
+  "version": "0.1.0",
+  "description": "modal",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "react": "18.1.0"
+  }
+}

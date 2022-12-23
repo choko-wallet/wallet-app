@@ -8,10 +8,72 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@choko-wallet/balance-module": [ "packages/balance-module/src" ],
-      "@choko-wallet/balance-module/*": [ "packages/balance-module/src/*" ],
-      "@choko-wallet/frontend": [ "packages/frontend/" ],
-      "@choko-wallet/frontend/*": [ "packages/frontend/*" ],
+      "@choko-wallet/balance-module": [
+        "packages/balance-module/src"
+      ],
+      "@choko-wallet/balance-module/*": [
+        "packages/balance-module/src/*"
+      ],
+      "@choko-wallet/landing-module": [
+        "packages/landing-module/src"
+      ],
+      "@choko-wallet/landing-module/*": [
+        "packages/landing-module/src/*"
+      ],
+      "@choko-wallet/network-sidebar-module": [
+        "packages/network-sidebar-module/src"
+      ],
+      "@choko-wallet/network-sidebar-module/*": [
+        "packages/network-sidebar-module/src/*"
+      ],
+      "@choko-wallet/footer-module": [
+        "packages/footer-module/src"
+      ],
+      "@choko-wallet/footer-module/*": [
+        "packages/footer-module/src/*"
+      ],
+      "@choko-wallet/header-module": [
+        "packages/header-module/src"
+      ],
+      "@choko-wallet/header-module/*": [
+        "packages/header-module/src/*"
+      ],
+      "@choko-wallet/loading-module": [
+        "packages/loading-module/src"
+      ],
+      "@choko-wallet/loading-module/*": [
+        "packages/loading-module/src/*"
+      ],
+      "@choko-wallet/modal-module": [
+        "packages/modal-module/src"
+      ],
+      "@choko-wallet/modal-module/*": [
+        "packages/modal-module/src/*"
+      ],
+      "@choko-wallet/button-module": [
+        "packages/button-module/src"
+      ],
+      "@choko-wallet/button-module/*": [
+        "packages/button-module/src/*"
+      ],
+      "@choko-wallet/frontend": [
+        "packages/frontend/"
+      ],
+      "@choko-wallet/frontend/*": [
+        "packages/frontend/*"
+      ],
+      "@choko-wallet/images-module": [
+        "packages/images-module/"
+      ],
+      "@choko-wallet/images-module/*": [
+        "packages/images-module/*"
+      ],
+      "@choko-wallet/account-module": [
+        "packages/account-module/"
+      ],
+      "@choko-wallet/account-module/*": [
+        "packages/account-module/*"
+      ],
     },
     "skipLibCheck": true,
     "typeRoots": [
