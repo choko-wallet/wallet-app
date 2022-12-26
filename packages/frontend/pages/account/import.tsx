@@ -11,13 +11,13 @@ import { useDispatch } from 'react-redux';
 
 import Loading from '@choko-wallet/frontend/components/Loading';
 
-import { addUserAccount } from '../../features/slices/user';
+import { addUserAccount } from '@choko-wallet/redux-module/slices/user';
 
 /**
  * Guide user to import an account
  * Paste a seed into any space will automatically try to render the whole seed phrase
  */
-function ImportWallet (): JSX.Element {
+function ImportWallet(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -178,8 +178,8 @@ function ImportWallet (): JSX.Element {
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-              disabled={(!password || !repeatPassword || password !== repeatPassword)}
-              onClick={() => handleSetPassword()}
+                disabled={(!password || !repeatPassword || password !== repeatPassword)}
+                onClick={() => handleSetPassword()}
               >
 
                 <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />

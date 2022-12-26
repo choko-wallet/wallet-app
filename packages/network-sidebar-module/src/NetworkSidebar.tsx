@@ -6,7 +6,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import NetworkSelection from '@choko-wallet/network-sidebar-module/NetworkSelectionList';
-import { toggle } from '@choko-wallet/frontend/features/slices/status';
+import { toggle } from '@choko-wallet/redux-module/slices/status';
 
 /**
  * wrapper of the NetworkSelection list for widescreen devices

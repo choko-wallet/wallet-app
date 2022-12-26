@@ -12,14 +12,16 @@ import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { toggle } from '../../frontend/features/slices/status';
-import { removeAllAccounts } from '../../frontend/features/slices/user';
-// import icon1 from '../images/icon1.png';
-// import logo from '../images/logo.png';
-// import logo2 from '../images/logo2.png';
-// import logout from '../images/logout.png';
-// import logout2 from '../images/logout2.png';
-import AccountInHeader from '@choko-wallet/account-module/src/AccountInHeader';// 这个位置为什么需要src？ 否则报错
+import { toggle } from '@choko-wallet/redux-module/slices/status';
+import { removeAllAccounts } from '@choko-wallet/redux-module/slices/user';
+
+import icon1 from './icon1.png';
+import logo from './images/logo.png';
+import logo2 from './images/logo2.png';
+import logout from './images/logout.png';
+import logout2 from './images/logout2.png';
+
+import AccountInHeader from './AccountInHeader';
 
 function Header(): JSX.Element {
   const dispatch = useDispatch();

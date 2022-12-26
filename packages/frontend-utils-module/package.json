@@ -1,0 +1,14 @@
+{
+  "name": "@choko-wallet/frontend-utils-module",
+  "version": "0.1.0",
+  "description": "frontend utils",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "react": "18.1.0"
+  }
+}

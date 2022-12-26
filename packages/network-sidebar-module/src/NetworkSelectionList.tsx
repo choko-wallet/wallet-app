@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectKnownNetworks } from '@choko-wallet/frontend/features/redux/selectors';
-import { removeNetworkAndSave, setCurrentNetwork } from '@choko-wallet/frontend/features/slices/network';
-import { setOpen } from '@choko-wallet/frontend/features/slices/status';
+import { selectCurrentNetwork, selectKnownNetworks } from '@choko-wallet/redux-module/redux/selectors';
+import { removeNetworkAndSave, setCurrentNetwork } from '@choko-wallet/redux-module/slices/network';
+import { setOpen } from '@choko-wallet/redux-module/slices/status';
 
 
 

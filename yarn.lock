@@ -1491,25 +1491,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/account-module@workspace:packages/account-module":
-  version: 0.0.0-use.local
-  resolution: "@choko-wallet/account-module@workspace:packages/account-module"
-  dependencies:
-    react: 18.1.0
-  languageName: unknown
-  linkType: soft
-
 "@choko-wallet/balance-module@0.1.0, @choko-wallet/balance-module@workspace:packages/balance-module":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/balance-module@workspace:packages/balance-module"
-  dependencies:
-    react: 18.1.0
-  languageName: unknown
-  linkType: soft
-
-"@choko-wallet/button-module@workspace:packages/button-module":
-  version: 0.0.0-use.local
-  resolution: "@choko-wallet/button-module@workspace:packages/button-module"
   dependencies:
     react: 18.1.0
   languageName: unknown
@@ -1530,9 +1514,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/footer-module@workspace:packages/footer-module":
+"@choko-wallet/frontend-utils-module@workspace:packages/frontend-utils-module":
   version: 0.0.0-use.local
-  resolution: "@choko-wallet/footer-module@workspace:packages/footer-module"
+  resolution: "@choko-wallet/frontend-utils-module@workspace:packages/frontend-utils-module"
   dependencies:
     react: 18.1.0
   languageName: unknown
@@ -1595,14 +1579,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/images-module@workspace:packages/images-module":
-  version: 0.0.0-use.local
-  resolution: "@choko-wallet/images-module@workspace:packages/images-module"
-  dependencies:
-    react: 18.1.0
-  languageName: unknown
-  linkType: soft
-
 "@choko-wallet/known-networks@npm:0.1.10-0":
   version: 0.1.10-0
   resolution: "@choko-wallet/known-networks@npm:0.1.10-0"
@@ -1613,33 +1589,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/landing-module@workspace:packages/landing-module":
-  version: 0.0.0-use.local
-  resolution: "@choko-wallet/landing-module@workspace:packages/landing-module"
-  dependencies:
-    react: 18.1.0
-  languageName: unknown
-  linkType: soft
-
-"@choko-wallet/loading-module@workspace:packages/loading-module":
-  version: 0.0.0-use.local
-  resolution: "@choko-wallet/loading-module@workspace:packages/loading-module"
-  dependencies:
-    react: 18.1.0
-  languageName: unknown
-  linkType: soft
-
-"@choko-wallet/modal-module@workspace:packages/modal-module":
-  version: 0.0.0-use.local
-  resolution: "@choko-wallet/modal-module@workspace:packages/modal-module"
-  dependencies:
-    react: 18.1.0
-  languageName: unknown
-  linkType: soft
-
 "@choko-wallet/network-sidebar-module@workspace:packages/network-sidebar-module":
   version: 0.0.0-use.local
   resolution: "@choko-wallet/network-sidebar-module@workspace:packages/network-sidebar-module"
+  dependencies:
+    react: 18.1.0
+  languageName: unknown
+  linkType: soft
+
+"@choko-wallet/redux-module@workspace:packages/redux-module":
+  version: 0.0.0-use.local
+  resolution: "@choko-wallet/redux-module@workspace:packages/redux-module"
   dependencies:
     react: 18.1.0
   languageName: unknown

@@ -12,12 +12,12 @@ import { useDispatch } from 'react-redux';
 
 import Loading from '@choko-wallet/frontend/components/Loading';
 
-import { addUserAccount } from '../../features/slices/user';
+import { addUserAccount } from '@choko-wallet/redux-module/slices/user';
 
 /**
  * Guide user to create an account with seed phrase
  */
-function CreateWallet (): JSX.Element {
+function CreateWallet(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -126,7 +126,7 @@ function CreateWallet (): JSX.Element {
               <div className='flex space-x-5 items-center pt-1 pb-8'>
                 <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
-                onClick={refreshMnemonic}>
+                  onClick={refreshMnemonic}>
                   <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
                   <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
                 </button>
@@ -254,8 +254,8 @@ function CreateWallet (): JSX.Element {
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-              disabled={(!password || !repeatPassword || password !== repeatPassword)}
-              onClick={() => handleSetPassword()}
+                disabled={(!password || !repeatPassword || password !== repeatPassword)}
+                onClick={() => handleSetPassword()}
               >
 
                 <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />

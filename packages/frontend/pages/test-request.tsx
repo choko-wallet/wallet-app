@@ -22,11 +22,11 @@ import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
 
 import Loading from '../components/Loading';
 import ball from '../images/ball.png';
-import { fetchAAWalletAddress } from '../utils/aaUtils';
-import { deploymentEnv, walletUrl } from '../utils/env';
-import { fadeIn, planetVariants, staggerContainer, textContainer, textVariant2 } from '../utils/motion';
-import { toastFail, toastSuccess } from '../utils/toast';
-import { FormAPIResponse } from '../utils/types';
+import { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
+import { deploymentEnv, walletUrl } from '@choko-wallet/frontend-utils-module/env';
+import { fadeIn, planetVariants, staggerContainer, textContainer, textVariant2 } from '@choko-wallet/frontend-utils-module/motion';
+import { toastFail, toastSuccess } from '@choko-wallet/frontend-utils-module/toast';
+import { FormAPIResponse } from '@choko-wallet/frontend-utils-module/types';
 
 const callbackUrl = `${walletUrl}/test-request`;
 // const apiUrl = 'http://localhost:3333/choko/beta';
@@ -397,7 +397,7 @@ const TestRequest: NextPage = () => {
                   Step 2: Sign A Gasless Transaction
                 </p>
                 <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
-                It will send some DAI back to the faucet home. You do not need to hold any tokens for gas as the transaction will be processed gasless.
+                  It will send some DAI back to the faucet home. You do not need to hold any tokens for gas as the transaction will be processed gasless.
                 </p>
               </div>
 
@@ -441,11 +441,11 @@ const TestRequest: NextPage = () => {
                   Step 3: Sign Your Discord Handler
                 </p>
                 <p className='mt-[16px] font-normal lg:text-[20px] text-[14px] text-white'>
-                Check <a className='text-indigo-500'
+                  Check <a className='text-indigo-500'
                     href='https://www.remote.tools/remote-work/discord-tag'
                     rel='noreferrer'
                     target='_blank'>this article</a> on what is your discord handler. Upon finish signing, a bot will mention you in the discord channel. If you are able to receive it, you have completed the whole test. You are more than welcome to poke around the wallet and find bugs!
-                </p><br/>
+                </p><br />
 
                 <p className='m-2 font-normal lg:text-[20px] text-[20px] text-white'>
                   <span>Your Discord Handler: </span>

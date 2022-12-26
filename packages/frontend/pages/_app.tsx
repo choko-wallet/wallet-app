@@ -12,7 +12,7 @@ import { ThemeProvider } from 'next-themes';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { store } from '../features/redux/store';
+import { store } from '@choko-wallet/redux-module/redux/store';
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -25,7 +25,7 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function Root ({ Component, pageProps }: AppProps): JSX.Element {
+function Root({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <Provider store={store}>
       <Head>

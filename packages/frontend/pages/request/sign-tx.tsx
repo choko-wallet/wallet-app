@@ -16,16 +16,16 @@ import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
-import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
-import { getAlchemy } from '@choko-wallet/frontend/utils/env';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
+import { setClose, setOpen } from '@choko-wallet/redux-module/slices/status';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/redux-module/slices/user';
+import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
+import { getAlchemy } from '@choko-wallet/frontend-utils-module/env';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';
 
-function SignTxHandler (): JSX.Element {
+function SignTxHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -143,7 +143,7 @@ function SignTxHandler (): JSX.Element {
     })();
   }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
-  function unlock () {
+  function unlock() {
     if (!request) return;
 
     try {

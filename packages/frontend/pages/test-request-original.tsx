@@ -23,8 +23,8 @@ import { buildConnectDappUrl, buildSignMessageUrl, buildSignTxUrl, configSDK, st
 import { buildDecryptMessageUrl } from '@choko-wallet/sdk/requests';
 import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
 
-import { fetchAAWalletAddress } from '../utils/aaUtils';
-import { deploymentEnv, walletUrl } from '../utils/env';
+import { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
+import { deploymentEnv, walletUrl } from '@choko-wallet/frontend-utils-module/env';
 import Loading from './../components/Loading';
 
 const callbackUrl = `${walletUrl}/test-request`;

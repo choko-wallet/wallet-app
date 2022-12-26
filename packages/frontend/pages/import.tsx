@@ -6,16 +6,16 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import Loading from '../components/Loading';
-import { useAppThunkDispatch } from '../features/redux/store';
-import { endLoading, startLoading } from '../features/slices/status';
-import { addUserAccount } from '../features/slices/user';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
+import { endLoading, startLoading } from '@choko-wallet/redux-module/slices/status';
+import { addUserAccount } from '@choko-wallet/redux-module/slices/user';
 
 /**
  * Import an account from URL.
  */
 
 /* eslint-disable sort-keys */
-function Import (): JSX.Element {
+function Import(): JSX.Element {
   const router = useRouter();
   const dispatch = useAppThunkDispatch();
 

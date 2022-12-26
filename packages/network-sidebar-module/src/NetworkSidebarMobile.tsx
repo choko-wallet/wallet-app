@@ -7,10 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
 import NetworkSelection from '@choko-wallet/network-sidebar-module/NetworkSelectionList';
-import { toggle } from '@choko-wallet/frontend/features/slices/status';
+import { toggle } from '@choko-wallet/redux-module/slices/status';
 
-// import { selectStatus } from '../../fronend/features/redux/selectors';
-import { selectStatus } from '@choko-wallet/frontend/features/redux/selectors';
+import { selectStatus } from '@choko-wallet/redux-module/redux/selectors';
 
 
 /**

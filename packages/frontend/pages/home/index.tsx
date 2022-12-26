@@ -8,43 +8,31 @@ import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
 import BalanceModule from '@choko-wallet/balance-module/Balance';
-// import Balance from '@choko-wallet/frontend/components/balance/Balance';
 import NetworkSidebar from '@choko-wallet/network-sidebar-module/NetworkSidebar';
 import NetworkSidebarMobile from '@choko-wallet/network-sidebar-module/NetworkSidebarMobile';
-// import NetworkSidebar from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebar';
-// import NetworkSidebarMobile from '@choko-wallet/frontend/components/networkSidebar/NetworkSidebarMobile';
 
-// import Footer from '@choko-wallet/frontend/components/Footer';
-// import Header from '../../components/Header';
-// import Loading from '../../components/Loading';
-import Footer from '@choko-wallet/footer-module/Footer';
+import Footer from '@choko-wallet/frontend/components/Footer';
+import Loading from '../../components/Loading';
 import Header from '@choko-wallet/header-module/Header';
-import Loading from '@choko-wallet/loading-module/Loading';
 
-import AddNetworkModal from '@choko-wallet/modal-module/AddNetworkModal';
-import AddTokenModal from '@choko-wallet/modal-module/AddTokenModal';
-import ExportAccountModal from '@choko-wallet/modal-module/ExportAccountModal';
-import ReceiveTokenModal from '@choko-wallet/modal-module/ReceiveTokenModal';
-import SendTokenModal from '@choko-wallet/modal-module/SendTokenModal';
+import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
+import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
+import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAccountModal';
+import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
+import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
 
-// import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
-// import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
-// import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAccountModal';
-// import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
-// import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
+import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
+import { BalanceInfo } from '@choko-wallet/frontend-utils-module/types';
 
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
+import { loadAllNetworks } from '@choko-wallet/redux-module/slices/network';
+import { endLoading, startLoading } from '@choko-wallet/redux-module/slices/status';
+import { loadUserAccount, noteAAWalletAddress } from '@choko-wallet/redux-module/slices/user';
 
-import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend/utils/aaUtils';
-import { BalanceInfo } from '@choko-wallet/frontend/utils/types';
-
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '../../features/redux/selectors';
-import { useAppThunkDispatch } from '../../features/redux/store';
-import { loadAllNetworks } from '../../features/slices/network';
-import { endLoading, startLoading } from '../../features/slices/status';
-import { loadUserAccount, noteAAWalletAddress } from '../../features/slices/user';
-import { ethFetchBalance } from '../../utils/ethFetchBalance';
-import { polkadotFetchBalance } from '../../utils/polkadotFetchBalance';
-import { toastFail } from '../../utils/toast';
+import { ethFetchBalance } from '@choko-wallet/frontend-utils-module/ethFetchBalance';
+import { polkadotFetchBalance } from '@choko-wallet/frontend-utils-module/polkadotFetchBalance';
+import { toastFail } from '@choko-wallet/frontend-utils-module/toast';
 
 /**
  * Main dashboard

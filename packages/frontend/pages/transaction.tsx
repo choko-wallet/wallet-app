@@ -7,14 +7,14 @@ import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectUserAccount } from '../features/redux/selectors';
-import { loadUserAccount } from '../features/slices/user';
+import { selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
+import { loadUserAccount } from '@choko-wallet/redux-module/slices/user';
 
 /**
  * IGNORED.. For now.
  */
 /* eslint-disable sort-keys */
-function Transaction (): JSX.Element {
+function Transaction(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -51,7 +51,7 @@ function Transaction (): JSX.Element {
     return null;
   }
 
-  function closeDetail () {
+  function closeDetail() {
     setIsDetailOpen(false);
   }
 

@@ -6,15 +6,10 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
 
-import About from '@choko-wallet/landing-module/About';
-import ContactMe from '@choko-wallet/landing-module/ContactMe';
-import Header from '@choko-wallet/landing-module/Header';
-import Hero from '@choko-wallet/landing-module/Hero';
-
-// import About from '../components/landingComponents/About';
-// import ContactMe from '../components/landingComponents/ContactMe';
-// import Header from '../components/landingComponents/Header';
-// import Hero from '../components/landingComponents/Hero';
+import About from '../components/landingComponents/About';
+import ContactMe from '../components/landingComponents/ContactMe';
+import Header from '../components/landingComponents/Header';
+import Hero from '../components/landingComponents/Hero';
 
 const Home: NextPage = () => {
   return (

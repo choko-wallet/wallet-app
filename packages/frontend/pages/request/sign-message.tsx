@@ -12,13 +12,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/frontend/features/redux/selectors';
-import { setClose, setOpen } from '@choko-wallet/frontend/features/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/frontend/features/slices/user';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
+import { setClose, setOpen } from '@choko-wallet/redux-module/slices/status';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, switchUserAccount } from '@choko-wallet/redux-module/slices/user';
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
-function SignMessageHandler (): JSX.Element {
+function SignMessageHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ function SignMessageHandler (): JSX.Element {
     }
   }, [request, dispatch, userAccount]);
 
-  function unlock () {
+  function unlock() {
     if (!request) return;
 
     try {
@@ -165,7 +165,7 @@ function SignMessageHandler (): JSX.Element {
               <code className='underline text-clip'
                 style={{ overflowWrap: 'break-word' }}>{
                   currentUserAccount.getAddress('ethereum')
-                }</code><br/><br/>
+                }</code><br /><br />
               <code className='text-clip'
                 style={{ overflowWrap: 'break-word' }}>NOTE: This is your EOA Address</code>
 
