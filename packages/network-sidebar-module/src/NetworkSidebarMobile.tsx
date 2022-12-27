@@ -6,10 +6,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 
-import NetworkSelection from '@choko-wallet/network-sidebar-module/NetworkSelectionList';
-import { toggle } from '@choko-wallet/redux-module/slices/status';
+import NetworkSelection from './NetworkSelectionList';
+import { toggle } from '@choko-wallet/redux-module';
 
-import { selectStatus } from '@choko-wallet/redux-module/redux/selectors';
+import { selectStatus } from '@choko-wallet/redux-module';
 
 
 /**

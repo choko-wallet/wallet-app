@@ -7,13 +7,8 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     '../balance-module/src/**/*.{js,ts,jsx,tsx}',
-    '../landing-module/src/**/*.{js,ts,jsx,tsx}',
     '../network-sidebar-module/src/**/*.{js,ts,jsx,tsx}',
-    '../button-module/src/**/*.{js,ts,jsx,tsx}',
-    '../footer-module/src/**/*.{js,ts,jsx,tsx}',
     '../header-module/src/**/*.{js,ts,jsx,tsx}',
-    '../modal-module/src/**/*.{js,ts,jsx,tsx}',
-    '../loading-module/src/**/*.{js,ts,jsx,tsx}',
   ],
   daisyui: {
     darkTheme: 'light'

@@ -7,13 +7,13 @@ import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
-import BalanceModule from '@choko-wallet/balance-module/Balance';
-import NetworkSidebar from '@choko-wallet/network-sidebar-module/NetworkSidebar';
-import NetworkSidebarMobile from '@choko-wallet/network-sidebar-module/NetworkSidebarMobile';
+import { Balance } from '@choko-wallet/balance-module';
+import { NetworkSidebar } from '@choko-wallet/network-sidebar-module';
+import { NetworkSidebarMobile } from '@choko-wallet/network-sidebar-module';
 
 import Footer from '@choko-wallet/frontend/components/Footer';
 import Loading from '../../components/Loading';
-import Header from '@choko-wallet/header-module/Header';
+import { Header } from '@choko-wallet/header-module';
 
 import AddNetworkModal from '@choko-wallet/frontend/components/modal/AddNetworkModal';
 import AddTokenModal from '@choko-wallet/frontend/components/modal/AddTokenModal';
@@ -21,18 +21,18 @@ import ExportAccountModal from '@choko-wallet/frontend/components/modal/ExportAc
 import ReceiveTokenModal from '@choko-wallet/frontend/components/modal/ReceiveTokenModal';
 import SendTokenModal from '@choko-wallet/frontend/components/modal/SendTokenModal';
 
-import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
-import { BalanceInfo } from '@choko-wallet/frontend-utils-module/types';
+import { encodeAddr, fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module';
+import { BalanceInfo } from '@choko-wallet/frontend-utils-module';
 
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
-import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
-import { loadAllNetworks } from '@choko-wallet/redux-module/slices/network';
-import { endLoading, startLoading } from '@choko-wallet/redux-module/slices/status';
-import { loadUserAccount, noteAAWalletAddress } from '@choko-wallet/redux-module/slices/user';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount } from '@choko-wallet/redux-module';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module';
+import { loadAllNetworks } from '@choko-wallet/redux-module';
+import { endLoading, startLoading } from '@choko-wallet/redux-module';
+import { loadUserAccount, noteAAWalletAddress } from '@choko-wallet/redux-module';
 
-import { ethFetchBalance } from '@choko-wallet/frontend-utils-module/ethFetchBalance';
-import { polkadotFetchBalance } from '@choko-wallet/frontend-utils-module/polkadotFetchBalance';
-import { toastFail } from '@choko-wallet/frontend-utils-module/toast';
+import { ethFetchBalance } from '@choko-wallet/frontend-utils-module';
+import { polkadotFetchBalance } from '@choko-wallet/frontend-utils-module';
+import { toastFail } from '@choko-wallet/frontend-utils-module';
 
 /**
  * Main dashboard
@@ -168,7 +168,7 @@ export default function Home(): JSX.Element {
           <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
             <NetworkSidebar />
             {/* <Balance balance={balanceInfo} /> */}
-            <BalanceModule balance={balanceInfo} />
+            <Balance balance={balanceInfo} />
           </div>
 
           <SendTokenModal balanceInfo={balanceInfo} />

@@ -9,14 +9,14 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { QrReader } from 'react-qr-reader';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentUserAccount } from '@choko-wallet/redux-module/redux/selectors';
-import encodeAddr from '@choko-wallet/frontend-utils-module/aaUtils';
-import { ethEncodeTxToUrl } from '@choko-wallet/frontend-utils-module/ethSendTx';
-import { polkadotEncodeTxToUrl } from '@choko-wallet/frontend-utils-module/polkadotSendTx';
+import { selectCurrentUserAccount } from '@choko-wallet/redux-module';
+import { encodeAddr } from '@choko-wallet/frontend-utils-module';
+import { ethEncodeTxToUrl } from '@choko-wallet/frontend-utils-module';
+import { polkadotEncodeTxToUrl } from '@choko-wallet/frontend-utils-module';
 
-import { selectCurrentNetwork, selectKnownNetworks, selectStatus } from '@choko-wallet/redux-module/redux/selectors';
-import { endLoading, setClose, startLoading, toggle } from '@choko-wallet/redux-module/slices/status';
-import { BalanceInfo } from '@choko-wallet/frontend-utils-module/types';
+import { selectCurrentNetwork, selectKnownNetworks, selectStatus } from '@choko-wallet/redux-module';
+import { endLoading, setClose, startLoading, toggle } from '@choko-wallet/redux-module';
+import { BalanceInfo } from '@choko-wallet/frontend-utils-module';
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
 

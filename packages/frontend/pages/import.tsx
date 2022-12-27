@@ -6,9 +6,9 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import Loading from '../components/Loading';
-import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
-import { endLoading, startLoading } from '@choko-wallet/redux-module/slices/status';
-import { addUserAccount } from '@choko-wallet/redux-module/slices/user';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module';
+import { endLoading, startLoading } from '@choko-wallet/redux-module';
+import { addUserAccount } from '@choko-wallet/redux-module';
 
 /**
  * Import an account from URL.

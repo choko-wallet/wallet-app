@@ -5,8 +5,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectStatus } from '@choko-wallet/redux-module/redux/selectors';
-import { setClose } from '@choko-wallet/redux-module/slices/status';
+import { selectStatus } from '@choko-wallet/redux-module';
+import { setClose } from '@choko-wallet/redux-module';
 
 interface Props {
   modalName: string;

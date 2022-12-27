@@ -8,9 +8,9 @@ import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
-import { removeAllAccounts } from '@choko-wallet/redux-module/slices/user';
-import encodeAddr from '@choko-wallet/frontend-utils-module/aaUtils';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount } from '@choko-wallet/redux-module';
+import { removeAllAccounts } from '@choko-wallet/redux-module';
+import { encodeAddr } from '@choko-wallet/frontend-utils-module';
 import AccountRow from './AccountRow';
 
 /**

@@ -12,14 +12,14 @@ import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { toggle } from '@choko-wallet/redux-module/slices/status';
-import { removeAllAccounts } from '@choko-wallet/redux-module/slices/user';
+import { toggle } from '@choko-wallet/redux-module';
+import { removeAllAccounts } from '@choko-wallet/redux-module';
 
 import icon1 from './icon1.png';
-import logo from './images/logo.png';
-import logo2 from './images/logo2.png';
-import logout from './images/logout.png';
-import logout2 from './images/logout2.png';
+import logo from './logo.png';
+import logo2 from './logo2.png';
+import logout from './logout.png';
+import logout2 from './logout2.png';
 
 import AccountInHeader from './AccountInHeader';
 
@@ -55,12 +55,12 @@ function Header(): JSX.Element {
               ? <Image
                 layout='fill'
                 objectFit='contain'
-              // src={logo.src}
+                src={logo.src}
               />
               : <Image
                 layout='fill'
                 objectFit='contain'
-              // src={logo2.src}
+                src={logo2.src}
               />
             }
           </div>
@@ -74,7 +74,7 @@ function Header(): JSX.Element {
               <Image
                 layout='fill'
                 objectFit='contain'
-              // src={icon1.src}
+                src={icon1.src}
               />
             </div>
 
@@ -112,12 +112,12 @@ function Header(): JSX.Element {
               ? <Image
                 layout='fill'
                 objectFit='contain'
-              // src={logout2.src}
+                src={logout2.src}
               />
               : <Image
                 layout='fill'
                 objectFit='contain'
-              // src={logout.src}
+                src={logout.src}
               />
             }
 
@@ -135,7 +135,7 @@ function Header(): JSX.Element {
                 <Image
                   layout='fill'
                   objectFit='contain'
-                // src={icon1.src}
+                  src={icon1.src}
                 />
               </div>
 

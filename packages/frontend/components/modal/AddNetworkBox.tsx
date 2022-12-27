@@ -12,10 +12,10 @@ import { useSelector } from 'react-redux';
 import { Network } from '@choko-wallet/core';
 import { xxHash } from '@choko-wallet/core/util';
 
-import { selectKnownNetworks } from '@choko-wallet/redux-module/redux/selectors';
-import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
-import { addNetworkAndSave } from '@choko-wallet/redux-module/slices/network';
-import { setClose } from '@choko-wallet/redux-module/slices/status';
+import { selectKnownNetworks } from '@choko-wallet/redux-module';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module';
+import { addNetworkAndSave } from '@choko-wallet/redux-module';
+import { setClose } from '@choko-wallet/redux-module';
 
 /**
  * Render a box to add Network

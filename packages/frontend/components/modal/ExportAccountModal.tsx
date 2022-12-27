@@ -9,10 +9,10 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentUserAccount } from '@choko-wallet/redux-module/redux/selectors';
-import { walletUrl } from '@choko-wallet/frontend-utils-module/env';
+import { selectCurrentUserAccount } from '@choko-wallet/redux-module';
+import { walletUrl } from '@choko-wallet/frontend-utils-module';
 
-import { setClose } from '@choko-wallet/redux-module/slices/status';
+import { setClose } from '@choko-wallet/redux-module';
 import Modal from '../Modal';
 
 /**

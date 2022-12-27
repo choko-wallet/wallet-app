@@ -22,11 +22,11 @@ import { loadStorage, persistStorage } from '@choko-wallet/sdk/store';
 
 import Loading from '../components/Loading';
 import ball from '../images/ball.png';
-import { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
-import { deploymentEnv, walletUrl } from '@choko-wallet/frontend-utils-module/env';
-import { fadeIn, planetVariants, staggerContainer, textContainer, textVariant2 } from '@choko-wallet/frontend-utils-module/motion';
-import { toastFail, toastSuccess } from '@choko-wallet/frontend-utils-module/toast';
-import { FormAPIResponse } from '@choko-wallet/frontend-utils-module/types';
+import { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module';
+import { deploymentEnv, walletUrl } from '@choko-wallet/frontend-utils-module';
+import { fadeIn, planetVariants, staggerContainer, textContainer, textVariant2 } from '@choko-wallet/frontend-utils-module';
+import { toastFail, toastSuccess } from '@choko-wallet/frontend-utils-module';
+import { FormAPIResponse } from '@choko-wallet/frontend-utils-module';
 
 const callbackUrl = `${walletUrl}/test-request`;
 // const apiUrl = 'http://localhost:3333/choko/beta';

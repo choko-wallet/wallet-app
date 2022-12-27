@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Network, UserAccount } from '@choko-wallet/core';
 
-import { selectCurrentUserAccountIndex } from '@choko-wallet/redux-module/redux/selectors';
-import { switchUserAccount } from '@choko-wallet/redux-module/slices/user';
-import encodeAddr from '@choko-wallet/frontend-utils-module/aaUtils';
+import { selectCurrentUserAccountIndex } from '@choko-wallet/redux-module';
+import { switchUserAccount } from '@choko-wallet/redux-module';
+import { encodeAddr } from '@choko-wallet/frontend-utils-module';
 
 /**
  * a dropdown of all userAccount in header

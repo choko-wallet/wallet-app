@@ -16,11 +16,11 @@ import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import Modal from '@choko-wallet/frontend/components/Modal';
-import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
-import { setClose, setOpen } from '@choko-wallet/redux-module/slices/status';
-import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/redux-module/slices/user';
-import encodeAddr, { fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module/aaUtils';
-import { getAlchemy } from '@choko-wallet/frontend-utils-module/env';
+import { selectCurrentUserAccount, selectUserAccount } from '@choko-wallet/redux-module';
+import { setClose, setOpen } from '@choko-wallet/redux-module';
+import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, switchUserAccount } from '@choko-wallet/redux-module';
+import { encodeAddr, fetchAAWalletAddress } from '@choko-wallet/frontend-utils-module';
+import { getAlchemy } from '@choko-wallet/frontend-utils-module';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';

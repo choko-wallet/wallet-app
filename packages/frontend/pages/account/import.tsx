@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 
 import Loading from '@choko-wallet/frontend/components/Loading';
 
-import { addUserAccount } from '@choko-wallet/redux-module/slices/user';
+import { addUserAccount } from '@choko-wallet/redux-module';
 
 /**
  * Guide user to import an account

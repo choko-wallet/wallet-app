@@ -7,8 +7,8 @@ import { useRouter } from 'next/router';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectUserAccount } from '@choko-wallet/redux-module/redux/selectors';
-import { loadUserAccount } from '@choko-wallet/redux-module/slices/user';
+import { selectUserAccount } from '@choko-wallet/redux-module';
+import { loadUserAccount } from '@choko-wallet/redux-module';
 
 /**
  * IGNORED.. For now.

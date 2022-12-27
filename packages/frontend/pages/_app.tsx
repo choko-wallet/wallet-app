@@ -12,7 +12,7 @@ import { ThemeProvider } from 'next-themes';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { store } from '@choko-wallet/redux-module/redux/store';
+import { store } from '@choko-wallet/redux-module';
 
 const progress = new ProgressBar({
   className: 'z-50',

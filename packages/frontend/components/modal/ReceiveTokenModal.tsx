@@ -9,11 +9,11 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'react-qr-code';
 import { useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks } from '@choko-wallet/redux-module/redux/selectors';
-import encodeAddr from '@choko-wallet/frontend-utils-module/aaUtils';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks } from '@choko-wallet/redux-module';
+import { encodeAddr } from '@choko-wallet/frontend-utils-module';
 
-import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
-import { setClose } from '@choko-wallet/redux-module/slices/status';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module';
+import { setClose } from '@choko-wallet/redux-module';
 import Modal from '../Modal';
 
 /**

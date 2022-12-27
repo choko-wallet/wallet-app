@@ -6,7 +6,7 @@ import { SearchIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import React, { Fragment, useEffect, useState } from 'react';
 
-import { BalanceInfo } from '@choko-wallet/frontend-utils-module/types';
+import { BalanceInfo } from '@choko-wallet/frontend-utils-module';
 
 /**
  * The dropdown to select crypto asset to send

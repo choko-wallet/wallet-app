@@ -6,8 +6,8 @@ import { XIcon } from '@heroicons/react/outline';
 import { useTheme } from 'next-themes';
 import React from 'react';
 
-import { useAppThunkDispatch } from '@choko-wallet/redux-module/redux/store';
-import { setClose } from '@choko-wallet/redux-module/slices/status';
+import { useAppThunkDispatch } from '@choko-wallet/redux-module';
+import { setClose } from '@choko-wallet/redux-module';
 import Modal from '../Modal';
 import AddTokenBox from './AddTokenBox';
 

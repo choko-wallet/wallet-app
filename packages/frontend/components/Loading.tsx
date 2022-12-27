@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 // import { Toaster } from 'react-hot-toast';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 
-import { selectLoading } from '@choko-wallet/redux-module/redux/selectors';
+import { selectLoading } from '@choko-wallet/redux-module';
 
 interface Props {
   title?: string
