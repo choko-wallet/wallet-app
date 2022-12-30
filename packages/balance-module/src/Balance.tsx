@@ -1,16 +1,14 @@
 // Copyright 2021-2022 @choko-wallet/balance-module authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BalanceInfo } from '@choko-wallet/frontend-utils-module';
+import type { BalanceInfo } from '@choko-wallet/app-utils';
 
-import { Switch } from '@headlessui/react';
 import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentNetwork, selectKnownNetworks } from '@choko-wallet/redux-module';
-import { setOpen } from '@choko-wallet/redux-module';
-import Button from '@choko-wallet/frontend/components/Button';
+import { Button, Switch } from '@choko-wallet/app-common';
+import { selectCurrentNetwork, selectKnownNetworks, setOpen, useDispatch, useSelector } from '@choko-wallet/app-redux';
+
 import BalanceRow from './BalanceRow';
 
 /**
@@ -21,7 +19,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance({ balance }: Props): JSX.Element {
+function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
   const ref = useRef(null);
 

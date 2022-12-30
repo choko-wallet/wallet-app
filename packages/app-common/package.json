@@ -1,8 +1,8 @@
 {
-  "name": "@choko-wallet/balance-module",
+  "name": "@choko-wallet/app-common",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "description": "balance panel",
+  "description": "common components for the Choko Wallet App",
   "type": "module",
   "sideEffects": false,
   "maintainers": [],
@@ -13,10 +13,8 @@
     "url": "https://github.com/choko-wallet/wallet-app"
   },
   "dependencies": {
-    "@choko-wallet/app-redux": "0.1.0",
-    "@choko-wallet/app-utils": "0.1.0",
     "@headlessui/react": "^1.7.7",
-    "@heroicons/react": "^1.0.6",
-    "react": "18.1.0"
+    "react": "18.1.0",
+    "react-transition-group": "^4.4.5"
   }
 }

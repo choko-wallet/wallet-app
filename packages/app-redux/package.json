@@ -1,0 +1,24 @@
+{
+  "name": "@choko-wallet/app-redux",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "header component for the Choko Wallet App",
+  "type": "module",
+  "sideEffects": false,
+  "maintainers": [],
+  "contributors": [],
+  "author": "Choko Wallet <contact@choko.app>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/choko-wallet/wallet-app"
+  },
+  "dependencies": {
+    "@choko-wallet/core": "^0.1.9",
+    "@choko-wallet/known-networks": "^0.1.9",
+    "@polkadot/util-crypto": "^10.2.1",
+    "@reduxjs/toolkit": "^1.9.1",
+    "@skyekiwi/util": "^1.0.1",
+    "react": "18.1.0",
+    "react-redux": "^8.0.5"
+  }
+}
