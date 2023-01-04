@@ -7,8 +7,9 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     '../balance-module/src/**/*.{js,ts,jsx,tsx}',
-    '../network-sidebar-module/src/**/*.{js,ts,jsx,tsx}',
-    '../header-module/src/**/*.{js,ts,jsx,tsx}'
+    '../app-common/src/**/*.{js,ts,jsx,tsx}',
+    '../app-header/src/**/*.{js,ts,jsx,tsx}',
+    '../app-network-sidebar/src/**/*.{js,ts,jsx,tsx}'
   ],
   daisyui: {
     darkTheme: 'light'
