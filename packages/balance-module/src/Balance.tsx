@@ -19,7 +19,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance ({ balance }: Props): JSX.Element {
+function Balance({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
   const ref = useRef(null);
 
@@ -72,7 +72,7 @@ function Balance ({ balance }: Props): JSX.Element {
 
   return (
     <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-16 lg:py-8'>
-      <div className='bg-[#FDF6E3] w-[300px] h-[100px] lg:w-[320px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
+      <div className='bg-[#FDF6E3] w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
         <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
@@ -104,7 +104,7 @@ function Balance ({ balance }: Props): JSX.Element {
       <div className='flex items-center justify-between mt-5 md:mt-10 md:h-16 px-5 '>
 
         <div className='flex items-center justify-start xl:w-72' >
-          <p className='text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>
+          <p className='hidden sm:inline-flex text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>
           {searchInputOpen
             ? null
             : <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
@@ -153,7 +153,7 @@ function Balance ({ balance }: Props): JSX.Element {
           <p className={`hidden md:inline-flex text-xs ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
 
-        <p className='text-black dark:text-gray-400 text-right  xl:w-64'>Total Balance</p>
+        <p className='hidden sm:inline-flex text-black dark:text-gray-400 text-right  xl:w-64'>Total Balance</p>
       </div>
 
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>

@@ -15,12 +15,12 @@ interface Props {
   symbol: string;
 }
 
-function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element {
+function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
   return (
     <div className=' w-full text-right p-1 '>
-      <div className='flex flex-row p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#0170BF]  hover:bg-[#0170BF] group'>
+      <div className='flex flex-row p-1 sm:p-3 rounded-lg bg-[#F6F6F6] dark:bg-[#384855] dark:hover:bg-[#0170BF]  hover:bg-[#0170BF] group'>
         <div className='flex justify-between flex-grow'>
-          <div className='w-[64px] h-[64px] rounded-full flex justify-center items-center bg-transparent '>
+          <div className='w-[42px] h-[64px] sm:w-[64px] sm:h-[64px] rounded-full flex justify-center items-center bg-transparent '>
             {img !== null
               ? <img alt='icon'
                 className='w-[70%] h-[70%] object-contain'
@@ -40,8 +40,8 @@ function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element 
               />
             }
           </div>
-          <div className='flex flex-col flex-1 ml-3'>
-            <p className='w-full max-w-64 truncate flex flex-grow font-semibold text-black dark:text-white text-[22px]  font-poppins group-hover:text-[#F5CBD5]'>
+          <div className='flex flex-col flex-1 ml-1 sm:ml-3 pt-1 sm:pt-0'>
+            <p className='w-full max-w-64 truncate flex flex-grow font-semibold text-black dark:text-white text-[15px] sm:text-[22px]  font-poppins group-hover:text-[#F5CBD5]'>
               {name}
             </p>
             {price === undefined
@@ -58,7 +58,7 @@ function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element 
           </div>
         </div>
         <div className=' flex flex-col justify-between '>
-          <p className='font-semibold text-black dark:text-white flex flex-grow text-[14px] mt-2 font-poppins justify-end group-hover:text-[#F5CBD5]'>
+          <p className='font-semibold text-black dark:text-white flex flex-grow text-[12px] sm:text-[14px] mt-2 font-poppins justify-end group-hover:text-[#F5CBD5]'>
             {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}
             {'  '}{symbol}
 

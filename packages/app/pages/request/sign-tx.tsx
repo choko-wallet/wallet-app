@@ -21,7 +21,7 @@ import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';
 
-function SignTxHandler (): JSX.Element {
+function SignTxHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -139,7 +139,7 @@ function SignTxHandler (): JSX.Element {
     })();
   }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
-  function unlock () {
+  function unlock() {
     if (!request) return;
 
     try {
@@ -155,17 +155,22 @@ function SignTxHandler (): JSX.Element {
           try {
             setSendingTx(true);
 
-            try {
-              const response = await signTx.requestHandler(request, currentUserAccount);// 这一步是发送
-              const s = response.serialize();
+            // try {
+            const response = await signTx.requestHandler(request, currentUserAccount);// 这一步是发送
+            const s = response.serialize();
 
-              dispatch(lockCurrentUserAccount());
-              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-              setSendingTx(false);
-            } catch (e) {
-              console.error(e);
-            }
+            dispatch(lockCurrentUserAccount());
+            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            // setSendingTx(false);// 已经redirect了 发送成功最好给提示 在home？
+            // 点击x 关闭交易 跳转到loading 感觉应该跳转到home 
+
+            // } catch (e) {
+            //   setSendingTx(false);
+            //   console.log('sendtxerror', e);
+            // }
           } catch (err) {
+            setSendingTx(false);
+
             console.log('err', err);
             toast('Something Wrong', {
               style: {
