@@ -12,7 +12,7 @@ import { QrReader } from 'react-qr-reader';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { endLoading, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectStatus, setClose, startLoading, toggle } from '@choko-wallet/app-redux';
-import { encodeAddr, ethEncodeTxToUrl, polkadotEncodeTxToUrl } from '@choko-wallet/app-utils';
+import { encodeAddr, ethEncodeTxToUrl, polkadotEncodeTxToUrl, toastFail } from '@choko-wallet/app-utils';
 
 import Modal from '../Modal';
 import DropdownForSend from './DropdownForSend';
@@ -57,38 +57,53 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     if (sendTransactionLoading) return;
     setSendTransactionLoading(true);
 
+
+
+
     // no need to await
     void (async () => {
       dispatch(startLoading('Generating Payload ...'));
 
       const network = knownNetworks[currentNetwork];
 
-      switch (network.networkType) {
-        case 'polkadot': {
-          const requestUrl = await polkadotEncodeTxToUrl(
-            network, currentUserAccount,
-            addressToSend, amount
-          );
+      try {// 发送的参数输入非法字符 encode报错 用try catch 给toast  
+        switch (network.networkType) {
+          case 'polkadot': {
+            const requestUrl = await polkadotEncodeTxToUrl(
+              network, currentUserAccount,
+              addressToSend, amount
+            );
 
-          console.log('requestUrl', requestUrl);
-          dispatch(endLoading());
-          break;
+            console.log('requestUrl', requestUrl);
+            dispatch(endLoading());
+            break;
+          }
+
+          case 'ethereum': {
+            const requestUrl = ethEncodeTxToUrl(
+              network, currentUserAccount,
+              cryptoAddress,
+              addressToSend, amount, balanceInfo[cryptoAddress].decimals
+            );
+
+            window.location.href = requestUrl;
+            // console.log('requestUrl', requestUrl);
+            dispatch(endLoading());
+            break;
+          }
         }
 
-        case 'ethereum': {
-          const requestUrl = ethEncodeTxToUrl(
-            network, currentUserAccount,
-            cryptoAddress,
-            addressToSend, amount, balanceInfo[cryptoAddress].decimals
-          );
-
-          window.location.href = requestUrl;
-          // console.log('requestUrl', requestUrl);
-          dispatch(endLoading());
-          break;
-        }
+      } catch (e) {
+        console.log('sendTransaction-err', e);
+        dispatch(endLoading());
+        toastFail('Someting Wrong! Please try again.');
       }
+
+
     })();
+
+
+
 
     dispatch(setClose('homeSend'));
     setSendTransactionLoading(false);

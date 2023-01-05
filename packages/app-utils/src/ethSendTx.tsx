@@ -73,7 +73,7 @@ export const ethEncodeTxToUrl = (
     dappDescriptor: u8aToHex(compressParameters(dapp.serialize())),
     userAccount: u8aToHex(compressParameters(userOrigin.serialize()))
   },
-  hexToU8a(tx.slice(2)),
-  SignTxType.Gasless, `${walletUrl}/home`, deploymentEnv
+    hexToU8a(tx.slice(2)),
+    SignTxType.Gasless, `${walletUrl}/home`, deploymentEnv
   );
 };

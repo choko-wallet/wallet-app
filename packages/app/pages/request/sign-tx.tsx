@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, selectCurrentUserAccount, selectUserAccount, setClose, setOpen, switchUserAccount } from '@choko-wallet/app-redux';
-import { encodeAddr, fetchAAWalletAddress, getAlchemy } from '@choko-wallet/app-utils';
+
+import { encodeAddr, fetchAAWalletAddress, getAlchemy, toastFail } from '@choko-wallet/app-utils';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
@@ -45,16 +46,25 @@ function SignTxHandler(): JSX.Element {
     if (!router.isReady) return;
     const payload = router.query.payload as string;
     const callbackUrl = router.query.callbackUrl as string;
-    const u8aRequest = decompressParameters(hexToU8a(payload));
-    const request = SignTxRequest.deserialize(u8aRequest);
 
-    if (!localStorage.getItem('serialziedUserAccount')) {
-      localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
-      void router.push('/account');
-    } else {
-      setCallback(callbackUrl);
-      setRequest(request);
+    try {// 非法参数 删除或篡改参数访问 解密报错 用try catch 控制台报错
+      const u8aRequest = decompressParameters(hexToU8a(payload));
+      const request = SignTxRequest.deserialize(u8aRequest);
+
+
+      if (!localStorage.getItem('serialziedUserAccount')) {
+        localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
+        void router.push('/account');
+      } else {
+        setCallback(callbackUrl);
+        setRequest(request);
+      }
+
+    } catch (e) {
+      console.log('decodeSend-err', e);
+      setDecodingTx(false);
     }
+
   }, [router.isReady, router.query, dispatch, router]);
 
   // 2. load accounts and switch account is not matching origin
@@ -224,10 +234,10 @@ function SignTxHandler(): JSX.Element {
       <Toaster />
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-600'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
         <h1 className='hidden md:block col-span-12 card-title text-white select-none p-10 vertical-text'>
-          {request.dappOrigin.activeNetwork.text}
+          {request?.dappOrigin.activeNetwork.text}
         </h1>
       </div>
       <div className='grid grid-cols-12 col-span-12 md:col-span-5 gap-y-5'>
@@ -243,7 +253,7 @@ function SignTxHandler(): JSX.Element {
               DApp Origin:
             </div>
             <div className='col-span-12'>
-              <code className='underline'>{request.dappOrigin.displayName}</code>
+              <code className='underline'>{request?.dappOrigin.displayName}</code>
             </div>
             <div className='col-span-12'>
               Your Orign:
@@ -251,7 +261,7 @@ function SignTxHandler(): JSX.Element {
             <div className='col-span-12'>
               <code className='underline text-clip'
                 style={{ overflowWrap: 'break-word' }}>{
-                  encodeAddr(request.dappOrigin.activeNetwork, currentUserAccount)
+                  encodeAddr(request?.dappOrigin.activeNetwork, currentUserAccount)
                 }</code>
             </div>
             <div className='col-span-12'>
@@ -260,7 +270,7 @@ function SignTxHandler(): JSX.Element {
             <div className='col-span-12'>
               <code className='underline text-clip'
                 style={{ overflowWrap: 'break-word' }}>{
-                  SignTxType[request.payload.signTxType]
+                  SignTxType[request?.payload.signTxType]
                 }</code>
             </div>
 
@@ -285,7 +295,7 @@ function SignTxHandler(): JSX.Element {
                 displayType === 'hex'
                   ? (
                     <div className='textarea h-[20vh] font-mono border-gray-400 scrollbar-thin overflow-y-auto'
-                      style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request.payload.encoded)}</div>
+                      style={{ overflowWrap: 'break-word' }}>{'0x' + u8aToHex(request?.payload.encoded)}</div>
                   )
                   : (
                     <div className='textarea h-[20vh] font-mono border-gray-400 scrollbar-thin overflow-y-auto'
