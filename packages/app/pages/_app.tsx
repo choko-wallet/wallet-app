@@ -10,7 +10,7 @@ import Head from 'next/head';
 import Router from 'next/router';
 import { ThemeProvider } from 'next-themes';
 import React from 'react';
-
+import { Toaster } from 'react-hot-toast';
 import { Provider, store } from '@choko-wallet/app-redux';
 
 const progress = new ProgressBar({
@@ -24,7 +24,7 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-function Root ({ Component, pageProps }: AppProps): JSX.Element {
+function Root({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <Provider store={store}>
       <Head>
@@ -44,7 +44,8 @@ function Root ({ Component, pageProps }: AppProps): JSX.Element {
         <link href='https://fonts.googleapis.com/css2?family=VT323&display=swap'
           rel='stylesheet' />
       </Head>
-      <ThemeProvider>
+      <ThemeProvider attribute="class">
+        <Toaster />
         <Component {...pageProps} />
       </ThemeProvider>
     </Provider>

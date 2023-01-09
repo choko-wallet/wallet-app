@@ -16,7 +16,7 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
-function SignMessageHandler (): JSX.Element {
+function SignMessageHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -60,7 +60,7 @@ function SignMessageHandler (): JSX.Element {
     }
   }, [request, dispatch, userAccount]);
 
-  function unlock () {
+  function unlock() {
     if (!request) return;
 
     try {
@@ -132,7 +132,7 @@ function SignMessageHandler (): JSX.Element {
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
-      <Toaster />
+      {/* <Toaster /> */}
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-gray-600'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
           General Request

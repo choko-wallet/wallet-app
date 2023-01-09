@@ -21,7 +21,7 @@ import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request
 /**
  * Handler for ConnectDappRequest
  */
-function ConnectDappHandler (): JSX.Element {
+function ConnectDappHandler(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -86,7 +86,7 @@ function ConnectDappHandler (): JSX.Element {
     }
   }, [currentUserAccount, dispatch, request, callback]);
 
-  function unlock () {
+  function unlock() {
     if (request) {
       try {
         dispatch(switchUserAccount(selectedUserAccount));
@@ -124,7 +124,7 @@ function ConnectDappHandler (): JSX.Element {
 
   return (
     <main className='grid grid-cols-12 gap-4 min-h-screen content-center bg-gray-400 p-5'>
-      <Toaster />
+      {/* <Toaster /> */}
       <div className='grid content-center col-span-12 md:col-span-1 md:col-start-4 shadow-xl justify-center rounded-lg bg-pink-500'>
         <h1 className='md:hidden col-span-12 card-title text-white select-none p-10 '>
           {request?.dappOrigin.activeNetwork.text}

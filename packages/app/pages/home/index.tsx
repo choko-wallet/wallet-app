@@ -27,10 +27,10 @@ import Loading from '../../components/Loading';
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
-  const { setTheme, theme } = useTheme();
+  // const { setTheme, theme } = useTheme();
   const router = useRouter();
 
   const userAccount = useSelector(selectUserAccount);
@@ -135,9 +135,6 @@ export default function Home (): JSX.Element {
     setMounted(true);
   }, [knownNetworks, currentUserAccount, currentNetwork, dispatch, userAccount]);
 
-  if (theme !== 'dark' && theme !== 'light') {
-    setTheme('light');
-  }
 
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
@@ -146,33 +143,33 @@ export default function Home (): JSX.Element {
   console.log(knownNetworks, userAccount);
 
   return (
-    <div className={theme}>
+    // <div className={theme}>
 
-      <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen flex flex-col justify-between'>
-        <Toaster />
-        <Header />
-        <NetworkSidebarMobile />
+    <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen flex flex-col justify-between transition-all duration-700 ease-out'>
+      {/* <Toaster /> */}
+      <Header />
+      <NetworkSidebarMobile />
 
-        < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#22262f] max-w-screen-xl mx-auto' >
-          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
-            <NetworkSidebar />
-            {/* <Balance balance={balanceInfo} /> */}
-            <Balance balance={balanceInfo} />
-          </div>
+      < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#22262f] max-w-screen-xl mx-auto' >
+        <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
+          <NetworkSidebar />
+          {/* <Balance balance={balanceInfo} /> */}
+          <Balance balance={balanceInfo} />
+        </div>
 
-          <SendTokenModal balanceInfo={balanceInfo} />
+        <SendTokenModal balanceInfo={balanceInfo} />
 
-          <ReceiveTokenModal />
+        <ReceiveTokenModal />
 
-          <AddNetworkModal />
+        <AddNetworkModal />
 
-          <AddTokenModal />
+        <AddTokenModal />
 
-          <ExportAccountModal />
-        </main >
-        <Footer />
+        <ExportAccountModal />
+      </main >
+      <Footer />
 
-      </div >
     </div >
+    // </div >
   );
 }

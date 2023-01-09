@@ -1,9 +1,11 @@
 // Copyright 2021-2022 @choko-wallet/app-header authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BellIcon, CogIcon,
+import {
+  BellIcon, CogIcon,
   MenuIcon,
-  MoonIcon, SunIcon } from '@heroicons/react/outline';
+  MoonIcon, SunIcon
+} from '@heroicons/react/outline';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -18,7 +20,7 @@ import logout from '../img/logout.png';
 import logout2 from '../img/logout2.png';
 import AccountInHeader from './AccountInHeader';
 
-function Header (): JSX.Element {
+function Header(): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -30,7 +32,11 @@ function Header (): JSX.Element {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  if (theme !== 'dark' && theme !== 'light') {
+    setTheme('light');
+  }
+
+  if (!mounted) {// 其他组件可以不需要setMounted 和 没有mouted retur nnull
     return null;
   }
 
