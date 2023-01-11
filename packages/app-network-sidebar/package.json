@@ -1,0 +1,22 @@
+{
+  "name": "@choko-wallet/app-network-sidebar",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "header component for the Choko Wallet App",
+  "type": "module",
+  "sideEffects": false,
+  "maintainers": [],
+  "contributors": [],
+  "author": "Choko Wallet <contact@choko.app>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/choko-wallet/wallet-app"
+  },
+  "dependencies": {
+    "@choko-wallet/app-common": "0.1.0",
+    "@choko-wallet/app-redux": "0.1.0",
+    "@heroicons/react": "^1.0.6",
+    "framer-motion": "^8.0.2",
+    "react": "18.1.0"
+  }
+}

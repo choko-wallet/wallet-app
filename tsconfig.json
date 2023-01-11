@@ -8,8 +8,53 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@choko-wallet/frontend": [ "packages/frontend/" ],
-      "@choko-wallet/frontend/*": [ "packages/frontend/*" ],
+      "@choko-wallet/app": [
+        "packages/app/"
+      ],
+      "@choko-wallet/app/*": [
+        "packages/app/*"
+      ],
+
+      "@choko-wallet/app-common": [
+        "packages/app-common/src"
+      ],
+      "@choko-wallet/app-common/*": [
+        "packages/app-common/src/*"
+      ],
+
+      "@choko-wallet/app-header": [
+        "packages/app-header/src"
+      ],
+      "@choko-wallet/app-header/*": [
+        "packages/app-header/src/*"
+      ],
+
+      "@choko-wallet/app-network-sidebar": [
+        "packages/app-network-sidebar/src"
+      ],
+      "@choko-wallet/app-network-sidebar/*": [
+        "packages/app-network-sidebar/src/*"
+      ],
+
+      "@choko-wallet/app-redux": [
+        "packages/app-redux/src"
+      ],
+      "@choko-wallet/app-redux/*": [
+        "packages/app-redux/src/*"
+      ],
+
+      "@choko-wallet/app-utils": [
+        "packages/app-utils/src"
+      ],
+      "@choko-wallet/app-utils/*": [
+        "packages/app-utils/src/*"
+      ],
+      "@choko-wallet/balance-module": [
+        "packages/balance-module/src"
+      ],
+      "@choko-wallet/balance-module/*": [
+        "packages/balance-module/src/*"
+      ],
     },
     "skipLibCheck": true,
     "typeRoots": [

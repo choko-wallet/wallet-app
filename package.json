@@ -1,22 +1,19 @@
 {
-  "repository": "https://github.com/skyekiwi/choko-wallet-next",
+  "repository": "https://github.com/choko-wallet/wallet-app",
   "author": "Choko Wallet <contact@choko.app>",
   "license": "Apache-2",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
-  "resolutions": {
-    "typescript": "^4.3.5"
-  },
   "scripts": {
     "lint": "ORG_NAME=CHOKO_WALLET skyekiwi-dev-run-lint",
     "test": "ORG_NAME=CHOKO_WALLET skyekiwi-dev-run-test --coverage --runInBand",
-    "build": "cd ./packages/frontend && yarn build",
+    "build": "cd ./packages/app && yarn build",
     "clean": "skyekiwi-dev-clean-build",
     "postinstall": "skyekiwi-dev-yarn-only",
-    "dev": "cd ./packages/frontend && yarn dev",
-    "start": "cd ./packages/frontend && yarn build && yarn start"
+    "dev": "cd ./packages/app && yarn dev",
+    "start": "cd ./packages/app && yarn build && yarn start"
   },
   "devDependencies": {
     "@skyekiwi/dev": "^0.4.6",
@@ -27,8 +24,5 @@
     "typescript": "^4.7.4"
   },
   "version": "0.1.1",
-  "packageManager": "yarn@3.2.2",
-  "dependencies": {
-    "alchemy-sdk": "^2.2.0"
-  }
+  "packageManager": "yarn@3.2.2"
 }

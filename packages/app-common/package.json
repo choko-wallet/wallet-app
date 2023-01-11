@@ -1,0 +1,20 @@
+{
+  "name": "@choko-wallet/app-common",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "common components for the Choko Wallet App",
+  "type": "module",
+  "sideEffects": false,
+  "maintainers": [],
+  "contributors": [],
+  "author": "Choko Wallet <contact@choko.app>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/choko-wallet/wallet-app"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.7",
+    "react": "18.1.0",
+    "react-transition-group": "^4.4.5"
+  }
+}
