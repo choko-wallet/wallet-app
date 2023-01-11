@@ -12,7 +12,7 @@ import { removeNetworkAndSave, selectCurrentNetwork, selectKnownNetworks, setCur
  * Renders a list of all network avaliable
  */
 
-function NetworkSelection (): JSX.Element {
+function NetworkSelection(): JSX.Element {
   const dispatch = useDispatch();
 
   const currentNetwork = useSelector(selectCurrentNetwork);
@@ -49,11 +49,11 @@ function NetworkSelection (): JSX.Element {
                         duration: 0.1
                       }}
                     >
-                      <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between  cursor-pointer  focus:outline-none w-full h-[75px] '>
+                      <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between  cursor-pointer  focus:outline-none w-full '>
                         <div className='text-xs'>
                           <RadioGroup.Label
                             as='p'
-                            className={`text-base font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
+                            className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                           >
                             {/* {text.substring(0, text.length - 8)} */}
                             {text}
@@ -61,11 +61,11 @@ function NetworkSelection (): JSX.Element {
                         </div>
                       </div>
                     </motion.div>
-                    : <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between bg-white dark:bg-[#2E323C] cursor-pointer  focus:outline-none w-full h-[75px] '>
+                    : <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between bg-white dark:bg-[#2E323C] cursor-pointer  focus:outline-none w-full  '>
                       <div className='text-xs'>
                         <RadioGroup.Label
                           as='p'
-                          className={`text-base font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
+                          className={`text-lg font-semibold font-poppins  ${checked ? 'text-white dark:text-white' : 'text-[#B6B7BC]'}`}
                         >
                           {text.split(' ')[0]}
                         </RadioGroup.Label>
@@ -81,7 +81,7 @@ function NetworkSelection (): JSX.Element {
 
                   {checked && knownNetworks[currentNetwork].text !== text && (
                     <div>
-                      <div className='absolute top-7 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
+                      <div className='absolute top-6 right-4  rounded-full items-center w-[15px] h-[15px] cursor-pointer flex justify-center bg-white'>
                         <CheckIcon className=' text-green-500 z-50 w-5 h-5' />
 
                       </div>
@@ -95,8 +95,8 @@ function NetworkSelection (): JSX.Element {
                   )}
 
                   {isDevelopment === true
-                    ? <div className={'absolute bottom-0 left-4 items-center bg-slate-300 rounded-lg p-[2px] cursor-pointer flex justify-center'}>
-                      <p className='text-gray-500 text-xs font-semibold font-poppins m-1'>TestNet</p>
+                    ? <div className='absolute bottom-0 left-5 items-center flex justify-center'>
+                      <p className='text-[#DADADA] text-xs font-light font-poppins '>TestNet</p>
                     </div>
                     : null}
 

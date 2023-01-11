@@ -15,7 +15,7 @@ import AccountRow from './AccountRow';
 /**
  * Render currentUserAccount address on Header & a drop down of all UserAccount
  */
-export default function AccountInHeader (): JSX.Element {
+export default function AccountInHeader(): JSX.Element {
   const dispatch = useDispatch();
 
   const [ready, setReady] = useState(false);
@@ -44,7 +44,7 @@ export default function AccountInHeader (): JSX.Element {
   if (!ready) return null;
 
   return (
-    <div className='w-24 md:w-64 text-right'>
+    <div className='w-24 md:w-64 text-right lg:ml-12'>
       <Menu as='div'
         className='relative h-12 text-left w-full border border-gray-300  dark:border-[#00f6ff] rounded-lg '>
 
@@ -83,7 +83,7 @@ export default function AccountInHeader (): JSX.Element {
                     className={`${active
                       ? 'font-poppins bg-[#F5CBD5] dark:bg-[#0170BF] text-white'
                       : 'font-poppins text-gray-900'
-                    } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => router.push('/account')}
                   >
 
@@ -97,7 +97,7 @@ export default function AccountInHeader (): JSX.Element {
                 {({ active }) => (
                   <button
                     className={`${active ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
-                    } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
                     onClick={removeAccounts}
                   >
                     <p className='font-poppins text-black dark:text-white text-center'>Remove All Accounts</p>
