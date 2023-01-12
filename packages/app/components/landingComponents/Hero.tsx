@@ -29,9 +29,7 @@ const Hero = (): JSX.Element => {
           width={180}
         />
         <div className='z-20 flex flex-col items-center justify-center lg:pt-6 pb-5 md:pb-10 lg:pb-28'>
-          <p className='text-2xl md:text-3xl font-bold uppercase text-gray-200 pb-2 tracking-[2px] font-rubik'>
-            CHOKO WALLET
-          </p>
+
           <p className='py-6 text-[35px] lg:text-[50px] text-white font-vt323'>
             Your <Typed
               backSpeed={20}
@@ -45,15 +43,19 @@ const Hero = (): JSX.Element => {
               typeSpeed={100} />crypto wallet
           </p>
 
+          <p className='text-[20px] md:text-[28px] font-vt323 max-w-[800px] text-[#FFFFFE] pb-2 '>
+            Trade, own and swap on your favorite blockchain with gasless transaction and account abstraction support.
+          </p>
+
           <div className='flex flex-col lg:mt-6'>
             <button className='py-3 mt-3 text-xl text-[#0170BF] transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#F5CBD5]'
-            onClick={() => router.push('/home')}>ENTER
+              onClick={() => router.push('/home')}>ENTER
             </button>
 
             <button className='py-3 text-xl text-white transition duration-150
                 rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
-            onClick={() => router.push('/test-request')}>BETA TEST
+              onClick={() => router.push('/test-request')}>BETA TEST
             </button>
           </div>
 

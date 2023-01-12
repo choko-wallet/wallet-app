@@ -7,6 +7,9 @@ import Head from 'next/head';
 import React from 'react';
 
 import About from '../components/landingComponents/About';
+import About2 from '../components/landingComponents/About2';
+import About3 from '../components/landingComponents/About3';
+
 import ContactMe from '../components/landingComponents/ContactMe';
 import Header from '../components/landingComponents/Header';
 import Hero from '../components/landingComponents/Hero';
@@ -20,8 +23,12 @@ const Home: NextPage = () => {
 
       <Header />
       <Hero />
-      <About />
       <ContactMe />
+      <About />
+      <About2 />
+      <About3 />
+
+
     </div>
   );
 };
