@@ -18,53 +18,60 @@ const About = (): JSX.Element => {
 
         <motion.img
           alt='Choko Wallet'
-          className='w-48 h-48 mt-10 mb-5 flex-shrink-0 rounded-full object-cover md:mb-0 md:rounded-lg md:w-64 md:h-64 md:mt-0 2xl:w-[500px] 2xl:h-[500px]'
-          initial={{
-            opacity: 0,
-            x: -200
+          className='w-20 h-20 mr-32 flex-shrink-0 rounded-full object-cover '
 
-          }}
+
           /* eslint-disable */
           // @ts-ignore
-
           src='https://www.thisiscolossal.com/wp-content/uploads/2014/03/120430.gif'
-          /* eslint-enable */
-
-          transition={{
-            duration: 1.5
-          }}
-          whileInView={{
-            opacity: 1,
-            x: 0
-
-          }}
+        /* eslint-enable */
         />
 
-        <motion.div
-          className='px-0 space-y-10 md:px-10 lg:px-20'
-          initial={{
-            opacity: 0
+        <motion.img
+          alt='Choko Wallet'
+          className='w-20 h-20 mr-32 flex-shrink-0 rounded-full object-cover '
+          animate={{
+            // scale: [1, 2, 2, 1, 1],
+            rotate: [0, 0, 180, 180, 360],
+            // borderRadius: ["0%", "0%", "50%", "50%", "0%"]
           }}
           transition={{
-            duration: 1.5
+            duration: 2,
+            repeat: Infinity,
+            repeatDelay: 1
           }}
-          whileInView={{
-            opacity: 1
+
+          /* eslint-disable */
+          // @ts-ignore
+          src='https://www.thisiscolossal.com/wp-content/uploads/2014/03/120430.gif'
+        /* eslint-enable */
+        />
+
+        <motion.img
+          alt='Choko Wallet'
+          className='w-20 h-20 flex-shrink-0 rounded-full object-cover '
+          animate={{
+            scale: [1, 2, 2, 1, 1],
+            rotate: [0, 0, 180, 180, 0],
+            borderRadius: ["0%", "0%", "50%", "50%", "0%"]
           }}
-        >
-          <p className='text-2xl font-semibold md:text-4xl font-poppins'>
-            Choko <span className='underline decoration-[#F7AB0A]/50'>Wallet</span>
-          </p>
-          <p className='text-sm md:text-base font-poppins'>
-            A Multi-chain Crypto Wallet.
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatDelay: 1
+          }}
 
-          </p>
+          /* eslint-disable */
+          // @ts-ignore
+          src='https://www.thisiscolossal.com/wp-content/uploads/2014/03/120430.gif'
+        /* eslint-enable */
 
-        </motion.div>
+        />
+
 
         <img
           alt='Choko Wallet'
-          className='w-48 h-48 mt-10 mb-5 flex-shrink-0 rounded-full object-cover md:mb-0 md:rounded-lg md:w-64 md:h-64 md:mt-0 2xl:w-[500px] 2xl:h-[500px]'
+          className='w-20 h-20 ml-36 mb-5 flex-shrink-0 rounded-full object-cover md:mb-0 md:rounded-lg md:w-64 md:h-64 md:mt-0 2xl:w-[500px] 2xl:h-[500px]'
 
           /* eslint-disable */
           // @ts-ignore
