@@ -9,6 +9,7 @@ import Image from 'next/image';
 
 import logo from '../../images/logo2.png';
 import { ImageOptimizerCache } from 'next/dist/server/image-optimizer';
+import BackgroundCircle2 from './BackgroundCircle2';
 
 const About = (): JSX.Element => {
   return (
@@ -22,12 +23,12 @@ const About = (): JSX.Element => {
           className='w-48 h-48 flex-shrink-0 rounded-full object-cover absolute top-24 left-[-50px]'
 
           animate={{
-            x: [0, 1000, 2000, 6000],
+            x: [0, 1500, 2000, 6000],
             // opacity: [0.5, 1, 1, 1, 0],
             // borderRadius: ["0%", "0%", "50%", "50%", "0%"]
           }}
           transition={{
-            duration: 3.4,
+            duration: 4.4,
             // repeat: Infinity,
             // repeatDelay: 1
           }}
@@ -57,18 +58,44 @@ const About = (): JSX.Element => {
           transition={{
             duration: 2,
             delay: 4.4,
-
           }}
-
           /* eslint-disable */
           // @ts-ignore
           src={logo.src}
         /* eslint-enable */
-
         />
 
 
+        <motion.div
+          className='absolute pb-[600px] w-full mx-auto'
+          initial='hidden'
+          variants={staggerContainer}
+          viewport={{ amount: 0.25, once: true }}
+          whileInView='show'
+        >
+          <motion.div
+            className='flex justify-center items-center flex-col '
+            variants={fadeIn('down', 'tween', 5.9, 1)}
+          >
+            <motion.p
+              className='font-normal text-[34px] text-white'
+              variants={textContainer}
+            >
+              {Array.from('Choko Wallet').map((letter, index) => (
+                <motion.span key={index}
+                  variants={textVariant2}>
+                  {letter === ' ' ? '\u00A0' : letter}
+                </motion.span>
+              ))}
+            </motion.p>
 
+          </motion.div>
+        </motion.div>
+
+        <BackgroundCircle2 />
+
+
+        {/* 三个圆 */}
         <motion.div
           initial={{
             y: 0,
@@ -111,7 +138,6 @@ const About = (): JSX.Element => {
 
           />
         </motion.div>
-
 
 
         <motion.div
@@ -207,7 +233,49 @@ const About = (): JSX.Element => {
           {/* </motion.div> */}
         </motion.div>
 
+        {/* 两个button */}
+        <motion.div
+          className='2xl:max-w-[1280px] w-full mx-auto flex flex-col gap-2 mb-10  px-6 sm:p-8 absolute'
+          initial='hidden'
+          variants={staggerContainer}
+          viewport={{ amount: 0.25, once: false }}
+          whileInView='show'
+
+        >
+
+          <motion.div
+            className='flex md:flex-row flex-col gap-4 pt-[600px]'
+            variants={fadeIn('up', 'spring', 6.2, 1)}
+          >
+            <div className='w-full flex justify-center items-center'>
+              <button
+                className='flex items-center justify-center shadow-md m-5 hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-black rounded-[32px] '
+              >
+                ENTER
+              </button>
+
+            </div>
+          </motion.div>
+
+          <motion.div
+            className='flex md:flex-row flex-col gap-4'
+            variants={fadeIn('up', 'spring', 6.6, 1)}
+          >
+            <div className='w-full flex justify-center items-center'>
+              <button
+                className='flex items-center justify-center shadow-md m-5 hover:shadow-xl active:scale-90 transition duration-150 w-[160px] text-white cursor-pointer py-4 px-6 my-4 bg-black rounded-[32px] '
+              >
+                TEST
+              </button>
+
+            </div>
+          </motion.div>
+
+        </motion.div>
+
+
       </div>
+
 
 
     </section >

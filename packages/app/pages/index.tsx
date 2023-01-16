@@ -15,6 +15,8 @@ import About4 from '../components/landingComponents/About4';
 import ContactMe from '../components/landingComponents/ContactMe';
 import Header from '../components/landingComponents/Header';
 import Hero from '../components/landingComponents/Hero';
+import Hero2 from '../components/landingComponents/Hero2';
+
 
 const Home: NextPage = () => {
   return (
@@ -22,10 +24,12 @@ const Home: NextPage = () => {
       <Head>
         <title>CHOKO WALLET</title>
       </Head>
-      <About4 />
+      {/* <About4 /> */}
 
       <Header />
       <Hero />
+      <Hero2 />
+
       <ContactMe />
       <About />
       <About2 />

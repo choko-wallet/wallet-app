@@ -16,7 +16,7 @@ import { addUserAccount } from '@choko-wallet/app-redux';
 /**
  * Guide user to create an account with seed phrase
  */
-function CreateWallet (): JSX.Element {
+function CreateWallet(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -125,7 +125,7 @@ function CreateWallet (): JSX.Element {
               <div className='flex space-x-5 items-center pt-1 pb-8'>
                 <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
-                onClick={refreshMnemonic}>
+                  onClick={refreshMnemonic}>
                   <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
                   <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
                 </button>
@@ -164,7 +164,7 @@ function CreateWallet (): JSX.Element {
         {step === 2 &&
 
           <div className='w-full max-w-2xl ' >
-            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
+            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
 
               <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
                 Verify your mnemonic seed:
@@ -187,7 +187,14 @@ function CreateWallet (): JSX.Element {
 
               </div>
 
+              <div className='absolute bottom-6 left-10 text-purple-700'>
+                <p>Keep my seed phrase safe</p>
+                <p>If I lose my seed, I will lose my fund</p>
+              </div>
             </div>
+
+
+
 
             <div className='flex justify-evenly mt-12 md:mt-20'>
               <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
@@ -253,8 +260,8 @@ function CreateWallet (): JSX.Element {
 
               <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-              disabled={(!password || !repeatPassword || password !== repeatPassword)}
-              onClick={() => handleSetPassword()}
+                disabled={(!password || !repeatPassword || password !== repeatPassword)}
+                onClick={() => handleSetPassword()}
               >
 
                 <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />

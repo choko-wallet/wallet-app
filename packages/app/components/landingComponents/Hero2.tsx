@@ -21,7 +21,7 @@ const Hero = (): JSX.Element => {
   return (
     <section className='snap-center relative'
       id='hero'>
-      <div className='flex items-center justify-center h-screen space-y-8 overflow-hidden text-center bg-[#0B0B0B]'>
+      <div className='flex items-center justify-center h-screen space-y-8 overflow-hidden text-center '>
         {/* <BackgroundCircle /> */}
 
         <div className='z-20 flex flex-col items-center justify-center lg:pt-6 pb-5 md:pb-10 lg:pb-28'>
@@ -67,7 +67,7 @@ const Hero = (): JSX.Element => {
         </div>
 
         <video
-          className='h-[600px] w-[600px]'
+          className='h-[500px] w-[600px] border border-gray-700 rounded-[25px]  shadow-xl shadow-black'
           autoPlay={true}
           loop
           ref={vidRef}
