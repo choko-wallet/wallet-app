@@ -20,6 +20,10 @@ function CreateWallet(): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
+  const [check1, setCheck1] = useState<boolean>(false);
+  const [check2, setCheck2] = useState<boolean>(false);
+
+
   const [step, setStep] = useState<number>(1);
   const [seeds, setSeeds] = useState<string>('');
   const [quizMnemonic, setQuizMnemonic] = useState<number>(1);
@@ -187,9 +191,25 @@ function CreateWallet(): JSX.Element {
 
               </div>
 
-              <div className='absolute bottom-6 left-10 text-purple-700'>
-                <p>Keep my seed phrase safe</p>
-                <p>If I lose my seed, I will lose my fund</p>
+              <div className='absolute bottom-6 left-10 text-purple-700 flex flex-col  justify-center items-start'>
+
+                <label
+                  className="checkContainer font-poppins">Keep my seed phrase safe
+                  <input type="checkbox" checked={check1}
+                    onClick={() => setCheck1(!check1)}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+
+                <label
+                  className="checkContainer font-poppins ">If I lose my seed, I will lose my fund
+                  <input type="checkbox" checked={check2}
+                    onClick={() => setCheck2(!check2)}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+
+
               </div>
             </div>
 
@@ -202,8 +222,8 @@ function CreateWallet(): JSX.Element {
                 <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
               </button>
 
-              <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1]}
+              <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] && check1 && check2 ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+                disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1] || !check1 || !check2}
                 onClick={() => setStep(step + 1)}
               >
                 <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
