@@ -10,7 +10,7 @@ import discIcon2 from '../../images/discord2.svg';
 
 const ContactMe = (): JSX.Element => {
   return (
-    <section className='snap-start'
+    <section className='snap-start relative'
       id='contact'>
       <Image
         className=''
@@ -93,6 +93,11 @@ const ContactMe = (): JSX.Element => {
           </div>
 
         </div>
+      </div>
+
+      <div className='absolute bottom-4 left-0 right-0 h-10 flex items-center justify-center z-50'>
+        <p className='font-poppins' >© 2023 Choko Wallet
+        </p>
       </div>
     </section>
   );

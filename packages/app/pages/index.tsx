@@ -31,9 +31,9 @@ const Home: NextPage = () => {
       {/* <Hero2 /> */}
 
       <ContactMe />
-      <About />
+      {/* <About />
       <About2 />
-      <About3 />
+      <About3 /> */}
 
 
     </div>

@@ -12,6 +12,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '@choko-wallet/app-redux';
+import { motion } from 'framer-motion';
 
 /**
  * Guide user to create an account with seed phrase
@@ -92,29 +93,144 @@ function CreateWallet(): JSX.Element {
     <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >
 
       <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
-        <ProgressBar
-          baseBgColor='#AFAFAF'
-          bgColor='#4075A9'
-          className='w-full '
-          completed={step === 1
-            ? 0
-            : step === 2
-              ? 50
-              : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 80 : 80}
-          height='13px'
-        />
 
-        <div className='w-full max-w-2xl justify-between mt-2 flex md:mb-10'>
-          <p className={`text-xs md:text-sm font-poppins ${step > 1 ? 'text-[#4075A9]' : 'text-white'}`}>Generate Mnemonic</p>
-          <p className={` text-xs md:text-sm font-poppins pr-10 ${step > 2 ? 'text-[#4075A9]' : 'text-white'}`}>Verify</p>
-          <p className={` text-xs md:text-sm font-poppins ${step > 2 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
+        <div className='flex md:hidden items-center justify-center space-x-3'>
+          <motion.div
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}
+            layout
+            className='h-2 '>
+
+            {step === 1 ?
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className='w-20 h-2 bg-[#0170BF] rounded-full '></div>
+              </motion.div>
+              :
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className='w-6 h-2 bg-gray-600 rounded-full'></div>
+              </motion.div>
+            }
+          </ motion.div>
+
+          <motion.div
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}
+            layout
+            className='h-2 '>
+
+            {step === 2 ?
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className='w-20 h-2 bg-[#0170BF] rounded-full '></div>
+              </motion.div>
+              :
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className='w-6 h-2 bg-gray-600 rounded-full'></div>
+              </motion.div>
+            }
+          </ motion.div>
+
+
+          <motion.div
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}
+            layout
+            className='h-2 '>
+
+            {step === 3 ?
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className='w-20 h-2 bg-[#0170BF] rounded-full '></div>
+              </motion.div>
+              :
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className='w-6 h-2 bg-gray-600 rounded-full'></div>
+              </motion.div>
+            }
+          </ motion.div>
+        </div>
+        <div className='hidden md:flex w-full space-x-1'>
+          <label
+            className="checkContainer2 font-poppins">
+            <input type="checkbox" checked={step === 2 || step === 3}
+            // onClick={() => setCheck1(!check1)}
+            />
+            <span className="checkmark2"></span>
+          </label>
+
+          <ProgressBar
+            baseBgColor='#AFAFAF'
+            bgColor='#4075A9'
+            className='w-full pt-2 pr-2'
+            completed={step === 1
+              ? 0
+              : step === 2
+                ? 100
+                : 100}
+            height='3px'
+            customLabel=" "
+          />
+
+          <label
+            className="checkContainer2 font-poppins">
+            <input type="checkbox" checked={step === 3}
+            // onClick={() => setCheck1(!check1)}
+            />
+            <span className="checkmark2"></span>
+          </label>
+
+
+          <ProgressBar
+            baseBgColor='#AFAFAF'
+            bgColor='#4075A9'
+            className='w-full pt-2 pr-2'
+            completed={step === 2
+              ? 0
+              : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 0 : 0}
+            height='3px'
+            customLabel=" "
+          />
+
+          <label
+            className="checkContainer2 font-poppins">
+            <input type="checkbox" checked={step === 3 && (password && repeatPassword && password === repeatPassword)}
+            // onClick={() => setCheck1(!check1)}
+            />
+            <span className="checkmark2"></span>
+          </label>
+
+        </div>
+
+        <div className='hidden md:flex w-full max-w-2xl justify-center mt-5 h-5 relative'>
+          <p className={`absolute top-0 -left-12 text-xs md:text-sm font-poppins ${step > 1 ? 'text-[#4075A9]' : 'text-white'}`}>Generate Mnemonic</p>
+          <p className={`absolute top-0 text-xs md:text-sm font-poppins pr-2 ${step > 2 ? 'text-[#4075A9]' : 'text-white'}`}>Verify</p>
+          <p className={`absolute top-0 -right-6 text-xs md:text-sm font-poppins ${step > 2 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
         </div>
 
         {step === 1 &&
           <div className='w-full max-w-2xl  ' >
             <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6'>
+              <p className=' text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6 text-center'>
                 Generated 12-word mnemonic seed: </p>
 
               <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>
@@ -170,10 +286,10 @@ function CreateWallet(): JSX.Element {
           <div className='w-full max-w-2xl ' >
             <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
+              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins text-center'>
                 Verify your mnemonic seed:
               </p>
-              <p className=' text-black text-sm md:text-xl md:-mt-5 font-poppins'>
+              <p className='text-center text-black text-sm md:text-xl md:-mt-5 font-poppins'>
                 Ensure that you keep the secret seed in a safe place.</p>
 
               <div className='flex items-center justify-center p-10'>
@@ -191,7 +307,7 @@ function CreateWallet(): JSX.Element {
 
               </div>
 
-              <div className='absolute bottom-6 left-10 text-purple-700 flex flex-col  justify-center items-start'>
+              <div className='absolute bottom-6 left-5 md:left-10 text-purple-700 flex flex-col  justify-center items-start'>
 
                 <label
                   className="checkContainer font-poppins">Keep my seed phrase safe

@@ -30,9 +30,9 @@ const Hero = (): JSX.Element => {
 
 
 
-        <div className='z-20 flex flex-col items-start lg:pt-6 pb-5 '>
+        <div className='z-20 flex flex-col items-center xl:items-start lg:w-[550px] lg:pt-6 pb-5 '>
 
-          <p className='py-6 text-[35px] lg:text-[50px] text-white font-vt323'>
+          <p className='py-3 xl:py-6 text-[36px] lg:text-[40px]  h-32  text-white font-vt323'>
             Your <Typed
               backSpeed={20}
               loop
@@ -45,18 +45,49 @@ const Hero = (): JSX.Element => {
               typeSpeed={100} />crypto wallet
           </p>
 
-          <p className='text-[20px] md:text-[28px] font-vt323 max-w-[600px] text-[#FFFFFE] pb-2 text-start'>
+          <p className='text-sm md:hidden text-[#F5CBD5] bg-[#2C1F28] font-bold p-2 rounded-md '>
+            Currently in private beta
+          </p>
+
+          <p className='text-[18px] md:text-[20px] max-w-[400px] mx-auto font-vt323  text-[#FFFFFE] pb-2 text-start my-5 xl:my-10  xl:mx-0'>
             Trade, own and swap on your favorite blockchain with gasless transaction and account abstraction support.
           </p>
 
-          <div className='flex flex-col lg:mt-20'>
-            <button className='py-3 mt-3 text-xl text-[#0170BF] transition duration-150
-                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 border-4 border-[#F5CBD5] bg-transparent'
+          <div
+            className='block xl:hidden z-40 relative h-[328px] w-[328px] flex-shrink-0'
+
+          >
+            <div
+              className='absolute top-16 left-0 bottom-16 w-20  bg-gradient-to-l from-[#0C0D12] to-transparent '
+            />
+            <div
+              className='absolute top-16 right-0 bottom-16 w-20 bg-gradient-to-r from-[#0C0D12] to-transparent '
+            />
+            <div
+              className='absolute top-0 left-16 right-16 h-20  bg-gradient-to-t from-[#0C0D12] to-transparent '
+            />
+            <div
+              className='absolute bottom-0 left-16 right-16 h-20   bg-gradient-to-b from-[#0C0D12] to-transparent '
+            />
+            <div
+              className='absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-bl from-[#141011] to-transparent'
+            />
+            <video
+              className='h-[200px] w-[200px] z-40 m-16'
+              autoPlay={true}
+              loop
+              ref={vidRef}
+              muted
+              src='https://firebasestorage.googleapis.com/v0/b/insta-b6569.appspot.com/o/posts%2FpXCnTPC9Ldt415MRlPNF%2Fimage?alt=media&token=e2381e66-eee4-4e22-b4bd-1ed563fa434e'
+            />
+          </div>
+
+          <div className='flex xl:flex-col mt-5 xl:mt-20 space-x-10 xl:space-x-0'>
+            <button className='my-auto text-[10px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-16 w-32 lg:w-40 md:w-48 mb-10 border-4 border-[#F5CBD5] bg-transparent'
               onClick={() => router.push('/home')}>ENTER
             </button>
 
-            <button className='py-3 text-xl text-white transition duration-150
-                rounded-md hover:shadow-sm active:scale-90 w-40 md:w-48 mb-10 bg-[#0170BF]'
+            <button className='my-auto text-[10px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-16 w-32 lg:w-40 md:w-48 mb-10 bg-[#0170BF]'
               onClick={() => router.push('/test-request')}>Request Access
             </button>
           </div>
@@ -65,7 +96,7 @@ const Hero = (): JSX.Element => {
 
         {/* video */}
         <div
-          className='z-40  relative '
+          className='hidden xl:inline z-40 relative h-[578px] w-[578px] flex-shrink-0'
 
         >
           <div
@@ -84,7 +115,7 @@ const Hero = (): JSX.Element => {
             className='absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-bl from-[#141011] to-transparent'
           />
           <video
-            className='h-[600px] w-[600px] z-40 m-16'
+            className='h-[450px] w-[450px] z-40 m-16'
             autoPlay={true}
             loop
             ref={vidRef}
@@ -92,6 +123,8 @@ const Hero = (): JSX.Element => {
             src='https://firebasestorage.googleapis.com/v0/b/insta-b6569.appspot.com/o/posts%2FpXCnTPC9Ldt415MRlPNF%2Fimage?alt=media&token=e2381e66-eee4-4e22-b4bd-1ed563fa434e'
           />
         </div>
+
+
       </div>
 
 

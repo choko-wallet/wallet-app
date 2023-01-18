@@ -185,7 +185,7 @@ input[type="number"] {
   background-color: #ccc;
 }
 
-/* When the checkbox is checked, add a blue background */
+/* When the checkbox is checked, add a background */
 .checkContainer input:checked~.checkmark {
   background-color: #EDEDED;
 }
@@ -209,6 +209,72 @@ input[type="number"] {
   width: 8px;
   height: 15px;
   border: solid black;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+.checkContainer2 {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 7px;
+  cursor: pointer;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkContainer2 input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #F5CBD5;
+  border-radius: 9999px;
+}
+
+
+
+/* When the checkbox is checked, add a background */
+.checkContainer2 input:checked~.checkmark2 {
+  background-color: #4075A9;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark2:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkContainer2 input:checked~.checkmark2:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkContainer2 .checkmark2:after {
+  left: 9px;
+  top: 4px;
+  width: 8px;
+  height: 15px;
+  border: solid white;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
