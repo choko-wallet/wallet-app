@@ -8,7 +8,7 @@ import React, { useEffect, useRef } from 'react';
 import Typed from 'react-typed';
 
 import bg from '../../images/bg.png';
-import landingGIF from '../../images/landing.gif';
+import landingGIF from '../../images/landing1.gif';
 
 import BackgroundCircle from './BackgroundCircle';
 
@@ -56,9 +56,8 @@ const Hero = (): JSX.Element => {
 
           <div
             className='block xl:hidden z-40 relative h-[258px] w-[288px] flex-shrink-0'
-
           >
-            <div
+            {/* <div
               className='absolute top-12 left-0 bottom-12 w-12  bg-gradient-to-l from-black to-transparent '
             />
             <div
@@ -69,11 +68,11 @@ const Hero = (): JSX.Element => {
             />
             <div
               className='absolute bottom-0 left-12 right-12 h-12   bg-gradient-to-b from-black to-transparent '
-            />
+            /> */}
             {/* <div
               className='absolute bottom-0 left-0 h-[258px] w-[288px] bg__gradient rounded-3xl'
             /> */}
-            <div
+            {/* <div
               className='absolute bottom-2 left-2 h-10 w-10 bg-gradient-to-bl from-black via-[#0E0C0D] to-transparent rounded-bl-3xl'
             />
             <div
@@ -84,7 +83,7 @@ const Hero = (): JSX.Element => {
             />
             <div
               className='absolute top-2 right-2 h-10 w-10 bg-gradient-to-tr from-black via-[#0E0C0D] to-transparent rounded-tr-3xl'
-            />
+            /> */}
             <img
               alt=''
               className='z-40 m-12 object-contain w-[192px] h-[162px]'
@@ -119,7 +118,7 @@ const Hero = (): JSX.Element => {
           className='hidden xl:inline z-40 relative w-[574px] h-[501px] flex-shrink-0'
 
         >
-          <div
+          {/* <div
             className='absolute top-12 left-0 bottom-12 w-12  bg-gradient-to-l from-black to-transparent '
           />
           <div
@@ -130,11 +129,11 @@ const Hero = (): JSX.Element => {
           />
           <div
             className='absolute bottom-0 left-12 right-12 h-12   bg-gradient-to-b from-black to-transparent '
-          />
+          /> */}
           {/* <div
               className='absolute bottom-0 left-0 h-[258px] w-[288px] bg__gradient rounded-3xl'
             /> */}
-          <div
+          {/* <div
             className='absolute bottom-2 left-2 h-10 w-10 bg-gradient-to-bl from-black via-[#0E0C0D] to-transparent rounded-bl-3xl'
           />
           <div
@@ -145,7 +144,7 @@ const Hero = (): JSX.Element => {
           />
           <div
             className='absolute top-2 right-2 h-10 w-10 bg-gradient-to-tr from-black via-[#0E0C0D] to-transparent rounded-tr-3xl'
-          />
+          /> */}
           <img
             alt=''
             className='z-40 m-12 object-contain w-[480px] h-[405px]'
