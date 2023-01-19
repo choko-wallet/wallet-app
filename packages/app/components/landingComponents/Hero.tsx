@@ -8,14 +8,15 @@ import React, { useEffect, useRef } from 'react';
 import Typed from 'react-typed';
 
 import bg from '../../images/bg.png';
+import landingGIF from '../../images/landing.gif';
 
 import BackgroundCircle from './BackgroundCircle';
 
 const Hero = (): JSX.Element => {
   const router = useRouter();
-  const vidRef = useRef();
+  // const vidRef = useRef();
 
-  useEffect(() => { vidRef.current.play(); }, []);
+  // useEffect(() => { vidRef.current.play(); }, []);
 
   return (
     <section className='snap-center relative'
@@ -54,32 +55,51 @@ const Hero = (): JSX.Element => {
           </p>
 
           <div
-            className='block xl:hidden z-40 relative h-[328px] w-[328px] flex-shrink-0'
+            className='block xl:hidden z-40 relative h-[258px] w-[288px] flex-shrink-0'
 
           >
             <div
-              className='absolute top-16 left-0 bottom-16 w-20  bg-gradient-to-l from-[#0C0D12] to-transparent '
+              className='absolute top-12 left-0 bottom-12 w-12  bg-gradient-to-l from-black to-transparent '
             />
             <div
-              className='absolute top-16 right-0 bottom-16 w-20 bg-gradient-to-r from-[#0C0D12] to-transparent '
+              className='absolute top-12 right-0 bottom-12 w-12 bg-gradient-to-r from-black to-transparent '
             />
             <div
-              className='absolute top-0 left-16 right-16 h-20  bg-gradient-to-t from-[#0C0D12] to-transparent '
+              className='absolute top-0 left-12 right-12 h-12  bg-gradient-to-t from-black to-transparent '
             />
             <div
-              className='absolute bottom-0 left-16 right-16 h-20   bg-gradient-to-b from-[#0C0D12] to-transparent '
+              className='absolute bottom-0 left-12 right-12 h-12   bg-gradient-to-b from-black to-transparent '
+            />
+            {/* <div
+              className='absolute bottom-0 left-0 h-[258px] w-[288px] bg__gradient rounded-3xl'
+            /> */}
+            <div
+              className='absolute bottom-2 left-2 h-10 w-10 bg-gradient-to-bl from-black via-[#0E0C0D] to-transparent rounded-bl-3xl'
             />
             <div
-              className='absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-bl from-[#141011] to-transparent'
+              className='absolute bottom-0 right-0 h-12 w-12 bg-gradient-to-br from-black via-transparent to-transparent rounded-br-3xl'
             />
-            <video
+            <div
+              className='absolute top-2 left-2 h-10 w-10 bg-gradient-to-tl from-black via-[#0E0C0D] to-transparent rounded-tl-3xl'
+            />
+            <div
+              className='absolute top-2 right-2 h-10 w-10 bg-gradient-to-tr from-black via-[#0E0C0D] to-transparent rounded-tr-3xl'
+            />
+            <img
+              alt=''
+              className='z-40 m-12 object-contain w-[192px] h-[162px]'
+              src={landingGIF.src}
+            />
+            {/* Width : 320 pixels   Height : 270 pixels */}
+
+            {/* <video
               className='h-[200px] w-[200px] z-40 m-16'
               autoPlay={true}
               loop
               ref={vidRef}
               muted
-              src='https://firebasestorage.googleapis.com/v0/b/insta-b6569.appspot.com/o/posts%2FpXCnTPC9Ldt415MRlPNF%2Fimage?alt=media&token=e2381e66-eee4-4e22-b4bd-1ed563fa434e'
-            />
+              src={landingGIF}
+            /> */}
           </div>
 
           <div className='flex xl:flex-col mt-5 xl:mt-20 space-x-10 xl:space-x-0'>
@@ -96,32 +116,51 @@ const Hero = (): JSX.Element => {
 
         {/* video */}
         <div
-          className='hidden xl:inline z-40 relative h-[578px] w-[578px] flex-shrink-0'
+          className='hidden xl:inline z-40 relative w-[574px] h-[501px] flex-shrink-0'
 
         >
           <div
-            className='absolute top-16 left-0 bottom-16 w-20  bg-gradient-to-l from-[#0C0D12] to-transparent '
+            className='absolute top-12 left-0 bottom-12 w-12  bg-gradient-to-l from-black to-transparent '
           />
           <div
-            className='absolute top-16 right-0 bottom-16 w-20 bg-gradient-to-r from-[#0C0D12] to-transparent '
+            className='absolute top-12 right-0 bottom-12 w-12 bg-gradient-to-r from-black to-transparent '
           />
           <div
-            className='absolute top-0 left-16 right-16 h-20  bg-gradient-to-t from-[#0C0D12] to-transparent '
+            className='absolute top-0 left-12 right-12 h-12  bg-gradient-to-t from-black to-transparent '
           />
           <div
-            className='absolute bottom-0 left-16 right-16 h-20   bg-gradient-to-b from-[#0C0D12] to-transparent '
+            className='absolute bottom-0 left-12 right-12 h-12   bg-gradient-to-b from-black to-transparent '
+          />
+          {/* <div
+              className='absolute bottom-0 left-0 h-[258px] w-[288px] bg__gradient rounded-3xl'
+            /> */}
+          <div
+            className='absolute bottom-2 left-2 h-10 w-10 bg-gradient-to-bl from-black via-[#0E0C0D] to-transparent rounded-bl-3xl'
           />
           <div
-            className='absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-bl from-[#141011] to-transparent'
+            className='absolute bottom-0 right-0 h-12 w-12 bg-gradient-to-br from-black via-transparent to-transparent rounded-br-3xl'
           />
-          <video
+          <div
+            className='absolute top-2 left-2 h-10 w-10 bg-gradient-to-tl from-black via-[#0E0C0D] to-transparent rounded-tl-3xl'
+          />
+          <div
+            className='absolute top-2 right-2 h-10 w-10 bg-gradient-to-tr from-black via-[#0E0C0D] to-transparent rounded-tr-3xl'
+          />
+          <img
+            alt=''
+            className='z-40 m-12 object-contain w-[480px] h-[405px]'
+            src={landingGIF.src}
+          />
+          {/* Width : 320 pixels   Height : 270 pixels */}
+
+          {/* <video
             className='h-[450px] w-[450px] z-40 m-16'
             autoPlay={true}
             loop
             ref={vidRef}
             muted
             src='https://firebasestorage.googleapis.com/v0/b/insta-b6569.appspot.com/o/posts%2FpXCnTPC9Ldt415MRlPNF%2Fimage?alt=media&token=e2381e66-eee4-4e22-b4bd-1ed563fa434e'
-          />
+          /> */}
         </div>
 
 

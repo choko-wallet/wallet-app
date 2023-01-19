@@ -67,7 +67,9 @@
 }
 
 .bg__gradient {
-  background-image: radial-gradient(circle, #0C0D12, transparent);
+  /* background-image: radial-gradient(circle, black, transparent); */
+  background: radial-gradient(black 50%, rgb(16, 15, 15) 80%,
+      transparent 100%);
 }
 
 .blue__gradient {

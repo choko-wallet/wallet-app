@@ -12,7 +12,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '@choko-wallet/app-redux';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 /**
  * Guide user to create an account with seed phrase
@@ -226,185 +226,199 @@ function CreateWallet(): JSX.Element {
           <p className={`absolute top-0 -right-6 text-xs md:text-sm font-poppins ${step > 2 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
         </div>
 
-        {step === 1 &&
-          <div className='w-full max-w-2xl  ' >
-            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
+        <AnimatePresence exitBeforeEnter>
+          <motion.div
+            key={step}
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -30, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {step === 1 &&
+              <div className='w-full max-w-2xl  ' >
+                <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
 
-              <p className=' text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6 text-center'>
-                Generated 12-word mnemonic seed: </p>
+                  <p className=' text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6 text-center'>
+                    Generated 12-word mnemonic seed: </p>
 
-              <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>
-                {seeds.split(' ').map((seed, index) =>
-                  <div className='border border-[#94C5E3]  rounded-lg flex items-center justify-center p-1 md:p-3 py-2'
-                    key={index}>
-                    <p className='text-black text-sm font-poppins'>{seed}</p>
+                  <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>
+                    {seeds.split(' ').map((seed, index) =>
+                      <div className='border border-[#94C5E3]  rounded-lg flex items-center justify-center p-1 md:p-3 py-2'
+                        key={index}>
+                        <p className='text-black text-sm font-poppins'>{seed}</p>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <div className='flex space-x-5 items-center pt-1 pb-8'>
-                <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
+                  <div className='flex space-x-5 items-center pt-1 pb-8'>
+                    <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
-                  onClick={refreshMnemonic}>
-                  <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
-                  <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
-                </button>
+                      onClick={refreshMnemonic}>
+                      <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
+                      <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
+                    </button>
 
-                <CopyToClipboard onCopy={() => setCopied(true)}
-                  text={seedsStringForCopy}>
-                  <button className='flex items-center justify-center w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
+                    <CopyToClipboard onCopy={() => setCopied(true)}
+                      text={seedsStringForCopy}>
+                      <button className='flex items-center justify-center w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
                 bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '>
-                    <DuplicateIcon className='text-[#F5CBD5] h-5  m-3 duration-300 hover:scale-125 transtion east-out' />
-                    <p className='text-[#F5CBD5] text-sm font-poppins'>COPY</p>
+                        <DuplicateIcon className='text-[#F5CBD5] h-5  m-3 duration-300 hover:scale-125 transtion east-out' />
+                        <p className='text-[#F5CBD5] text-sm font-poppins'>COPY</p>
+                      </button>
+                    </CopyToClipboard>
+
+                    {copied &&
+                      <p className='text-[#99D8FF] font-poppins'>COPIED!</p>
+                    }
+
+                  </div>
+                </div>
+
+                <div className='flex justify-evenly mt-12 md:mt-20'>
+                  <button className='bg-[#F5CBD5] rounded-full p-3'
+                    onClick={() => router.push('/')} >
+                    <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
                   </button>
-                </CopyToClipboard>
 
-                {copied &&
-                  <p className='text-[#99D8FF] font-poppins'>COPIED!</p>
-                }
-
-              </div>
-            </div>
-
-            <div className='flex justify-evenly mt-12 md:mt-20'>
-              <button className='bg-[#F5CBD5] rounded-full p-3'
-                onClick={() => router.push('/')} >
-                <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-              </button>
-
-              <button className='bg-[#0170BF] rounded-full p-3'
-                onClick={() => setStep(step + 1)} >
-                <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
-              </button>
-            </div>
-
-          </div>
-        }
-
-        {step === 2 &&
-
-          <div className='w-full max-w-2xl ' >
-            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
-
-              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins text-center'>
-                Verify your mnemonic seed:
-              </p>
-              <p className='text-center text-black text-sm md:text-xl md:-mt-5 font-poppins'>
-                Ensure that you keep the secret seed in a safe place.</p>
-
-              <div className='flex items-center justify-center p-10'>
-
-                <p className=' text-black font-semibold font-poppins mr-5'>
-                  Word #{quizMnemonic}
-                </p>
-
-                <input className='w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
-                  onChange={(e) => setVerifyMnemonic(e.target.value)}
-                  placeholder='verify'
-                  type='text'
-                  value={verifyMnemonic}
-                />
+                  <button className='bg-[#0170BF] rounded-full p-3'
+                    onClick={() => setStep(step + 1)} >
+                    <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+                  </button>
+                </div>
 
               </div>
+            }
 
-              <div className='absolute bottom-6 left-5 md:left-10 text-purple-700 flex flex-col  justify-center items-start'>
+            {step === 2 &&
 
-                <label
-                  className="checkContainer font-poppins">Keep my seed phrase safe
-                  <input type="checkbox" checked={check1}
-                    onClick={() => setCheck1(!check1)}
-                  />
-                  <span className="checkmark"></span>
-                </label>
+              <div className='w-full max-w-2xl ' >
+                <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
 
-                <label
-                  className="checkContainer font-poppins ">If I lose my seed, I will lose my fund
-                  <input type="checkbox" checked={check2}
-                    onClick={() => setCheck2(!check2)}
-                  />
-                  <span className="checkmark"></span>
-                </label>
+                  <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins text-center'>
+                    Verify your mnemonic seed:
+                  </p>
+                  <p className='text-center text-black text-sm md:text-xl md:-mt-5 font-poppins'>
+                    Ensure that you keep the secret seed in a safe place.</p>
 
+                  <div className='flex items-center justify-center p-10'>
+
+                    <p className=' text-black font-semibold font-poppins mr-5'>
+                      Word #{quizMnemonic}
+                    </p>
+
+                    <input className='w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
+                      onChange={(e) => setVerifyMnemonic(e.target.value)}
+                      placeholder='verify'
+                      type='text'
+                      value={verifyMnemonic}
+                    />
+
+                  </div>
+
+                  <div className='absolute bottom-6 left-5 md:left-10 text-purple-700 flex flex-col  justify-center items-start'>
+
+                    <label
+                      className="checkContainer font-poppins">Keep my seed phrase safe
+                      <input type="checkbox" checked={check1}
+                        onClick={() => setCheck1(!check1)}
+                      />
+                      <span className="checkmark"></span>
+                    </label>
+
+                    <label
+                      className="checkContainer font-poppins ">If I lose my seed, I will lose my fund
+                      <input type="checkbox" checked={check2}
+                        onClick={() => setCheck2(!check2)}
+                      />
+                      <span className="checkmark"></span>
+                    </label>
+
+
+                  </div>
+                </div>
+
+
+
+
+                <div className='flex justify-evenly mt-12 md:mt-20'>
+                  <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
+                    onClick={() => setStep(1)} >
+                    <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+                  </button>
+
+                  <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] && check1 && check2 ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+                    disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1] || !check1 || !check2}
+                    onClick={() => setStep(step + 1)}
+                  >
+                    <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+                  </button>
+                </div>
 
               </div>
-            </div>
+            }
 
+            {step === 3 &&
+              <div className='w-full max-w-2xl '>
 
+                {/* <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'> */}
+                <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
 
+                  <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
+                    {/* <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20  font-poppins'> */}
+                    Set a local password for your wallet:
+                  </p>
 
-            <div className='flex justify-evenly mt-12 md:mt-20'>
-              <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
-                onClick={() => setStep(1)} >
-                <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-              </button>
+                  <div className='flex items-center justify-between px-10 '>
+                    <p className=' text-black text-xl font-poppins'>
+                      Set Password
+                    </p>
+                    <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
+                      onChange={(e) => setPassword(e.target.value)}
+                      // placeholder='Set a Password'
+                      type='password'
+                      value={password}
+                    />
+                  </div>
 
-              <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] && check1 && check2 ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1] || !check1 || !check2}
-                onClick={() => setStep(step + 1)}
-              >
-                <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
-              </button>
-            </div>
+                  <div className='flex items-center justify-between px-10 pt-6'>
+                    <p className=' text-black text-xl font-poppins'>
+                      Repeat Password
+                    </p>
+                    <div className=''>
+                      <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
+                        onChange={(e) => setRepeatPassword(e.target.value)}
+                        // placeholder='Repeat the Password'
+                        type='password'
+                        value={repeatPassword}
+                      />
+                    </div>
+                  </div>
 
-          </div>
-        }
+                </div>
 
-        {step === 3 &&
-          <div className='w-full max-w-2xl '>
+                <div className='flex justify-evenly mt-12 md:mt-20'>
+                  <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
+                    onClick={() => setStep(1)} >
+                    <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+                  </button>
 
-            {/* <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'> */}
-            <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
+                  <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
+            ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+                    disabled={(!password || !repeatPassword || password !== repeatPassword)}
+                    onClick={() => handleSetPassword()}
+                  >
 
-              <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
-                {/* <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20  font-poppins'> */}
-                Set a local password for your wallet:
-              </p>
-
-              <div className='flex items-center justify-between px-10 '>
-                <p className=' text-black text-xl font-poppins'>
-                  Set Password
-                </p>
-                <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
-                  onChange={(e) => setPassword(e.target.value)}
-                  // placeholder='Set a Password'
-                  type='password'
-                  value={password}
-                />
-              </div>
-
-              <div className='flex items-center justify-between px-10 pt-6'>
-                <p className=' text-black text-xl font-poppins'>
-                  Repeat Password
-                </p>
-                <div className=''>
-                  <input className='w-[150px] md:w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
-                    onChange={(e) => setRepeatPassword(e.target.value)}
-                    // placeholder='Repeat the Password'
-                    type='password'
-                    value={repeatPassword}
-                  />
+                    <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+                  </button>
                 </div>
               </div>
+            }
 
-            </div>
 
-            <div className='flex justify-evenly mt-12 md:mt-20'>
-              <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
-                onClick={() => setStep(1)} >
-                <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
-              </button>
+          </motion.div>
+        </AnimatePresence>
 
-              <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
-            ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                disabled={(!password || !repeatPassword || password !== repeatPassword)}
-                onClick={() => handleSetPassword()}
-              >
 
-                <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
-              </button>
-            </div>
-          </div>
-        }
       </div>
     </main>
   );
