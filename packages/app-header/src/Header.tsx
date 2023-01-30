@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {
-  BellIcon, CogIcon,
-  MenuIcon,
-  MoonIcon, SunIcon
+  BellIcon, CogIcon, MoonIcon, SunIcon,
+  // MenuIcon,
 } from '@heroicons/react/outline';
+import {
+  MenuAlt4Icon
+} from '@heroicons/react/solid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
@@ -46,11 +48,11 @@ function Header(): JSX.Element {
   };
 
   return (
-    <div className='sticky top-0 z-20 backdrop-blur-lg border-b border-[#C5CEDE]'>
+    <div className='sticky top-0 z-20 backdrop-blur-lg border-none md:border-b border-[#C5CEDE]'>
 
       <div className='flex justify-between p-2 '>
         <div className='flex items-center justify-center ' >
-          <div className='flex md:m-1 relative items-center w-[45px] h-[45px] my-auto cursor-pointer'
+          <div className='flex md:m-1 relative items-center w-[42px] h-[42px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
             {theme === 'dark'
               ? <Image
@@ -101,7 +103,7 @@ function Header(): JSX.Element {
 
           </div>
 
-          <MenuIcon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-8 m-2 dark:text-gray-500'
+          <MenuAlt4Icon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-[22px] m-2 text-black dark:text-gray-500'
             onClick={() => setMenuIcon(!menuIcon)} />
 
           <AccountInHeader />
@@ -126,6 +128,7 @@ function Header(): JSX.Element {
 
         </div>
       </div>
+
       {
         menuIcon
           ? <div className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>

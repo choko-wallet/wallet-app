@@ -44,14 +44,14 @@ export default function AccountInHeader(): JSX.Element {
   if (!ready) return null;
 
   return (
-    <div className='w-24 md:w-64 text-right lg:ml-12'>
+    <div className=' md:w-64 text-right lg:ml-12'>
       <Menu as='div'
-        className='relative h-12 text-left w-full border border-gray-300  dark:border-[#00f6ff] rounded-lg '>
+        className='relative h-12 text-left w-full border-none md:border border-gray-300  dark:border-[#00f6ff] rounded-lg '>
 
-        <Menu.Button className='flex items-center justify-center rounded-md w-full bg-white  dark:bg-transparent px-4 py-2 h-full text-sm font-medium text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+        <Menu.Button className='flex items-center justify-center rounded-md w-full bg-transparent md:bg-white dark:bg-transparent md:px-4 md:py-2 h-full text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
 
-          <div className='relative h-6 w-6'>
-            <UserCircleIcon className='h-6 w-6 dark:text-white text-gray-800' />
+          <div className='relative h-[24px] w-[24px] ml-2'>
+            <UserCircleIcon className='h-[24px] w-[24px] dark:text-white text-black' />
           </div>
 
           <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
@@ -59,7 +59,7 @@ export default function AccountInHeader(): JSX.Element {
             <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
             {currentAddress.substring(currentAddress.length - 7, currentAddress.length)}
           </p>
-          <ChevronDownIcon className='dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-800 ' />
+          <ChevronDownIcon className='hidden md:inline dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-800 ' />
         </Menu.Button>
 
         <Transition

@@ -71,8 +71,8 @@ function Balance({ balance }: Props): JSX.Element {
   };
 
   return (
-    <div className='relative flex flex-col bg-white dark:bg-[#2A2E37] w-full rounded-[30px] font-poppins py-5 px-3 md:px-5 lg:px-16 lg:py-8'>
-      <div className='bg-[#FDF6E3] w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[10px] p-2 md:px-6 lg:px-10'>
+    <div className='relative flex flex-col bg-[#DADADA] border border-1 border-gray-300 shadow dark:bg-[#2A2E37] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:px-5 lg:px-16 lg:py-8'>
+      <div className='bg-white w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[4px] p-2 md:px-6 lg:px-10'>
         <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
@@ -148,7 +148,7 @@ function Balance({ balance }: Props): JSX.Element {
             pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-[#0170BF] shadow-lg ring-0 transition duration-200 ease-in-out`}
             />
           </Switch>
-          <p className={`flex md:hidden text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Smaller assets</p>
+          <p className={`flex md:hidden text-xs  ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Show all</p>
 
           <p className={`hidden md:inline-flex text-xs ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
