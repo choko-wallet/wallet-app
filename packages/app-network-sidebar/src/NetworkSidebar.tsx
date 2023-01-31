@@ -18,11 +18,11 @@ export default function NetworkSidebar(): JSX.Element {
   return (
     <div className='bg-transparent'>
       <button
-        className='md:hidden mb-2 w-[148px] h-[43px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-white rounded-[4px] outline-none '
+        className='md:hidden mb-2 w-[143px] h-[43px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-white rounded-[4px] outline-none '
         onClick={() => dispatch(toggle('homeMobileDrawer'))}
       >
-        <p className='ml-1 text-black text-[18px] font-poppins '>NETWORK</p>
-        <ChevronRightIcon className=' text-[#0170BF] h-3 w-3 ml-6' />
+        <p className='ml-1 text-black text-[20px] font-medium font-poppins '>NETWORK</p>
+        <ChevronRightIcon className=' text-[#0170BF] h-3 w-3 ml-4' />
       </button>
 
       <div className='hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f]  md:h-full mr-10' >

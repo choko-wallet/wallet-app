@@ -71,14 +71,15 @@ function Balance({ balance }: Props): JSX.Element {
   };
 
   return (
-    <div className='relative flex flex-col bg-[#DADADA] border border-1 border-gray-300 shadow dark:bg-[#2A2E37] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:px-5 lg:px-16 lg:py-8'>
-      <div className='bg-white w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[4px] p-2 md:px-6 lg:px-10'>
+    <div className='relative flex flex-col bg-transparent border border-1 border-gray-300 shadow dark:bg-[#2A2E37] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:px-5 lg:px-16 lg:py-8'>
+      <div className='absolute top-0 bottom-0 left-0 right-0 bg-[#DADADA] opacity-40 z-10'></div>
+      <div className='bg-white w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[4px] p-2 md:px-6 lg:px-10 z-20'>
         <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
       </div>
 
-      <div className='flex items-center justify-evenly mt-6 md:mt-10 lg:mt-12 lg:px-12'>
+      <div className='flex items-center justify-evenly mt-6 md:mt-10 lg:mt-12 lg:px-12 z-20'>
         <div className='flex items-center justify-center '
           onClick={() => dispatch(setOpen('homeSend'))} >
           <Button Icon={PaperAirplaneIcon}
@@ -101,7 +102,7 @@ function Balance({ balance }: Props): JSX.Element {
 
       </div>
 
-      <div className='flex items-center justify-between mt-5 md:mt-10 md:h-16 px-5 '>
+      <div className='flex items-center justify-between mt-5 md:mt-10 md:h-16 px-5 z-20'>
 
         <div className='flex items-center justify-start xl:w-72' >
           <p className='hidden sm:inline-flex text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>
@@ -156,7 +157,7 @@ function Balance({ balance }: Props): JSX.Element {
         <p className='hidden sm:inline-flex text-black dark:text-gray-400 text-right  xl:w-64'>Total Balance</p>
       </div>
 
-      <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll'>
+      <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll z-20'>
 
         {searchInputOpen
           ? <div className='flex lg:hidden py-2 w-full items-center rounded-[10px] bg-[#F5F5F5]'>

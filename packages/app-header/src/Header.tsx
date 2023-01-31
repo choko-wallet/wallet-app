@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
-
+import { motion, AnimatePresence } from "framer-motion";
 import { removeAllAccounts, toggle, useDispatch } from '@choko-wallet/app-redux';
 
 import icon1 from '../img/icon1.png';
@@ -129,44 +129,57 @@ function Header(): JSX.Element {
         </div>
       </div>
 
-      {
+      {/* {
         menuIcon
-          ? <div className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
-            <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
-              <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-                onClick={() => router.push('/home')}
-              >
-                <Image
-                  layout='fill'
-                  objectFit='contain'
-                  src={icon1.src}
-                />
-              </div>
-
-              <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-                onClick={() => router.push('/settings')}
-              >
-                <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
-              </div>
-
-              <div className='flex relative transition duration-150 ease-out cursor-pointer '>
-                <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
-                <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'>
+          ? */}
+      <AnimatePresence>
+        {
+          menuIcon
+            ?
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.3 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.5, transition: { duration: 0.2 } }}
+              className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
+              <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
+                <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
+                  onClick={() => router.push('/home')}
+                >
+                  <Image
+                    layout='fill'
+                    objectFit='contain'
+                    src={icon1.src}
+                  />
                 </div>
+
+                <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
+                  onClick={() => router.push('/settings')}
+                >
+                  <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
+                </div>
+
+                <div className='flex relative transition duration-150 ease-out cursor-pointer '>
+                  <BellIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
+                  <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'>
+                  </div>
+                </div>
+
+                {theme === 'light'
+                  ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-800'
+                    onClick={() => setTheme('dark')} />
+                  : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
+                    onClick={() => setTheme('light')} />
+                }
+
               </div>
 
-              {theme === 'light'
-                ? <SunIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-800'
-                  onClick={() => setTheme('dark')} />
-                : <MoonIcon className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
-                  onClick={() => setTheme('light')} />
-              }
+            </motion.div>
+            : null
+        }
 
-            </div>
+      </AnimatePresence>
 
-          </div>
-          : null
-      }
+
     </div >
 
   );
