@@ -50,7 +50,7 @@ function Header(): JSX.Element {
   return (
     <div className='sticky top-0 z-20 backdrop-blur-lg border-none md:border-b border-[#C5CEDE]'>
 
-      <div className='flex justify-between p-2 '>
+      <div className='flex justify-between p-3 '>
         <div className='flex items-center justify-center ' >
           <div className='flex md:m-1 relative items-center w-[42px] h-[42px] my-auto cursor-pointer'
             onClick={() => router.push('/')}>
@@ -69,7 +69,7 @@ function Header(): JSX.Element {
           </div>
         </div>
 
-        <div className='flex items-center text-gray-500  '>
+        <div className='flex items-center text-gray-500 '>
           <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
             <div className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer transition duration-150 ease-out active:scale-125'
               onClick={() => router.push('/home')}

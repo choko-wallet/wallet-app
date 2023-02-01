@@ -71,9 +71,9 @@ function Balance({ balance }: Props): JSX.Element {
   };
 
   return (
-    <div className='relative flex flex-col bg-transparent border border-1 border-gray-300 shadow dark:bg-[#2A2E37] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:px-5 lg:px-16 lg:py-8'>
+    <div className='relative flex flex-col bg-transparent border border-1 border-gray-300 shadow dark:bg-[#2A2E37] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'>
       <div className='absolute top-0 bottom-0 left-0 right-0 bg-[#DADADA] opacity-40 z-10'></div>
-      <div className='bg-white w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[4px] p-2 md:px-6 lg:px-10 z-20'>
+      <div className='bg-white w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[4px] p-2 md:px-6 lg:px-10 z-10'>
         <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>

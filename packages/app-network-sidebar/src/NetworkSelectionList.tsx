@@ -22,7 +22,7 @@ function NetworkSelection(): JSX.Element {
 
   return (
     <div className=' w-full h-full  dark:bg-[#22262f] flex flex-col justify-between'>
-      <div className='scrollbar-thin max-h-[400px] md:max-h-[450px] overflow-y-scroll  mt-10 pr-2'>
+      <div className='scrollbar-thin max-h-[400px] w-[290px]  md:max-h-[450px] overflow-y-scroll  mt-10 '>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
           {Object.entries(knownNetworks).map(([hash, { color, isDevelopment, isDisabled, text }]) => {
@@ -36,7 +36,7 @@ function NetworkSelection(): JSX.Element {
               key={hash}
               value={hash} >
               {({ checked }) => {
-                return <div className='relative w-[230px] md:w-[260px]'>
+                return <div className='relative w-full md:w-[260px]'>
                   {checked
                     ? <motion.div
                       animate={{
@@ -49,7 +49,7 @@ function NetworkSelection(): JSX.Element {
                         duration: 0.1
                       }}
                     >
-                      <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between  cursor-pointer  focus:outline-none w-full '>
+                      <div className='flex rounded-lg px-[10px] py-4 mb-3  items-center justify-between  cursor-pointer  focus:outline-none w-full '>
                         <div className='text-xs'>
                           <RadioGroup.Label
                             as='p'
@@ -95,14 +95,14 @@ function NetworkSelection(): JSX.Element {
                   )}
 
                   {isDevelopment === true
-                    ? <div className='absolute bottom-0 left-5 items-center flex justify-center'>
-                      <p className='text-[#DADADA] text-xs font-light font-poppins '>TestNet</p>
+                    ? <div className='absolute bottom-[16px] right-12 bg-[#E2E0E0] p-[6px] rounded-[8px] items-center flex justify-center'>
+                      <p className='text-black text-xs font-light font-poppins '>TestNet</p>
                     </div>
                     : null}
 
-                </div>;
+                </div>
               }}
-            </RadioGroup.Option>;
+            </RadioGroup.Option>
           })}
         </RadioGroup>
 
