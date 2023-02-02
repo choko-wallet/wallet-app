@@ -31,7 +31,13 @@ module.exports = {
         Josefin: ['Josefin Sans', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
         rubik: ['Rubik', 'sans-serif'],
-        vt323: ['VT323', 'sans-serif']
+        vt323: ['VT323', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+        kanit: ['Kanit', 'sans-serif'],
+        inter: ['Inter', 'sans-serif']
+
+
+
 
       },
       height: {

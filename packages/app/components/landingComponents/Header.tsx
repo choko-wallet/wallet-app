@@ -29,7 +29,7 @@ const Header = (): JSX.Element => {
           duration: 1.5
         }}
       >
-        <p className='text-[20px] text-white  font-bold  '>
+        <p className='text-[20px] text-white font-roboto font-semibold '>
           CHOKO
         </p>
       </motion.div>
@@ -61,7 +61,7 @@ const Header = (): JSX.Element => {
             fgColor='gray'
             network='email'
           /> */}
-            <p className='hidden text-sm text-[#F5CBD5] bg-[#2C1F28] font-bold p-2 rounded-md md:inline-flex'>
+            <p className='hidden text-sm  font-poppins text-[#F5CBD5] bg-[#2C1F28] font-bold p-2 rounded-md md:inline-flex'>
               Currently in private beta
             </p>
           </motion.div>
@@ -92,7 +92,7 @@ const Header = (): JSX.Element => {
             fgColor='gray'
             network='email'
           /> */}
-            <p className='hidden text-sm text-gray-400 bg-[#302B2F] border border-[#5F5A5E] p-2 rounded-md md:inline-flex'>
+            <p className='text-sm font-poppins text-white bg-[#2E2D29]  p-[6px] rounded-md md:inline-flex'>
               Get in touch
             </p>
           </motion.div>
