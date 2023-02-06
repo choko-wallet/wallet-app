@@ -92,9 +92,9 @@ function CreateWallet(): JSX.Element {
   return (
     <main className='bg-[#383A53] min-h-screen px-3 md:px-6' >
 
-      <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center '>
+      <div className='max-w-2xl min-h-screen mx-auto w-full flex flex-col items-center justify-center overflow-hidden md:overflow-visible'>
 
-        <div className='flex md:hidden items-center justify-center space-x-3'>
+        <div className='flex md:hidden items-center justify-center space-x-3  mt-5'>
           <motion.div
             transition={{ layout: { duration: 0.5, type: 'tween' } }}
             layout
@@ -106,7 +106,7 @@ function CreateWallet(): JSX.Element {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className='w-20 h-2 bg-[#0170BF] rounded-full '></div>
+                <div className='w-[82px] h-[4px] bg-[#0170BF] rounded-full '></div>
               </motion.div>
               :
               <motion.div
@@ -114,7 +114,7 @@ function CreateWallet(): JSX.Element {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className='w-6 h-2 bg-gray-600 rounded-full'></div>
+                <div className='w-[23px] h-[4px] bg-[#0170BF] rounded-full'></div>
               </motion.div>
             }
           </ motion.div>
@@ -130,16 +130,24 @@ function CreateWallet(): JSX.Element {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className='w-20 h-2 bg-[#0170BF] rounded-full '></div>
+                <div className='w-[82px] h-[4px] bg-[#0170BF] rounded-full '></div>
               </motion.div>
-              :
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className='w-6 h-2 bg-gray-600 rounded-full'></div>
-              </motion.div>
+              : step === 3 ?
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className='w-[23px] h-[4px] bg-[#0170BF] rounded-full'></div>
+                </motion.div>
+                :
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className='w-[23px] h-[4px] bg-[#B6B7BC] rounded-full'></div>
+                </motion.div>
             }
           </ motion.div>
 
@@ -155,7 +163,7 @@ function CreateWallet(): JSX.Element {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className='w-20 h-2 bg-[#0170BF] rounded-full '></div>
+                <div className='w-[82px] h-[4px] bg-[#0170BF] rounded-full '></div>
               </motion.div>
               :
               <motion.div
@@ -163,11 +171,12 @@ function CreateWallet(): JSX.Element {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className='w-6 h-2 bg-gray-600 rounded-full'></div>
+                <div className='w-[23px] h-[4px] bg-[#B6B7BC] rounded-full'></div>
               </motion.div>
             }
           </ motion.div>
         </div>
+
         <div className='hidden md:flex w-full space-x-1'>
           <label
             className="checkContainer2 font-poppins">
@@ -220,7 +229,7 @@ function CreateWallet(): JSX.Element {
 
         </div>
 
-        <div className='hidden md:flex w-full max-w-2xl justify-center mt-5 h-5 relative'>
+        <div className='hidden md:flex w-full max-w-2xl justify-center mt-5 h-5 relative  '>
           <p className={`absolute top-0 -left-12 text-xs md:text-sm font-poppins ${step > 1 ? 'text-[#4075A9]' : 'text-white'}`}>Generate Mnemonic</p>
           <p className={`absolute top-0 text-xs md:text-sm font-poppins pr-2 ${step > 2 ? 'text-[#4075A9]' : 'text-white'}`}>Verify</p>
           <p className={`absolute top-0 -right-6 text-xs md:text-sm font-poppins ${step > 2 && (password && repeatPassword && password === repeatPassword) ? 'text-[#4075A9]' : 'text-white'}`}>Set Password</p>
@@ -233,25 +242,26 @@ function CreateWallet(): JSX.Element {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -30, opacity: 0 }}
             transition={{ duration: 0.3 }}
+            className='mb-5'
           >
             {step === 1 &&
               <div className='w-full max-w-2xl  ' >
-                <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'>
+                <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col justify-center w-full max-w-3xl px-[30px] md:p-12 '>
 
-                  <p className=' text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6 text-center'>
+                  <p className='w-[230px] md:w-full text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6 text-center mx-auto  -mt-7'>
                     Generated 12-word mnemonic seed: </p>
 
-                  <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 '>
+                  <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 '>
                     {seeds.split(' ').map((seed, index) =>
-                      <div className='border border-[#94C5E3]  rounded-lg flex items-center justify-center p-1 md:p-3 py-2'
+                      <div className='border border-[#94C5E3] w-[120px] h-[33px]  rounded-lg flex items-center justify-center p-1 md:p-3 py-2 mx-1'
                         key={index}>
                         <p className='text-black text-sm font-poppins'>{seed}</p>
                       </div>
                     )}
                   </div>
 
-                  <div className='flex space-x-5 items-center pt-1 pb-8'>
-                    <button className='flex items-center justify-center group w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
+                  <div className='flex items-center justify-between max-w-[276px] relative mt-3'>
+                    <button className='flex items-center w-[120px] h-[33px] ml-1  my-[16px] justify-center group  font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
                       onClick={refreshMnemonic}>
                       <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
@@ -260,29 +270,32 @@ function CreateWallet(): JSX.Element {
 
                     <CopyToClipboard onCopy={() => setCopied(true)}
                       text={seedsStringForCopy}>
-                      <button className='flex items-center justify-center w-28 md:w-32 h-10 md:h-12 font-bold  transition duration-150
+                      <button className='flex items-center justify-center  w-[120px] h-[33px] mr-1  my-[16px]   font-bold  transition duration-150
                 bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '>
                         <DuplicateIcon className='text-[#F5CBD5] h-5  m-3 duration-300 hover:scale-125 transtion east-out' />
                         <p className='text-[#F5CBD5] text-sm font-poppins'>COPY</p>
                       </button>
                     </CopyToClipboard>
 
-                    {copied &&
-                      <p className='text-[#99D8FF] font-poppins'>COPIED!</p>
+                    {copied ?
+                      <p className='text-[#99D8FF] font-poppins h-6 absolute top-[55px] left-[200px]'>COPIED!</p> :
+                      <p className='text-[#99D8FF] font-poppins h-6 absolute top-[55px] left-[200px]'></p>
                     }
 
                   </div>
+
+
                 </div>
 
                 <div className='flex justify-evenly mt-12 md:mt-20'>
-                  <button className='bg-[#F5CBD5] rounded-full p-3'
+                  <button className='bg-[#F5CBD5] rounded-full p-2'
                     onClick={() => router.push('/')} >
-                    <XIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+                    <XIcon className='h-6 duration-300 hover:scale-125 transtion east-out' />
                   </button>
 
-                  <button className='bg-[#0170BF] rounded-full p-3'
+                  <button className='bg-[#0170BF] rounded-full p-2'
                     onClick={() => setStep(step + 1)} >
-                    <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+                    <ArrowRightIcon className='h-6 text-white duration-300 hover:scale-125 transtion east-out' />
                   </button>
                 </div>
 
@@ -292,7 +305,7 @@ function CreateWallet(): JSX.Element {
             {step === 2 &&
 
               <div className='w-full max-w-2xl ' >
-                <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
+                <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
 
                   <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins text-center'>
                     Verify your mnemonic seed:
@@ -337,20 +350,31 @@ function CreateWallet(): JSX.Element {
                   </div>
                 </div>
 
+                {/* 
+                <div className='flex justify-evenly mt-12 md:mt-20'>
+                  <button className='bg-[#F5CBD5] rounded-full p-2'
+                    onClick={() => router.push('/')} >
+                    <XIcon className='h-6 duration-300 hover:scale-125 transtion east-out' />
+                  </button>
 
+                  <button className='bg-[#0170BF] rounded-full p-2'
+                    onClick={() => setStep(step + 1)} >
+                    <ArrowRightIcon className='h-6 text-white duration-300 hover:scale-125 transtion east-out' />
+                  </button>
+                </div> */}
 
 
                 <div className='flex justify-evenly mt-12 md:mt-20'>
-                  <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
+                  <button className='bg-[#F5CBD5] rounded-full p-2 flex items-center justify-center'
                     onClick={() => setStep(1)} >
-                    <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+                    <ArrowLeftIcon className='h-6 duration-300 hover:scale-125 transtion east-out' />
                   </button>
 
-                  <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] && check1 && check2 ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
+                  <button className={`p-2 bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${verifyMnemonic.toLowerCase() === seeds.split(' ')[quizMnemonic - 1] && check1 && check2 ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
                     disabled={verifyMnemonic.toLowerCase() !== seeds.split(' ')[quizMnemonic - 1] || !check1 || !check2}
                     onClick={() => setStep(step + 1)}
                   >
-                    <ArrowRightIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+                    <ArrowRightIcon className='h-6 text-white duration-300 hover:scale-125 transtion east-out' />
                   </button>
                 </div>
 
@@ -360,8 +384,8 @@ function CreateWallet(): JSX.Element {
             {step === 3 &&
               <div className='w-full max-w-2xl '>
 
-                {/* <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'> */}
-                <div className='mt-8 md:mt-16 bg-white h-[500px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
+                {/* <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col space-y-5 justify-center w-full max-w-3xl p-5 md:p-12'> */}
+                <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12'>
 
                   <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins'>
                     {/* <p className=' text-black font-semibold text-xl md:text-2xl -mt-10 mb-20  font-poppins'> */}
@@ -397,18 +421,18 @@ function CreateWallet(): JSX.Element {
                 </div>
 
                 <div className='flex justify-evenly mt-12 md:mt-20'>
-                  <button className='bg-[#F5CBD5] rounded-full h-[55px] w-[55px] flex items-center justify-center'
+                  <button className='bg-[#F5CBD5] rounded-full p-2 flex items-center justify-center'
                     onClick={() => setStep(1)} >
-                    <ArrowLeftIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
+                    <ArrowLeftIcon className='h-6 duration-300 hover:scale-125 transtion east-out' />
                   </button>
 
-                  <button className={`h-[55px] w-[55px] bg-[#0170BF] text-white rounded-full flex items-center justify-center  
+                  <button className={`p-2 bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
                     disabled={(!password || !repeatPassword || password !== repeatPassword)}
                     onClick={() => handleSetPassword()}
                   >
 
-                    <CheckIcon className='h-8 text-white duration-300 hover:scale-125 transtion east-out' />
+                    <CheckIcon className='h-6 text-white duration-300 hover:scale-125 transtion east-out' />
                   </button>
                 </div>
               </div>
