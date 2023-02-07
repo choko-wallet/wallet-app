@@ -305,21 +305,21 @@ function CreateWallet(): JSX.Element {
             {step === 2 &&
 
               <div className='w-full max-w-2xl ' >
-                <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl p-5 md:p-12 relative'>
+                <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col space-y-5  w-full max-w-3xl md:p-12 pt-5 relative'>
 
-                  <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins text-center'>
+                  <p className=' text-black font-semibold text-xl md:text-2xl -mt-1 mb-10 font-poppins text-center w-[300px] md:w-full mx-auto'>
                     Verify your mnemonic seed:
                   </p>
-                  <p className='text-center text-black text-sm md:text-xl md:-mt-5 font-poppins'>
+                  <p className='w-[300px] md:w-full mx-auto text-center text-black text-sm md:text-xl md:-mt-5 font-poppins'>
                     Ensure that you keep the secret seed in a safe place.</p>
 
                   <div className='flex items-center justify-center p-10'>
 
-                    <p className=' text-black font-semibold font-poppins mr-5'>
+                    <p className=' text-black font-semibold font-poppins mr-5 whitespace-nowrap'>
                       Word #{quizMnemonic}
                     </p>
 
-                    <input className='w-[200px] h-12 ml-3 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
+                    <input className='w-[160px] h-12 pl-3 border border-[#94C5E3] rounded-md bg-gray-50 sm:text-sm focus:ring-none outline-none'
                       onChange={(e) => setVerifyMnemonic(e.target.value)}
                       placeholder='verify'
                       type='text'
@@ -328,10 +328,10 @@ function CreateWallet(): JSX.Element {
 
                   </div>
 
-                  <div className='absolute bottom-6 left-5 md:left-10 text-purple-700 flex flex-col  justify-center items-start'>
+                  <div className='absolute bottom-8 left-5 md:left-10 text-[#C67391] flex flex-col  justify-center items-start '>
 
                     <label
-                      className="checkContainer font-poppins">Keep my seed phrase safe
+                      className="checkContainer font-poppins pt-[2px]">Keep my seed phrase safe
                       <input type="checkbox" checked={check1}
                         onClick={() => setCheck1(!check1)}
                       />
@@ -339,7 +339,7 @@ function CreateWallet(): JSX.Element {
                     </label>
 
                     <label
-                      className="checkContainer font-poppins ">If I lose my seed, I will lose my fund
+                      className="checkContainer font-poppins pt-[2px]">If I lose my seed, I will lose my fund
                       <input type="checkbox" checked={check2}
                         onClick={() => setCheck2(!check2)}
                       />
@@ -349,20 +349,6 @@ function CreateWallet(): JSX.Element {
 
                   </div>
                 </div>
-
-                {/* 
-                <div className='flex justify-evenly mt-12 md:mt-20'>
-                  <button className='bg-[#F5CBD5] rounded-full p-2'
-                    onClick={() => router.push('/')} >
-                    <XIcon className='h-6 duration-300 hover:scale-125 transtion east-out' />
-                  </button>
-
-                  <button className='bg-[#0170BF] rounded-full p-2'
-                    onClick={() => setStep(step + 1)} >
-                    <ArrowRightIcon className='h-6 text-white duration-300 hover:scale-125 transtion east-out' />
-                  </button>
-                </div> */}
-
 
                 <div className='flex justify-evenly mt-12 md:mt-20'>
                   <button className='bg-[#F5CBD5] rounded-full p-2 flex items-center justify-center'
