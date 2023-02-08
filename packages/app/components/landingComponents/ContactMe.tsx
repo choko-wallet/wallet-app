@@ -22,15 +22,14 @@ const ContactMe = (): JSX.Element => {
 
 
       <div className='relative flex items-center justify-center h-screen text-center z-20'>
-        <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
+        {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
           Contact
-        </h3>
+        </h3> */}
 
         <div className='flex flex-col space-y-10'>
 
-          <p className='text-4xl font-semibold text-center md:text-5xl mb-10 md:mb-20'>
-            Let&apos;s{' '}
-            <span className='underline decoration-[#F7AB0A]/50'>Talk!</span>
+          <p className='text-4xl md:text-5xl lg:text-[56px] font-semibold text-center  mb-10  font-stick'>
+            Who’s Choko?
           </p>
           {/* <div className='flex items-center justify-center space-x-4'>
 

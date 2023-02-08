@@ -34,7 +34,8 @@ module.exports = {
         vt323: ['VT323', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
         kanit: ['Kanit', 'sans-serif'],
-        inter: ['Inter', 'sans-serif']
+        inter: ['Inter', 'sans-serif'],
+        stick: ['Stick', 'sans-serif']
 
 
 
