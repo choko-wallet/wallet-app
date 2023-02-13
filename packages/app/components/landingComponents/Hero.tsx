@@ -58,7 +58,9 @@ const Hero = (): JSX.Element => {
                   'secure',
                   'multi-chain',
                   'portable',
-                  'extensible']}
+                  'extensible',
+                  'account abstraction'
+                ]}
                 typeSpeed={100} />....
             </p>
             <p className=' -mt-2 lg:mt-3 xl:mt-0 xl:ml-2 text-[32px] lg:text-[40px] xl:text-[44px] h-10 text-white font-vt323'>

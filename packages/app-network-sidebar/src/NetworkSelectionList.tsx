@@ -115,7 +115,7 @@ function NetworkSelection(): JSX.Element {
           >
 
             <div className='h-[32px] w-[32px] rounded-full bg-[#C67391] my-auto flex relative items-center justify-center'>
-              <PlusSmIcon className=' text-white z-50 h-5 w-5 ' />
+              <PlusSmIcon className=' text-white z-40 h-5 w-5 ' />
             </div>
             <p className='absolute top-[60px] -left-4 whitespace-nowrap text-base font-poppins text-black dark:text-white'>Add Network</p>
           </div>
@@ -124,7 +124,7 @@ function NetworkSelection(): JSX.Element {
 
         <div className='flex justify-center mt-3'>
           {currentNetwork === networkSelection
-            ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-50 text-center'>
+            ? <div className='bg-[#FDF6E3] flex flex-col w-[180px] h-[70px] items-center justify-center dark:bg-[#363E52] rounded-[10px] outline-none z-40 text-center'>
               <p className=' font-semibold font-poppins dark:text-white'>current:  </p>
               <p className=' font-semibold font-poppins dark:text-white'>{knownNetworks[networkSelection]?.text}</p>
 
