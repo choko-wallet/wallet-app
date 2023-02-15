@@ -25,7 +25,7 @@ export default function NetworkSidebar(): JSX.Element {
         <ChevronRightIcon className=' text-[#0170BF] h-3 w-3 ml-4' />
       </button>
 
-      <div className='hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#22262f]  md:h-full mr-10' >
+      <div className='hidden md:inline-flex md:flex-col bg-transparent dark:bg-[#0A0A0B]  md:h-full mr-10' >
         <p className='ml-1 hidden md:block text-gray-800 dark:text-white text-md font-semibold font-kanit '>NETWORK</p>
         {/* wideScreen network */}
         <NetworkSelection />

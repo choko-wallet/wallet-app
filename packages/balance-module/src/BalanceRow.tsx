@@ -60,7 +60,7 @@ function BalanceRow({ balance, img, name, price, symbol }: Props): JSX.Element {
         </div>
 
         <div className=' flex flex-col justify-between p-[10px] '>
-          <p className='h-full font-semibold text-black dark:text-white flex flex-grow text-[15px] sm:text-[14px] mt-2 font-poppins justify-end group-hover:text-[#F5CBD5] '>
+          <p className='h-full font-semibold text-black dark:text-white flex flex-grow text-[20px] sm:text-[14px] mt-1 mb-1 font-poppins justify-end group-hover:text-[#F5CBD5] '>
             {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}
             {'  '}{symbol}
 

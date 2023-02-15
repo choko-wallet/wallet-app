@@ -21,7 +21,7 @@ function NetworkSelection(): JSX.Element {
   const [networkSelection, setNetworkSelection] = useState(currentNetwork);
 
   return (
-    <div className=' w-full h-full  dark:bg-[#22262f] flex flex-col justify-between'>
+    <div className=' w-full h-full  dark:bg-[#0A0A0B] flex flex-col justify-between'>
       <div className='scrollbar-thin max-h-[400px] w-[290px]  md:max-h-[450px] overflow-y-scroll  mt-10 '>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
@@ -61,7 +61,7 @@ function NetworkSelection(): JSX.Element {
                         </div>
                       </div>
                     </motion.div>
-                    : <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between bg-white dark:bg-[#2E323C] cursor-pointer  focus:outline-none w-full  '>
+                    : <div className='flex rounded-lg px-5 py-4 mb-3  items-center justify-between bg-white dark:bg-[#0A0A0B] cursor-pointer  focus:outline-none w-full  '>
                       <div className='text-xs'>
                         <RadioGroup.Label
                           as='p'
@@ -95,8 +95,8 @@ function NetworkSelection(): JSX.Element {
                   )}
 
                   {isDevelopment === true
-                    ? <div className='absolute bottom-[16px] right-12 bg-[#E2E0E0] p-[6px] rounded-[8px] items-center flex justify-center'>
-                      <p className='text-black text-xs font-light font-poppins '>TestNet</p>
+                    ? <div className='absolute top-[5px] left-5 items-center flex justify-center'>
+                      <p className='text-white text-[10px] font-light font-poppins '>TestNet</p>
                     </div>
                     : null}
 

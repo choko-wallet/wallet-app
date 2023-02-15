@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { BalanceInfo } from '@choko-wallet/app-utils';
-
-import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/router';
 import AddNetworkModal from 'packages/app/components/modal/AddNetworkModal';
 import AddTokenModal from 'packages/app/components/modal/AddTokenModal';
 import ExportAccountModal from 'packages/app/components/modal/ExportAccountModal';
@@ -23,6 +22,7 @@ import { Balance } from '@choko-wallet/balance-module';
 import Footer from '../../components/Footer';
 import Loading from '../../components/Loading';
 import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
+import Navbar from '@choko-wallet/app/components/Navbar';
 
 /**
  * Main dashboard
@@ -31,7 +31,7 @@ import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
 export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
-  // const { setTheme, theme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const router = useRouter();
 
   const userAccount = useSelector(selectUserAccount);
@@ -54,6 +54,7 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     dispatch(loadAllNetworks());
   }, [dispatch]);
+
 
   // 2. init user account
   useEffect(() => {
@@ -137,6 +138,10 @@ export default function Home(): JSX.Element {
   }, [knownNetworks, currentUserAccount, currentNetwork, dispatch, userAccount]);
 
 
+  useEffect(() => {// figma只有黑色版本 先默认设置黑色 
+    setTheme('dark');
+  }, [setTheme]);
+
   if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
 
   if (loadingText) return <Loading />;
@@ -144,35 +149,38 @@ export default function Home(): JSX.Element {
   console.log(knownNetworks, userAccount);
 
   return (
-    // <div className={theme}>
+    <div className={theme}>
 
-    <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:from-[#22262f] dark:to-[#22262f] min-h-screen flex flex-col justify-between transition-all duration-700 ease-out'>
-      {/* <Toaster /> */}
-      <Header />
-      <NetworkSidebarMobile />
-      <MenuSidebar />
+      <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:bg-gradient-to-br dark:from-[#0A0A0B] dark:to-[#0A0A0B] min-h-screen flex flex-col justify-between transition-all duration-700 ease-out'>
+        {/* <Toaster /> */}
+        {/* <Header /> */}
+        {/* <NetworkSidebarMobile /> */}
+        <MenuSidebar />
+        <Navbar />
+
+        < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto' >
+          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
+            <NetworkSidebar />
+            {/* <Balance balance={balanceInfo} /> */}
+            <Balance balance={balanceInfo} />
+          </div>
+
+          <SendTokenModal balanceInfo={balanceInfo} />
+
+          <ReceiveTokenModal />
+
+          <AddNetworkModal />
+
+          <AddTokenModal />
+
+          <ExportAccountModal />
+        </main >
 
 
-      < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#22262f] max-w-screen-xl mx-auto' >
-        <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
-          <NetworkSidebar />
-          {/* <Balance balance={balanceInfo} /> */}
-          <Balance balance={balanceInfo} />
-        </div>
+        <Footer />
 
-        <SendTokenModal balanceInfo={balanceInfo} />
-
-        <ReceiveTokenModal />
-
-        <AddNetworkModal />
-
-        <AddTokenModal />
-
-        <ExportAccountModal />
-      </main >
-      <Footer />
+      </div >
 
     </div >
-    // </div >
   );
 }

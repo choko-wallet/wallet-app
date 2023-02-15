@@ -15,7 +15,7 @@ function Footer(): JSX.Element {
   return (
     // <div className='fixed left-0 right-0 bottom-0 backdrop-blur-lg z-20 flex justify-between items-center p-3 md:px-10 '>
     <div className='flex justify-between items-center md:px-10  mx-[10px]'>
-      <p className='text-black dark:text-white font-poppins text-[15px]'>© 2022 Choko Wallet</p>
+      <p className='text-black dark:text-white font-poppins text-[15px] ml-12'>© 2022 Choko Wallet</p>
       {theme === 'light'
         ? <div className='flex items-center justify-center'>
           <a className='relative h-4 w-4 m-2'

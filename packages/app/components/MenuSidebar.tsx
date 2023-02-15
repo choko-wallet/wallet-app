@@ -13,8 +13,8 @@ import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 function MenuSidebar() {
   const router = useRouter();
   const controlsForOpen = useAnimation();
-  const controlsforicon1 = useAnimation();
-  const controlsforicon2 = useAnimation();
+  // const controlsforicon1 = useAnimation();
+  // const controlsforicon2 = useAnimation();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -25,8 +25,12 @@ function MenuSidebar() {
         transition={{ layout: { duration: 0.6, type: 'tween' } }}
         layout
         // onClick={() => setSidebarOpen(!sidebarOpen)}
-        onMouseOver={() => controlsForOpen.start({ opacity: 100 })}
-        onMouseOut={() => !sidebarOpen && controlsForOpen.start({ opacity: 0 })}
+        // onMouseOver={() => controlsForOpen.start({ opacity: 100 })}
+        // onMouseOut={() => !sidebarOpen && controlsForOpen.start({ opacity: 0 })}
+
+        onMouseOver={() => setSidebarOpen(true)}
+        onMouseOut={() => setSidebarOpen(false)}
+
         className='absolute top-0 left-0 bottom-0 bg-[#1A1A1A] z-50 '>
 
         {/* logo */}
@@ -113,7 +117,7 @@ function MenuSidebar() {
             className='w-[90px]'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
-              <CreditCardIcon className='h-8 w-8 text-[#747474] group-hover:text-white' />
+              <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
             </div>
 
           </motion.div>
@@ -140,7 +144,7 @@ function MenuSidebar() {
             className='w-[90px]'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
-              <CreditCardIcon className='h-8 w-8 text-[#747474] group-hover:text-white' />
+              <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
             </div>
 
           </motion.div>
@@ -167,7 +171,7 @@ function MenuSidebar() {
             className='w-[90px]'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
-              <CreditCardIcon className='h-8 w-8 text-[#747474] group-hover:text-white' />
+              <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
             </div>
 
           </motion.div>
@@ -194,7 +198,7 @@ function MenuSidebar() {
             className='w-[90px]'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
-              <CreditCardIcon className='h-8 w-8 text-[#747474] group-hover:text-white' />
+              <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
             </div>
 
           </motion.div>
@@ -215,8 +219,8 @@ function MenuSidebar() {
 
 
         {/* 箭头拉伸 */}
-        <motion.div
-          className=" h-10 w-10 ml-7 mt-10"
+        {/* <motion.div
+          className=" h-10 w-10 ml-5 mt-10"
           animate={controlsForOpen}
           layout='position'
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -225,9 +229,9 @@ function MenuSidebar() {
             className=""
             animate={{ rotate: sidebarOpen ? 0 : 180 }}
           >
-            <ChevronLeftIcon className='h-10 w-10 text-[#747474] hover:text-white  cursor-pointer' />
+            <ChevronLeftIcon className='h-8 w-8 text-[#747474] hover:text-white  cursor-pointer' />
           </motion.div>
-        </motion.div>
+        </motion.div> */}
 
 
         <motion.div
@@ -238,7 +242,7 @@ function MenuSidebar() {
             className='w-[90px]'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
-              <CreditCardIcon className='h-8 w-8 text-[#747474] group-hover:text-white' />
+              <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
             </div>
 
           </motion.div>

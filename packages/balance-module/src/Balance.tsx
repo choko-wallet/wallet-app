@@ -3,7 +3,7 @@
 
 import type { BalanceInfo } from '@choko-wallet/app-utils';
 
-import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
+import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon, ArrowUpIcon } from '@heroicons/react/outline';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, Switch } from '@choko-wallet/app-common';
@@ -71,12 +71,16 @@ function Balance({ balance }: Props): JSX.Element {
   };
 
   return (
-    <div className='relative flex flex-col bg-transparent border border-1 border-gray-300 shadow dark:bg-[#2A2E37] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'>
-      <div className='absolute top-0 bottom-0 left-0 right-0 bg-[#DADADA] opacity-40 z-10'></div>
-      <div className='bg-white w-full h-[100px] sm:w-[360px] dark:bg-[#353B4D] rounded-[4px] p-2 md:px-6 lg:px-10 z-10'>
-        <p className='text-xl my-1 text-black dark:text-white font-poppins font-semibold'>
+    <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'>
+      {/* <div className='absolute top-0 bottom-0 left-0 right-0 bg-[#DADADA] opacity-40 z-10'></div> */}
+      <div className='w-full h-[100px] sm:w-[360px] z-10 relative'>
+        <p className='text-xl my-1 text-black dark:text-white font-inter font-semibold'>
           ${balanceTotal} USD </p>
-        <p className='text-xs text-black dark:text-white cursor-pointer font-poppins'>Your total balance on {knownNetworks[currentNetwork].text} </p>
+        <p className='text-xs text-black dark:text-white cursor-pointer font-inter'>Your total balance on {knownNetworks[currentNetwork].text} </p>
+        <div className='absolute top-2 left-[120px] text-[10px] rounded-full py-[2px] px-[5px] border border-[#2EBE7B] font-roboto text-[#2EBE7B] flex items-center justify-center'>
+          <p className='ml-1'>+1,2%</p>
+          <ArrowUpIcon className='rotate-45 w-3 h-3' />
+        </div>
       </div>
 
       <div className='flex items-center justify-evenly mt-6 md:mt-10 lg:mt-12 lg:px-12 z-20'>
@@ -154,7 +158,7 @@ function Balance({ balance }: Props): JSX.Element {
           <p className={`hidden md:inline-flex text-xs ${showDust ? 'text-black dark:text-white' : 'text-gray-400'}`}>Hide smaller assets</p>
         </div>
 
-        <p className='hidden sm:inline-flex text-black dark:text-gray-400 text-right  xl:w-64'>Total Balance</p>
+        <p className='hidden sm:inline-flex text-black dark:text-gray-400 justify-end xl:w-64 '>Total Balance</p>
       </div>
 
       <div className='flex flex-col scrollbar-thin min-h-[400px] h-full overflow-y-scroll z-20'>
