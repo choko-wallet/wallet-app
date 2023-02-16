@@ -24,6 +24,11 @@ import Loading from '../../components/Loading';
 import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
 import Navbar from '@choko-wallet/app/components/Navbar';
 
+import { initialTabs as tabs } from "../../utils/tabs";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpIcon } from '@heroicons/react/outline';
+import Profile from '@choko-wallet/app/components/Profile';
+
 /**
  * Main dashboard
  */
@@ -42,6 +47,7 @@ export default function Home(): JSX.Element {
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [balanceInfo, setBalanceInfo] = useState<BalanceInfo>({});
+  const [selectedTab, setSelectedTab] = useState(tabs[1]);
 
   /**
    * We are loading three things here:
@@ -147,6 +153,7 @@ export default function Home(): JSX.Element {
   if (loadingText) return <Loading />;
 
   console.log(knownNetworks, userAccount);
+  console.log('balance-home', balanceInfo)
 
   return (
     <div className={theme}>
@@ -156,25 +163,67 @@ export default function Home(): JSX.Element {
         {/* <Header /> */}
         {/* <NetworkSidebarMobile /> */}
         <MenuSidebar />
-        <Navbar />
 
-        < main className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto' >
-          <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
-            <NetworkSidebar />
-            {/* <Balance balance={balanceInfo} /> */}
-            <Balance balance={balanceInfo} />
-          </div>
 
-          <SendTokenModal balanceInfo={balanceInfo} />
+        <div className='w-full h-full '>
+          <nav className='bg-[#1A1A1A] flex items-center mt-[60px] space-x-3 w-[800px] h-[66px] mx-auto justify-evenly rounded-full'>
+            <ul className='flex justify-evenly w-full '>
+              {tabs.map((item: any) => (
+                <li
+                  key={item.label}
+                  className={item === selectedTab ? " font-inter text-[15px] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 "
+                    :
+                    "text-white font-inter text-[15px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 "}
+                  onClick={() => setSelectedTab(item)}
+                >
+                  {`${item.label}`}
 
-          <ReceiveTokenModal />
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          <AddNetworkModal />
+          <main className='w-full h-full'>
+            <AnimatePresence exitBeforeEnter>
+              <motion.div
+                key={selectedTab ? selectedTab.label : "empty"}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -20, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {selectedTab.label === 'Wallet' ?
+                  <div className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto' >
+                    <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
+                      <NetworkSidebar />
+                      {/* <Balance balance={balanceInfo} /> */}
+                      <Balance balance={balanceInfo} />
+                    </div>
 
-          <AddTokenModal />
+                    <SendTokenModal balanceInfo={balanceInfo} />
 
-          <ExportAccountModal />
-        </main >
+                    <ReceiveTokenModal />
+
+                    <AddNetworkModal />
+
+                    <AddTokenModal />
+
+                    <ExportAccountModal />
+                  </div >
+                  : selectedTab.label === 'Profile' ?
+                    <Profile balance={balanceInfo} />
+                    : null
+                }
+
+              </motion.div>
+            </AnimatePresence>
+          </main>
+        </div>
+
+
+
+        {/* <Navbar /> */}
+
 
 
         <Footer />

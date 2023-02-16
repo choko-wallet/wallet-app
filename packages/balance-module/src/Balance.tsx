@@ -31,6 +31,7 @@ function Balance({ balance }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false);
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
+  console.log('balance-balance', balance)
 
   useEffect(() => {
     // Token search handler
