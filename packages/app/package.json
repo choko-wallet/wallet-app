@@ -48,6 +48,7 @@
     "react-spinners": "^0.13.4",
     "react-transition-group": "^4.4.5",
     "react-typed": "^1.2.0",
+    "recharts": "^2.4.3",
     "superagent": "^8.0.0",
     "tailwind-scrollbar": "^2.0.1",
     "tweetnacl": "^1.0.3"
