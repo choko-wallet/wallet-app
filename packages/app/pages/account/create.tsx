@@ -4,6 +4,7 @@
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, DuplicateIcon, RefreshIcon, XIcon } from '@heroicons/react/outline';
 import { cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
 import ProgressBar from '@ramonak/react-progress-bar';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import Loading from 'packages/app/components/Loading';
 import React, { useEffect, useState } from 'react';
@@ -12,18 +13,16 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch } from 'react-redux';
 
 import { addUserAccount } from '@choko-wallet/app-redux';
-import { AnimatePresence, motion } from 'framer-motion';
 
 /**
  * Guide user to create an account with seed phrase
  */
-function CreateWallet(): JSX.Element {
+function CreateWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
   const [check1, setCheck1] = useState<boolean>(false);
   const [check2, setCheck2] = useState<boolean>(false);
-
 
   const [step, setStep] = useState<number>(1);
   const [seeds, setSeeds] = useState<string>('');
@@ -96,22 +95,21 @@ function CreateWallet(): JSX.Element {
 
         <div className='flex md:hidden items-center justify-center space-x-3  mt-5'>
           <motion.div
-            transition={{ layout: { duration: 0.5, type: 'tween' } }}
+            className='h-2 '
             layout
-            className='h-2 '>
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}>
 
-            {step === 1 ?
-              <motion.div
-                initial={{ opacity: 0 }}
+            {step === 1
+              ? <motion.div
                 animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <div className='w-[82px] h-[4px] bg-[#0170BF] rounded-full '></div>
               </motion.div>
-              :
-              <motion.div
-                initial={{ opacity: 0 }}
+              : <motion.div
                 animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <div className='w-[23px] h-[4px] bg-[#0170BF] rounded-full'></div>
@@ -120,30 +118,29 @@ function CreateWallet(): JSX.Element {
           </ motion.div>
 
           <motion.div
-            transition={{ layout: { duration: 0.5, type: 'tween' } }}
+            className='h-2 '
             layout
-            className='h-2 '>
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}>
 
-            {step === 2 ?
-              <motion.div
-                initial={{ opacity: 0 }}
+            {step === 2
+              ? <motion.div
                 animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <div className='w-[82px] h-[4px] bg-[#0170BF] rounded-full '></div>
               </motion.div>
-              : step === 3 ?
-                <motion.div
-                  initial={{ opacity: 0 }}
+              : step === 3
+                ? <motion.div
                   animate={{ opacity: 1 }}
+                  initial={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className='w-[23px] h-[4px] bg-[#0170BF] rounded-full'></div>
                 </motion.div>
-                :
-                <motion.div
-                  initial={{ opacity: 0 }}
+                : <motion.div
                   animate={{ opacity: 1 }}
+                  initial={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className='w-[23px] h-[4px] bg-[#B6B7BC] rounded-full'></div>
@@ -151,24 +148,22 @@ function CreateWallet(): JSX.Element {
             }
           </ motion.div>
 
-
           <motion.div
-            transition={{ layout: { duration: 0.5, type: 'tween' } }}
+            className='h-2 '
             layout
-            className='h-2 '>
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}>
 
-            {step === 3 ?
-              <motion.div
-                initial={{ opacity: 0 }}
+            {step === 3
+              ? <motion.div
                 animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <div className='w-[82px] h-[4px] bg-[#0170BF] rounded-full '></div>
               </motion.div>
-              :
-              <motion.div
-                initial={{ opacity: 0 }}
+              : <motion.div
                 animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <div className='w-[23px] h-[4px] bg-[#B6B7BC] rounded-full'></div>
@@ -179,11 +174,13 @@ function CreateWallet(): JSX.Element {
 
         <div className='hidden md:flex w-full space-x-1'>
           <label
-            className="checkContainer2 font-poppins">
-            <input type="checkbox" checked={step === 2 || step === 3}
+            className='checkContainer2 font-poppins'>
+            <input
+              checked={step === 2 || step === 3}
+              type='checkbox'
             // onClick={() => setCheck1(!check1)}
             />
-            <span className="checkmark2"></span>
+            <span className='checkmark2'></span>
           </label>
 
           <ProgressBar
@@ -195,18 +192,19 @@ function CreateWallet(): JSX.Element {
               : step === 2
                 ? 100
                 : 100}
+            customLabel=' '
             height='3px'
-            customLabel=" "
           />
 
           <label
-            className="checkContainer2 font-poppins">
-            <input type="checkbox" checked={step === 3}
+            className='checkContainer2 font-poppins'>
+            <input
+              checked={step === 3}
+              type='checkbox'
             // onClick={() => setCheck1(!check1)}
             />
-            <span className="checkmark2"></span>
+            <span className='checkmark2'></span>
           </label>
-
 
           <ProgressBar
             baseBgColor='#AFAFAF'
@@ -215,16 +213,18 @@ function CreateWallet(): JSX.Element {
             completed={step === 2
               ? 0
               : step === 3 ? (password && repeatPassword && password === repeatPassword) ? 100 : 0 : 0}
+            customLabel=' '
             height='3px'
-            customLabel=" "
           />
 
           <label
-            className="checkContainer2 font-poppins">
-            <input type="checkbox" checked={step === 3 && (password && repeatPassword && password === repeatPassword)}
+            className='checkContainer2 font-poppins'>
+            <input
+              checked={step === 3 && (password && repeatPassword && password === repeatPassword)}
+              type='checkbox'
             // onClick={() => setCheck1(!check1)}
             />
-            <span className="checkmark2"></span>
+            <span className='checkmark2'></span>
           </label>
 
         </div>
@@ -237,12 +237,12 @@ function CreateWallet(): JSX.Element {
 
         <AnimatePresence exitBeforeEnter>
           <motion.div
-            key={step}
-            initial={{ x: 30, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -30, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            animate={{ opacity: 1, x: 0 }}
             className='mb-5'
+            exit={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: 30 }}
+            key={step}
+            transition={{ duration: 0.3 }}
           >
             {step === 1 &&
               <div className='w-full max-w-2xl  ' >
@@ -263,7 +263,7 @@ function CreateWallet(): JSX.Element {
                   <div className='flex items-center justify-between max-w-[276px] relative mt-3'>
                     <button className='flex items-center w-[120px] h-[33px] ml-1  my-[16px] justify-center group  font-bold  transition duration-150
                 bg-[#FDF7DE] rounded-md hover:shadow-sm active:scale-95 '
-                      onClick={refreshMnemonic}>
+                    onClick={refreshMnemonic}>
                       <RefreshIcon className='text-[#0170BF] h-5 m-3 duration-300 group-hover:rotate-180 transtion east-out' />
                       <p className='text-[#0170BF] text-sm font-poppins'>REFRESH</p>
                     </button>
@@ -277,13 +277,12 @@ function CreateWallet(): JSX.Element {
                       </button>
                     </CopyToClipboard>
 
-                    {copied ?
-                      <p className='text-[#99D8FF] font-poppins h-6 absolute top-[55px] left-[200px]'>COPIED!</p> :
-                      <p className='text-[#99D8FF] font-poppins h-6 absolute top-[55px] left-[200px]'></p>
+                    {copied
+                      ? <p className='text-[#99D8FF] font-poppins h-6 absolute top-[55px] left-[200px]'>COPIED!</p>
+                      : <p className='text-[#99D8FF] font-poppins h-6 absolute top-[55px] left-[200px]'></p>
                     }
 
                   </div>
-
 
                 </div>
 
@@ -331,21 +330,22 @@ function CreateWallet(): JSX.Element {
                   <div className='absolute bottom-8 left-5 md:left-10 text-[#C67391] flex flex-col  justify-center items-start '>
 
                     <label
-                      className="checkContainer font-poppins pt-[2px]">Keep my seed phrase safe
-                      <input type="checkbox" checked={check1}
+                      className='checkContainer font-poppins pt-[2px]'>Keep my seed phrase safe
+                      <input checked={check1}
                         onClick={() => setCheck1(!check1)}
+                        type='checkbox'
                       />
-                      <span className="checkmark"></span>
+                      <span className='checkmark'></span>
                     </label>
 
                     <label
-                      className="checkContainer font-poppins pt-[2px]">If I lose my seed, I will lose my fund
-                      <input type="checkbox" checked={check2}
+                      className='checkContainer font-poppins pt-[2px]'>If I lose my seed, I will lose my fund
+                      <input checked={check2}
                         onClick={() => setCheck2(!check2)}
+                        type='checkbox'
                       />
-                      <span className="checkmark"></span>
+                      <span className='checkmark'></span>
                     </label>
-
 
                   </div>
                 </div>
@@ -414,8 +414,8 @@ function CreateWallet(): JSX.Element {
 
                   <button className={`p-2 bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${(password && repeatPassword && password === repeatPassword) ? '' : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'}`}
-                    disabled={(!password || !repeatPassword || password !== repeatPassword)}
-                    onClick={() => handleSetPassword()}
+                  disabled={(!password || !repeatPassword || password !== repeatPassword)}
+                  onClick={() => handleSetPassword()}
                   >
 
                     <CheckIcon className='h-6 text-white duration-300 hover:scale-125 transtion east-out' />
@@ -424,10 +424,8 @@ function CreateWallet(): JSX.Element {
               </div>
             }
 
-
           </motion.div>
         </AnimatePresence>
-
 
       </div>
     </main>

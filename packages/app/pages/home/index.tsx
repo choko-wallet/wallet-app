@@ -2,38 +2,35 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { BalanceInfo } from '@choko-wallet/app-utils';
-import { useTheme } from 'next-themes';
+
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
 import AddNetworkModal from 'packages/app/components/modal/AddNetworkModal';
 import AddTokenModal from 'packages/app/components/modal/AddTokenModal';
 import ExportAccountModal from 'packages/app/components/modal/ExportAccountModal';
 import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
 import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
-import { Header } from '@choko-wallet/app-header';
-import { NetworkSidebar, NetworkSidebarMobile } from '@choko-wallet/app-network-sidebar';
+import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
+import Profile from '@choko-wallet/app/components/Profile';
+// import { Header } from '@choko-wallet/app-header';
+import { NetworkSidebar } from '@choko-wallet/app-network-sidebar';
 import { endLoading, loadAllNetworks, loadUserAccount, noteAAWalletAddress, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount, startLoading, useAppThunkDispatch } from '@choko-wallet/app-redux';
 import { encodeAddr, ethFetchBalance, fetchAAWalletAddress, polkadotFetchBalance, toastFail } from '@choko-wallet/app-utils';
 import { Balance } from '@choko-wallet/balance-module';
 
 import Footer from '../../components/Footer';
 import Loading from '../../components/Loading';
-import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
-import Navbar from '@choko-wallet/app/components/Navbar';
-
-import { initialTabs as tabs } from "../../utils/tabs";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpIcon } from '@heroicons/react/outline';
-import Profile from '@choko-wallet/app/components/Profile';
+import { initialTabs as tabs } from '../../utils/tabs';
 
 /**
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();
@@ -60,7 +57,6 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     dispatch(loadAllNetworks());
   }, [dispatch]);
-
 
   // 2. init user account
   useEffect(() => {
@@ -143,8 +139,7 @@ export default function Home(): JSX.Element {
     setMounted(true);
   }, [knownNetworks, currentUserAccount, currentNetwork, dispatch, userAccount]);
 
-
-  useEffect(() => {// figma只有黑色版本 先默认设置黑色 
+  useEffect(() => { // figma只有黑色版本 先默认设置黑色
     setTheme('dark');
   }, [setTheme]);
 
@@ -153,7 +148,7 @@ export default function Home(): JSX.Element {
   if (loadingText) return <Loading />;
 
   console.log(knownNetworks, userAccount);
-  console.log('balance-home', balanceInfo)
+  console.log('balance-home', balanceInfo);
 
   return (
     <div className={theme}>
@@ -164,16 +159,15 @@ export default function Home(): JSX.Element {
         {/* <NetworkSidebarMobile /> */}
         <MenuSidebar />
 
-
         <div className='w-full h-full '>
           <nav className='bg-[#1A1A1A] flex items-center mt-[60px] space-x-3 w-[800px] h-[66px] mx-auto justify-evenly rounded-full'>
             <ul className='flex justify-evenly w-full '>
-              {tabs.map((item: any) => (
+              {tabs.map((item) => (
                 <li
+                  className={item === selectedTab
+                    ? ' font-inter text-[15px] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 '
+                    : 'text-white font-inter text-[15px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 '}
                   key={item.label}
-                  className={item === selectedTab ? " font-inter text-[15px] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 "
-                    :
-                    "text-white font-inter text-[15px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 "}
                   onClick={() => setSelectedTab(item)}
                 >
                   {`${item.label}`}
@@ -186,14 +180,14 @@ export default function Home(): JSX.Element {
           <main className='w-full h-full'>
             <AnimatePresence exitBeforeEnter>
               <motion.div
-                key={selectedTab ? selectedTab.label : "empty"}
-                initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -20, opacity: 0 }}
+                initial={{ y: 20, opacity: 0 }}
+                key={selectedTab ? selectedTab.label : 'empty'}
                 transition={{ duration: 0.3 }}
               >
-                {selectedTab.label === 'Wallet' ?
-                  <div className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto' >
+                {selectedTab.label === 'Wallet'
+                  ? <div className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto' >
                     <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
                       <NetworkSidebar />
                       {/* <Balance balance={balanceInfo} /> */}
@@ -210,8 +204,8 @@ export default function Home(): JSX.Element {
 
                     <ExportAccountModal />
                   </div >
-                  : selectedTab.label === 'Profile' ?
-                    <Profile balance={balanceInfo} />
+                  : selectedTab.label === 'Profile'
+                    ? <Profile balance={balanceInfo} />
                     : null
                 }
 
@@ -220,11 +214,7 @@ export default function Home(): JSX.Element {
           </main>
         </div>
 
-
-
         {/* <Navbar /> */}
-
-
 
         <Footer />
 

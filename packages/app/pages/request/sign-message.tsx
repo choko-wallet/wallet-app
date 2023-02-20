@@ -7,7 +7,7 @@ import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import Modal from 'packages/app/components/Modal';
 import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,7 +16,7 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 // sign message
 import { SignMessageDescriptor, SignMessageRequest } from '@choko-wallet/request-handler/signMessage';
 
-function SignMessageHandler(): JSX.Element {
+function SignMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -60,7 +60,7 @@ function SignMessageHandler(): JSX.Element {
     }
   }, [request, dispatch, userAccount]);
 
-  function unlock() {
+  function unlock () {
     if (!request) return;
 
     try {

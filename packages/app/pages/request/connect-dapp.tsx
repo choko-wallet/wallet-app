@@ -7,7 +7,7 @@ import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import Modal from 'packages/app/components/Modal';
 import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -21,7 +21,7 @@ import { ConnectDappDescriptor, ConnectDappRequest } from '@choko-wallet/request
 /**
  * Handler for ConnectDappRequest
  */
-function ConnectDappHandler(): JSX.Element {
+function ConnectDappHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -86,7 +86,7 @@ function ConnectDappHandler(): JSX.Element {
     }
   }, [currentUserAccount, dispatch, request, callback]);
 
-  function unlock() {
+  function unlock () {
     if (request) {
       try {
         dispatch(switchUserAccount(selectedUserAccount));

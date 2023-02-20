@@ -1,10 +1,11 @@
-import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react'
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
 
-import Map, { Popup } from 'react-map-gl';
+// import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import Map from 'react-map-gl';
 
-function Mapbox() {
-
+function Mapbox (): JSX.Element {
   const [showMap, setShowMap] = useState<boolean>(false);
 
   const handleShowMap = () => {
@@ -15,10 +16,8 @@ function Mapbox() {
   };
 
   useEffect(() => {
-
     handleShowMap();
-  }, [])
-
+  }, []);
 
   return (
 
@@ -32,29 +31,25 @@ function Mapbox() {
     //   animate={{ opacity: 1 }}
     // >
     <div>
-      {showMap ?
-        <Map
+      {showMap
+        ? <Map
           initialViewState={{
-            longitude: -122.4,
             latitude: 37.8,
+            longitude: -122.4,
             zoom: 14
           }}
-          style={{ width: 400, height: 600 }}
-          // mapStyle="mapbox://styles/mapbox/streets-v9"
-          mapStyle="mapbox://styles/heliummixoptimal/cle7vwv5m000a01o2dsuxfhyv"
-
-
-          mapboxAccessToken="pk.eyJ1IjoiaGVsaXVtbWl4b3B0aW1hbCIsImEiOiJja3hkY2RoeHgxNHh6Mnd0aG5sYTVndHRrIn0.S9yi-kP-tpVj5XtJ3HAn3g"
+          mapStyle='mapbox://styles/heliummixoptimal/cle7vwv5m000a01o2dsuxfhyv'
+          mapboxAccessToken='pk.eyJ1IjoiaGVsaXVtbWl4b3B0aW1hbCIsImEiOiJja3hkY2RoeHgxNHh6Mnd0aG5sYTVndHRrIn0.S9yi-kP-tpVj5XtJ3HAn3g'
+          style={{ height: 600, width: 400 }}
+        // mapStyle="mapbox://styles/mapbox/streets-v9"
         >
-
           {/* <Popup longitude={-122.4} latitude={37.8}
           // anchor="bottom"
           >
             You are here
           </Popup> */}
         </Map>
-        :
-        <div className='w-[400px] h-[600px] bg-transparent'></div>
+        : <div className='w-[400px] h-[600px] bg-transparent'></div>
 
       }
 
@@ -72,7 +67,7 @@ function Mapbox() {
     // </motion.div> */}
 
     </div>
-  )
+  );
 }
 
-export default Mapbox
+export default Mapbox;

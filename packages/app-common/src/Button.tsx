@@ -9,7 +9,7 @@ interface Props {
   rotate?: boolean;
 }
 
-function Button({ Icon, rotate, title }: Props): JSX.Element {
+function Button ({ Icon, rotate, title }: Props): JSX.Element {
   return (
     <div className='flex flex-col justify-center items-center w-[50px] h-[50px] sm:w-[120px] sm:h-[60px] lg:w-[130px] lg:h-[66px] bg-[#F5F5F5] dark:bg-[#384855] hover:bg-[#0170BF] dark:hover:bg-[#0170BF] rounded-2xl   cursor-pointer space-y-1 group'>
       <Icon className={`h-6 w-6 text-[#B6B7BC] group-hover:text-[#F5CBD5]  ${rotate ? 'rotate-45 ml-1' : 'rotate-0'} `} />

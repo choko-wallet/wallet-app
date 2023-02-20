@@ -3,7 +3,7 @@
 
 import type { BalanceInfo } from '@choko-wallet/app-utils';
 
-import { DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon, ArrowUpIcon } from '@heroicons/react/outline';
+import { ArrowUpIcon, DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, Switch } from '@choko-wallet/app-common';
@@ -19,7 +19,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance({ balance }: Props): JSX.Element {
+function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
   const ref = useRef(null);
 
@@ -31,7 +31,8 @@ function Balance({ balance }: Props): JSX.Element {
   const [searchInput, setSearchInput] = useState<string>('');
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false);
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
-  console.log('balance-balance', balance)
+
+  console.log('balance-balance', balance);
 
   useEffect(() => {
     // Token search handler

@@ -1,18 +1,19 @@
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
 
-import { SearchIcon, ChevronLeftIcon, CreditCardIcon } from '@heroicons/react/outline';
-import React, { Fragment, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { CreditCardIcon } from '@heroicons/react/outline';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import logo from '../images/logo.png';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import icon1 from '../images/icon1.png';
 import icon2 from '../images/icon2.png';
+import logo from '../images/logo.png';
 
-import { motion, AnimatePresence, useAnimation } from 'framer-motion';
-
-
-function MenuSidebar() {
+function MenuSidebar (): JSX.Element {
   const router = useRouter();
-  const controlsForOpen = useAnimation();
+  // const controlsForOpen = useAnimation();
   // const controlsforicon1 = useAnimation();
   // const controlsforicon2 = useAnimation();
 
@@ -22,30 +23,30 @@ function MenuSidebar() {
     <>
 
       <motion.div
-        transition={{ layout: { duration: 0.6, type: 'tween' } }}
+        className='absolute top-0 left-0 bottom-0 bg-[#1A1A1A] z-50 '
         layout
         // onClick={() => setSidebarOpen(!sidebarOpen)}
         // onMouseOver={() => controlsForOpen.start({ opacity: 100 })}
         // onMouseOut={() => !sidebarOpen && controlsForOpen.start({ opacity: 0 })}
 
-        onMouseOver={() => setSidebarOpen(true)}
         onMouseOut={() => setSidebarOpen(false)}
+        onMouseOver={() => setSidebarOpen(true)}
 
-        className='absolute top-0 left-0 bottom-0 bg-[#1A1A1A] z-50 '>
+        transition={{ layout: { duration: 0.6, type: 'tween' } }}>
 
         {/* logo */}
         <motion.div
           className='flex items-center justify-center group mt-[40px] mb-[70px]'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <div className='w-[38px] h-[38px] mx-auto relative '>
               <Image
-                onClick={() => router.push('/')}
                 layout='fill'
                 objectFit='contain'
+                onClick={() => router.push('/')}
                 src={logo.src}
               />
             </div>
@@ -53,10 +54,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
 
               <p className='w-full h-full text-white font-roboto text-[20px]'>CHOKO</p>
@@ -70,26 +71,26 @@ function MenuSidebar() {
           className='flex items-center justify-center group relative mb-6 cursor-pointer'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <motion.div
-              layout='position'
-              className='w-[32px] h-[32px] mx-auto relative group-hover:hidden'>
+              className='w-[32px] h-[32px] mx-auto relative group-hover:hidden'
+              layout='position'>
               <Image
-                onClick={() => router.push('/home')}
                 layout='fill'
                 objectFit='contain'
+                onClick={() => router.push('/home')}
                 src={icon1.src}
               />
             </motion.div>
             <motion.div
-              layout='position'
-              className='w-[32px] h-[32px] mx-auto relative hidden group-hover:flex'>
+              className='w-[32px] h-[32px] mx-auto relative hidden group-hover:flex'
+              layout='position'>
               <Image
-                onClick={() => router.push('/home')}
                 layout='fill'
                 objectFit='contain'
+                onClick={() => router.push('/home')}
                 src={icon2.src}
               />
             </motion.div>
@@ -97,10 +98,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
               <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Dashboard</p>
 
@@ -113,8 +114,8 @@ function MenuSidebar() {
           className='flex items-center justify-center group mb-6 cursor-pointer'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
               <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
@@ -124,10 +125,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
               <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p>
 
@@ -140,8 +141,8 @@ function MenuSidebar() {
           className='flex items-center justify-center group mb-6 cursor-pointer'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
               <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
@@ -151,10 +152,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
               <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p>
 
@@ -167,8 +168,8 @@ function MenuSidebar() {
           className='flex items-center justify-center group mb-6 cursor-pointer'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
               <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
@@ -178,10 +179,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
               <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p>
 
@@ -194,8 +195,8 @@ function MenuSidebar() {
           className='flex items-center justify-center group mb-6 cursor-pointer'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
               <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
@@ -205,10 +206,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
               <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p>
 
@@ -216,7 +217,6 @@ function MenuSidebar() {
           )}
 
         </motion.div>
-
 
         {/* 箭头拉伸 */}
         {/* <motion.div
@@ -233,13 +233,12 @@ function MenuSidebar() {
           </motion.div>
         </motion.div> */}
 
-
         <motion.div
           className='flex items-center justify-center group mb-6 cursor-pointer absolute bottom-5'
         >
           <motion.div
-            layout='position'
             className='w-[90px]'
+            layout='position'
           >
             <div className='w-[32px] h-[32px] mx-auto relative '>
               <CreditCardIcon className='h-7 w-7 text-[#747474] group-hover:text-white' />
@@ -249,10 +248,10 @@ function MenuSidebar() {
 
           {sidebarOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               className='w-[170px]'
+              initial={{ opacity: 0 }}
+              transition={{ duration: 1 }}
             >
               <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p>
 
@@ -263,11 +262,8 @@ function MenuSidebar() {
 
       </ motion.div>
 
-
-
-
     </>
-  )
+  );
 }
 
-export default MenuSidebar
+export default MenuSidebar;

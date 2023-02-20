@@ -5,7 +5,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-function AccountRouter(): JSX.Element {
+function AccountRouter (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -33,7 +33,7 @@ function AccountRouter(): JSX.Element {
 
           <button className='w-56 h-[58px] font-bold text-[#F5CBD5] transition duration-150
                 bg-[#0170BF] rounded-md hover:shadow-sm active:scale-95 '
-            onClick={() => router.push('account/create')}>
+          onClick={() => router.push('account/create')}>
             <p>Create New </p>
             <p>Mnemonic Seed</p>
 

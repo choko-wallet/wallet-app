@@ -9,20 +9,19 @@ import { BigNumber, ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import Modal from 'packages/app/components/Modal';
 import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, selectCurrentUserAccount, selectUserAccount, setClose, setOpen, switchUserAccount } from '@choko-wallet/app-redux';
-
-import { encodeAddr, fetchAAWalletAddress, getAlchemy, toastFail } from '@choko-wallet/app-utils';
+import { encodeAddr, fetchAAWalletAddress, getAlchemy } from '@choko-wallet/app-utils';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';
 
-function SignTxHandler(): JSX.Element {
+function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -47,10 +46,9 @@ function SignTxHandler(): JSX.Element {
     const payload = router.query.payload as string;
     const callbackUrl = router.query.callbackUrl as string;
 
-    try {// 非法参数 删除或篡改参数访问 解密报错 用try catch 控制台报错
+    try { // 非法参数 删除或篡改参数访问 解密报错 用try catch 控制台报错
       const u8aRequest = decompressParameters(hexToU8a(payload));
       const request = SignTxRequest.deserialize(u8aRequest);
-
 
       if (!localStorage.getItem('serialziedUserAccount')) {
         localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
@@ -59,12 +57,10 @@ function SignTxHandler(): JSX.Element {
         setCallback(callbackUrl);
         setRequest(request);
       }
-
     } catch (e) {
       console.log('decodeSend-err', e);
       setDecodingTx(false);
     }
-
   }, [router.isReady, router.query, dispatch, router]);
 
   // 2. load accounts and switch account is not matching origin
@@ -149,7 +145,7 @@ function SignTxHandler(): JSX.Element {
     })();
   }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
-  function unlock() {
+  function unlock () {
     if (!request) return;
 
     try {
@@ -172,7 +168,7 @@ function SignTxHandler(): JSX.Element {
             dispatch(lockCurrentUserAccount());
             window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
             // setSendingTx(false);// 已经redirect了 发送成功最好给提示 在home？
-            // 点击x 关闭交易 跳转到loading 感觉应该跳转到home 
+            // 点击x 关闭交易 跳转到loading 感觉应该跳转到home
 
             // } catch (e) {
             //   setSendingTx(false);

@@ -4,6 +4,8 @@
 import path from 'path';
 /** @type {import('next').NextConfig} */
 
+/* eslint-disable */
+// @ts-ignore
 export default {
   distDir: 'build',
   eslint: {
@@ -34,3 +36,4 @@ export default {
   }
 
 };
+/* eslint-enable */

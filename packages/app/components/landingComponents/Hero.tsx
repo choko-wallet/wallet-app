@@ -1,18 +1,18 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import Typed from 'react-typed';
+
+import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 
 import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
-
-import BackgroundCircle from './BackgroundCircle';
+// import BackgroundCircle from './BackgroundCircle';
 
 const Hero = (): JSX.Element => {
   const router = useRouter();
@@ -21,13 +21,14 @@ const Hero = (): JSX.Element => {
   // useEffect(() => { vidRef.current.play(); }, []);
 
   return (
-    <section className='snap-center relative' id='hero'>
+    <section className='snap-center relative'
+      id='hero'>
       <div className='relative h-screen w-full'>
         <Image
           className=''
+          layout='fill'
+          objectFit='cover'
           src={bg}
-          layout="fill"
-          objectFit="cover"
         />
       </div>
 
@@ -84,18 +85,16 @@ const Hero = (): JSX.Element => {
             </p>
           </motion.div>
 
-
-
           <motion.div
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: 0
+            }}
             className='flex items-center cursor-pointer'
             initial={{
               opacity: 0,
               scale: 0.2,
-              x: 0
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
               x: 0
             }}
             transition={{
@@ -113,7 +112,6 @@ const Hero = (): JSX.Element => {
             </div>
           </motion.div>
 
-
           {/* <div className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'> */}
           <motion.div
             className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'
@@ -130,19 +128,16 @@ const Hero = (): JSX.Element => {
 
         </motion.div>
 
-
-
-
         <motion.div
+          animate={{
+            opacity: 1,
+            scale: 1,
+            x: 0
+          }}
           className='flex items-center cursor-pointer'
           initial={{
             opacity: 0,
             scale: 0.2,
-            x: 0
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
             x: 0
           }}
           transition={{
@@ -160,16 +155,7 @@ const Hero = (): JSX.Element => {
           </div>
         </motion.div>
 
-
-
-
       </div>
-
-
-
-
-
-
 
       <div className='absolute bottom-3 left-0 right-0 h-10 flex items-center justify-center z-50'>
         <a className=''

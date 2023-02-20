@@ -1,55 +1,55 @@
-import { motion } from 'framer-motion';
-import React, { PureComponent, useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
 
+import React, { useEffect, useState } from 'react';
+import { Line, LineChart, ResponsiveContainer } from 'recharts';
 
 const data = [
   {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
     amt: 2400,
+    name: 'Page A',
+    pv: 2400,
+    uv: 4000
   },
   {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
     amt: 2210,
+    name: 'Page B',
+    pv: 1398,
+    uv: 3000
   },
   {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
     amt: 2290,
+    name: 'Page C',
+    pv: 9800,
+    uv: 2000
   },
   {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
     amt: 2000,
+    name: 'Page D',
+    pv: 3908,
+    uv: 2780
   },
   {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
     amt: 2181,
+    name: 'Page E',
+    pv: 4800,
+    uv: 1890
   },
   {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
     amt: 2500,
+    name: 'Page F',
+    pv: 3800,
+    uv: 2390
   },
   {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
     amt: 2100,
-  },
+    name: 'Page G',
+    pv: 4300,
+    uv: 3490
+  }
 ];
 
-function Chart() {
-
+function Chart (): JSX.Element {
   const [showChart, setShowChart] = useState<boolean>(false);
 
   const handleShowChart = () => {
@@ -61,27 +61,33 @@ function Chart() {
 
   useEffect(() => {
     handleShowChart();
-  }, [])
+  }, []);
 
   console.log('showChart', showChart);
 
   return (
     <div>
-      {showChart ?
+      {showChart
 
-        <div className='bg-[#121212] w-[560px] h-[260px] rounded-lg'>
-          <ResponsiveContainer width="100%" height="100%" debounce={1000}>
-            <LineChart width={300} height={100} data={data}>
-              <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
+        ? <div className='bg-[#121212] w-[560px] h-[260px] rounded-lg'>
+          <ResponsiveContainer debounce={1000}
+            height='100%'
+            width='100%'>
+            <LineChart data={data}
+              height={100}
+              width={300}>
+              <Line dataKey='pv'
+                stroke='#8884d8'
+                strokeWidth={2}
+                type='monotone' />
             </LineChart>
           </ResponsiveContainer>
         </div>
-        :
-        <div className='w-[560px] h-[260px] bg-[#121212] rounded-lg'></div>
+        : <div className='w-[560px] h-[260px] bg-[#121212] rounded-lg'></div>
 
       }
     </div>
-  )
+  );
 }
 
-export default Chart
+export default Chart;

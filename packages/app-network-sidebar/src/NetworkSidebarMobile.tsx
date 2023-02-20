@@ -13,7 +13,7 @@ import NetworkSelection from './NetworkSelectionList';
  * wrapper of the NetworkSelection list for mobile devices
  */
 
-export default function NetworkSidebarMobile(): JSX.Element {
+export default function NetworkSidebarMobile (): JSX.Element {
   const nodeRef = React.useRef(null);
   const dispatch = useDispatch();
   const status = useSelector(selectStatus);

@@ -1,18 +1,14 @@
 // Copyright 2021-2022 @choko-wallet/app-header authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {
-  BellIcon, CogIcon, MoonIcon, SunIcon,
-  // MenuIcon,
-} from '@heroicons/react/outline';
-import {
-  MenuAlt4Icon
-} from '@heroicons/react/solid';
+import { BellIcon, CogIcon, MoonIcon, SunIcon } from '@heroicons/react/outline';
+import { MenuAlt4Icon } from '@heroicons/react/solid';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from "framer-motion";
+
 import { removeAllAccounts, toggle, useDispatch } from '@choko-wallet/app-redux';
 
 import icon1 from '../img/icon1.png';
@@ -20,9 +16,9 @@ import logo from '../img/logo.png';
 import logo2 from '../img/logo2.png';
 import logout from '../img/logout.png';
 import logout2 from '../img/logout2.png';
-import AccountInHeader from './AccountInHeader';
+// import AccountInHeader from './AccountInHeader';
 
-function Header(): JSX.Element {
+function Header (): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -38,7 +34,7 @@ function Header(): JSX.Element {
     setTheme('light');
   }
 
-  if (!mounted) {// 其他组件可以不需要setMounted 和 没有mouted retur nnull
+  if (!mounted) { // 其他组件可以不需要setMounted 和 没有mouted retur nnull
     return null;
   }
 
@@ -106,7 +102,7 @@ function Header(): JSX.Element {
           <MenuAlt4Icon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-[22px] m-2 text-black dark:text-gray-500'
             onClick={() => setMenuIcon(!menuIcon)} />
 
-          <AccountInHeader />
+          {/* <AccountInHeader /> */}
 
           <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}
@@ -135,12 +131,11 @@ function Header(): JSX.Element {
       <AnimatePresence>
         {
           menuIcon
-            ?
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.3 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.5, transition: { duration: 0.2 } }}
-              className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'>
+            ? <motion.div
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className='flex dark:bg-[#22262f] items-center justify-center h-10 mt-2 w-full md:hidden'
+              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 }, y: -20 }}
+              initial={{ opacity: 0, scale: 0.3, y: -20 }}>
               <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
                 <div className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
                   onClick={() => router.push('/home')}
@@ -178,7 +173,6 @@ function Header(): JSX.Element {
         }
 
       </AnimatePresence>
-
 
     </div >
 

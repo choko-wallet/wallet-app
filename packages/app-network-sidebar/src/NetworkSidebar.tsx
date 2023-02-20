@@ -12,7 +12,7 @@ import NetworkSelection from './NetworkSelectionList';
  * wrapper of the NetworkSelection list for widescreen devices
  */
 
-export default function NetworkSidebar(): JSX.Element {
+export default function NetworkSidebar (): JSX.Element {
   const dispatch = useDispatch();
 
   return (

@@ -4,8 +4,8 @@
 import Image from 'next/image';
 import React from 'react';
 import { SocialIcon } from 'react-social-icons';
-import bg from '../../images/bg.png';
 
+import bg from '../../images/bg.png';
 import discIcon2 from '../../images/discord2.svg';
 
 const ContactMe = (): JSX.Element => {
@@ -14,12 +14,10 @@ const ContactMe = (): JSX.Element => {
       id='contact'>
       <Image
         className=''
+        layout='fill'
+        objectFit='cover'
         src={bg}
-        layout="fill"
-        objectFit="cover"
       />
-
-
 
       <div className='relative flex items-center justify-center h-screen text-center z-20'>
         {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>

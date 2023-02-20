@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { motion } from 'framer-motion';
+// import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { SocialIcon } from 'react-social-icons';
-import Image from 'next/image';
-import logo1 from '../../images/logo1.svg';
+// import { SocialIcon } from 'react-social-icons';
+
+// import logo1 from '../../images/logo1.svg';
 
 const Header = (): JSX.Element => {
   return (
@@ -33,7 +34,6 @@ const Header = (): JSX.Element => {
           CHOKO
         </p>
       </motion.div>
-
 
       <div className='flex items-center space-x-2'>
         <Link href='#contact'>

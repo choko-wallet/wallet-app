@@ -57,16 +57,13 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
     if (sendTransactionLoading) return;
     setSendTransactionLoading(true);
 
-
-
-
     // no need to await
     void (async () => {
       dispatch(startLoading('Generating Payload ...'));
 
       const network = knownNetworks[currentNetwork];
 
-      try {// 发送的参数输入非法字符 encode报错 用try catch 给toast  
+      try { // 发送的参数输入非法字符 encode报错 用try catch 给toast
         switch (network.networkType) {
           case 'polkadot': {
             const requestUrl = await polkadotEncodeTxToUrl(
@@ -92,18 +89,12 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             break;
           }
         }
-
       } catch (e) {
         console.log('sendTransaction-err', e);
         dispatch(endLoading());
         toastFail('Someting Wrong! Please try again.');
       }
-
-
     })();
-
-
-
 
     dispatch(setClose('homeSend'));
     setSendTransactionLoading(false);

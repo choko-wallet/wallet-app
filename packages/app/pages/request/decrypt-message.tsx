@@ -7,7 +7,7 @@ import { hexToU8a, u8aToHex, u8aToString } from '@skyekiwi/util';
 import { useRouter } from 'next/router';
 import Modal from 'packages/app/components/Modal';
 import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,7 +18,7 @@ import { DecryptMessageDescriptor, DecryptMessageRequest } from '@choko-wallet/r
 /**
  * Handler for DecryptMesasgeRequest
  */
-function DecryptMessageHandler(): JSX.Element {
+function DecryptMessageHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ function DecryptMessageHandler(): JSX.Element {
     }
   }, [request, dispatch, userAccount]);
 
-  function unlock() {
+  function unlock () {
     if (!request) return;
 
     try {

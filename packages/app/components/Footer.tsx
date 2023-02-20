@@ -9,7 +9,7 @@ import { SocialIcon } from 'react-social-icons';
 import discIcon1 from '../images/discord1.svg';
 import discIcon2 from '../images/discord2.svg';
 
-function Footer(): JSX.Element {
+function Footer (): JSX.Element {
   const { theme } = useTheme();
 
   return (

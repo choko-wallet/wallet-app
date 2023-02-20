@@ -12,7 +12,7 @@ import { removeNetworkAndSave, selectCurrentNetwork, selectKnownNetworks, setCur
  * Renders a list of all network avaliable
  */
 
-function NetworkSelection(): JSX.Element {
+function NetworkSelection (): JSX.Element {
   const dispatch = useDispatch();
 
   const currentNetwork = useSelector(selectCurrentNetwork);
@@ -100,9 +100,9 @@ function NetworkSelection(): JSX.Element {
                     </div>
                     : null}
 
-                </div>
+                </div>;
               }}
-            </RadioGroup.Option>
+            </RadioGroup.Option>;
           })}
         </RadioGroup>
 
@@ -129,8 +129,7 @@ function NetworkSelection(): JSX.Element {
               <p className=' font-semibold font-poppins dark:text-white'>{knownNetworks[networkSelection]?.text}</p>
 
             </div>
-            :
-            <button
+            : <button
               className='flex w-[180px] h-[70px] items-center justify-center active:scale-95 transition duration-150 ease-out py-3 px-6 font-medium text-primary bg-[#FDF6E3] dark:bg-[#363E52] rounded-[10px] outline-none z-50'
               onClick={() => dispatch(setCurrentNetwork(networkSelection))}
             >

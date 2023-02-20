@@ -28,18 +28,14 @@ module.exports = {
 
       },
       fontFamily: {
-        Josefin: ['Josefin Sans', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
-        rubik: ['Rubik', 'sans-serif'],
-        vt323: ['VT323', 'sans-serif'],
-        roboto: ['Roboto', 'sans-serif'],
-        kanit: ['Kanit', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
-        stick: ['Stick', 'sans-serif']
-
-
-
-
+        josefin: ['Josefin Sans', 'sans-serif'],
+        kanit: ['Kanit', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+        rubik: ['Rubik', 'sans-serif'],
+        stick: ['Stick', 'sans-serif'],
+        vt323: ['VT323', 'sans-serif']
       },
       height: {
         '70v': '70vh',

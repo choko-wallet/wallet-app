@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import superagent from 'superagent';
 
 import { encodeContractCall, encodeTransaction } from '@choko-wallet/abi';
