@@ -12,9 +12,15 @@ import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 
 import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
+import { signIn, signOut, useSession } from 'next-auth/react';
 // import BackgroundCircle from './BackgroundCircle';
 
 const Hero = (): JSX.Element => {
+
+  const { data: session } = useSession();
+
+  console.log('session', session);
+
   const router = useRouter();
   // const vidRef = useRef();
 
@@ -117,9 +123,37 @@ const Hero = (): JSX.Element => {
             className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'
             variants={fadeIn('up', 'spring', 1.4, 1)}
           >
+
+            {session
+              ?
+              <div className="flex items-center justify-between my-10">
+                <img className="rounded-full border p-[2px] w-16 h-16 "
+                  src={session?.user?.image} alt="" />
+
+                <div className="flex-1 mx-4">
+                  <h2 className="font-bold">{session?.user?.name}</h2>
+                  <h3 className="text-sm text-gray-400">Welcome to ChokoWallet</h3>
+
+                </div>
+
+                <button onClick={signOut} className="text-sm font-semibold text-blue-400">Sign Out</button>
+              </div>
+              :
+              <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
+                onClick={() => signIn('google')}>Login with Google
+              </button>
+            }
+
+
+
+
             <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
               onClick={() => router.push('/home')}>ENTER
             </button>
+
+
+
+
 
             <button className='my-auto text-[14px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 bg-[#0170BF] font-poppins'
               onClick={() => router.push('/test-request')}>Request Access
