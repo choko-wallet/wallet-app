@@ -136,12 +136,18 @@ const Hero = (): JSX.Element => {
 
                 </div>
 
-                <button onClick={signOut} className="text-sm font-semibold text-blue-400">Sign Out</button>
+                <button onClick={() => signOut()} className="text-sm font-semibold text-blue-400">Sign Out</button>
               </div>
               :
-              <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
-                onClick={() => signIn('google')}>Login with Google
-              </button>
+              <div className='flex flex-col '>
+                <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
+                  onClick={() => signIn('google')}>Login with Google
+                </button>
+
+                <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
+                  onClick={() => signIn('github')}>Login with Github
+                </button>
+              </div>
             }
 
 

@@ -15,6 +15,7 @@ import { Toaster } from 'react-hot-toast';
 import { Provider, store } from '@choko-wallet/app-redux';
 import { SessionProvider } from "next-auth/react"
 // import { type Session } from 'next-auth';
+import { Session } from "next-auth";
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -29,7 +30,9 @@ Router.events.on('routeChangeError', progress.finish);
 
 
 
-function Root({ Component, pageProps: { session, ...pageProps }, }: AppProps): JSX.Element {
+// function Root({ Component, pageProps: { session, ...pageProps }, }: AppProps): JSX.Element {
+function Root({ Component, pageProps }: AppProps<{ session: Session; }>): JSX.Element {
+
   return (
     <Provider store={store}>
       <Head>
@@ -58,7 +61,7 @@ function Root({ Component, pageProps: { session, ...pageProps }, }: AppProps): J
           rel='stylesheet' />
       </Head>
 
-      <SessionProvider session={session}>
+      <SessionProvider session={pageProps.session}>
         <ThemeProvider attribute='class'>
           <Toaster />
           <Component {...pageProps} />
