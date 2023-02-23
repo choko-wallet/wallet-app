@@ -1,0 +1,311 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  /* Your default theme */
+  --background: white;
+  --foreground: black;
+}
+
+[data-theme='dark'] {
+  --background: black;
+  --foreground: white;
+}
+
+.tabs-boxed .tab-active {
+  background-color: gray;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.color-bg {
+  background: #bbd2c5;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #bbd2c5, #536976);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #bbd2c5, #536976);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.bg-blue-gradient {
+  background: linear-gradient(157.81deg,
+      #def9fa -43.27%,
+      #bef3f5 -21.24%,
+      #9dedf0 12.19%,
+      #7de7eb 29.82%,
+      #5ce1e6 51.94%,
+      #33bbcf 90.29%);
+}
+
+.text-gradient {
+  background: radial-gradient(64.18% 64.18% at 71.16% 35.69%,
+      #def9fa 0.89%,
+      #bef3f5 17.23%,
+      #9dedf0 42.04%,
+      #7de7eb 55.12%,
+      #5ce1e6 71.54%,
+      #33bbcf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.pink__gradient {
+  background: linear-gradient(90deg, #f4c4f3 0%, #fc67fa 100%);
+  filter: blur(900px);
+}
+
+.white__gradient {
+  background: rgba(255, 255, 255, 0.6);
+  filter: blur(750px);
+}
+
+.bg__gradient {
+  /* background-image: radial-gradient(circle, black, transparent); */
+  background: radial-gradient(black 50%, rgb(16, 15, 15) 80%,
+      transparent 100%);
+}
+
+.blue__gradient {
+  background: linear-gradient(180deg, rgba(188, 165, 255, 0) 0%, #214d76 100%);
+  filter: blur(123px);
+}
+
+.pink_gradient {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 123px;
+  height: 123px;
+  border-radius: 50%;
+
+  background: #fb37ff;
+  filter: blur(200px);
+}
+
+.blue_gradient {
+  position: absolute;
+  bottom: 0%;
+  right: 0%;
+  width: 123px;
+  height: 123px;
+  border-radius: 50%;
+
+  background: #18b2de;
+  filter: blur(200px);
+}
+
+.gradient-border {
+  background: linear-gradient(168.82deg,
+      #fb37ff 1.7%,
+      rgba(155, 111, 238, 0) 27.12%,
+      rgba(123, 127, 234, 0) 61.28%,
+      #1bb2de 99.52%);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+
+.drawer-enter {
+  left: -340px;
+}
+
+.drawer-enter-active {
+  left: 0px;
+  transition: left 600ms;
+}
+
+.drawer-exit {
+  left: 0px;
+}
+
+.drawer-exit-active {
+  left: -340px;
+  transition: left 600ms;
+}
+
+.stringWrap {
+  overflow-wrap: break-word;
+}
+
+
+.colorx {
+  background: #fb37ff;
+}
+
+
+
+.checkContainer {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkContainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 9999px;
+}
+
+/* On mouse-over, add a grey background color */
+.checkContainer:hover input~.checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a background */
+.checkContainer input:checked~.checkmark {
+  background-color: #EDEDED;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkContainer input:checked~.checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkContainer .checkmark:after {
+  left: 9px;
+  top: 4px;
+  width: 8px;
+  height: 15px;
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+.checkContainer2 {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkContainer2 input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #F5CBD5;
+  border-radius: 9999px;
+}
+
+
+
+/* When the checkbox is checked, add a background */
+.checkContainer2 input:checked~.checkmark2 {
+  background-color: #4075A9;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark2:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkContainer2 input:checked~.checkmark2:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkContainer2 .checkmark2:after {
+  left: 9px;
+  top: 4px;
+  width: 8px;
+  height: 15px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+
+
+
+
+.swiper-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 300ms;
+  transform: scale(0.8);
+}
+
+.swiper-slide-active,
+.swiper-slide-duplicate-active {
+  transform: scale(1);
+}

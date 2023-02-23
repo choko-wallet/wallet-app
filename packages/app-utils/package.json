@@ -1,0 +1,29 @@
+{
+  "name": "@choko-wallet/app-utils",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "balance panel",
+  "type": "module",
+  "sideEffects": false,
+  "maintainers": [],
+  "contributors": [],
+  "author": "Choko Wallet <contact@choko.app>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/choko-wallet/wallet-app"
+  },
+  "dependencies": {
+    "@choko-wallet/abi": "^0.1.9",
+    "@choko-wallet/account-abstraction": "^0.1.9",
+    "@choko-wallet/core": "^0.1.9",
+    "@choko-wallet/sdk": "^0.1.9",
+    "@polkadot/api": "^9.10.4",
+    "@polkadot/util-crypto": "^10.2.1",
+    "@skyekiwi/util": "^1.0.1",
+    "alchemy-sdk": "^2.2.5",
+    "ethers": "^5.7.2",
+    "react": "18.1.0",
+    "react-hot-toast": "^2.4.0",
+    "tweetnacl": "^1.0.3"
+  }
+}
