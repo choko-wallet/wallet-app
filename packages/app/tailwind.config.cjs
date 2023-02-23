@@ -35,7 +35,8 @@ module.exports = {
         roboto: ['Roboto', 'sans-serif'],
         rubik: ['Rubik', 'sans-serif'],
         stick: ['Stick', 'sans-serif'],
-        vt323: ['VT323', 'sans-serif']
+        vt323: ['VT323', 'sans-serif'],
+        sso: ['Saira Stencil One', 'sans-serif']
       },
       height: {
         '70v': '70vh',

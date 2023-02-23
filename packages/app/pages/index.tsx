@@ -9,6 +9,8 @@ import React from 'react';
 import ContactMe from '../components/landingComponents/ContactMe';
 import Header from '../components/landingComponents/Header';
 import Hero from '../components/landingComponents/Hero';
+import NFT from '../components/landingComponents/NFT';
+
 
 const Home: NextPage = () => {
   return (
@@ -19,6 +21,7 @@ const Home: NextPage = () => {
 
       <Header />
       <Hero />
+      <NFT />
       <ContactMe />
 
     </div>
