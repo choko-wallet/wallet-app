@@ -8,14 +8,14 @@ import type { AppProps } from 'next/app';
 import ProgressBar from '@badrap/bar-of-progress';
 import Head from 'next/head';
 import Router from 'next/router';
+// import { type Session } from 'next-auth';
+import { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { Provider, store } from '@choko-wallet/app-redux';
-import { SessionProvider } from "next-auth/react"
-// import { type Session } from 'next-auth';
-import { Session } from "next-auth";
 
 const progress = new ProgressBar({
   className: 'z-50',
@@ -28,11 +28,8 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-
-
 // function Root({ Component, pageProps: { session, ...pageProps }, }: AppProps): JSX.Element {
-function Root({ Component, pageProps }: AppProps<{ session: Session; }>): JSX.Element {
-
+function Root ({ Component, pageProps }: AppProps<{ session: Session; }>): JSX.Element {
   return (
     <Provider store={store}>
       <Head>
@@ -59,8 +56,8 @@ function Root({ Component, pageProps }: AppProps<{ session: Session; }>): JSX.El
           rel='stylesheet' />
         <link href='https://fonts.googleapis.com/css2?family=Stick&display=swap'
           rel='stylesheet' />
-        <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap"
-          rel="stylesheet" />
+        <link href='https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap'
+          rel='stylesheet' />
       </Head>
 
       <SessionProvider session={pageProps.session}>

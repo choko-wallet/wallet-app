@@ -34,9 +34,9 @@ module.exports = {
         poppins: ['Poppins', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
         rubik: ['Rubik', 'sans-serif'],
+        sso: ['Saira Stencil One', 'sans-serif'],
         stick: ['Stick', 'sans-serif'],
-        vt323: ['VT323', 'sans-serif'],
-        sso: ['Saira Stencil One', 'sans-serif']
+        vt323: ['VT323', 'sans-serif']
       },
       height: {
         '70v': '70vh',

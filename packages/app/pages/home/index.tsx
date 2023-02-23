@@ -55,6 +55,21 @@ export default function Home (): JSX.Element {
 
   // 1. init the network config
   useEffect(() => {
+    // (async() => {
+    //   try {
+    //     const keygenId = randomBytes(32);
+    //     const signId = randomBytes(32);
+
+    //     const k = await runKeygen(keygenId);
+    //     console.log(JSON.parse(k));
+
+    //     const y = await runSign(signId, keygenId, k);
+    //     console.log(JSON.parse(y))
+    //   } catch(e) {
+    //     console.error(e)
+    //   }
+    // })();
+
     dispatch(loadAllNetworks());
   }, [dispatch]);
 

@@ -1,16 +1,20 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* tslint:disable */
+/* eslint-disable */
+
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+
 import Image from 'next/image';
 import React from 'react';
+import { EffectCoverflow, Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
 import bg from '../../images/bg.png';
 import nfts from '../../images/nfts.png';
-
-import { EffectCoverflow, Pagination } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
 
 const NFT = (): JSX.Element => {
   return (
@@ -35,68 +39,73 @@ const NFT = (): JSX.Element => {
           </p>
 
           <Swiper
-            effect={"coverflow"}
-            grabCursor={true}
             centeredSlides={true}
-            slidesPerView={"auto"}
+            className='mySwiper w-[800px] h-[600px]'
             coverflowEffect={{
               rotate: 50,
               stretch: 0,
               depth: 100,
               modifier: 1,
-              slideShadows: true,
+              slideShadows: true
             }}
-            pagination={true}
+            effect={'coverflow'}
+            grabCursor={true}
             modules={[EffectCoverflow, Pagination]}
-            className="mySwiper w-[800px] h-[600px]"
+            pagination={true}
+            slidesPerView={'auto'}
           >
 
             <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
+              <img src='https://swiperjs.com/demos/images/nature-2.jpg' />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
+              <img src='https://swiperjs.com/demos/images/nature-3.jpg' />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
+              <img src='https://swiperjs.com/demos/images/nature-4.jpg' />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-5.jpg" />
+              <img src='https://swiperjs.com/demos/images/nature-5.jpg' />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-6.jpg" />
+              <img src='https://swiperjs.com/demos/images/nature-6.jpg' />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
+              <img src='https://swiperjs.com/demos/images/nature-7.jpg' />
             </SwiperSlide>
 
           </Swiper>
 
           <div className='flex items-center justify-center'>
-            <div className="flex items-center justify-between mx-10 mt-14 ">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+            <div className='flex items-center justify-between mx-10 mt-14 '>
+              <img alt=''
+                className='rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1 mx-1'
+                src={nfts.src} />
+              <p className=' text-white font-roboto text-[26px]'>Opensea</p>
             </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16  bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+            <div className='flex items-center justify-between mx-10 mt-14'>
+              <img alt=''
+                className='rounded-full border p-[2px] w-16 h-16  bg-blue-200 mx-1'
+                src={nfts.src} />
+              <p className=' text-white font-roboto text-[26px]'>Opensea</p>
             </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+            <div className='flex items-center justify-between mx-10 mt-14'>
+              <img alt=''
+                className='rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1'
+                src={nfts.src} />
+              <p className=' text-white font-roboto text-[26px]'>Opensea</p>
             </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+            <div className='flex items-center justify-between mx-10 mt-14'>
+              <img alt=''
+                className='rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1'
+                src={nfts.src} />
+              <p className=' text-white font-roboto text-[26px]'>Opensea</p>
             </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+            <div className='flex items-center justify-between mx-10 mt-14'>
+              <img alt=''
+                className='rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1'
+                src={nfts.src} />
+              <p className=' text-white font-roboto text-[26px]'>Opensea</p>
             </div>
 
           </div>
@@ -104,8 +113,6 @@ const NFT = (): JSX.Element => {
         </div>
 
       </div>
-
-
 
     </section>
   );

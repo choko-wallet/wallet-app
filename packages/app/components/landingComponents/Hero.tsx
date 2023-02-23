@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
 import Typed from 'react-typed';
 
@@ -12,11 +13,9 @@ import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 
 import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
-import { signIn, signOut, useSession } from 'next-auth/react';
 // import BackgroundCircle from './BackgroundCircle';
 
 const Hero = (): JSX.Element => {
-
   const { data: session } = useSession();
 
   console.log('session', session);
@@ -125,21 +124,21 @@ const Hero = (): JSX.Element => {
           >
 
             {session
-              ?
-              <div className="flex items-center justify-between my-10">
-                <img className="rounded-full border p-[2px] w-16 h-16 "
-                  src={session?.user?.image} alt="" />
+              ? <div className='flex items-center justify-between my-10'>
+                <img alt=''
+                  className='rounded-full border p-[2px] w-16 h-16 '
+                  src={session?.user?.image} />
 
-                <div className="flex-1 mx-4">
-                  <h2 className="font-bold">{session?.user?.name}</h2>
-                  <h3 className="text-sm text-gray-400">Welcome to ChokoWallet</h3>
+                <div className='flex-1 mx-4'>
+                  <h2 className='font-bold'>{session?.user?.name}</h2>
+                  <h3 className='text-sm text-gray-400'>Welcome to ChokoWallet</h3>
 
                 </div>
 
-                <button onClick={() => signOut()} className="text-sm font-semibold text-blue-400">Sign Out</button>
+                <button className='text-sm font-semibold text-blue-400'
+                  onClick={() => signOut()}>Sign Out</button>
               </div>
-              :
-              <div className='flex flex-col '>
+              : <div className='flex flex-col '>
                 <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
                   onClick={() => signIn('google')}>Login with Google
                 </button>
@@ -150,16 +149,9 @@ const Hero = (): JSX.Element => {
               </div>
             }
 
-
-
-
             <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
               onClick={() => router.push('/home')}>ENTER
             </button>
-
-
-
-
 
             <button className='my-auto text-[14px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 bg-[#0170BF] font-poppins'
               onClick={() => router.push('/test-request')}>Request Access
