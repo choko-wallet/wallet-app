@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React from 'react';
 import bg from '../../images/bg.png';
 import nfts from '../../images/nfts.png';
-
+import SuperSwiper from './SuperSwiper';
 import { EffectCoverflow, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -34,7 +34,10 @@ const NFT = (): JSX.Element => {
             NFT
           </p>
 
-          <Swiper
+          <SuperSwiper />
+
+
+          {/* <Swiper
             effect={"coverflow"}
             grabCursor={true}
             centeredSlides={true}
@@ -70,7 +73,7 @@ const NFT = (): JSX.Element => {
               <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
             </SwiperSlide>
 
-          </Swiper>
+          </Swiper> */}
 
           <div className='flex items-center justify-center'>
             <div className="flex items-center justify-between mx-10 mt-14 ">
