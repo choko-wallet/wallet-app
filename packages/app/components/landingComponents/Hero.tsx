@@ -18,7 +18,7 @@ import landingGIF from '../../images/landing1.gif';
 const Hero = (): JSX.Element => {
   const { data: session } = useSession();
 
-  console.log('session', session);
+  if (session) { console.log('session', session, session.user.provider); }
 
   const router = useRouter();
   // const vidRef = useRef();

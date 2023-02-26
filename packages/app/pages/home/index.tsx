@@ -13,6 +13,7 @@ import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
 import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { randomBytes } from 'tweetnacl';
 
 import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
 import Profile from '@choko-wallet/app/components/Profile';
@@ -20,6 +21,7 @@ import Profile from '@choko-wallet/app/components/Profile';
 import { NetworkSidebar } from '@choko-wallet/app-network-sidebar';
 import { endLoading, loadAllNetworks, loadUserAccount, noteAAWalletAddress, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount, startLoading, useAppThunkDispatch } from '@choko-wallet/app-redux';
 import { encodeAddr, ethFetchBalance, fetchAAWalletAddress, polkadotFetchBalance, toastFail } from '@choko-wallet/app-utils';
+import { runKeygen, runSign } from '@choko-wallet/app-utils/mpc';
 import { Balance } from '@choko-wallet/balance-module';
 
 import Footer from '../../components/Footer';
@@ -55,20 +57,22 @@ export default function Home (): JSX.Element {
 
   // 1. init the network config
   useEffect(() => {
-    // (async() => {
-    //   try {
-    //     const keygenId = randomBytes(32);
-    //     const signId = randomBytes(32);
+    void (async () => {
+      try {
+        const keygenId = randomBytes(32);
+        const signId = randomBytes(32);
 
-    //     const k = await runKeygen(keygenId);
-    //     console.log(JSON.parse(k));
+        const k = await runKeygen(keygenId);
 
-    //     const y = await runSign(signId, keygenId, k);
-    //     console.log(JSON.parse(y))
-    //   } catch(e) {
-    //     console.error(e)
-    //   }
-    // })();
+        console.log(k);
+
+        const y = await runSign(signId, keygenId, k);
+
+        console.log(y);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
 
     dispatch(loadAllNetworks());
   }, [dispatch]);
