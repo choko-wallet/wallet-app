@@ -7,7 +7,15 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import { EffectCoverflow, Pagination, Navigation } from 'swiper';
-import nft from '../../images/nft.png';
+import nft1 from '../../images/nft1.png';
+import nft2 from '../../images/nft2.png';
+import nft3 from '../../images/nft3.png';
+import nft4 from '../../images/nft4.png';
+import nft5 from '../../images/nft5.png';
+import nft6 from '../../images/nft6.png';
+import nft7 from '../../images/nft7.png';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+
 
 
 function SuperSwiper() {
@@ -32,43 +40,65 @@ function SuperSwiper() {
         navigation={{
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev',
-          clickable: true,
+          // clickable: true,
         }}
         modules={[EffectCoverflow, Pagination, Navigation]}
-        className="relative h-96 p-1 "
+        className="relative h-[500px] p-1 "
       >
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft1.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft2.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft3.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft4.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft5.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft6.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
         <SwiperSlide className='relative h-52 w-52'>
-          <img src={nft.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          <div className="relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl">
+            <img src={nft7.src} className='object-cover w-full h-full rounded-lg' alt="slide_image" />
+          </div>
         </SwiperSlide>
 
 
-        <div className="relative flex items-center justify-center bottom-4 w-20">
-          <div className="swiper-button-prev slider-arrow">
-            {/* <p>go</p> */}
+        <div className="relative bottom-16 h-10 w-[360px] mx-auto flex items-center justify-center  z-50">
+
+          <div className="slider-controler h-full w-full ">
+            <div className="swiper-button-prev slider-arrow relative">
+              <ChevronLeftIcon className=' text-[#0170BF] h-10 w-10 ' />
+
+            </div>
+            <div className="swiper-button-next slider-arrow ">
+              <ChevronRightIcon className=' text-[#0170BF] h-10 w-10 ' />
+
+            </div>
+            <div className="swiper-pagination"></div>
+
           </div>
-          <div className="swiper-button-next slider-arrow">
-            {/* <p>go</p> */}
-          </div>
-          <div className="swiper-pagination w-20 h-20 bg-red-300"></div>
+
         </div>
+
       </Swiper>
     </div>
   );

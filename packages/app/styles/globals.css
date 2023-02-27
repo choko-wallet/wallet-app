@@ -354,11 +354,11 @@ input[type="number"] {
   border-radius: 2rem;
   object-fit: cover;
 } */
-/* 
+
 .swiper-slide-shadow-left,
 .swiper-slide-shadow-right {
   display: none;
-} */
+}
 
 .slider-controler {
   position: relative;
@@ -366,14 +366,21 @@ input[type="number"] {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* background: red; */
+
 }
 
 .slider-controler .swiper-button-next {
-  left: 58% !important;
-  transform: translateX(-58%) !important;
+  left: 95% !important;
+  transform: translateX(-95%) !important;
 }
 
-@media (max-width: 990px) {
+.slider-controler .swiper-button-prev {
+  left: 5% !important;
+  transform: translateX(-5%) !important;
+}
+
+/* @media (max-width: 990px) {
   .slider-controler .swiper-button-next {
     left: 70% !important;
     transform: translateX(-70%) !important;
@@ -385,8 +392,8 @@ input[type="number"] {
     left: 80% !important;
     transform: translateX(-80%) !important;
   }
-}
-
+} */
+/* 
 @media (max-width: 990px) {
   .slider-controler .swiper-button-prev {
     left: 30% !important;
@@ -399,19 +406,19 @@ input[type="number"] {
     left: 20% !important;
     transform: translateX(-20%) !important;
   }
-}
+} */
 
 .slider-controler .slider-arrow {
-  background: var(--white);
-  width: 3.5rem;
-  height: 3.5rem;
+  background: rgb(248, 245, 245);
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
-  left: 42%;
-  transform: translateX(-42%);
-  filter: drop-shadow(0px 8px 24px rgba(18, 28, 53, 0.1));
+  /* left: 42%; */
+  /* transform: translateX(-42%); */
+  /* filter: drop-shadow(0px 8px 24px rgba(18, 28, 53, 0.1)); */
 }
 
-.slider-controler .slider-arrow ion-icon {
+.slider-controler .slider-arrow .ChevronLeftIcon {
   font-size: 2rem;
   color: #222224;
 }
@@ -422,14 +429,16 @@ input[type="number"] {
 
 .swiper-pagination {
   position: relative;
-  width: 15rem !important;
+  width: 12rem !important;
   bottom: 1rem;
+  margin-left: 5rem;
 }
 
 .swiper-pagination .swiper-pagination-bullet {
+  background: #00ff00;
   filter: drop-shadow(0px 8px 24px rgba(18, 28, 53, 0.1));
 }
 
 .swiper-pagination .swiper-pagination-bullet-active {
-  background: var(--primary);
+  background: #00ff00;
 }

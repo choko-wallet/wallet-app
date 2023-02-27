@@ -77,29 +77,29 @@ const NFT = (): JSX.Element => {
 
           <div className='flex items-center justify-center'>
             <div className="flex items-center justify-between mx-10 mt-14 ">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1 mx-1"
+              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
                 src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+              <p className=" text-white font-roboto text-[20px]">Opensea</p>
             </div>
             <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16  bg-blue-200 mx-1"
+              <img className="rounded-full border p-[2px] w-12 h-12  bg-blue-200 mx-1"
                 src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+              <p className=" text-white font-roboto text-[20px]">Opensea</p>
             </div>
             <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1"
+              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
                 src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+              <p className=" text-white font-roboto text-[20px]">Opensea</p>
             </div>
             <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1"
+              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
                 src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+              <p className=" text-white font-roboto text-[20px]">Opensea</p>
             </div>
             <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-16 h-16 bg-blue-200 mx-1"
+              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
                 src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[26px]">Opensea</p>
+              <p className=" text-white font-roboto text-[20px]">Opensea</p>
             </div>
 
           </div>
