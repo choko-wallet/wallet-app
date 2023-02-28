@@ -5,20 +5,24 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import Typed from 'react-typed';
 
+// import BackgroundCircle from './BackgroundCircle';
+import { setOpen, useDispatch } from '@choko-wallet/app-redux';
 import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 
 import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
-// import BackgroundCircle from './BackgroundCircle';
+import EmailPostModal from '../modal/EmailPostModal';
+import LoginModal from '../modal/LoginModal';
 
 const Hero = (): JSX.Element => {
   const { data: session } = useSession();
 
   console.log('session', session);
+  const dispatch = useDispatch();
 
   const router = useRouter();
   // const vidRef = useRef();
@@ -42,7 +46,7 @@ const Hero = (): JSX.Element => {
         {/* <div className=' mt-[90px] lg:mt-[0px] z-20 flex flex-col items-center lg:items-start lg:w-[600px] xl:w-[800px] lg:pt-6 pb-5 lg:ml-20'> */}
 
         <motion.div
-          className=' mt-[90px] lg:mt-[0px] z-20 flex flex-col items-center lg:items-start lg:w-[600px] xl:w-[800px] lg:pt-6 pb-5 lg:ml-20'
+          className=' mt-[90px] lg:mt-[0px] z-20 flex flex-col items-center lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 pb-5 xl:ml-20 '
           initial='hidden'
           variants={staggerContainer}
           viewport={{ amount: 0.25, once: false }}
@@ -51,42 +55,34 @@ const Hero = (): JSX.Element => {
 
           {/* <div className='flex flex-col items-center justify-center xl:flex-row lg:items-start'> */}
           <motion.div
-            className='flex flex-col items-center justify-center xl:flex-row lg:items-start'
+            className='flex flex-col items-center justify-center lg:items-start'
             variants={fadeIn('up', 'spring', 0.5, 1)}
           >
 
-            <p className=' text-[32px] lg:text-[40px] xl:text-[44px] h-10 text-white font-vt323'>
-              Your <Typed
+            <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  h-10 text-white font-vt323'>
+              <Typed
                 backSpeed={20}
                 loop
                 strings={[
-                  'easy to use',
-                  'secure',
-                  'multi-chain',
-                  'portable',
-                  'extensible',
-                  'account abstraction'
+                  'Easy to use',
+                  'Account abstraction',
+                  'Gas-less',
+                  'Secure',
+                  'Multi-chain'
                 ]}
                 typeSpeed={100} />....
             </p>
-            <p className=' -mt-2 lg:mt-3 xl:mt-0 xl:ml-2 text-[32px] lg:text-[40px] xl:text-[44px] h-10 text-white font-vt323'>
-              crypto wallet
+            <p className=' lg:mt-3 xl:mt-5 text-[22px] sm:text-[26px]  md:text-[36px] lg:text-[46px] xl:text-[60px] h-10 md:h-16 text-white font-vt323'>
+              MPC social wallet
             </p>
           </motion.div>
 
           <motion.div
             variants={fadeIn('up', 'spring', 0.8, 1)}
           >
-            <p className='mt-5 text-[12px] md:hidden font-poppins text-[#F5CBD5] bg-[#2C1F28] font-semibold p-[6px] rounded-md '>
-              Currently in private beta
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={fadeIn('up', 'spring', 1.1, 1)}
-          >
-            <p className='text-[14px] px-10 lg:px-0 lg:mt-20 mt-10 pb-2 lg:mx-0 md:text-[20px] lg:text-[25px] xl:text-[30px] max-w-[550px] mx-auto font-vt323  text-[#FFFFFE] text-start '>
-              Trade, own and swap on your favorite blockchain with gasless transaction and account abstraction support.
+            <p className='text-[10px] sm:text-[15px] md:text-[15px] xl:text-[20px] px-5 sm:px-10 lg:px-0 lg:mt-10 mt-5 pb-2 lg:mx-0 max-w-[550px] lg:max-w-[450px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
+              Trade, own, social and immerse in web 3.0 on your preferred blockchain
+              with secured gas-less transaction and account abstraction support.
             </p>
           </motion.div>
 
@@ -96,7 +92,7 @@ const Hero = (): JSX.Element => {
               scale: 1,
               x: 0
             }}
-            className='flex items-center cursor-pointer'
+            className=''
             initial={{
               opacity: 0,
               scale: 0.2,
@@ -107,11 +103,11 @@ const Hero = (): JSX.Element => {
             }}
           >
             <div
-              className='-mt-6 block lg:hidden z-40 relative h-[310px] w-[346px] flex-shrink-0'
+              className='block lg:hidden z-40 relative flex-shrink-0 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'
             >
               <img
                 alt=''
-                className='z-40 m-12 object-contain w-[228px] h-[194px]'
+                className='z-40 m-1 object-contain w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'
                 src={landingGIF.src}
               />
             </div>
@@ -119,11 +115,11 @@ const Hero = (): JSX.Element => {
 
           {/* <div className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'> */}
           <motion.div
-            className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'
-            variants={fadeIn('up', 'spring', 1.4, 1)}
+            className='flex '
+            variants={fadeIn('up', 'spring', 1.1, 1)}
           >
 
-            {session
+            {/* {session
               ? <div className='flex items-center justify-between my-10'>
                 <img alt=''
                   className='rounded-full border p-[2px] w-16 h-16 '
@@ -147,15 +143,28 @@ const Hero = (): JSX.Element => {
                   onClick={() => signIn('github')}>Login with Github
                 </button>
               </div>
-            }
+            } */}
 
-            <button className='my-auto text-[14px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 border border-[#F5CBD5] bg-transparent'
-              onClick={() => router.push('/home')}>ENTER
-            </button>
+            <div className='mt-3 space-y-2 md:mt-16' >
+              <button className='my-auto text-[10px] text-[#FDF6E3] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-8 lg:h-[32px] w-[160px] md:w-48 md:mb-5 bg-[#FDF6E3]/20 font-inter'
+              // onClick={() => router.push('/test-request')}
+              >Private beta coming soon
+              </button>
 
-            <button className='my-auto text-[14px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[56px] w-[136px] md:w-48 mb-10 bg-[#0170BF] font-poppins'
-              onClick={() => router.push('/test-request')}>Request Access
-            </button>
+              <div className='flex justify-between mx-auto w-[160px] md:w-[360px] space-x-2 '>
+                <button className=' text-[10px] lg:text-xl text-[#0170BF] font-semibold transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-48 bg-white font-inter'
+                  onClick={() => dispatch(setOpen('landingEmailPost'))}
+                >Join beta waitlist
+                </button>
+
+                <button className=' text-[10px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-[136px] border-2 border-[#0170BF] bg-transparent font-inter'
+                  // onClick={() => router.push('/home')}
+                  onClick={() => dispatch(setOpen('landingLogin'))}
+                >Enter
+                </button>
+              </div>
+            </div>
+
           </motion.div>
 
         </motion.div>
@@ -177,11 +186,11 @@ const Hero = (): JSX.Element => {
           }}
         >
           <div
-            className='hidden lg:inline z-40 relative flex-shrink-0'
+            className='hidden lg:inline z-40 relative flex-shrink-0  '
           >
             <img
               alt=''
-              className='z-40 m-12 object-contain w-[480px] h-[405px]'
+              className='z-40 m-12 object-contain w-[320px] h-[320px] xl:w-[400px] xl:h-[400px]'
               src={landingGIF.src}
             />
           </div>
@@ -195,6 +204,10 @@ const Hero = (): JSX.Element => {
           <ChevronDownIcon className='h-8 text-white cursor-pointer ' />
         </a>
       </div>
+
+      <EmailPostModal />
+      <LoginModal />
+
 
     </section>
   );
