@@ -28,79 +28,35 @@ const NFT = (): JSX.Element => {
           Contact
         </h3> */}
 
-        <div className='flex flex-col space-y-10'>
+        <div className='flex flex-col md:space-y-10'>
 
-          <p className='text-4xl md:text-5xl lg:text-[56px] font-semibold text-center  mb-10  font-sso'>
+          <p className='text-[25px] sm:text-4xl md:text-5xl lg:text-[56px] font-semibold text-center mt-4 md:mb-10  font-sso'>
             NFT
           </p>
 
           <SuperSwiper />
 
+          <div className='flex items-center justify-between mt-3 space-x-2 p-3  md:w-[600px] mx-auto'>
 
-          {/* <Swiper
-            effect={"coverflow"}
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={"auto"}
-            coverflowEffect={{
-              rotate: 50,
-              stretch: 0,
-              depth: 100,
-              modifier: 1,
-              slideShadows: true,
-            }}
-            pagination={true}
-            modules={[EffectCoverflow, Pagination]}
-            className="mySwiper w-[800px] h-[600px]"
-          >
+            <div className="flex items-center justify-center  ">
+              <img className="rounded-full border p-[2px] w-6 h-6 md:w-12 md:h-12 bg-blue-200 mx-1"
+                src={nfts.src} alt="" />
+              <p className=" text-white font-roboto text-[12px] md:text-[20px] w-12">Opensea</p>
+            </div>
 
-            <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-            </SwiperSlide>
+            <div className="flex items-center justify-center  ">
+              <img className="rounded-full border p-[2px] w-6 h-6 md:w-12 md:h-12 bg-blue-200 mx-1"
+                src={nfts.src} alt="" />
+              <p className=" text-white font-roboto text-[12px] md:text-[20px] w-12">Audius</p>
+            </div>
 
-          </Swiper> */}
+            <div className="flex items-center justify-center ">
+              <img className="rounded-full border p-[2px] w-6 h-6 md:w-12 md:h-12 bg-blue-200 mx-1"
+                src={nfts.src} alt="" />
+              <p className=" text-white font-roboto text-[12px] md:text-[20px] w-12">RARA</p>
+            </div>
 
-          <div className='flex items-center justify-center'>
-            <div className="flex items-center justify-between mx-10 mt-14 ">
-              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[20px]">Opensea</p>
-            </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-12 h-12  bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[20px]">Opensea</p>
-            </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[20px]">Opensea</p>
-            </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[20px]">Opensea</p>
-            </div>
-            <div className="flex items-center justify-between mx-10 mt-14">
-              <img className="rounded-full border p-[2px] w-12 h-12 bg-blue-200 mx-1"
-                src={nfts.src} alt="" />
-              <p className=" text-white font-roboto text-[20px]">Opensea</p>
-            </div>
+
 
           </div>
 

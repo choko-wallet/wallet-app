@@ -26,7 +26,7 @@ const ContactMe = (): JSX.Element => {
 
         <div className='flex flex-col space-y-10'>
 
-          <p className='text-4xl md:text-5xl lg:text-[56px] font-semibold text-center  mb-10  font-stick'>
+          <p className='text-4xl sm:text-5xl md:text-6xl lg:text-[100px] font-semibold text-center  mb-10  font-stick'>
             Who’s Choko?
           </p>
           {/* <div className='flex items-center justify-center space-x-4'>
