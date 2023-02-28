@@ -30,7 +30,7 @@ const Header = (): JSX.Element => {
           duration: 1.5
         }}
       >
-        <p className='text-[20px] text-white font-roboto font-semibold '>
+        <p className='text-[15px] md:text-[20px] text-white font-roboto font-semibold '>
           CHOKO
         </p>
       </motion.div>
@@ -61,8 +61,11 @@ const Header = (): JSX.Element => {
             fgColor='gray'
             network='email'
           /> */}
-            <p className='hidden text-sm  font-poppins text-[#F5CBD5] bg-[#2C1F28] font-bold p-2 rounded-md md:inline-flex'>
-              Currently in private beta
+            <p className='border border-[#F5CBD5] hidden sm:inline-flex text-[10px] font-inter text-[#F5CBD5] bg-transparent  p-2 rounded-md '>
+              Buy us a milk chocolate
+            </p>
+            <p className='border border-[#F5CBD5] flex sm:hidden text-[10px] font-inter text-[#F5CBD5] bg-transparent  p-1 rounded-md '>
+              Donate
             </p>
           </motion.div>
         </Link>
@@ -92,7 +95,7 @@ const Header = (): JSX.Element => {
             fgColor='gray'
             network='email'
           /> */}
-            <p className='text-sm font-poppins text-white bg-[#2E2D29]  p-[6px] rounded-md md:inline-flex'>
+            <p className='border border-gray-600 text-sm font-poppins text-white bg-[#F5CBD5]/30 p-1 sm:p-2 rounded-md md:inline-flex'>
               Get in touch
             </p>
           </motion.div>

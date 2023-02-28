@@ -29,7 +29,9 @@ const initialState: StatusSliceItem = {
     signMessagePasswordModal: false,
     decryptMessagePasswordModal: false,
     requestPassword: false,
-    testRequest: false
+    testRequest: false,
+    landingEmailPost: false,
+    landingLogin: false
   },
   loading: ''
 };
