@@ -157,7 +157,9 @@ const Hero = (): JSX.Element => {
                 </button>
 
                 <button className=' text-[10px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-[136px] border-2 border-[#0170BF] bg-transparent font-inter'
-                  onClick={() => router.push('/home')}>Enter
+                  // onClick={() => router.push('/home')}
+                  onClick={() => dispatch(setOpen('landingEmailPost'))}
+                >Enter
                 </button>
               </div>
             </div>

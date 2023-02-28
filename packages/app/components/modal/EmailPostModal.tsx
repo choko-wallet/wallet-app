@@ -25,13 +25,13 @@ const EmailPostModal = (): JSX.Element => {
 
     try {
       const response = await fetch('http://localhost:5000', {
-        method: 'POST',
+        body: JSON.stringify({
+          email: emailInput
+        }),
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          email: emailInput
-        })
+        method: 'POST'
       });
 
       const data = await response.json();

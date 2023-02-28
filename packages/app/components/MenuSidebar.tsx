@@ -11,7 +11,7 @@ import icon1 from '../images/icon1.png';
 import icon2 from '../images/icon2.png';
 import logo from '../images/logo.png';
 
-function MenuSidebar(): JSX.Element {
+function MenuSidebar (): JSX.Element {
   const router = useRouter();
   // const controlsForOpen = useAnimation();
   // const controlsforicon1 = useAnimation();

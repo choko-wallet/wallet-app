@@ -30,7 +30,8 @@ const initialState: StatusSliceItem = {
     decryptMessagePasswordModal: false,
     requestPassword: false,
     testRequest: false,
-    landingEmailPost: false
+    landingEmailPost: false,
+    landingLogin: false
   },
   loading: ''
 };

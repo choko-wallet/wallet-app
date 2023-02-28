@@ -28,7 +28,7 @@ const NFT = (): JSX.Element => {
           Contact
         </h3> */}
 
-        <div className='flex flex-col md:space-y-10'>
+        <div className='flex flex-col '>
 
           <p className='text-[25px] sm:text-4xl md:text-5xl lg:text-[56px] font-semibold text-center mt-4 md:mb-10  font-sso'>
             NFT
@@ -36,7 +36,7 @@ const NFT = (): JSX.Element => {
 
           <SuperSwiper />
 
-          <div className='flex items-center justify-between mt-3 space-x-2 p-3  md:w-[600px] mx-auto'>
+          <div className='flex items-center justify-between mt-3 md:-mt-10 space-x-2 p-3 md:w-[600px] mx-auto'>
 
             <div className='flex items-center justify-center  '>
               <img alt=''
