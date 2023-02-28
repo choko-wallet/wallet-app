@@ -15,10 +15,14 @@ import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
 // import BackgroundCircle from './BackgroundCircle';
 
+import { setOpen, useDispatch } from '@choko-wallet/app-redux';
+import EmailPostModal from '../modal/EmailPostModal';
+
 const Hero = (): JSX.Element => {
   const { data: session } = useSession();
 
   console.log('session', session);
+  const dispatch = useDispatch();
 
   const router = useRouter();
   // const vidRef = useRef();
@@ -149,7 +153,7 @@ const Hero = (): JSX.Element => {
 
               <div className='flex justify-between mx-auto w-[160px] md:w-[360px] space-x-2 '>
                 <button className=' text-[10px] lg:text-xl text-[#0170BF] font-semibold transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-48 bg-white font-inter'
-                // onClick={() => router.push('/test-request')}
+                  onClick={() => dispatch(setOpen('landingEmailPost'))}
                 >Join beta waitlist
                 </button>
 
@@ -198,6 +202,8 @@ const Hero = (): JSX.Element => {
           <ChevronDownIcon className='h-8 text-white cursor-pointer ' />
         </a>
       </div>
+
+      <EmailPostModal />
 
     </section>
   );
