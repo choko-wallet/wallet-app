@@ -4,19 +4,18 @@
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
 import Modal from '../Modal';
-import toast from 'react-hot-toast';
-
 
 const EmailPostModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
   const [emailInput, setEmailInput] = useState<string>('');
 
   const join = async () => {
-    // 发送post 关闭modal 
+    // 发送post 关闭modal
 
     const notification = toast.loading('Sending Email...');
 
@@ -28,33 +27,27 @@ const EmailPostModal = (): JSX.Element => {
       const response = await fetch('http://localhost:5000', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: emailInput,
-        }),
+          email: emailInput
+        })
       });
 
       const data = await response.json();
+
       console.log('1', data);
       toast.success('Thanks for joining beta waitlist', {
         id: notification
       });
-
     } catch (err) {
       toast.error('Something went wrong', {
         id: notification
       });
-
     } finally {
       setEmailInput('');
       dispatch(setClose('landingEmailPost'));
-
     }
-
-
-
-
   };
 
   return (
@@ -70,19 +63,20 @@ const EmailPostModal = (): JSX.Element => {
           </div>
         </Dialog.Title>
 
-        <div className="flex items-center py-2 rounded-full md:border-2 md:shadow-sm">
+        <div className='flex items-center py-2 rounded-full md:border-2 md:shadow-sm'>
 
           <input
-            value={emailInput}
+            className='flex-grow pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
             onChange={(e) => setEmailInput(e.target.value)}
-            className="flex-grow pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none "
-            type="text"
-            placeholder={"Please input your email"} />
+            placeholder={'Please input your email'}
+            type='text'
+            value={emailInput} />
         </div>
 
         {emailInput && (
-          <div className="flex">
-            <button onClick={join} className="px-5 py-2 my-5 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 ">Join</button>
+          <div className='flex'>
+            <button className='px-5 py-2 my-5 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 '
+              onClick={join}>Join</button>
           </div>
         )}
 

@@ -5,17 +5,16 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import Typed from 'react-typed';
 
+// import BackgroundCircle from './BackgroundCircle';
+import { setOpen, useDispatch } from '@choko-wallet/app-redux';
 import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 
 import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
-// import BackgroundCircle from './BackgroundCircle';
-
-import { setOpen, useDispatch } from '@choko-wallet/app-redux';
 import EmailPostModal from '../modal/EmailPostModal';
 
 const Hero = (): JSX.Element => {

@@ -25,8 +25,6 @@ function MenuSidebar(): JSX.Element {
   const [icon5Hover, setIcon5Hover] = useState(false);
   const [icon6Hover, setIcon6Hover] = useState(false);
 
-
-
   return (
     <>
 
@@ -77,9 +75,9 @@ function MenuSidebar(): JSX.Element {
         {/* 四个圆圈icon */}
         <motion.div
           className='flex items-center justify-center group relative mb-6 cursor-pointer'
-          whileHover={{ scale: 1.1 }}
           onMouseOut={() => setIcon1Hover(false)}
           onMouseOver={() => setIcon1Hover(true)}
+          whileHover={{ scale: 1.1 }}
         >
           <motion.div
             className='w-[90px]'
@@ -132,8 +130,6 @@ function MenuSidebar(): JSX.Element {
               />
             </motion.div> */}
 
-
-
           </motion.div>
 
           {sidebarOpen && (
@@ -141,7 +137,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ opacity: 1, x: 0 }}
               className='w-[170px]'
               initial={{ opacity: 0, x: 60 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
             >
               {/* <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Dashboard</p> */}
               <p className={`w-full h-full font-roboto text-[17px] ${sidebarOpen ? 'text-white' : 'text-[#747474]'}`}>Dashboard</p>
@@ -153,7 +149,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ width: 100 }}
               className='h-[2px] bg-yellow-300 absolute bottom-0 rounded-full'
               initial={{ width: 0 }}
-              transition={{ duration: 0.3, }}
+              transition={{ duration: 0.3 }}
             >
             </motion.div>
           )}
@@ -162,9 +158,9 @@ function MenuSidebar(): JSX.Element {
 
         <motion.div
           className='flex items-center justify-center group mb-6 cursor-pointer'
-          whileHover={{ scale: 1.1 }}
           onMouseOut={() => setIcon2Hover(false)}
           onMouseOver={() => setIcon2Hover(true)}
+          whileHover={{ scale: 1.1 }}
         >
           <motion.div
             className='w-[90px]'
@@ -183,7 +179,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ opacity: 1, x: 0 }}
               className='w-[170px]'
               initial={{ opacity: 0, x: 60 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
             >
               {/* <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p> */}
               <p className={`pl-3 w-full h-full font-roboto text-[17px] ${sidebarOpen ? 'text-white' : 'text-[#747474]'}`}>Wallet</p>
@@ -196,7 +192,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ width: 100 }}
               className='h-[2px] bg-yellow-300 absolute bottom-0 rounded-full'
               initial={{ width: 0 }}
-              transition={{ duration: 0.3, }}
+              transition={{ duration: 0.3 }}
             >
             </motion.div>
           )}
@@ -204,9 +200,9 @@ function MenuSidebar(): JSX.Element {
 
         <motion.div
           className='flex items-center justify-center group mb-6 cursor-pointer'
-          whileHover={{ scale: 1.1 }}
           onMouseOut={() => setIcon3Hover(false)}
           onMouseOver={() => setIcon3Hover(true)}
+          whileHover={{ scale: 1.1 }}
         >
           <motion.div
             className='w-[90px]'
@@ -225,7 +221,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ opacity: 1, x: 0 }}
               className='w-[170px]'
               initial={{ opacity: 0, x: 60 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
             >
               {/* <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p> */}
               <p className={`pl-3 w-full h-full font-roboto text-[17px] ${sidebarOpen ? 'text-white' : 'text-[#747474]'}`}>Wallet</p>
@@ -238,7 +234,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ width: 100 }}
               className='h-[2px] bg-yellow-300 absolute bottom-0 rounded-full'
               initial={{ width: 0 }}
-              transition={{ duration: 0.3, }}
+              transition={{ duration: 0.3 }}
             >
             </motion.div>
           )}
@@ -247,9 +243,9 @@ function MenuSidebar(): JSX.Element {
 
         <motion.div
           className='flex items-center justify-center group mb-6 cursor-pointer'
-          whileHover={{ scale: 1.1 }}
           onMouseOut={() => setIcon4Hover(false)}
           onMouseOver={() => setIcon4Hover(true)}
+          whileHover={{ scale: 1.1 }}
         >
           <motion.div
             className='w-[90px]'
@@ -268,7 +264,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ opacity: 1, x: 0 }}
               className='w-[170px]'
               initial={{ opacity: 0, x: 60 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
             >
               {/* <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p> */}
               <p className={`pl-3 w-full h-full font-roboto text-[17px] ${sidebarOpen ? 'text-white' : 'text-[#747474]'}`}>Wallet</p>
@@ -281,7 +277,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ width: 100 }}
               className='h-[2px] bg-yellow-300 absolute bottom-0 rounded-full'
               initial={{ width: 0 }}
-              transition={{ duration: 0.3, }}
+              transition={{ duration: 0.3 }}
             >
             </motion.div>
           )}
@@ -290,9 +286,9 @@ function MenuSidebar(): JSX.Element {
 
         <motion.div
           className='flex items-center justify-center group mb-6 cursor-pointer'
-          whileHover={{ scale: 1.1 }}
           onMouseOut={() => setIcon5Hover(false)}
           onMouseOver={() => setIcon5Hover(true)}
+          whileHover={{ scale: 1.1 }}
         >
           <motion.div
             className='w-[90px]'
@@ -311,7 +307,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ opacity: 1, x: 0 }}
               className='w-[170px]'
               initial={{ opacity: 0, x: 60 }}
-              transition={{ duration: 0.4, delay: 0.5 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
             >
               {/* <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p> */}
               <p className={`pl-3 w-full h-full font-roboto text-[17px] ${sidebarOpen ? 'text-white' : 'text-[#747474]'}`}>Wallet</p>
@@ -323,7 +319,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ width: 100 }}
               className='h-[2px] bg-yellow-300 absolute bottom-0 rounded-full'
               initial={{ width: 0 }}
-              transition={{ duration: 0.3, }}
+              transition={{ duration: 0.3 }}
             >
             </motion.div>
           )}
@@ -347,9 +343,9 @@ function MenuSidebar(): JSX.Element {
 
         <motion.div
           className='flex items-center justify-center group mb-6 cursor-pointer absolute bottom-5'
-          whileHover={{ scale: 1.1 }}
           onMouseOut={() => setIcon6Hover(false)}
           onMouseOver={() => setIcon6Hover(true)}
+          whileHover={{ scale: 1.1 }}
         >
           <motion.div
             className='w-[90px]'
@@ -368,11 +364,10 @@ function MenuSidebar(): JSX.Element {
               animate={{ opacity: 1, x: 0 }}
               className='w-[170px]'
               initial={{ opacity: 0, x: 60 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
             >
               {/* <p className='w-full h-full text-[#747474] group-hover:text-white font-roboto text-[17px]'>Wallet</p> */}
               <p className={`pl-3 w-full h-full font-roboto text-[17px] ${sidebarOpen ? 'text-white' : 'text-[#747474]'}`}>Wallet</p>
-
 
             </motion.div>
           )}
@@ -382,7 +377,7 @@ function MenuSidebar(): JSX.Element {
               animate={{ width: 100 }}
               className='h-[2px] bg-yellow-300 absolute bottom-0 rounded-full'
               initial={{ width: 0 }}
-              transition={{ duration: 0.3, }}
+              transition={{ duration: 0.3 }}
             >
             </motion.div>
           )}
