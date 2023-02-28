@@ -16,6 +16,7 @@ import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
 import EmailPostModal from '../modal/EmailPostModal';
+import LoginModal from '../modal/LoginModal';
 
 const Hero = (): JSX.Element => {
   const { data: session } = useSession();
@@ -158,7 +159,7 @@ const Hero = (): JSX.Element => {
 
                 <button className=' text-[10px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-[136px] border-2 border-[#0170BF] bg-transparent font-inter'
                   // onClick={() => router.push('/home')}
-                  onClick={() => dispatch(setOpen('landingEmailPost'))}
+                  onClick={() => dispatch(setOpen('landingLogin'))}
                 >Enter
                 </button>
               </div>
@@ -205,6 +206,8 @@ const Hero = (): JSX.Element => {
       </div>
 
       <EmailPostModal />
+      <LoginModal />
+
 
     </section>
   );
