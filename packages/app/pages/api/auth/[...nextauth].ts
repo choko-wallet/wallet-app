@@ -19,7 +19,28 @@ export const authOptions = {
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!
     })
-  ]
+  ],
+  callbacks: {
+    // @ts-ignore
+    session({session, token, user}) {
+      session.user.provider = token.provider;
+      console.log("session", session, token, user);
+      return session
+    },
+
+    // @ts-ignore
+    jwt({token, user, account}) {
+
+      if (user && account && account.provider) {
+        token = {
+          ... token, 
+          "provider": account.provider
+        };
+      }
+      return token;
+    }
+  }
 };
 
+// @ts-ignore 
 export default NextAuth(authOptions);

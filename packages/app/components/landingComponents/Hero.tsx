@@ -21,8 +21,8 @@ import LoginModal from '../modal/LoginModal';
 const Hero = (): JSX.Element => {
   const { data: session } = useSession();
 
-  console.log('session', session);
   const dispatch = useDispatch();
+  if (session) { console.log('session', session, session.user.provider); }
 
   const router = useRouter();
   // const vidRef = useRef();
