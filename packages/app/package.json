@@ -52,7 +52,7 @@
     "recharts": "^2.4.3",
     "superagent": "^8.0.0",
     "swiper": "^9.0.5",
-    "tailwind-scrollbar": "^2.0.1",
+    "tailwind-scrollbar": "^2.1.0",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {

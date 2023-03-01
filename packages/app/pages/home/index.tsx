@@ -14,6 +14,7 @@ import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { randomBytes } from 'tweetnacl';
+import { CreditCardIcon } from '@heroicons/react/outline';
 
 import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
 import Profile from '@choko-wallet/app/components/Profile';
@@ -27,12 +28,15 @@ import { Balance } from '@choko-wallet/balance-module';
 import Footer from '../../components/Footer';
 import Loading from '../../components/Loading';
 import { initialTabs as tabs } from '../../utils/tabs';
+import Image from 'next/image';
+import logo from '../../images/logo.png';
+import { AccountInHeader } from '@choko-wallet/app-header';
 
 /**
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();
@@ -115,6 +119,8 @@ export default function Home (): JSX.Element {
       const populateAAWalletInfo = async () => {
         const aaAddresses = await fetchAAWalletAddress(userAccount);
 
+        console.log('aaAddresses', aaAddresses);
+
         dispatch(noteAAWalletAddress(aaAddresses));
       };
 
@@ -127,8 +133,9 @@ export default function Home (): JSX.Element {
         case 'polkadot':
           try {
             const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
-
             setBalanceInfo(res);
+
+
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
           } catch (e) {
@@ -143,6 +150,9 @@ export default function Home (): JSX.Element {
             const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
 
             setBalanceInfo(res);
+
+
+
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
           } catch (e) {
@@ -176,25 +186,55 @@ export default function Home (): JSX.Element {
         {/* <Toaster /> */}
         {/* <Header /> */}
         {/* <NetworkSidebarMobile /> */}
-        <MenuSidebar />
+        {/* <MenuSidebar /> */}
 
         <div className='w-full h-full '>
-          <nav className='bg-[#1A1A1A] flex items-center mt-[60px] space-x-3 w-[800px] h-[66px] mx-auto justify-evenly rounded-full'>
-            <ul className='flex justify-evenly w-full '>
-              {tabs.map((item) => (
-                <li
-                  className={item === selectedTab
-                    ? ' font-inter text-[15px] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 '
-                    : 'text-white font-inter text-[15px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 '}
-                  key={item.label}
-                  onClick={() => setSelectedTab(item)}
-                >
-                  {`${item.label}`}
 
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div className='absolute top-[60px] left-0 bg-transparent h-10 w-10 mx-10 hidden md:inline-flex items-center justify-center '>
+            <Image
+              layout='fill'
+              objectFit='contain'
+              onClick={() => router.push('/')}
+              src={logo.src}
+            />
+          </div>
+
+          <div className='absolute top-[60px] right-36 bg-transparent h-12 w-12 hidden xl:inline-flex items-center justify-center '>
+            <AccountInHeader />
+          </div>
+
+          <div className='bg-[#1A1A1A] px-20 md:px-5 flex items-center mt-[20px] md:mt-[60px] space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-10 '>
+            {tabs.map((item) => (
+              <div
+                className={item === selectedTab
+                  ? ' font-inter text-[15px] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 '
+                  : 'text-white font-inter text-[15px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 '}
+                key={item.label}
+                onClick={() => setSelectedTab(item)}
+              >
+                {`${item.label}`}
+
+              </div>
+            ))}
+
+
+          </div>
+
+          <div className='absolute top-[20px] left-10 bg-gradient-to-r from-[#1A1A1A] to-transparent h-10 w-10 md:hidden'></div>
+
+          <div className='absolute top-[20px] left-0 bg-[#1A1A1A] h-10 w-10 md:hidden flex items-center justify-center '>
+            <Image
+              layout='fill'
+              objectFit='contain'
+              onClick={() => router.push('/')}
+              src={logo.src}
+            />
+          </div>
+
+          <div className='absolute top-[20px] md:top-[60px] right-0 md:right-10 bg-[#1A1A1A] h-10 w-10 xl:hidden flex items-center justify-center'>
+            <AccountInHeader />
+          </div>
+
 
           <main className='w-full h-full'>
             <AnimatePresence exitBeforeEnter>

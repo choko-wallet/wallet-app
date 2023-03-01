@@ -137,7 +137,7 @@ function SuperSwiper() {
             // clickable: true,
           }}
           pagination={{
-            el: '.swiper-pagination',
+            el: '.swiper-pagination2',
             type: 'bullets'
           }}
           slidesPerView={1}

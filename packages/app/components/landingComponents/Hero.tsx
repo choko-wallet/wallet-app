@@ -46,7 +46,7 @@ const Hero = (): JSX.Element => {
         {/* <div className=' mt-[90px] lg:mt-[0px] z-20 flex flex-col items-center lg:items-start lg:w-[600px] xl:w-[800px] lg:pt-6 pb-5 lg:ml-20'> */}
 
         <motion.div
-          className=' mt-[90px] lg:mt-[0px] z-20 flex flex-col items-center lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 pb-5 xl:ml-20 '
+          className='flex flex-col items-center justify-evenly h-full lg:h-fit pt-[60px] pb-10 px-5 lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 xl:ml-20  '
           initial='hidden'
           variants={staggerContainer}
           viewport={{ amount: 0.25, once: false }}
@@ -80,7 +80,7 @@ const Hero = (): JSX.Element => {
           <motion.div
             variants={fadeIn('up', 'spring', 0.8, 1)}
           >
-            <p className='text-[10px] sm:text-[15px] md:text-[15px] xl:text-[20px] px-5 sm:px-10 lg:px-0 lg:mt-10 mt-5 pb-2 lg:mx-0 max-w-[550px] lg:max-w-[450px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
+            <p className='text-[10px] sm:text-[15px] md:text-[15px] xl:text-[20px] w-full lg:px-0 lg:mt-10 mt-5 pb-2 lg:mx-0 max-w-[300px] md:max-w-[400px] lg:max-w-[450px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
               Trade, own, social and immerse in web 3.0 on your preferred blockchain
               with secured gas-less transaction and account abstraction support.
             </p>
@@ -107,7 +107,7 @@ const Hero = (): JSX.Element => {
             >
               <img
                 alt=''
-                className='z-40 m-1 object-contain w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'
+                className='z-40 m-1 object-contain '
                 src={landingGIF.src}
               />
             </div>
@@ -115,7 +115,7 @@ const Hero = (): JSX.Element => {
 
           {/* <div className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'> */}
           <motion.div
-            className='flex '
+            className='flex w-full lg:w-fit max-w-[300px] md:max-w-[400px]'
             variants={fadeIn('up', 'spring', 1.1, 1)}
           >
 
@@ -145,13 +145,13 @@ const Hero = (): JSX.Element => {
               </div>
             } */}
 
-            <div className='mt-3 space-y-2 md:mt-16' >
-              <button className='my-auto text-[10px] text-[#FDF6E3] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-8 lg:h-[32px] w-[160px] md:w-48 md:mb-5 bg-[#FDF6E3]/20 font-inter'
+            <div className='space-y-2 lg:mt-16  w-full lg:w-fit ' >
+              <button className='my-auto text-[10px] text-[#FDF6E3] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-8 lg:h-[32px] w-full md:w-48 md:mb-5 bg-[#FDF6E3]/20 font-inter'
               // onClick={() => router.push('/test-request')}
               >Private beta coming soon
               </button>
 
-              <div className='flex justify-between mx-auto w-[160px] md:w-[360px] space-x-2 '>
+              <div className='flex justify-between mx-auto w-full lg:w-[360px] space-x-2 '>
                 <button className=' text-[10px] lg:text-xl text-[#0170BF] font-semibold transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-48 bg-white font-inter'
                   onClick={() => dispatch(setOpen('landingEmailPost'))}
                 >Join beta waitlist

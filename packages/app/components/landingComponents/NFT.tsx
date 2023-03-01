@@ -36,7 +36,7 @@ const NFT = (): JSX.Element => {
 
           <SuperSwiper />
 
-          <div className='flex items-center justify-between mt-3 md:-mt-10 space-x-2 p-3 md:w-[600px] mx-auto'>
+          {/* <div className='flex items-center justify-between mt-3 md:-mt-10 space-x-2 p-3 md:w-[600px] mx-auto'>
 
             <div className='flex items-center justify-center  '>
               <img alt=''
@@ -59,7 +59,7 @@ const NFT = (): JSX.Element => {
               <p className=' text-white font-roboto text-[12px] md:text-[20px] w-12'>RARA</p>
             </div>
 
-          </div>
+          </div> */}
 
         </div>
 

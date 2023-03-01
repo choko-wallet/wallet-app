@@ -15,7 +15,7 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Profile ({ balance }: Props): JSX.Element {
+function Profile({ balance }: Props): JSX.Element {
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
   const [balanceTotal, setBalanceTotal] = useState<string>('0');
   const [showDust, _] = useState<boolean>(true);
@@ -41,7 +41,7 @@ function Profile ({ balance }: Props): JSX.Element {
   }, [balance]);
 
   return (
-  // <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'></div>
+    // <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'></div>
 
     <div className=' my-6 lg:my-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto '>
       <div className='w-full max-w-[1500px] min-h-[750px] bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
@@ -113,7 +113,7 @@ function Profile ({ balance }: Props): JSX.Element {
           </div>
 
           <div className=' px-8 '>
-            <Mapbox />
+            {/* <Mapbox /> */}
           </div>
 
         </div>

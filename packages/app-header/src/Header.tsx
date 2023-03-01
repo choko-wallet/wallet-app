@@ -16,9 +16,9 @@ import logo from '../img/logo.png';
 import logo2 from '../img/logo2.png';
 import logout from '../img/logout.png';
 import logout2 from '../img/logout2.png';
-// import AccountInHeader from './AccountInHeader';
+import AccountInHeader from './AccountInHeader';
 
-function Header (): JSX.Element {
+function Header(): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -102,7 +102,7 @@ function Header (): JSX.Element {
           <MenuAlt4Icon className='transition duration-150 ease-out cursor-pointer md:hidden active:scale-125 h-[22px] m-2 text-black dark:text-gray-500'
             onClick={() => setMenuIcon(!menuIcon)} />
 
-          {/* <AccountInHeader /> */}
+          <AccountInHeader />
 
           <div className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}
