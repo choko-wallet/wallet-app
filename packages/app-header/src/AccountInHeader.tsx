@@ -55,72 +55,7 @@ export default function AccountInHeader(): JSX.Element {
   if (!ready) return null;
 
   return (
-    <div className=' md:w-64 text-right lg:ml-12 '>
-      {/* <Menu as='div'
-        className='relative h-12 text-left w-full border-none md:border border-gray-300  dark:border-[#00f6ff] rounded-lg '>
-
-        <Menu.Button className='flex items-center justify-center rounded-md w-full bg-transparent md:bg-white dark:bg-transparent md:px-4 md:py-2 h-full text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
-
-          <div className='relative h-[24px] w-[24px] ml-2'>
-            <UserCircleIcon className='h-[24px] w-[24px] dark:text-white text-black active:scale-125 transition duration-150 ease-out cursor-pointer ' />
-          </div>
-
-          <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
-            {currentAddress.substring(0, 7)}
-            <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
-            {currentAddress.substring(currentAddress.length - 7, currentAddress.length)}
-          </p>
-          <ChevronDownIcon className='hidden md:inline dark:text-white ml-2 -mr-1 h-6 w-6 text-gray-800 ' />
-        </Menu.Button>
-
-        <Transition
-          as={Fragment}
-          enter='transition ease-out duration-100'
-          enterFrom='transform opacity-0 scale-95'
-          enterTo='transform opacity-100 scale-100'
-          leave='transition ease-in duration-75'
-          leaveFrom='transform opacity-100 scale-100'
-          leaveTo='transform opacity-0 scale-95'
-        >
-          <Menu.Items className='z-50 absolute right-0 mt-1 w-64 md:w-full origin-top-right divide-y divide-gray-100 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
-            <div className='px-1 py-1 '>
-              {userAccount.map((account, index) => (<AccountRow account={account}
-                accountIndex={index}
-                key={index}
-                network={knownNetworks[currentNetwork]} />))}
-              <Menu.Item >
-                {({ active }) => (
-                  <button
-                    className={`${active
-                      ? 'font-poppins bg-[#F5CBD5] dark:bg-[#0170BF] text-white'
-                      : 'font-poppins text-gray-900'
-                      } group flex w-full items-center h-12 justify-center rounded-md px-2 py-2 text-sm`}
-                    onClick={() => router.push('/account')}
-                  >
-
-                    <p className='text-black dark:text-white '>Add New Account</p>
-
-                  </button>
-                )}
-              </Menu.Item>
-
-              <Menu.Item >
-                {({ active }) => (
-                  <button
-                    className={`${active ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
-                      } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
-                    onClick={removeAccounts}
-                  >
-                    <p className='font-poppins text-black dark:text-white text-center'>Remove All Accounts</p>
-                  </button>
-                )}
-              </Menu.Item>
-            </div>
-
-          </Menu.Items>
-        </Transition>
-
-      </Menu> */}
+    <div className=' xl:w-64 text-right '>
 
       <motion.nav
         initial={false}
@@ -132,8 +67,8 @@ export default function AccountInHeader(): JSX.Element {
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 1 }}
         >
-          <motion.div className='relative h-[24px] w-[24px] ml-2'>
-            <UserCircleIcon className='h-[24px] w-[24px] dark:text-white text-black active:scale-125 transition duration-150 ease-out cursor-pointer ' />
+          <motion.div className='relative h-[24px] w-[24px] md:h-[28px] md:w-[28px] ml-2'>
+            <UserCircleIcon className='h-[24px] w-[24px] md:h-[28px] md:w-[28px] dark:text-white text-black active:scale-125 transition duration-150 ease-out cursor-pointer ' />
           </motion.div>
 
           <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden xl:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
@@ -143,7 +78,7 @@ export default function AccountInHeader(): JSX.Element {
           </p>
 
           <motion.div
-            className='hidden xl:inline-flex'
+            className='hidden xl:inline-flex '
             style={{ originY: 0.55 }}
             transition={{ duration: 0.2 }}
             variants={{
@@ -160,7 +95,7 @@ export default function AccountInHeader(): JSX.Element {
         </motion.button>
 
         <motion.ul
-          className='z-50 absolute right-3 md:-right-32 mt-1 w-64 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-1'
+          className='z-50 absolute right-3 md:right-3 mt-1 md:mt-3 w-64 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-1'
           style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
           variants={{
             open: {

@@ -61,22 +61,22 @@ export default function Home(): JSX.Element {
 
   // 1. init the network config
   useEffect(() => {
-    void (async () => {
-      try {
-        const keygenId = randomBytes(32);
-        const signId = randomBytes(32);
+    // void (async () => {
+    //   try {
+    //     const keygenId = randomBytes(32);
+    //     const signId = randomBytes(32);
 
-        const k = await runKeygen(keygenId);
+    //     const k = await runKeygen(keygenId);
 
-        console.log(k);
+    //     console.log(k);
 
-        const y = await runSign(signId, keygenId, k);
+    //     const y = await runSign(signId, keygenId, k);
 
-        console.log(y);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
+    //     console.log(y);
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // })();
 
     dispatch(loadAllNetworks());
   }, [dispatch]);
@@ -117,8 +117,8 @@ export default function Home(): JSX.Element {
       // 1. Fetch AA Wallet Info when needed.
       // if (!currentUserAccount.aaWalletAddress) {
       const populateAAWalletInfo = async () => {
-        const aaAddresses = await fetchAAWalletAddress(userAccount);
-
+        // const aaAddresses = await fetchAAWalletAddress(userAccount);
+        const aaAddresses = ["0x10063C43708C87c631D383b9dea11CBB29e3a755"]
         console.log('aaAddresses', aaAddresses);
 
         dispatch(noteAAWalletAddress(aaAddresses));
@@ -132,9 +132,20 @@ export default function Home(): JSX.Element {
       switch (network.networkType) {
         case 'polkadot':
           try {
-            const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
-            setBalanceInfo(res);
+            // const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
+            // setBalanceInfo(res);
 
+            setBalanceInfo({
+              "native": {
+                "balance": 0,
+                "img": "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png",
+                "decimals": 18,
+                "name": "polygon-mumbai",
+                "symbol": "MATIC",
+                "priceInUSD": 0,
+                "balanceInUSD": 0
+              }
+            });
 
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
@@ -147,10 +158,20 @@ export default function Home(): JSX.Element {
           break;
         case 'ethereum':
           try {
-            const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
+            // const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
+            // setBalanceInfo(res);
 
-            setBalanceInfo(res);
-
+            setBalanceInfo({
+              "native": {
+                "balance": 0,
+                "img": "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png",
+                "decimals": 18,
+                "name": "polygon-mumbai",
+                "symbol": "MATIC",
+                "priceInUSD": 0,
+                "balanceInUSD": 0
+              }
+            });
 
 
             dispatch(endLoading());
@@ -184,57 +205,55 @@ export default function Home(): JSX.Element {
 
       <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:bg-gradient-to-br dark:from-[#0A0A0B] dark:to-[#0A0A0B] min-h-screen flex flex-col justify-between transition-all duration-700 ease-out'>
         {/* <Toaster /> */}
-        {/* <Header /> */}
+        {/* <NewHeader /> */}
         {/* <NetworkSidebarMobile /> */}
         {/* <MenuSidebar /> */}
 
         <div className='w-full h-full '>
 
-          <div className='absolute top-[60px] left-0 bg-transparent h-10 w-10 mx-10 hidden md:inline-flex items-center justify-center '>
-            <Image
-              layout='fill'
-              objectFit='contain'
-              onClick={() => router.push('/')}
-              src={logo.src}
-            />
+
+          {/*  New Header */}
+          <div className='relative flex items-center justify-center  space-x-1 p-1 md:p-3 md:space-x-3 sm:justify-between '>
+            <div className='bg-transparent h-10 w-10 md:h-12 md:w-12 relative '>
+              <Image
+                layout='fill'
+                objectFit='contain'
+                // height={32}
+                // width={32}
+                onClick={() => router.push('/')}
+                src={logo.src}
+              />
+            </div>
+
+
+            {/* 透明div */}
+            <div className='absolute top-1 left-11 bg-gradient-to-r from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50'></div>
+
+            {/* tab的button */}
+            <div className='bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-t-lg max-w-screen overflow-x-scroll scrollbar-thin scrollbar-thumb-gray-800  whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
+              {tabs.map((item) => (
+                <div
+                  className={item === selectedTab
+                    ? ' font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out'
+                    : 'text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out'}
+                  key={item.label}
+                  onClick={() => setSelectedTab(item)}
+                >
+                  {`${item.label}`}
+
+                </div>
+              ))}
+
+
+            </div>
+
+            <div className='xl:bg-[#1A1A1A] xl:rounded-md'>
+              <AccountInHeader />
+            </div>
+
+
+
           </div>
-
-          <div className='absolute top-[60px] right-36 bg-transparent h-12 w-12 hidden xl:inline-flex items-center justify-center '>
-            <AccountInHeader />
-          </div>
-
-          <div className='bg-[#1A1A1A] px-20 md:px-5 flex items-center mt-[20px] md:mt-[60px] space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-10 '>
-            {tabs.map((item) => (
-              <div
-                className={item === selectedTab
-                  ? ' font-inter text-[15px] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 '
-                  : 'text-white font-inter text-[15px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 '}
-                key={item.label}
-                onClick={() => setSelectedTab(item)}
-              >
-                {`${item.label}`}
-
-              </div>
-            ))}
-
-
-          </div>
-
-          <div className='absolute top-[20px] left-10 bg-gradient-to-r from-[#1A1A1A] to-transparent h-10 w-10 md:hidden'></div>
-
-          <div className='absolute top-[20px] left-0 bg-[#1A1A1A] h-10 w-10 md:hidden flex items-center justify-center '>
-            <Image
-              layout='fill'
-              objectFit='contain'
-              onClick={() => router.push('/')}
-              src={logo.src}
-            />
-          </div>
-
-          <div className='absolute top-[20px] md:top-[60px] right-0 md:right-10 bg-[#1A1A1A] h-10 w-10 xl:hidden flex items-center justify-center'>
-            <AccountInHeader />
-          </div>
-
 
           <main className='w-full h-full'>
             <AnimatePresence exitBeforeEnter>
@@ -271,9 +290,9 @@ export default function Home(): JSX.Element {
               </motion.div>
             </AnimatePresence>
           </main>
+
         </div>
 
-        {/* <Navbar /> */}
 
         <Footer />
 

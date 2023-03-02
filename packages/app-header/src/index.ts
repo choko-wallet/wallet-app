@@ -4,6 +4,8 @@
 import AccountInHeader from './AccountInHeader';
 import AccountRow from './AccountRow';
 import Header from './Header';
+import NewHeader from './NewHeader';
 
-export { Header, AccountRow, AccountInHeader };
+
+export { Header, AccountRow, AccountInHeader, NewHeader };
 // export { Header, AccountRow };

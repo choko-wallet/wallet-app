@@ -51,39 +51,40 @@ const LoginModal = (): JSX.Element => {
 
   return (
     <Modal modalName='landingLogin'>
-      <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all '>
+      <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all '>
         <Dialog.Title
           as='h3'
           className='text-lg font-medium leading-6 flex items-center mb-6'
         >
           <p className=' text-black flex flex-grow font-poppins'> </p>
           <div onClick={() => dispatch(setClose('landingLogin'))}>
-            <XIcon className=' text-gray-500 h-8 w-8 cursor-pointer ' />
+            <XIcon className=' text-[#B6B7BC] h-5 w-5 cursor-pointer md:h-8 md:w-8' />
           </div>
         </Dialog.Title>
 
-        <div className='flex flex-col items-center justify-center -mt-5 space-y-4'>
-          <p className=' text-black flex flex-grow font-roboto text-[24px] font-semibold pb-5'>CHOKO WALLET</p>
+        <div className='flex flex-col items-center justify-center -mt-5 space-y-4 md:px-10 pb-5 md:pb-10'>
+          <p className=' text-black flex flex-grow font-roboto text-[18px] sm:text-[24px] font-semibold pb-5'>CHOKO WALLET</p>
 
-          <button className=' text-[10px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-[360px] border border-gray-400 bg-transparent font-inter'
+          <button className=' text-[10px] md:text-[16px] text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter'
           // onClick={() => router.push('/home')}
           >Continue with Google
           </button>
-          <button className=' text-[10px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-[360px] border border-gray-400 bg-transparent font-inter'
+          <button className=' text-[10px] md:text-[16px] text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter'
           // onClick={() => router.push('/home')}
           >Continue with Github
           </button>
 
-          <p className=' text-[#747474] flex flex-grow font-roboto text-[10px]'>
-            Don’t have an account?
-            <span className='text-[#0170BF] ml-1'>We’ve got you covered.</span>
-          </p>
+          <div className='flex w-full '>
+            <p className=' text-[#747474] flex font-roboto text-[10px] '>
+              Don’t have an account?
+            </p>
+            <p className='text-[#0170BF] ml-1 flex font-roboto text-[10px] md:flex-1'>We’ve got you covered.</p>
+          </div>
 
-
-          <div className='flex items-center justify-center'>
-            <div className='w-10 h-[1px] bg-gray-400'></div>
-            <p>OR</p>
-            <div className='w-10 h-[1px] bg-gray-400'></div>
+          <div className='flex items-center justify-center w-full md:my-2'>
+            <div className='w-full h-[1px] bg-gray-300'></div>
+            <p className='p-2 text-gray-300'>OR</p>
+            <div className='w-full h-[1px] bg-gray-300'></div>
           </div>
 
           <p className=' text-[#747474] flex flex-grow font-roboto text-[10px]'>
@@ -91,7 +92,7 @@ const LoginModal = (): JSX.Element => {
           </p>
 
 
-          <button className=' text-[10px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-[360px] bg-[#0170BF] font-inter'
+          <button className=' text-[10px] md:text-[16px] text-white transition duration-150 rounded-sm hover:shadow-sm active:scale-90 p-1 md:p-2 w-full bg-[#0170BF] font-inter'
           // onClick={() => router.push('/home')}
           >
             Create an account
