@@ -1,57 +1,30 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import React from 'react';
+
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';
 
 import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
 import Modal from '../Modal';
+import { signIn } from 'next-auth/react';
 
 const LoginModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
-  // const [emailInput, setEmailInput] = useState<string>('');
 
-  // const join = async () => {
+  const loginWithGoogle = async () => {
+    await signIn("google");
+  }
 
-  //   const notification = toast.loading('Sending Email...');
-
-  //   if (!emailInput) {
-  //     throw new Error('Please input your email');
-  //   }
-
-  //   try {
-  //     const response = await fetch('http://localhost:5000', {
-  //       body: JSON.stringify({
-  //         email: emailInput
-  //       }),
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       method: 'POST'
-  //     });
-
-  //     const data = await response.json();
-
-  //     console.log('1', data);
-  //     toast.success('Thanks for joining beta waitlist', {
-  //       id: notification
-  //     });
-  //   } catch (err) {
-  //     toast.error('Something went wrong', {
-  //       id: notification
-  //     });
-  //   } finally {
-  //     setEmailInput('');
-  //     dispatch(setClose('landingEmailPost'));
-  //   }
-  // };
+  const loginWithGithub = async () => {
+    await signIn("github");
+  }
 
   return (
     <Modal modalName='landingLogin'>
-      <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-sm bg-white p-6 text-left align-middle shadow-xl transition-all '>
+      <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all '>
         <Dialog.Title
           as='h3'
           className='text-lg font-medium leading-6 flex items-center mb-6'
@@ -65,12 +38,12 @@ const LoginModal = (): JSX.Element => {
         <div className='flex flex-col items-center justify-center -mt-5 space-y-4 md:px-10 pb-5 md:pb-10'>
           <p className=' text-black flex flex-grow font-roboto text-[18px] sm:text-[24px] font-semibold pb-5'>CHOKO WALLET</p>
 
-          <button className=' text-[10px] md:text-[16px] text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter'
-          // onClick={() => router.push('/home')}
+          <button className=' text-[10px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-[360px] border border-gray-400 bg-transparent font-inter'
+            onClick={loginWithGoogle}
           >Continue with Google
           </button>
-          <button className=' text-[10px] md:text-[16px] text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter'
-          // onClick={() => router.push('/home')}
+          <button className=' text-[10px] lg:text-xl text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-[360px] border border-gray-400 bg-transparent font-inter'
+            onClick={loginWithGithub}
           >Continue with Github
           </button>
 

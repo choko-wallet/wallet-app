@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import AddNetworkModal from 'packages/app/components/modal/AddNetworkModal';
 import AddTokenModal from 'packages/app/components/modal/AddTokenModal';
-import ExportAccountModal from 'packages/app/components/modal/ExportAccountModal';
+// import ExportAccountModal from 'packages/app/components/modal/ExportAccountModal';
 import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
 import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
@@ -16,13 +16,11 @@ import { useSelector } from 'react-redux';
 import { randomBytes } from 'tweetnacl';
 import { CreditCardIcon, MoonIcon, SunIcon } from '@heroicons/react/outline';
 
-import MenuSidebar from '@choko-wallet/app/components/MenuSidebar';
 import Profile from '@choko-wallet/app/components/Profile';
 // import { Header } from '@choko-wallet/app-header';
 import { NetworkSidebar } from '@choko-wallet/app-network-sidebar';
 import { endLoading, loadAllNetworks, loadUserAccount, noteAAWalletAddress, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectLoading, selectUserAccount, startLoading, useAppThunkDispatch } from '@choko-wallet/app-redux';
 import { encodeAddr, ethFetchBalance, fetchAAWalletAddress, polkadotFetchBalance, toastFail } from '@choko-wallet/app-utils';
-import { runKeygen, runSign } from '@choko-wallet/app-utils/mpc';
 import { Balance } from '@choko-wallet/balance-module';
 
 import Footer from '../../components/Footer';
@@ -44,6 +42,7 @@ export default function Home(): JSX.Element {
 
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
+
   const currentNetwork = useSelector(selectCurrentNetwork);
   const knownNetworks = useSelector(selectKnownNetworks);
   const loadingText = useSelector(selectLoading);
@@ -61,23 +60,6 @@ export default function Home(): JSX.Element {
 
   // 1. init the network config
   useEffect(() => {
-    // void (async () => {
-    //   try {
-    //     const keygenId = randomBytes(32);
-    //     const signId = randomBytes(32);
-
-    //     const k = await runKeygen(keygenId);
-
-    //     console.log(k);
-
-    //     const y = await runSign(signId, keygenId, k);
-
-    //     console.log(y);
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // })();
-
     dispatch(loadAllNetworks());
   }, [dispatch]);
 
@@ -85,17 +67,17 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     if (!currentNetwork) return;
 
-    // IF account is not in localStorage - redirect to account creation page
-    if (!localStorage.getItem('serialziedUserAccount')) {
-      void router.push('/account');
-    } else {
+    if (localStorage.getItem('serialziedUserAccount') || localStorage.getItem('mpcKey')) {
       try {
         dispatch(loadUserAccount());
-      } catch (e) {
+      } catch(e) {
         // This means that the AA Wallet info is not arranged as expected.
         // We gotta fetch from chain
         console.log(e);
       }
+    } else {
+      // we somehow ended up in this page? Force redirect to home and complete account signin
+      void router.push('/')
     }
   }, [currentNetwork, dispatch, router]);
 
@@ -104,8 +86,6 @@ export default function Home(): JSX.Element {
     if (!knownNetworks) return;
     if (!currentUserAccount) return;
     if (!currentNetwork) return;
-
-    console.log('fetching balance ', userAccount, knownNetworks, currentNetwork);
 
     // no need to await
     /** Fetch Balance && AAWallet Address */
@@ -117,35 +97,33 @@ export default function Home(): JSX.Element {
       // 1. Fetch AA Wallet Info when needed.
       // if (!currentUserAccount.aaWalletAddress) {
       const populateAAWalletInfo = async () => {
-        // const aaAddresses = await fetchAAWalletAddress(userAccount);
-        const aaAddresses = ["0x10063C43708C87c631D383b9dea11CBB29e3a755"]
+        const aaAddresses = await fetchAAWalletAddress(userAccount);
         console.log('aaAddresses', aaAddresses);
 
         dispatch(noteAAWalletAddress(aaAddresses));
       };
 
       await populateAAWalletInfo();
-      // }
 
       const network = knownNetworks[currentNetwork];
 
       switch (network.networkType) {
         case 'polkadot':
           try {
-            // const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
-            // setBalanceInfo(res);
+            const res = await polkadotFetchBalance(network, encodeAddr(network, currentUserAccount));
+            setBalanceInfo(res);
 
-            setBalanceInfo({
-              "native": {
-                "balance": 0,
-                "img": "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png",
-                "decimals": 18,
-                "name": "polygon-mumbai",
-                "symbol": "MATIC",
-                "priceInUSD": 0,
-                "balanceInUSD": 0
-              }
-            });
+            // setBalanceInfo({
+            //   "native": {
+            //     "balance": 0,
+            //     "img": "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png",
+            //     "decimals": 18,
+            //     "name": "polygon-mumbai",
+            //     "symbol": "MATIC",
+            //     "priceInUSD": 0,
+            //     "balanceInUSD": 0
+            //   }
+            // });
 
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
@@ -158,22 +136,8 @@ export default function Home(): JSX.Element {
           break;
         case 'ethereum':
           try {
-            // const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
-            // setBalanceInfo(res);
-
-            setBalanceInfo({
-              "native": {
-                "balance": 0,
-                "img": "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png",
-                "decimals": 18,
-                "name": "polygon-mumbai",
-                "symbol": "MATIC",
-                "priceInUSD": 0,
-                "balanceInUSD": 0
-              }
-            });
-
-
+            const res = await ethFetchBalance(network, encodeAddr(network, currentUserAccount));
+            setBalanceInfo(res);
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
           } catch (e) {
@@ -193,12 +157,9 @@ export default function Home(): JSX.Element {
     setTheme('dark');
   }, [setTheme]);
 
-  if (!mounted || !localStorage.getItem('serialziedUserAccount')) { return null; }
+  if (!mounted) { return null; }
 
   if (loadingText) return <Loading />;
-
-  console.log(knownNetworks, userAccount);
-  console.log('balance-home', balanceInfo);
 
   return (
     <div className={theme}>
@@ -241,7 +202,6 @@ export default function Home(): JSX.Element {
                   onClick={() => setSelectedTab(item)}
                 >
                   {`${item.label}`}
-
                 </div>
               ))}
 
@@ -291,7 +251,7 @@ export default function Home(): JSX.Element {
 
                     <AddTokenModal />
 
-                    <ExportAccountModal />
+                    {/* <ExportAccountModal /> */}
                   </div >
                   : selectedTab.label === 'Profile'
                     ? <Profile balance={balanceInfo} />

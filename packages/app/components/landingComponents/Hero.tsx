@@ -5,7 +5,6 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import React from 'react';
 import Typed from 'react-typed';
 
@@ -17,14 +16,10 @@ import bg from '../../images/bg.png';
 import landingGIF from '../../images/landing1.gif';
 import EmailPostModal from '../modal/EmailPostModal';
 import LoginModal from '../modal/LoginModal';
+import { signOut } from 'next-auth/react';
 
 const Hero = (): JSX.Element => {
-  const { data: session } = useSession();
-
   const dispatch = useDispatch();
-  if (session) { console.log('session', session, session.user.provider); }
-
-  const router = useRouter();
   // const vidRef = useRef();
 
   // useEffect(() => { vidRef.current.play(); }, []);
@@ -158,7 +153,6 @@ const Hero = (): JSX.Element => {
                 </button>
 
                 <button className=' text-[10px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-[136px] md:w-[136px] border-2 border-[#0170BF] bg-transparent font-inter'
-                  // onClick={() => router.push('/home')}
                   onClick={() => dispatch(setOpen('landingLogin'))}
                 >Enter
                 </button>

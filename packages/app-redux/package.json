@@ -15,6 +15,7 @@
   "dependencies": {
     "@choko-wallet/core": "^0.1.9",
     "@choko-wallet/known-networks": "^0.1.9",
+    "@choko-wallet/mpc": "0.1.10-5",
     "@polkadot/util-crypto": "^10.2.1",
     "@reduxjs/toolkit": "^1.9.1",
     "@skyekiwi/util": "^1.0.1",
