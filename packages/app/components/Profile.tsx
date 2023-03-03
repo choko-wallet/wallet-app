@@ -43,14 +43,14 @@ function Profile({ balance }: Props): JSX.Element {
   return (
     // <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'></div>
 
-    <div className=' my-6 lg:my-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto '>
+    <div className=' my-6 lg:my-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto p-2 sm:p-3 md:p-6'>
       <div className='w-full max-w-[1500px] min-h-[750px] bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
 
         <div className='flex '>
           <div className='flex flex-col w-full  max-w-[950px]'>
             {/* <div className='flex space-x-4 w-full  justify-between '> */}
             <motion.div
-              className='flex space-x-4 w-full  justify-between '
+              className='flex  flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full justify-between '
               initial='hidden'
               variants={staggerContainer}
               viewport={{ amount: 0.25, once: false }}
@@ -59,7 +59,7 @@ function Profile({ balance }: Props): JSX.Element {
 
               {/* <div className=' h-[100px] z-10 relative'> */}
               <motion.div
-                className='h-[100px] z-10 relative'
+                className='h-[100px] z-10 relative px-2'
                 variants={fadeIn('left', 'tween', 0, 0.5)}
               >
 
@@ -86,9 +86,7 @@ function Profile({ balance }: Props): JSX.Element {
 
               </motion.div>
 
-              <div className='w-[560px] h-[260px] '>
-                <Chart />
-              </div>
+              <Chart />
 
             </motion.div>
 
@@ -110,10 +108,6 @@ function Profile({ balance }: Props): JSX.Element {
               ))}
             </div>
 
-          </div>
-
-          <div className=' px-8 '>
-            {/* <Mapbox /> */}
           </div>
 
         </div>
