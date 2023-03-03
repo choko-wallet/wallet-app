@@ -13,6 +13,8 @@ import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
 import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { randomBytes } from 'tweetnacl';
+import { CreditCardIcon, MoonIcon, SunIcon } from '@heroicons/react/outline';
 
 import Profile from '@choko-wallet/app/components/Profile';
 // import { Header } from '@choko-wallet/app-header';
@@ -173,23 +175,24 @@ export default function Home(): JSX.Element {
 
           {/*  New Header */}
           <div className='relative flex items-center justify-center  space-x-1 p-1 md:p-3 md:space-x-3 sm:justify-between '>
-            <div className='bg-transparent h-10 w-10 md:h-12 md:w-12 relative '>
-              <Image
-                layout='fill'
-                objectFit='contain'
-                // height={32}
-                // width={32}
-                onClick={() => router.push('/')}
-                src={logo.src}
-              />
+            <div className='lg:w-20 xl:w-72 xl:flex xl:justify-start'>
+              <div className='bg-transparent h-10 w-10 md:h-12 md:w-12 relative '>
+                <Image
+                  layout='fill'
+                  objectFit='contain'
+                  // height={32}
+                  // width={32}
+                  onClick={() => router.push('/')}
+                  src={logo.src}
+                />
+              </div>
             </div>
-
 
             {/* 透明div */}
             <div className='absolute top-1 left-11 bg-gradient-to-r from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50'></div>
 
             {/* tab的button */}
-            <div className='bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-t-lg max-w-screen overflow-x-scroll scrollbar-thin scrollbar-thumb-gray-800  whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
+            <div className='bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[600px]'>
               {tabs.map((item) => (
                 <div
                   className={item === selectedTab
@@ -205,10 +208,20 @@ export default function Home(): JSX.Element {
 
             </div>
 
-            <div className='xl:bg-[#1A1A1A] xl:rounded-md'>
-              <AccountInHeader />
-            </div>
+            <div className='flex items-center justify-center'>
 
+              <div className='hidden lg:inline-flex w-8 '>
+                {theme === 'light'
+                  ? <SunIcon className='hidden h-7 transition text-gray-800 duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 '
+                    onClick={() => setTheme('dark')} />
+                  : <MoonIcon className='hidden h-7  transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white'
+                    onClick={() => setTheme('light')} />
+                }
+              </div>
+              <div className='xl:bg-[#1A1A1A] xl:rounded-md  '>
+                <AccountInHeader />
+              </div>
+            </div>
 
 
           </div>
