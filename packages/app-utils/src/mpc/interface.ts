@@ -168,9 +168,6 @@ export const extractSignature = (sig: SerializedSignature): Uint8Array => {
     const s = hexToU8a( obj.s.scalar );
     const recid = obj.recid;
 
-    // signature.r,
-    //      signature.s,
-    //      (signature.recoveryParam ? "0x1c": "0x1b")
     const signature = new Uint8Array(65);
     signature.set(r, 0);
     signature.set(s, 32);
@@ -183,21 +180,3 @@ export const extractSignature = (sig: SerializedSignature): Uint8Array => {
 
   /* eslint-enable */
 };
-
-export class AuthCode {
-  secretKey: Uint8Array
-  code: Uint8Array
-
-  time: number
-
-  public serialize (): string {
-    return JSON.stringify({
-      code: Array.from(this.code),
-
-      secret_key: Array.from(this.secretKey),
-
-      time: this.time,
-      time_discrepancy: 300 // fixed at 5minutes - node won't accept any other types
-    });
-  }
-}

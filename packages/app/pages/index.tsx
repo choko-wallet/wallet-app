@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { NextPage, NextPageContext } from 'next';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 import Head from 'next/head';
 import React, { useEffect } from 'react';
@@ -16,22 +16,26 @@ import { runKeygenRequest } from '@choko-wallet/app-utils/mpc';
 import { loadUserAccount, noteMpcUserAccount, selectLoading, selectUserAccount, startLoading, useDispatch, useSelector } from '@choko-wallet/app-redux';
 import { useRouter } from 'next/router';
 import Loading from '../components/Loading';
+import { validateOAuthProofOfOwnership, linkUsage } from '@choko-wallet/auth-client';
+import { secureGenerateRandomKey } from '@skyekiwi/crypto';
 
 interface Props {
   token: string
 }
 
-const generateAccount = async() => {
+const generateAccount = async(provider: string, email: string, token: string) => {
   // 1. submit token for validation on auth service
+  const ownershipProof = await validateOAuthProofOfOwnership(provider, email, token);
+  const keygenId = secureGenerateRandomKey();
+  const usageCertificate = await linkUsage(keygenId, ownershipProof);
 
   // 2. get an auth header and proceed with sending requests
-  let key
-  try {
-    key = await runKeygenRequest(true)
-  } catch(e) {
-    console.log(e)
-  }
+  const key = await runKeygenRequest(keygenId, usageCertificate)
 
+  if (key.indexOf("Node Returns Error") !== -1) {
+    throw new Error(key)
+  }  
+  
   return key;
 }
 
@@ -44,30 +48,46 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   const loadingText = useSelector(selectLoading);
   const accounts = useSelector(selectUserAccount)
 
+
   useEffect(() => {
     if (accounts && accounts.length > 0) {
       // we have accounts locally
-      // router.push("/home");
+      router.push("/home");
     } else if( session ) {
+
+      console.log("gen account", localStorage.getItem("mpcKey"))
       // we don't have any account but the user is signed in with session
       // gotta generate an mpc account for user
       if (!localStorage.getItem("mpcKey"))  {
         (async () => {
           dispatch(startLoading("Generating an MPC Account ... "));
   
-          const key = await generateAccount();
-          dispatch(noteMpcUserAccount(key))
-  
-          router.push("/home")
+          try {
+            const key = await generateAccount(
+              session.user.provider,
+              session.user.email,
+              token
+            );
+            dispatch(noteMpcUserAccount(key))
+            router.push("/home")
+          } catch(e) {
+            alert(e)
+            signOut()
+            console.error(e);
+          }  
         })()
       }
     } else {
       // there is non session nor user - NOP
     }
-  }, [accounts, session])
+  }, [accounts, session, generateAccount, router])
 
   useEffect(() => {
-    dispatch(loadUserAccount())
+    try {
+      dispatch(loadUserAccount())
+    } catch(e) {
+      // nop
+    }
   }, [])
 
   if (loadingText) return <Loading />;
@@ -88,6 +108,7 @@ const Home: NextPage<Props> = ({ token }: Props) => {
 
 export async function getServerSideProps(context: NextPageContext) {
   const userCookie = context.req.headers.cookie;
+
   const sessionToken = userCookie
     .split(';')
     .filter(c => c.indexOf("next-auth.session-token") !== -1);
@@ -102,7 +123,5 @@ export async function getServerSideProps(context: NextPageContext) {
   } else {
     return { props: {token: null} }
   }
-
-
 }
 export default Home;

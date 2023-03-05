@@ -13,11 +13,11 @@
     "url": "https://github.com/choko-wallet/wallet-app"
   },
   "dependencies": {
-    "@choko-wallet/abi": "0.1.10-5",
-    "@choko-wallet/account-abstraction": "0.1.10-5",
-    "@choko-wallet/core": "0.1.10-5",
-    "@choko-wallet/mpc": "0.1.10-5",
-    "@choko-wallet/sdk": "0.1.10-5",
+    "@choko-wallet/abi": "0.1.10-8",
+    "@choko-wallet/account-abstraction": "0.1.10-8",
+    "@choko-wallet/core": "0.1.10-8",
+    "@choko-wallet/mpc": "0.1.10-8",
+    "@choko-wallet/sdk": "0.1.10-8",
     "@polkadot/api": "^9.10.4",
     "@polkadot/util-crypto": "^10.2.1",
     "@skyekiwi/util": "^1.0.1",

@@ -24,7 +24,6 @@ export const authOptions = {
     // @ts-ignore
     session({session, token, user}) {
       session.user.provider = token.provider;
-      console.log("session", session, token, user);
       return session
     },
 

@@ -13,8 +13,7 @@ import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
 import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { randomBytes } from 'tweetnacl';
-import { CreditCardIcon, MoonIcon, SunIcon } from '@heroicons/react/outline';
+import { MoonIcon, SunIcon } from '@heroicons/react/outline';
 
 import Profile from '@choko-wallet/app/components/Profile';
 // import { Header } from '@choko-wallet/app-header';

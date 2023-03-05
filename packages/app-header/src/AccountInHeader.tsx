@@ -15,6 +15,7 @@ import { removeAllAccounts, selectCurrentNetwork, selectCurrentUserAccount, sele
 import { encodeAddr } from '@choko-wallet/app-utils';
 
 import AccountRow from './AccountRow';
+import {signOut} from 'next-auth/react'
 
 /**
  * Render currentUserAccount address on Header & a drop down of all UserAccount
@@ -45,7 +46,8 @@ export default function AccountInHeader(): JSX.Element {
   };
 
   const removeAccounts = () => {
-    dispatch(removeAllAccounts());
+    signOut()
+    // dispatch(removeAllAccounts());
     void router.push('/');
   };
 
