@@ -19,7 +19,7 @@ import nft5 from '../../images/nft5.png';
 import nft6 from '../../images/nft6.png';
 import nft7 from '../../images/nft7.png';
 
-function SuperSwiper() {
+function SuperSwiper (): JSX.Element {
   return (
     <div>
       <div className='my-0 mx-auto max-w-6xl py-3 px-1 hidden md:inline-flex'>
@@ -49,71 +49,79 @@ function SuperSwiper() {
         >
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft1.src} />
+                src={nft1.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft2.src} />
+                src={nft2.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft3.src} />
+                src={nft3.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft4.src} />
+                src={nft4.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft5.src} />
+                src={nft5.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft6.src} />
+                src={nft6.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative h-52 w-52'>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft7.src} />
+                src={nft7.src}
+              />
             </div>
           </SwiperSlide>
 
           <div className='relative bottom-16 h-10 w-[360px] mx-auto flex items-center justify-center  z-50'>
-
             <div className='slider-controler h-full w-full '>
               <div className='swiper-button-prev slider-arrow relative'>
                 <ChevronLeftIcon className=' text-[#0170BF] h-10 w-10 ' />
-
               </div>
               <div className='swiper-button-next slider-arrow '>
                 <ChevronRightIcon className=' text-[#0170BF] h-10 w-10 ' />
-
               </div>
               <div className='swiper-pagination'></div>
-
             </div>
-
           </div>
-
         </Swiper>
       </div>
 
@@ -144,74 +152,81 @@ function SuperSwiper() {
         >
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft1.src} />
+                src={nft1.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft2.src} />
+                src={nft2.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft3.src} />
+                src={nft3.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft4.src} />
+                src={nft4.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft5.src} />
+                src={nft5.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft6.src} />
+                src={nft6.src}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide className='relative '>
             <div className='relative p-2 bg-gradient-to-br from-yellow-400 to-purple-600 rounded-xl'>
-              <img alt='slide_image'
+              <img
+                alt='slide_image'
                 className='object-cover w-full h-full rounded-lg'
-                src={nft7.src} />
+                src={nft7.src}
+              />
             </div>
           </SwiperSlide>
 
           <div className='relative bottom-4 h-10 w-[260px] sm:w-[300px] md:w-[360px] mx-auto flex items-center justify-center  z-50'>
-
             <div className='slider-controler h-full w-full '>
               <div className='swiper-button-prev slider-arrow relative'>
                 <ChevronLeftIcon className=' text-[#0170BF] h-10 w-10 ' />
-
               </div>
               <div className='swiper-button-next slider-arrow '>
                 <ChevronRightIcon className=' text-[#0170BF] h-10 w-10 ' />
-
               </div>
               {/* <div className="swiper-pagination hidden sm:inline-flex"></div> */}
-
             </div>
-
           </div>
-
         </Swiper>
       </div>
-
     </div>
   );
 }

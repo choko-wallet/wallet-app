@@ -1622,6 +1622,7 @@ __metadata:
     "@choko-wallet/mpc": 0.1.10-8
     "@choko-wallet/request-handler": 0.1.10-8
     "@choko-wallet/sdk": 0.1.10-8
+    "@emailjs/browser": ^3.10.0
     "@headlessui/react": ^1.6.6
     "@heroicons/react": ^1.0.6
     "@polkadot/api": ^9.10.5
@@ -1807,6 +1808,13 @@ __metadata:
   dependencies:
     "@choko-wallet/core": 0.1.10-8
   checksum: 4fcc713a3fb037be72996627c3a5aa81036968f1fbf4007b0fd55d3a8f257d65f0653a01a68ee8f71fc3b13ec55aaa6ec9863b9a606785d5774b138dc525f15a
+  languageName: node
+  linkType: hard
+
+"@emailjs/browser@npm:^3.10.0":
+  version: 3.10.0
+  resolution: "@emailjs/browser@npm:3.10.0"
+  checksum: e54784bb938b333dc2ba3d68ddf1c7322071651372da9a23ee0f5a9eb444c6b6a65155aec9c4570f3db7bac4926e30627b052ea90f0994e7be57298b9964b781
   languageName: node
   linkType: hard
 

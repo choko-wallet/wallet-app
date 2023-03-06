@@ -9,19 +9,17 @@ import Image from 'next/image';
 import React from 'react';
 
 import bg from '../../images/bg.png';
-import nfts from '../../images/nfts.png';
+// import nfts from '../../images/nfts.png';
 import SuperSwiper from './SuperSwiper';
 
 const NFT = (): JSX.Element => {
   return (
     <section className='snap-start relative'
       id='nft'>
-      <Image
-        className=''
+      <Image className=''
         layout='fill'
         objectFit='cover'
-        src={bg}
-      />
+        src={bg} />
 
       <div className='relative flex items-center justify-center h-screen text-center z-20'>
         {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
@@ -29,7 +27,6 @@ const NFT = (): JSX.Element => {
         </h3> */}
 
         <div className='flex flex-col '>
-
           <p className='text-[25px] sm:text-4xl md:text-5xl lg:text-[56px] font-semibold text-center mt-4 md:mb-10  font-sso'>
             NFT
           </p>
@@ -60,11 +57,8 @@ const NFT = (): JSX.Element => {
             </div>
 
           </div> */}
-
         </div>
-
       </div>
-
     </section>
   );
 };
