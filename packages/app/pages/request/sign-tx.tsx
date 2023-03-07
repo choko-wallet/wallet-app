@@ -20,10 +20,22 @@ import { compressParameters, decompressParameters } from '@choko-wallet/core/uti
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';
+import { useSession } from 'next-auth/react';
+import { NextPageContext } from 'next';
+import { UserAccount } from '@choko-wallet/core';
+import { runSignRequest } from '@choko-wallet/app-utils/mpc';
+import { extractSignature, MpcRequest } from '@choko-wallet/app-utils/mpc/interface';
+import { secureGenerateRandomKey } from '@skyekiwi/crypto';
 
-function SignTxHandler (): JSX.Element {
+interface Props {
+  token: string;
+}
+
+function SignTxHandler ({ token }: Props): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { data: session } = useSession();
+
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const userAccount = useSelector(selectUserAccount);
@@ -46,17 +58,19 @@ function SignTxHandler (): JSX.Element {
     const payload = router.query.payload as string;
     const callbackUrl = router.query.callbackUrl as string;
 
-    try { // 非法参数 删除或篡改参数访问 解密报错 用try catch 控制台报错
+    try {
       const u8aRequest = decompressParameters(hexToU8a(payload));
       const request = SignTxRequest.deserialize(u8aRequest);
+      setRequest(request);
+      setCallback(callbackUrl);
 
-      if (!localStorage.getItem('serialziedUserAccount')) {
-        localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
-        void router.push('/account');
-      } else {
-        setCallback(callbackUrl);
-        setRequest(request);
-      }
+      // if (!localStorage.getItem('serialziedUserAccount')) {
+      //   localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
+      //   void router.push('/account');
+      // } else {
+      //   setCallback(callbackUrl);
+      //   setRequest(request);
+      // }
     } catch (e) {
       console.log('decodeSend-err', e);
       setDecodingTx(false);
@@ -73,7 +87,6 @@ function SignTxHandler (): JSX.Element {
   useEffect(() => {
     if (!userAccount) return;
     if (!request) return;
-
     const len = userAccount.length;
 
     for (let i = 0; i < len; ++i) {
@@ -145,77 +158,119 @@ function SignTxHandler (): JSX.Element {
     })();
   }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
-  function unlock () {
+  function proceedTransaction() {
+    if (currentUserAccount.option.accountType === 0) {
+      dispatch(setOpen('signTxPasswordModal'))
+    } else if (currentUserAccount.option.accountType === 1) {
+      unlock()
+    }
+  }
+
+  async function unlock () {
     if (!request) return;
 
-    try {
-      dispatch(decryptCurrentUserAccount(password));
-
-      if (currentUserAccount && !currentUserAccount.isLocked) {
-        setPassword('');
-        dispatch(setClose('signTxPasswordModal'));
-
-        void (async () => {
-          const signTx = new SignTxDescriptor();
-
-          try {
-            setSendingTx(true);
-
-            // try {
-            const response = await signTx.requestHandler(request, currentUserAccount);// 这一步是发送
-            const s = response.serialize();
-
-            dispatch(lockCurrentUserAccount());
-            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-            // setSendingTx(false);// 已经redirect了 发送成功最好给提示 在home？
-            // 点击x 关闭交易 跳转到loading 感觉应该跳转到home
-
-            // } catch (e) {
-            //   setSendingTx(false);
-            //   console.log('sendtxerror', e);
-            // }
-          } catch (err) {
-            setSendingTx(false);
-
-            console.log('err', err);
-            toast('Something Wrong', {
-              style: {
-                background: 'red',
-                color: 'white',
-                fontFamily: 'Poppins',
-                fontSize: '16px',
-                fontWeight: 'bolder',
-                padding: '20px'
-              }
-            });
+    if (currentUserAccount.option.accountType === 0) {
+      try {
+        dispatch(decryptCurrentUserAccount(password));
+  
+        if (currentUserAccount && !currentUserAccount.isLocked) {
+          setPassword('');
+          dispatch(setClose('signTxPasswordModal'));
+  
+          void (async () => {
+            const signTx = new SignTxDescriptor();
+  
+            try {
+              setSendingTx(true);
+  
+              // try {
+              const response = await signTx.requestHandler(request, currentUserAccount);
+              const s = response.serialize();
+  
+              dispatch(lockCurrentUserAccount());
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            } catch (err) {
+              setSendingTx(false);
+  
+              console.log('err', err);
+              toast('Something Wrong', {
+                style: {
+                  background: 'red',
+                  color: 'white',
+                  fontFamily: 'Poppins',
+                  fontSize: '16px',
+                  fontWeight: 'bolder',
+                  padding: '20px'
+                }
+              });
+            }
+          })();
+        }
+  
+        toast('Password Correct, Redirecting...', {
+          duration: 5000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
           }
-        })();
+        });
+      } catch (e) {
+        toast('Wrong Password!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
       }
+    } else if (currentUserAccount.option.accountType === 1) {
+      const authHeader = await currentUserAccount.getMpcOAuthUsageCertificate(
+        session.user.provider, session.user.email, token
+      )
+  
+      console.log("sendingtx", authHeader);
+      void (async () => {
+        const signTx = new SignTxDescriptor();
 
-      toast('Password Correct, Redirecting...', {
-        duration: 5000,
-        icon: '👏',
-        style: {
-          background: 'green',
-          color: 'white',
-          fontFamily: 'Poppins',
-          fontSize: '17px',
-          fontWeight: 'bolder',
-          padding: '20px'
+        try {
+          setSendingTx(true);
+
+          // try {
+          const response = await signTx.requestHandler(request, currentUserAccount, async (msg: Uint8Array, account: UserAccount, auth?: string): Promise<Uint8Array> => {
+            const signId = secureGenerateRandomKey();
+            const res = await runSignRequest(signId, auth, msg, account.mpcKeygenId, account.mpcLocalKey, true);
+            return extractSignature(res)
+          }, authHeader);
+          const s = response.serialize();
+          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+        } catch (err) {
+          setSendingTx(false);
+
+          console.log('err', err);
+          toast('Something Wrong', {
+            style: {
+              background: 'red',
+              color: 'white',
+              fontFamily: 'Poppins',
+              fontSize: '16px',
+              fontWeight: 'bolder',
+              padding: '20px'
+            }
+          });
         }
-      });
-    } catch (e) {
-      toast('Wrong Password!', {
-        style: {
-          background: 'red',
-          color: 'white',
-          fontFamily: 'Poppins',
-          fontSize: '16px',
-          fontWeight: 'bolder',
-          padding: '20px'
-        }
-      });
+      })();
+
+
     }
+    
   }
 
   if (!mounted) {
@@ -324,7 +379,7 @@ function SignTxHandler (): JSX.Element {
       } */}
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
+          onClick={() => proceedTransaction()}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>
@@ -371,4 +426,23 @@ function SignTxHandler (): JSX.Element {
   );
 }
 
+
+export async function getServerSideProps(context: NextPageContext) {
+  const userCookie = context.req.headers.cookie;
+
+  const sessionToken = userCookie
+    .split(";")
+    .filter((c) => c.indexOf("next-auth.session-token") !== -1);
+
+  if (sessionToken.length > 0) {
+    // expect the token to have content!
+    const token = sessionToken[0].split("=")[1];
+
+    return {
+      props: { token },
+    };
+  } else {
+    return { props: { token: null } };
+  }
+}
 export default SignTxHandler;

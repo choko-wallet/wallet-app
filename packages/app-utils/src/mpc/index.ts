@@ -5,12 +5,14 @@
 /* eslint-disable */
 import initWasm, {ext_run_keygen, ext_run_sign} from './skw_mpc_wasm';
 
-import { defaultAccountOption, UserAccount } from '@choko-wallet/core';
+import { UserAccount } from '@choko-wallet/core';
+import {defaultMpcAccountOption} from '@choko-wallet/core/accountOption'
+
 import { Certificate } from '@choko-wallet/auth-client/types';
 
-import { clientNode, clientNodeRawAddr } from './fixtures';
 import { extractPublicKey, MpcRequest, SerializedLocalKey, SerializedSignature } from './interface';
 import { u8aToHex } from '@skyekiwi/util';
+import { fetchPeers } from './fetchFixtures';
 
 const certificateToAuthHeader = (cert: Certificate): string => {
   return JSON.stringify({
@@ -27,45 +29,53 @@ const runKeygenRequest = async (
   enableLog = true,
   existingKey?: Uint8Array
 ): Promise<SerializedLocalKey> => {
+  const fixture = await fetchPeers();
+
+  console.log(fixture)
 
   await initWasm();
   // const payloadId = secureGenerateRandomKey();
-  const keygenRequst = MpcRequest.newKeyGenRequest(payloadId, existingKey);
+  const keygenRequst = MpcRequest.newKeyGenRequest(fixture, payloadId, existingKey);
+  
+  console.log(keygenRequst)
   return await ext_run_keygen(
     certificateToAuthHeader(usageCertificate),
     keygenRequst.serialize(),
-    clientNode[0], // peerId
-    clientNodeRawAddr,
+    fixture.c[0], // peerId
+    "/ip4/143.198.142.119/tcp/2619/ws",
     enableLog
   );
 };
 
 const runSignRequest = async (
   payloadId: Uint8Array,
-  usageCertificate: Certificate,
+  auth: string,
   message: Uint8Array,
   keygenId: Uint8Array,
   localKey: SerializedLocalKey,
   enableLog: boolean
 ): Promise<SerializedSignature> => {
+  const fixture = await fetchPeers();
   await initWasm();
   // const payloadId = secureGenerateRandomKey();
-  const signRequet = MpcRequest.newSignRequest(payloadId, message, keygenId);
+  const signRequet = MpcRequest.newSignRequest(fixture, payloadId, message, keygenId);
+
   return await ext_run_sign(
-    certificateToAuthHeader(usageCertificate),
+    auth,
     signRequet.serialize(),
     localKey,
-    clientNode[0],
-    clientNodeRawAddr,
+    fixture.c[0], // peerId
+    "/ip4/143.198.142.119/tcp/2619/ws",
     enableLog
   );
 };
 
 const mpcLocalKeyToAccount = (
-  localKey: SerializedLocalKey
+  localKey: SerializedLocalKey,
+  keygenId: Uint8Array,
 ): UserAccount => {
   const publicKey = extractPublicKey(localKey);
-  const userAccount = new UserAccount(defaultAccountOption);
+  const userAccount = new UserAccount(defaultMpcAccountOption);
 
   userAccount.publicKeys = [
     new Uint8Array(33),
@@ -73,6 +83,7 @@ const mpcLocalKeyToAccount = (
     publicKey
   ];
 
+  userAccount.noteMpcWallet(keygenId, localKey);
   return userAccount;
 };
 

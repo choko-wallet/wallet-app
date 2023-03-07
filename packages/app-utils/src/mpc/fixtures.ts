@@ -4,25 +4,25 @@
 import { Multiaddr, NodeInfo } from './interface';
 
 const fullNode1: NodeInfo = [
-  '12D3KooWFAYpT3YAoREqXMK4v3ghPS2SjjuhHgBxkhco1xU15wFs',
-  '/ip4/10.0.0.3/tcp/2620/ws/p2p/12D3KooWFAYpT3YAoREqXMK4v3ghPS2SjjuhHgBxkhco1xU15wFs'
+  '12D3KooWHwGnK5FhETtw48sHGy4mLWfDFND59b1x2RngCr8Xv6nB',
+  '/dns/f1.mpc.choko.app/tcp/2620/ws/p2p/12D3KooWHwGnK5FhETtw48sHGy4mLWfDFND59b1x2RngCr8Xv6nB'
 ];
 
 const fullNode2: NodeInfo = [
-  '12D3KooWLrtYUi9CRjE9KqTtWtxtkUg7ys56zwJ6rTi5b9GXGRdd',
-  '/ip4/10.0.0.3/tcp/2621/ws/p2p/12D3KooWLrtYUi9CRjE9KqTtWtxtkUg7ys56zwJ6rTi5b9GXGRdd'
+  '12D3KooWDT97aUogGk3Hb7SZazACBWcpjuGyVfJdVajToGdocuky',
+  '/dns/f2.mpc.choko.app/tcp/2621/ws/p2p/12D3KooWDT97aUogGk3Hb7SZazACBWcpjuGyVfJdVajToGdocuky'
 ];
 
 const lightNode: NodeInfo = [
-  '12D3KooWLYLcvqbj1TBvM8u83jotaCEuwMqVhuRENdA3CfEA3dHa',
-  '/ip4/10.0.0.3/tcp/2622/ws/p2p/12D3KooWLYLcvqbj1TBvM8u83jotaCEuwMqVhuRENdA3CfEA3dHa'
+  '12D3KooWEfuMKPNTpcnHj7ywgk4h7THztZt2gi5DxYUApjkCi2Di',
+  '/dns/l.mpc.choko.app/tcp/2622/ws/p2p/12D3KooWEfuMKPNTpcnHj7ywgk4h7THztZt2gi5DxYUApjkCi2Di'
 ];
 
 const clientNode: NodeInfo = [
-  '12D3KooWDMdKQcMKbEc9giHEAcunLQoJCzxgmmTef6ZpVQkf56cu',
-  '/ip4/10.0.0.3/tcp/2619/ws/p2p/12D3KooWDMdKQcMKbEc9giHEAcunLQoJCzxgmmTef6ZpVQkf56cu'
+  '12D3KooWM7yXoRonZbkUi2Wm6D5V95yuYCTcE7Yx6RPiX5vg5S8P',
+  "/dns/c.mpc.choko.app/tcp/2619/ws/p2p/12D3KooWM7yXoRonZbkUi2Wm6D5V95yuYCTcE7Yx6RPiX5vg5S8P"
 ];
 
-const clientNodeRawAddr: Multiaddr = '/ip4/10.0.0.3/tcp/2619/ws';
+const clientNodeRawAddr: Multiaddr = '/ip4/143.198.142.119/tcp/2619/ws';
 
 export { fullNode1, fullNode2, lightNode, clientNode, clientNodeRawAddr };

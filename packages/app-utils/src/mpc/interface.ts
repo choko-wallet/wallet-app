@@ -1,9 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/mpc authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexToU8a } from '@skyekiwi/util';
-
-import { lightNode, clientNode, fullNode1, fullNode2 } from './fixtures';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
+import { joinSignature } from 'ethers/lib/utils';
+import { MpcNodeFixtures } from './types';
 
 export type PeerId = string;
 export type Multiaddr = string;
@@ -41,9 +41,11 @@ const serializeSignRequest = (request: SignRequestType): string => {
 
   /* eslint-disable */
   return JSON.stringify({
-    message: Array.from(request.message),
-    keygen_id: Array.from(request.keygenId),
-    keygen_peers: request.keygenPeers
+    SignOffline: {
+      message: Array.from(request.message),
+      keygen_id: Array.from(request.keygenId),
+      keygen_peers: request.keygenPeers
+    }
   });
   /* eslint-enable */
 };
@@ -62,6 +64,7 @@ export class MpcRequest {
   t: number
 
   constructor (
+    mpcNodeFixtures: MpcNodeFixtures,
     mode: 'keygen' | 'sign',
     payloadId: Uint8Array,
     payloadType: KeyGenRequestType | SignRequestType,
@@ -78,38 +81,43 @@ export class MpcRequest {
           keygen: payloadType as KeyGenRequestType,
           sign: undefined
         };
+        this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1, mpcNodeFixtures.f2];
         break;
       case 'sign':
         this.payloadType = {
           keygen: undefined,
           sign: payloadType as SignRequestType
         };
+        this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1];
         break;
     }
 
-    this.peers = peers || [lightNode, fullNode1, fullNode2];
-    this.sender = sender || lightNode[0];
+
+
+    this.sender = sender || mpcNodeFixtures.l[0];
 
     this.n = n;
     this.t = t;
   }
 
-  public static newKeyGenRequest (payloadId: Uint8Array, existingKey?: Uint8Array): MpcRequest {
+  public static newKeyGenRequest (mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array, existingKey?: Uint8Array): MpcRequest {
     return new MpcRequest(
+      mpcNodeFixtures,
       'keygen', payloadId, { keygen: existingKey || null }
     );
   }
 
   public static newSignRequest (
+    mpcNodeFixtures: MpcNodeFixtures,
     payloadId: Uint8Array,
     message: Uint8Array,
     keygenId: Uint8Array,
-    keygenPeers: NodeInfo[] = [clientNode, fullNode1, fullNode2]
   ): MpcRequest {
     return new MpcRequest(
+      mpcNodeFixtures,
       'sign', payloadId, {
         keygenId: keygenId,
-        keygenPeers: keygenPeers,
+        keygenPeers: [mpcNodeFixtures.l, mpcNodeFixtures.f1, mpcNodeFixtures.f2],
         message: message
       }
     );
@@ -161,19 +169,21 @@ export const extractSignature = (sig: SerializedSignature): Uint8Array => {
   /* eslint-disable */
   const obj = JSON.parse(sig);
 
+  console.log(obj)
   if (obj.r && obj.r.scalar &&
     obj.s && obj.s.scalar &&
-    obj.recid) {
+    obj.recid !== undefined) {
     const r =  hexToU8a( obj.r.scalar );
     const s = hexToU8a( obj.s.scalar );
     const recid = obj.recid;
 
-    const signature = new Uint8Array(65);
-    signature.set(r, 0);
-    signature.set(s, 32);
-    signature.set(recid, 64);
-    
-    return signature;
+    const sigLike = {
+      r: `0x${u8aToHex(r)}`, 
+      s: `0x${u8aToHex(s)}`, 
+      recoveryParam: recid
+    }
+
+    return hexToU8a( joinSignature(sigLike).substring(2) );
   } else {
     throw new Error('invalid signature');
   }

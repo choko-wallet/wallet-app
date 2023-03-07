@@ -6,7 +6,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
 import { AccountOption, UserAccount } from '@choko-wallet/core';
-import { mpcLocalKeyToAccount } from '@choko-wallet/mpc';
+import { mpcLocalKeyToAccount } from '@choko-wallet/app-utils/mpc';
 
 /**
  * Wallet core account storage
@@ -71,6 +71,7 @@ export const addUserAccount = createAsyncThunk(
 
       if (!accountOption) {
         accountOption = new AccountOption({
+          accountType: 0,
           hasEncryptedPrivateKeyExported: false,
           localKeyEncryptionStrategy: 1
         });
@@ -134,14 +135,15 @@ export const userSlice = createSlice({
       const rawSerializedUserAccount = localStorage.getItem('serialziedUserAccount');
       const aaWalletCache = localStorage.getItem('AAWalletCache');
       const mpcKey = localStorage.getItem('mpcKey');
+      const mpcKeygenId = localStorage.getItem('mpcKeygenId');
 
       let allAccounts: UserAccount[] = [];
 
       // User land
       // 1. we first try to load the mpc account - mpc account is always the first account
-      if (mpcKey && mpcKey !== 'null') {
+      if (mpcKey && mpcKey !== 'null' && mpcKeygenId && mpcKeygenId !== 'null') {
         // we have an MPC account
-        allAccounts.push(mpcLocalKeyToAccount(mpcKey));
+        allAccounts.push(mpcLocalKeyToAccount(mpcKey, hexToU8a(mpcKeygenId)));
         state.mpcUserAccountIndex = 0;
         state.currentUserAccountIndex = 0;
       } else if (rawSerializedUserAccount && rawSerializedUserAccount !== 'null') {
@@ -186,13 +188,16 @@ export const userSlice = createSlice({
     removeAllAccounts: (state) => {
       localStorage.removeItem('serialziedUserAccount');
       localStorage.removeItem('AAWalletCache');
+      localStorage.removeItem('mpcKey');
+      localStorage.removeItem('mpcKeygenId');
 
       state.currentUserAccount = null;
       state.userAccount = [];
     },
-    noteMpcUserAccount: (_state, action: PayloadAction<string>) => {
-      const localKey = action.payload;
+    noteMpcUserAccount: (_state, action: PayloadAction<[string, Uint8Array]>) => {
+      const [localKey, keygenId] = action.payload;
       localStorage.setItem("mpcKey", localKey);
+      localStorage.setItem("mpcKeygenId", u8aToHex(keygenId))
     },
   },
   extraReducers: (builder) => {

@@ -238,6 +238,7 @@ const TestRequest: NextPage = () => {
   useEffect(() => {
     configSDK({
       accountOption: new AccountOption({
+        accountType: 0,
         hasEncryptedPrivateKeyExported: false,
         localKeyEncryptionStrategy: 0
       }),

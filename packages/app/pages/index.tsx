@@ -13,6 +13,7 @@ import Hero from "../components/landingComponents/Hero";
 import NFT from "../components/landingComponents/NFT";
 
 import { runKeygenRequest } from "@choko-wallet/app-utils/mpc";
+
 import {
   loadUserAccount,
   noteMpcUserAccount,
@@ -38,8 +39,10 @@ const generateAccount = async (
   provider: string,
   email: string,
   token: string
-) => {
+): Promise<[string, Uint8Array]> => {
+
   // 1. submit token for validation on auth service
+  // console.log
   const ownershipProof = await validateOAuthProofOfOwnership(
     provider,
     email,
@@ -48,6 +51,7 @@ const generateAccount = async (
   const keygenId = secureGenerateRandomKey();
   const usageCertificate = await linkUsage(keygenId, ownershipProof);
 
+  console.log(usageCertificate)
   // 2. get an auth header and proceed with sending requests
   const key = await runKeygenRequest(keygenId, usageCertificate);
 
@@ -55,7 +59,7 @@ const generateAccount = async (
     throw new Error(key);
   }
 
-  return key;
+  return [key, keygenId];
 };
 
 const Home: NextPage<Props> = ({ token }: Props) => {
@@ -67,12 +71,12 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   const loadingText = useSelector(selectLoading);
   const accounts = useSelector(selectUserAccount);
 
+  // fetchPeers();
   useEffect(() => {
     if (accounts && accounts.length > 0) {
       // we have accounts locally
       router.push("/home");
     } else if (session) {
-      console.log("gen account", localStorage.getItem("mpcKey"));
       // we don't have any account but the user is signed in with session
       // gotta generate an mpc account for user
       if (!localStorage.getItem("mpcKey")) {
@@ -88,8 +92,7 @@ const Home: NextPage<Props> = ({ token }: Props) => {
             dispatch(noteMpcUserAccount(key));
             router.push("/home");
           } catch (e) {
-            alert(e);
-            signOut();
+            // signOut();
             console.error(e);
           }
         })();
@@ -101,6 +104,11 @@ const Home: NextPage<Props> = ({ token }: Props) => {
 
   useEffect(() => {
     try {
+      // (async() => {
+      //   const res = await fetchPeers();
+      //   console.log(res)
+
+      // })()
       dispatch(loadUserAccount());
     } catch (e) {
       // nop
@@ -126,18 +134,21 @@ const Home: NextPage<Props> = ({ token }: Props) => {
 export async function getServerSideProps(context: NextPageContext) {
   const userCookie = context.req.headers.cookie;
 
-  const sessionToken = userCookie
+  try {
+    const sessionToken = userCookie
     .split(";")
     .filter((c) => c.indexOf("next-auth.session-token") !== -1);
-
-  if (sessionToken.length > 0) {
-    // expect the token to have content!
-    const token = sessionToken[0].split("=")[1];
-
-    return {
-      props: { token },
-    };
-  } else {
+    if (sessionToken.length > 0) {
+      // expect the token to have content!
+      const token = sessionToken[0].split("=")[1];
+  
+      return {
+        props: { token },
+      };
+    } else {
+      return { props: { token: null } };
+    }
+  } catch(e) {
     return { props: { token: null } };
   }
 }

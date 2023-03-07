@@ -47,7 +47,7 @@ export default function AccountInHeader(): JSX.Element {
 
   const removeAccounts = () => {
     signOut()
-    // dispatch(removeAllAccounts());
+    dispatch(removeAllAccounts());
     void router.push('/');
   };
 

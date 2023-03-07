@@ -76,7 +76,7 @@ export default function Home(): JSX.Element {
       }
     } else {
       // we somehow ended up in this page? Force redirect to home and complete account signin
-      void router.push('/')
+      // void router.push('/')
     }
   }, [currentNetwork, dispatch, router]);
 
@@ -91,14 +91,10 @@ export default function Home(): JSX.Element {
     (async () => {
       dispatch(startLoading('Fetching Balance ...'));
 
-      console.log('aaWalletAddress', currentUserAccount.aaWalletAddress);
-
       // 1. Fetch AA Wallet Info when needed.
       // if (!currentUserAccount.aaWalletAddress) {
       const populateAAWalletInfo = async () => {
         const aaAddresses = await fetchAAWalletAddress(userAccount);
-        console.log('aaAddresses', aaAddresses);
-
         dispatch(noteAAWalletAddress(aaAddresses));
       };
 
