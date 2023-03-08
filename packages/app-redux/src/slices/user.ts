@@ -5,8 +5,8 @@ import { blake2AsU8a } from '@polkadot/util-crypto';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
-import { AccountOption, UserAccount } from '@choko-wallet/core';
 import { mpcLocalKeyToAccount } from '@choko-wallet/app-utils/mpc';
+import { AccountOption, UserAccount } from '@choko-wallet/core';
 
 /**
  * Wallet core account storage
@@ -149,12 +149,12 @@ export const userSlice = createSlice({
       } else if (rawSerializedUserAccount && rawSerializedUserAccount !== 'null') {
         // 2. then we try to load local accounts
         allAccounts = [
-          ...allAccounts, 
+          ...allAccounts,
           ...parseUserAccount(hexToU8a(rawSerializedUserAccount))
         ];
       } else {
-        // we have non-account avalaible 
-        return
+        // we have non-account avalaible
+        return;
       }
 
       // if we are here - that means there must be some account there
@@ -165,7 +165,7 @@ export const userSlice = createSlice({
       if (aaWalletCache && aaWalletCache.length !== 0) {
         const aaWalletAddresses = parseAAWalletCache(aaWalletCache);
 
-        for (let i = 0; i < aaWalletAddresses.length; ++ i) {
+        for (let i = 0; i < aaWalletAddresses.length; ++i) {
           state.userAccount[i].aaWalletAddress = aaWalletAddresses[i];
         }
       }
@@ -196,9 +196,10 @@ export const userSlice = createSlice({
     },
     noteMpcUserAccount: (_state, action: PayloadAction<[string, Uint8Array]>) => {
       const [localKey, keygenId] = action.payload;
-      localStorage.setItem("mpcKey", localKey);
-      localStorage.setItem("mpcKeygenId", u8aToHex(keygenId))
-    },
+
+      localStorage.setItem('mpcKey', localKey);
+      localStorage.setItem('mpcKeygenId', u8aToHex(keygenId));
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -244,5 +245,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const { noteMpcUserAccount, decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, removeAllAccounts, switchUserAccount } = userSlice.actions;
+export const { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, noteMpcUserAccount, removeAllAccounts, switchUserAccount } = userSlice.actions;
 export default userSlice.reducer;

@@ -73,7 +73,7 @@ const populateTokenPriceToBalance = (balance: BalanceInfo, price: Record<string,
 // The URL might be very large. However, tested with 100+ tokens, it still works well.
 // There is very little likelyhood a user hold that much of shitcoins
 const fetchBatchTokenPrice = async (address: string[], currency: string): Promise<Record<string, number>> => {
-  if (!address || address.length <= 0) { return {} }
+  if (!address || address.length <= 0) { return {}; }
 
   const payloadBase = 'https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=';
   const payloadWhole = `${payloadBase}${address.reduce((pre, i) => { return pre + i + ','; }, '')}&vs_currencies=${currency}`;

@@ -1,28 +1,28 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BalanceInfo } from "@choko-wallet/app-utils";
+import type { BalanceInfo } from '@choko-wallet/app-utils';
 
-import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
-import AddNetworkModal from "packages/app/components/modal/AddNetworkModal";
-import AddTokenModal from "packages/app/components/modal/AddTokenModal";
+import { MoonIcon, SunIcon } from '@heroicons/react/outline';
+import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
+import AddNetworkModal from 'packages/app/components/modal/AddNetworkModal';
+import AddTokenModal from 'packages/app/components/modal/AddTokenModal';
 // import ExportAccountModal from 'packages/app/components/modal/ExportAccountModal';
-import ReceiveTokenModal from "packages/app/components/modal/ReceiveTokenModal";
-import SendTokenModal from "packages/app/components/modal/SendTokenModal";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { MoonIcon, SunIcon } from "@heroicons/react/outline";
+import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
+import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import Profile from "@choko-wallet/app/components/Profile";
+import NFTs from '@choko-wallet/app/components/NFTs';
+import Profile from '@choko-wallet/app/components/Profile';
+import { AccountInHeader } from '@choko-wallet/app-header';
 // import { Header } from '@choko-wallet/app-header';
-import {
-  NetworkSidebar,
-  NetworkSidebarMobile,
-} from "@choko-wallet/app-network-sidebar";
-import {
-  endLoading,
+import { NetworkSidebar,
+  NetworkSidebarMobile } from '@choko-wallet/app-network-sidebar';
+import { endLoading,
   loadAllNetworks,
   loadUserAccount,
   noteAAWalletAddress,
@@ -32,30 +32,24 @@ import {
   selectLoading,
   selectUserAccount,
   startLoading,
-  useAppThunkDispatch,
-} from "@choko-wallet/app-redux";
-import {
-  encodeAddr,
+  useAppThunkDispatch } from '@choko-wallet/app-redux';
+import { encodeAddr,
   ethFetchBalance,
   fetchAAWalletAddress,
   polkadotFetchBalance,
-  toastFail,
-} from "@choko-wallet/app-utils";
-import { Balance } from "@choko-wallet/balance-module";
+  toastFail } from '@choko-wallet/app-utils';
+import { Balance } from '@choko-wallet/balance-module';
 
-import Footer from "../../components/Footer";
-import Loading from "../../components/Loading";
-import { initialTabs as tabs } from "../../utils/tabs";
-import Image from "next/image";
-import logo from "../../images/logo.png";
-import { AccountInHeader } from "@choko-wallet/app-header";
-import NFTs from "@choko-wallet/app/components/NFTs";
+import Footer from '../../components/Footer';
+import Loading from '../../components/Loading';
+import logo from '../../images/logo.png';
+import { initialTabs as tabs } from '../../utils/tabs';
 
 /**
  * Main dashboard
  */
 /* eslint-disable sort-keys */
-export default function Home(): JSX.Element {
+export default function Home (): JSX.Element {
   const dispatch = useAppThunkDispatch();
 
   const { setTheme, theme } = useTheme();
@@ -89,8 +83,8 @@ export default function Home(): JSX.Element {
     if (!currentNetwork) return;
 
     if (
-      localStorage.getItem("serialziedUserAccount") ||
-      localStorage.getItem("mpcKey")
+      localStorage.getItem('serialziedUserAccount') ||
+      localStorage.getItem('mpcKey')
     ) {
       try {
         dispatch(loadUserAccount());
@@ -101,11 +95,7 @@ export default function Home(): JSX.Element {
       }
     } else {
       // we somehow ended up in this page? Force redirect to home and complete account signin
-<<<<<<< HEAD
-      // void router.push('/')
-=======
-      void router.push("/");
->>>>>>> 97a786e9c8abe9094a632c0899850b278b0d77f1
+      void router.push('/');
     }
   }, [currentNetwork, dispatch, router]);
 
@@ -118,12 +108,13 @@ export default function Home(): JSX.Element {
     // no need to await
     /** Fetch Balance && AAWallet Address */
     (async () => {
-      dispatch(startLoading("Fetching Balance ..."));
+      dispatch(startLoading('Fetching Balance ...'));
 
       // 1. Fetch AA Wallet Info when needed.
       // if (!currentUserAccount.aaWalletAddress) {
       const populateAAWalletInfo = async () => {
         const aaAddresses = await fetchAAWalletAddress(userAccount);
+
         dispatch(noteAAWalletAddress(aaAddresses));
       };
 
@@ -132,12 +123,13 @@ export default function Home(): JSX.Element {
       const network = knownNetworks[currentNetwork];
 
       switch (network.networkType) {
-        case "polkadot":
+        case 'polkadot':
           try {
             const res = await polkadotFetchBalance(
               network,
               encodeAddr(network, currentUserAccount)
             );
+
             setBalanceInfo(res);
 
             // no await for ui
@@ -157,23 +149,24 @@ export default function Home(): JSX.Element {
           } catch (e) {
             console.error(e);
             dispatch(endLoading());
-            toastFail("Someting Wrong! Please Switch To Other Network.");
+            toastFail('Someting Wrong! Please Switch To Other Network.');
           }
 
           break;
-        case "ethereum":
+        case 'ethereum':
           try {
             const res = await ethFetchBalance(
               network,
               encodeAddr(network, currentUserAccount)
             );
+
             setBalanceInfo(res);
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
           } catch (e) {
             console.error(e);
             dispatch(endLoading());
-            toastFail("Someting Wrong! Please Switch To Other Network.");
+            toastFail('Someting Wrong! Please Switch To Other Network.');
           }
 
           break;
@@ -186,12 +179,12 @@ export default function Home(): JSX.Element {
     currentUserAccount,
     currentNetwork,
     dispatch,
-    userAccount,
+    userAccount
   ]);
 
   useEffect(() => {
     // figma只有黑色版本 先默认设置黑色
-    setTheme("dark");
+    setTheme('dark');
   }, [setTheme]);
 
   if (!mounted) {
@@ -202,39 +195,39 @@ export default function Home(): JSX.Element {
 
   return (
     <div className={theme}>
-      <div className="relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:bg-gradient-to-br dark:from-[#0A0A0B] dark:to-[#0A0A0B] min-h-screen flex flex-col justify-between transition-all duration-700 ease-out">
+      <div className='relative bg-gradient-to-br from-[#DEE8F1] to-[#E4DEE8] dark:bg-gradient-to-br dark:from-[#0A0A0B] dark:to-[#0A0A0B] min-h-screen flex flex-col justify-between transition-all duration-700 ease-out'>
         {/* <Toaster /> */}
         {/* <NewHeader /> */}
         <NetworkSidebarMobile />
         {/* <MenuSidebar /> */}
 
-        <div className="w-full h-full ">
+        <div className='w-full h-full '>
           {/*  New Header */}
-          <div className="relative flex items-center justify-center  space-x-1 p-1 md:p-3 md:space-x-3 sm:justify-between ">
-            <div className="lg:w-20 xl:w-72 xl:flex xl:justify-start">
-              <div className="bg-transparent h-10 w-10 md:h-12 md:w-12 relative ">
+          <div className='relative flex items-center justify-center  space-x-1 p-1 md:p-3 md:space-x-3 sm:justify-between '>
+            <div className='lg:w-20 xl:w-72 xl:flex xl:justify-start'>
+              <div className='bg-transparent h-10 w-10 md:h-12 md:w-12 relative '>
                 <Image
-                  layout="fill"
-                  objectFit="contain"
+                  layout='fill'
+                  objectFit='contain'
                   // height={32}
                   // width={32}
-                  onClick={() => router.push("/")}
+                  onClick={() => router.push('/')}
                   src={logo.src}
                 />
               </div>
             </div>
 
             {/* 透明div */}
-            <div className="absolute top-1 left-11 bg-gradient-to-r from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50"></div>
+            <div className='absolute top-1 left-11 bg-gradient-to-r from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50'></div>
 
             {/* tab的button */}
-            <div className="bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]">
+            <div className='bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
               {tabs.map((item) => (
                 <div
                   className={
                     item === selectedTab
-                      ? " font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out"
-                      : "text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out"
+                      ? ' font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out'
+                      : 'text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out'
                   }
                   key={item.label}
                   onClick={() => setSelectedTab(item)}
@@ -244,38 +237,40 @@ export default function Home(): JSX.Element {
               ))}
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="hidden lg:inline-flex w-8 ">
-                {theme === "light" ? (
-                  <SunIcon
-                    className="hidden h-7 transition text-gray-800 duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 "
-                    onClick={() => setTheme("dark")}
-                  />
-                ) : (
-                  <MoonIcon
-                    className="hidden h-7  transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white"
-                    onClick={() => setTheme("light")}
-                  />
-                )}
+            <div className='flex items-center justify-center'>
+              <div className='hidden lg:inline-flex w-8 '>
+                {theme === 'light'
+                  ? (
+                    <SunIcon
+                      className='hidden h-7 transition text-gray-800 duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 '
+                      onClick={() => setTheme('dark')}
+                    />
+                  )
+                  : (
+                    <MoonIcon
+                      className='hidden h-7  transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white'
+                      onClick={() => setTheme('light')}
+                    />
+                  )}
               </div>
-              <div className="xl:bg-[#1A1A1A] xl:rounded-md  ">
+              <div className='xl:bg-[#1A1A1A] xl:rounded-md  '>
                 <AccountInHeader />
               </div>
             </div>
           </div>
 
-          <main className="w-full h-full">
+          <main className='w-full h-full'>
             <AnimatePresence exitBeforeEnter>
               <motion.div
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -20, opacity: 0 }}
                 initial={{ y: 20, opacity: 0 }}
-                key={selectedTab ? selectedTab.label : "empty"}
+                key={selectedTab ? selectedTab.label : 'empty'}
                 transition={{ duration: 0.3 }}
               >
-                {selectedTab.label === "Wallet" ? (
-                  <div className="min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto">
-                    <div className="bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 ">
+                {selectedTab.label === 'Wallet' ? (
+                  <div className='min-h-[750px] my-6 lg:my-12 bg-transparent h-70v w-full dark:bg-[#0A0A0B] max-w-screen-xl mx-auto'>
+                    <div className='bg-transparent flex-col h-full w-full flex md:flex-row px-3 md:px-8 '>
                       <NetworkSidebar />
                       {/* <Balance balance={balanceInfo} /> */}
                       <Balance balance={balanceInfo} />
@@ -291,11 +286,15 @@ export default function Home(): JSX.Element {
 
                     {/* <ExportAccountModal /> */}
                   </div>
-                ) : selectedTab.label === "Profile" ? (
-                  <Profile balance={balanceInfo} />
-                ) : selectedTab.label === "NFTs" ? (
-                  <NFTs />
-                ) : null}
+                ) : selectedTab.label === 'Profile'
+                  ? (
+                    <Profile balance={balanceInfo} />
+                  )
+                  : selectedTab.label === 'NFTs'
+                    ? (
+                      <NFTs />
+                    )
+                    : null}
               </motion.div>
             </AnimatePresence>
           </main>

@@ -1,26 +1,27 @@
 // Copyright 2021-2022 @choko-wallet/app-header authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { CogIcon, DotsHorizontalIcon, UserCircleIcon, PlusCircleIcon, SunIcon, MoonIcon, SearchIcon } from '@heroicons/react/outline';
-import { motion, Variants } from 'framer-motion';
-import { useRouter } from 'next/router'; // TODO: get rid of this
-import React, { Fragment, useEffect, useState } from 'react';
-import Image from 'next/image';
-import logout from '../img/logout.png';
-import logout2 from '../img/logout2.png';
-import { useTheme } from 'next-themes';
+/* eslint-disable sort-keys */
 
-import { Menu, Transition } from '@choko-wallet/app-common';
+import { CogIcon, DotsHorizontalIcon, MoonIcon, PlusCircleIcon, SunIcon, UserCircleIcon } from '@heroicons/react/outline';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { useRouter } from 'next/router'; // TODO: get rid of this
+import { signOut } from 'next-auth/react';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+
 import { removeAllAccounts, selectCurrentNetwork, selectCurrentUserAccount, selectKnownNetworks, selectUserAccount, useDispatch, useSelector } from '@choko-wallet/app-redux';
 import { encodeAddr } from '@choko-wallet/app-utils';
 
+import logout from '../img/logout.png';
+import logout2 from '../img/logout2.png';
 import AccountRow from './AccountRow';
-import {signOut} from 'next-auth/react'
 
 /**
  * Render currentUserAccount address on Header & a drop down of all UserAccount
  */
-export default function AccountInHeader(): JSX.Element {
+export default function AccountInHeader (): JSX.Element {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const { setTheme, theme } = useTheme();
@@ -29,7 +30,7 @@ export default function AccountInHeader(): JSX.Element {
 
   const userAccount = useSelector(selectUserAccount);
   const currentUserAccount = useSelector(selectCurrentUserAccount);
-  const [searchInput, setSearchInput] = useState("");
+  // const [searchInput, setSearchInput] = useState('');
 
   const router = useRouter();
 
@@ -46,7 +47,7 @@ export default function AccountInHeader(): JSX.Element {
   };
 
   const removeAccounts = () => {
-    signOut()
+    signOut();
     dispatch(removeAllAccounts());
     void router.push('/');
   };
@@ -189,7 +190,6 @@ export default function AccountInHeader(): JSX.Element {
             </button>
           </motion.li>
 
-
           <motion.li className='z-50'
             variants={itemVariants}>
             <button
@@ -210,9 +210,6 @@ export default function AccountInHeader(): JSX.Element {
               <p className='font-poppins text-black dark:text-white text-center w-32 '>Swich Mode</p>
             </button>
           </motion.li>
-
-
-
 
         </motion.ul>
       </motion.nav>

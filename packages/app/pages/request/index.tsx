@@ -1,9 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { loadUserAccount, selectUserAccount, useDispatch, useSelector } from '@choko-wallet/app-redux';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+
+import { loadUserAccount, selectUserAccount, useDispatch, useSelector } from '@choko-wallet/app-redux';
 
 /**
  * Router for requests.
@@ -21,7 +22,7 @@ function RequestRouter (): JSX.Element {
     const requestType = router.query.requestType as string;
 
     const localAccount = localStorage.getItem('serialziedUserAccount');
-    const mpcKey = localStorage.getItem('mpcKey')
+    const mpcKey = localStorage.getItem('mpcKey');
 
     if (
       (!localAccount || localAccount.length === 0) && (!mpcKey || mpcKey.length === 0)
@@ -60,7 +61,7 @@ function RequestRouter (): JSX.Element {
           break;
       }
     }
-  }, [accouns, router, router.isReady, router.query]);
+  }, [accouns, router, router.isReady, router.query, dispatch]);
 
   useEffect(() => {
     dispatch(loadUserAccount);

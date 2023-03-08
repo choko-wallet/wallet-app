@@ -61,10 +61,10 @@ const Header = (): JSX.Element => {
             fgColor='gray'
             network='email'
           /> */}
-            <p className='border border-[#F5CBD5] hidden sm:inline-flex text-[10px] font-inter text-[#F5CBD5] bg-transparent  p-2 rounded-md '>
-              Buy us a milk chocolate
+            <p className='border border-[#F5CBD5] hidden sm:inline-flex text-[12px] font-poppins text-[#F5CBD5] bg-transparent  p-2 rounded-md '>
+              Buy us a Chocolate Milk
             </p>
-            <p className='border border-[#F5CBD5] flex sm:hidden text-[10px] font-inter text-[#F5CBD5] bg-transparent  p-1 rounded-md '>
+            <p className='border border-[#F5CBD5] flex sm:hidden text-[10px] font-poppins text-[#F5CBD5] bg-transparent  p-1 rounded-md '>
               Donate
             </p>
           </motion.div>

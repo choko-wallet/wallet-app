@@ -18,7 +18,7 @@ import logout from '../img/logout.png';
 import logout2 from '../img/logout2.png';
 import AccountInHeader from './AccountInHeader';
 
-function Header(): JSX.Element {
+function Header (): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();

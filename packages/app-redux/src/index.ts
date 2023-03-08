@@ -5,11 +5,11 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { rootReducer } from './redux/reducers';
-import { selectMpcUserAccountIndex, selectCurrentNetwork, selectCurrentUserAccount, selectCurrentUserAccountIndex, selectKnownNetworks, selectLoading, selectStatus, selectUserAccount } from './redux/selectors';
+import { selectCurrentNetwork, selectCurrentUserAccount, selectCurrentUserAccountIndex, selectKnownNetworks, selectLoading, selectMpcUserAccountIndex, selectStatus, selectUserAccount } from './redux/selectors';
 import { AppDispatch, AppState, RootState, store, ThunkAppDispatch, useAppThunkDispatch } from './redux/store';
 import { addNetworkAndSave, loadAllNetworks, networkSlice, removeNetworkAndSave, setCurrentNetwork } from './slices/network';
 import { endLoading, setClose, setOpen, startLoading, statusSlice, toggle } from './slices/status';
-import { noteMpcUserAccount, addUserAccount, decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, removeAllAccounts, switchUserAccount, userSlice } from './slices/user';
+import { addUserAccount, decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, noteMpcUserAccount, removeAllAccounts, switchUserAccount, userSlice } from './slices/user';
 
 export type { RootState, AppDispatch, AppState, ThunkAppDispatch };
 

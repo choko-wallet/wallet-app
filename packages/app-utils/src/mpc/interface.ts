@@ -3,6 +3,7 @@
 
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { joinSignature } from 'ethers/lib/utils';
+
 import { MpcNodeFixtures } from './types';
 
 export type PeerId = string;
@@ -92,8 +93,6 @@ export class MpcRequest {
         break;
     }
 
-
-
     this.sender = sender || mpcNodeFixtures.l[0];
 
     this.n = n;
@@ -111,7 +110,7 @@ export class MpcRequest {
     mpcNodeFixtures: MpcNodeFixtures,
     payloadId: Uint8Array,
     message: Uint8Array,
-    keygenId: Uint8Array,
+    keygenId: Uint8Array
   ): MpcRequest {
     return new MpcRequest(
       mpcNodeFixtures,

@@ -10,7 +10,7 @@ import userSlice from '../slices/user';
 export const rootReducer: Reducer = combineReducers({
   network: networkSlice,
   status: statusSlice,
-  user: userSlice,
+  user: userSlice
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
