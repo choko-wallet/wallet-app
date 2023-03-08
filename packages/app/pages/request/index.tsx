@@ -66,7 +66,7 @@ function RequestRouter (): JSX.Element {
   useEffect(() => {
     dispatch(loadUserAccount);
     setMounted(true);
-  }, []);
+  }, [dispatch]);
 
   if (!mounted) {
     return null;

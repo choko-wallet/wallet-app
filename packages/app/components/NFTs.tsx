@@ -1,9 +1,8 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowUpIcon, PlusSmIcon } from '@heroicons/react/outline';
-import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import { PlusSmIcon } from '@heroicons/react/outline';
+import React from 'react';
 
 import More from '../images/More.png';
 import NFTCollection from './NFTCollection';

@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/app-header authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-/* eslint-disable sort-keys */
+/* eslint-disable  sort-keys */
 
 import { CogIcon, DotsHorizontalIcon, MoonIcon, PlusCircleIcon, SunIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
@@ -47,7 +47,7 @@ export default function AccountInHeader (): JSX.Element {
   };
 
   const removeAccounts = () => {
-    signOut();
+    signOut().catch(console.error);
     dispatch(removeAllAccounts());
     void router.push('/');
   };
@@ -66,8 +66,8 @@ export default function AccountInHeader (): JSX.Element {
     <div className=' xl:w-64 text-right md:w-12 '>
 
       <motion.nav
-        initial={false}
         animate={isOpen ? 'open' : 'closed'}
+        initial={false}
       // className='bg-red-300 '
       >
         <motion.button

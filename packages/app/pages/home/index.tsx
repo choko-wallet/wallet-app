@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import AddNetworkModal from 'packages/app/components/modal/AddNetworkModal';
 import AddTokenModal from 'packages/app/components/modal/AddTokenModal';
-// import ExportAccountModal from 'packages/app/components/modal/ExportAccountModal';
 import ReceiveTokenModal from 'packages/app/components/modal/ReceiveTokenModal';
 import SendTokenModal from 'packages/app/components/modal/SendTokenModal';
 import React, { useEffect, useState } from 'react';
@@ -19,7 +18,6 @@ import { useSelector } from 'react-redux';
 import NFTs from '@choko-wallet/app/components/NFTs';
 import Profile from '@choko-wallet/app/components/Profile';
 import { AccountInHeader } from '@choko-wallet/app-header';
-// import { Header } from '@choko-wallet/app-header';
 import { NetworkSidebar,
   NetworkSidebarMobile } from '@choko-wallet/app-network-sidebar';
 import { endLoading,
@@ -183,7 +181,6 @@ export default function Home (): JSX.Element {
   ]);
 
   useEffect(() => {
-    // figma只有黑色版本 先默认设置黑色
     setTheme('dark');
   }, [setTheme]);
 

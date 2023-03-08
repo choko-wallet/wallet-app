@@ -1,11 +1,11 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/app authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
 
 import nft7 from '../images/nft7.png';
 
-function NFTCollection () {
+function NFTCollection (): JSX.Element {
   return (
     <div className=' rounded-lg flex flex-col items-center justify-between w-[108px] md:w-[118px] m-3 p-2 md:p-3'>
       <div className='flex '>

@@ -69,7 +69,7 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   useEffect(() => {
     if (accounts && accounts.length > 0) {
       // we have accounts locally
-      router.push('/home');
+      router.push('/home').catch(console.error);
     } else if (session) {
       // we don't have any account but the user is signed in with session
       // gotta generate an mpc account for user
@@ -85,30 +85,25 @@ const Home: NextPage<Props> = ({ token }: Props) => {
             );
 
             dispatch(noteMpcUserAccount(key));
-            router.push('/home');
+            router.push('/home').catch(console.error);
           } catch (e) {
-            signOut();
+            signOut().catch(console.error);
             console.error(e);
           }
-        })();
+        })().catch(console.error);
       }
     } else {
       // there is non session nor user - NOP
     }
-  }, [accounts, session, generateAccount, router]);
+  }, [accounts, session, router, dispatch, token]);
 
   useEffect(() => {
     try {
-      // (async() => {
-      //   const res = await fetchPeers();
-      //   console.log(res)
-
-      // })()
       dispatch(loadUserAccount());
     } catch (e) {
       // nop
     }
-  }, []);
+  }, [dispatch]);
 
   if (loadingText) return <Loading />;
 
@@ -126,7 +121,7 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   );
 };
 
-export async function getServerSideProps (context: NextPageContext) {
+export function getServerSideProps (context: NextPageContext) {
   const userCookie = context.req.headers.cookie;
 
   try {

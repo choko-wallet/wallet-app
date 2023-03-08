@@ -19,7 +19,7 @@ import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, selectCurrentUserAccount, selectUserAccount, setClose, setOpen, switchUserAccount } from '@choko-wallet/app-redux';
 import { encodeAddr, fetchAAWalletAddress, getAlchemy } from '@choko-wallet/app-utils';
 import { runSignRequest } from '@choko-wallet/app-utils/mpc';
-import { extractSignature, MpcRequest } from '@choko-wallet/app-utils/mpc/interface';
+import { extractSignature } from '@choko-wallet/app-utils/mpc/interface';
 import { UserAccount } from '@choko-wallet/core';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
@@ -162,7 +162,7 @@ function SignTxHandler ({ token }: Props): JSX.Element {
     if (currentUserAccount.option.accountType === 0) {
       dispatch(setOpen('signTxPasswordModal'));
     } else if (currentUserAccount.option.accountType === 1) {
-      unlock();
+      unlock().catch(console.error);
     }
   }
 
@@ -426,7 +426,7 @@ function SignTxHandler ({ token }: Props): JSX.Element {
   );
 }
 
-export async function getServerSideProps (context: NextPageContext) {
+export function getServerSideProps (context: NextPageContext) {
   const userCookie = context.req.headers.cookie;
 
   const sessionToken = userCookie

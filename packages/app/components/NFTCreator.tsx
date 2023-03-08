@@ -1,9 +1,9 @@
-// [object Object]
+// Copyright 2021-2022 @choko-wallet/app authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
 
-function NFTCreator () {
+function NFTCreator (): JSX.Element {
   return (
     <div className='bg-[#747474]/50 rounded-lg flex items-center justify-between w-[240px] md:w-[260px] m-3'>
       <div className='flex'>

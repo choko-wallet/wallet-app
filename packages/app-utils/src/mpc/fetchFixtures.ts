@@ -14,6 +14,10 @@ const fetchPeers = async (): Promise<MpcNodeFixtures> => {
   console.log('peerIds', peerIds);
 
   return {
+    c: [
+      peerIds.c,
+      `/ip4/143.198.142.119/tcp/2619/ws/p2p/${peerIds.c}`
+    ],
     f1: [
       peerIds.f1,
       `/ip4/143.198.142.119/tcp/2620/ws/p2p/${peerIds.f1}`
@@ -25,10 +29,6 @@ const fetchPeers = async (): Promise<MpcNodeFixtures> => {
     l: [
       peerIds.l,
       `/ip4/143.198.142.119/tcp/2622/ws/p2p/${peerIds.l}`
-    ],
-    c: [
-      peerIds.c,
-      `/ip4/143.198.142.119/tcp/2619/ws/p2p/${peerIds.c}`
     ]
   };
 };
