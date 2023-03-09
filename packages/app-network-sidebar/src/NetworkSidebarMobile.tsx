@@ -20,7 +20,7 @@ export default function NetworkSidebarMobile (): JSX.Element {
 
   return (
     <CSSTransition
-      className='md:hidden z-40 p-6 w-[340px] bg-[#DEE8F1] dark:bg-[#22262f] absolute top-0 bottom-0'
+      className='md:hidden z-40 p-6 w-[300px] bg-[#DEE8F1] dark:bg-[#0A0A0B] absolute top-0 bottom-0'
       classNames='drawer'
       in={status.homeMobileDrawer}
       nodeRef={nodeRef}

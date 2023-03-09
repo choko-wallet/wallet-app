@@ -41,14 +41,14 @@ const ReceiveTokenModal = (): JSX.Element => {
   return (
     <Modal modalName='homeReceive'>
       <div className={theme}>
-        <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
+        <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-gray-300'>
           <Dialog.Title
             as='h3'
             className='text-lg font-medium leading-6 flex items-center mb-6'
           >
 
-            <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-[#03F3FF] ' />
-            {theme === 'dark' ? <p className=' text-gradient flex flex-grow font-poppins'>Receive Crypto</p> : <p className=' text-gray-700 flex flex-grow font-poppins'>Receive Crypto</p>}
+            <DownloadIcon className=' text-gray-700 h-8 w-8 dark:text-gray-300 ' />
+            <p className=' text-gray-700 dark:texty-gray-300 font-poppins flex-grow'>Receive Crypto</p>
 
             <div onClick={() => dispatch(setClose('homeReceive'))}>
               <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
@@ -60,7 +60,7 @@ const ReceiveTokenModal = (): JSX.Element => {
 
             <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Address</p>
 
-            <p className='p-2 border border-blue-300 rounded-md font-poppins text-gray-800 dark:text-white stringWrap text-center items-center justify-certer flex-grow  ml-2 '>
+            <p className='p-2 border border-gray-300 rounded-md font-poppins text-gray-800 dark:text-white stringWrap text-center items-center justify-certer flex-grow  ml-2 '>
               {currentAddress}
             </p>
 
@@ -71,7 +71,7 @@ const ReceiveTokenModal = (): JSX.Element => {
                 <div onClick={handleCopy}>
                   {showCheck
                     ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
-                    : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
+                    : <DocumentDuplicateIcon className=' text-gray-500 dark:text-gray-300 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
 
                 </div>
               </CopyToClipboard>

@@ -71,7 +71,7 @@ export default function AccountInHeader (): JSX.Element {
       // className='bg-red-300 '
       >
         <motion.button
-          className='flex items-center justify-center rounded-md w-full bg-transparent md:bg-transparent dark:bg-transparent md:px-4 md:py-2 h-full text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+          className='flex items-center justify-center rounded-md w-full xl:bg-white dark:bg-transparent md:bg-transparent dark:bg-transparent md:px-4 md:py-2 h-full text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 1 }}
         >
@@ -86,7 +86,7 @@ export default function AccountInHeader (): JSX.Element {
           </p>
 
           <motion.div
-            className='hidden xl:inline-flex '
+            className='hidden xl:inline-flex dark:text-white text-black'
             style={{ originY: 0.55 }}
             transition={{ duration: 0.2 }}
             variants={{

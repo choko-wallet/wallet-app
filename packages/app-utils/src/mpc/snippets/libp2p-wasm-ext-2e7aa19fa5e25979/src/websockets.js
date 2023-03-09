@@ -61,6 +61,7 @@ const multiaddr_to_ws = (addr) => {
 
 // Attempt to dial a multiaddress.
 const dial = (addr) => {
+  console.log(multiaddr_to_ws(addr))
   const ws = new WebSocket(multiaddr_to_ws(addr));
 
   ws.binaryType = 'arraybuffer';

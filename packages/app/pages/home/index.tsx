@@ -200,7 +200,7 @@ export default function Home (): JSX.Element {
 
         <div className='w-full h-full '>
           {/*  New Header */}
-          <div className='relative flex items-center justify-center  space-x-1 p-1 md:p-3 md:space-x-3 sm:justify-between '>
+          <div className='relative flex items-center justify-center  space-x-1 p-2 md:p-3 md:space-x-3 sm:justify-between '>
             <div className='lg:w-20 xl:w-72 xl:flex xl:justify-start'>
               <div className='bg-transparent h-10 w-10 md:h-12 md:w-12 relative '>
                 <Image
@@ -214,17 +214,15 @@ export default function Home (): JSX.Element {
               </div>
             </div>
 
-            {/* 透明div */}
-            <div className='absolute top-1 left-11 bg-gradient-to-r from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50'></div>
+            <div className='absolute top-2 left-12 bg-gradient-to-r from-[#DEE8F1] dark:from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50'></div>
 
-            {/* tab的button */}
-            <div className='bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
+            <div className='bg-gray-300 dark:bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
               {tabs.map((item) => (
                 <div
                   className={
                     item === selectedTab
                       ? ' font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out'
-                      : 'text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out'
+                      : 'text-black dark:text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out'
                   }
                   key={item.label}
                   onClick={() => setSelectedTab(item)}

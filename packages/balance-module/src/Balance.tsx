@@ -71,14 +71,14 @@ function Balance ({ balance }: Props): JSX.Element {
   };
 
   return (
-    <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'>
+    <div className='relative flex flex-col bg-white dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'>
       {/* <div className='absolute top-0 bottom-0 left-0 right-0 bg-[#DADADA] opacity-40 z-10'></div> */}
       <div className='w-full h-[100px] sm:w-[360px] z-10 relative'>
         <p className='text-xl my-1 text-black dark:text-white font-inter font-semibold'>
           ${balanceTotal} USD </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-inter'>Your total balance on {knownNetworks[currentNetwork].text} </p>
         <div className='absolute top-2 left-[120px] text-[10px] rounded-full py-[2px] px-[5px] border border-[#2EBE7B] font-roboto text-[#2EBE7B] flex items-center justify-center'>
-          <p className='ml-1'>+1,2%</p>
+          <p className='ml-1'>+DEMO%</p>
           <ArrowUpIcon className='rotate-45 w-3 h-3' />
         </div>
       </div>

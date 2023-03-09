@@ -47,12 +47,12 @@ export default function AccountRow ({ account, accountIndex, network }: Props): 
 
   return (
 
-    <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${isCurrentAccount() ? 'bg-blue-gradient' : ''} `}>
+    <div className={`flex w-full items-center rounded-md px-2 py-2  text-sm ${isCurrentAccount() ? 'bg-transparent' : ''} `}>
       <p
-        className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${isCurrentAccount() ? 'text-black' : 'text-gray-800 dark:text-white'} `}
+        className={`cursor-pointer font-poppins whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2  ${isCurrentAccount() ? 'text-gray-800 dark:text-white' : 'text-gray-800 dark:text-white'} `}
         onClick={() => changeAccountInHeader()}>
         {address.substring(0, 7)}
-        <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${isCurrentAccount() ? 'text-black' : 'text-gray-800 dark:text-white'} `} />
+        <DotsHorizontalIcon className={`h-6 w-6  mx-1 ${isCurrentAccount() ? 'text-gray-800 dark:text-white' : 'text-gray-800 dark:text-white'} `} />
 
         {address.substring(address.length - 7, address.length)}
       </p>

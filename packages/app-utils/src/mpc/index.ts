@@ -23,6 +23,8 @@ const certificateToAuthHeader = (cert: Certificate): string => {
   });
 }
 
+const clientAddr = "/dns/c.mpc.choko.app/tcp/443/wss";
+
 const runKeygenRequest = async (
   payloadId: Uint8Array,
   usageCertificate: Certificate,
@@ -42,7 +44,7 @@ const runKeygenRequest = async (
     certificateToAuthHeader(usageCertificate),
     keygenRequst.serialize(),
     fixture.c[0], // peerId
-    "/ip4/143.198.142.119/tcp/2619/ws",
+    clientAddr,
     enableLog
   );
 };
@@ -65,7 +67,7 @@ const runSignRequest = async (
     signRequet.serialize(),
     localKey,
     fixture.c[0], // peerId
-    "/ip4/143.198.142.119/tcp/2619/ws",
+    clientAddr,
     enableLog
   );
 };

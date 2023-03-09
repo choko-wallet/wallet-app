@@ -1549,7 +1549,7 @@ __metadata:
     "@choko-wallet/known-networks": 0.1.10-13
     "@polkadot/util-crypto": ^10.2.1
     "@reduxjs/toolkit": ^1.9.1
-    "@skyekiwi/util": ^1.0.1
+    "@skyekiwi/util": 1.0.2-5
     react: 18.1.0
     react-redux: ^8.0.5
   languageName: unknown
@@ -1566,7 +1566,7 @@ __metadata:
     "@choko-wallet/sdk": 0.1.10-13
     "@polkadot/api": ^9.10.4
     "@polkadot/util-crypto": ^10.2.1
-    "@skyekiwi/util": ^1.0.1
+    "@skyekiwi/util": 1.0.2-5
     alchemy-sdk: ^2.2.5
     ethers: ^5.7.2
     react: 18.1.0
@@ -1607,7 +1607,7 @@ __metadata:
     autoprefixer: ^10.4.7
     daisyui: ^2.19.0
     ethers: ^5.7.2
-    framer-motion: ^7.4.0
+    framer-motion: ^8.0.2
     mapbox-gl: ^2.12.1
     next: 12.3.1
     next-auth: ^4.19.2
@@ -7486,24 +7486,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^7.4.0":
-  version: 7.10.3
-  resolution: "framer-motion@npm:7.10.3"
-  dependencies:
-    "@emotion/is-prop-valid": ^0.8.2
-    "@motionone/dom": ^10.15.3
-    hey-listen: ^1.0.8
-    tslib: 2.4.0
-  peerDependencies:
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  dependenciesMeta:
-    "@emotion/is-prop-valid":
-      optional: true
-  checksum: 20ce8459e7e3c631af5261215acd2217f57f15d64448e2bd64eecf74d3406552523082c182211af086e01b44daad7a0c216d5135a3f8ae56fb63e152e54233aa
-  languageName: node
-  linkType: hard
-
 "framer-motion@npm:^8.0.2":
   version: 8.5.5
   resolution: "framer-motion@npm:8.5.5"
@@ -13255,13 +13237,6 @@ __metadata:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: a6162eaa1aed680537f93621b82399c7856afd10ec299867b13a0675e981acac4e0ec00896860480efc59fc10fd0b16fdc928c0b885865b52be62cadac692447
-  languageName: node
-  linkType: hard
-
-"tslib@npm:2.4.0":
-  version: 2.4.0
-  resolution: "tslib@npm:2.4.0"
-  checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
   languageName: node
   linkType: hard
 

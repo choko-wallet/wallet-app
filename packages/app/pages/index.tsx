@@ -45,7 +45,6 @@ const generateAccount = async (
   const keygenId = secureGenerateRandomKey();
   const usageCertificate = await linkUsage(keygenId, ownershipProof);
 
-  console.log(usageCertificate);
   // 2. get an auth header and proceed with sending requests
   const key = await runKeygenRequest(keygenId, usageCertificate);
 

@@ -25,7 +25,9 @@ function NetworkSelection (): JSX.Element {
       <div className='scrollbar-thin max-h-[400px] w-[290px]  md:max-h-[450px] overflow-y-scroll  mt-10 '>
         <RadioGroup onChange={setNetworkSelection}
           value={networkSelection}>
-          {Object.entries(knownNetworks).map(([hash, { color, isDevelopment, isDisabled, text }]) => {
+          {Object.entries(knownNetworks).map(([hash, { color, isDevelopment, isDisabled, text, networkType }]) => {
+            if (networkType === 'polkadot') return null;
+
             if (color === undefined) { // if color undefined, give randomColor
               const randomColors = ['#2497E7', '#fc6b03', '#befc03', '#5efc03', '#03fc56', '#03cafc', '#5a03fc'];
 
@@ -36,7 +38,7 @@ function NetworkSelection (): JSX.Element {
               key={hash}
               value={hash} >
               {({ checked }) => {
-                return <div className='relative w-full md:w-[260px]'>
+                return <div className='relative w-[220px] md:w-[260px]'>
                   {checked
                     ? <motion.div
                       animate={{

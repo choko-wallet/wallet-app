@@ -118,10 +118,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
           >
             <div className='flex items-center  flex-grow'>
               <PaperAirplaneIcon className='rotate-45 text-gray-700 h-8 w-8 dark:text-[#03F3FF]' />
-              {theme === 'dark'
-                ? <p className=' text-gradient font-poppins'>Send Crypto</p>
-                : <p className=' text-gray-700 font-poppins'>Send Crypto</p>
-              }
+              <p className=' text-gray-700 dark:texty-gray-300 font-poppins flex-grow'>Send Crypto</p>
             </div>
             <div onClick={() => dispatch(setClose('homeSend'))}>
               <XIcon className='  h-8 w-8 cursor-pointer text-black dark:text-white' />
@@ -133,9 +130,9 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               setCryptoAddress={setCryptoAddress} />
 
             <p className=' text-gray-700 dark:text-white '>From</p>
-            <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-blue-300 border border-gray-300 rounded-lg '>
+            <div className=' p-2 my-1 text-gray-700 flex space-x-2 items-center dark:border-gray-300 border border-gray-300 rounded-lg '>
               {/* <p className='flex flex-grow dark:text-white font-poppins'>{currentUserAccount.address}</p> */}
-              <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap hidden md:inline-flex text-center items-center justify-certer flex-grow  ml-2 '>
+              <p className='font-poppins text-gray-800 dark:text-white whitespace-nowrap flex text-center items-center justify-certer flex-grow  ml-2 '>
                 {currentAddress.substring(0, 7)}
                 <DotsHorizontalIcon className='text-gray-800 dark:text-white h-6 w-6 mx-1' />
                 {currentAddress.substring(currentAddress.length - 7, currentAddress.length)}
@@ -146,7 +143,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 <div onClick={handleCopy}>
                   {showCheck
                     ? <CheckIcon className='text-green-600 dark:text-green-300 animate-ping ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />
-                    : <DocumentDuplicateIcon className=' text-gray-500 dark:text-[#03F3FF] ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
+                    : <DocumentDuplicateIcon className=' text-gray-500 dark:text-gray-300 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full' />}
 
                 </div>
               </CopyToClipboard>
@@ -156,14 +153,14 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
               <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>To</p>
 
-              <textarea className='font-poppins input input-bordered input-info w-full pr-12'
+              <textarea className='font-poppins px-3 input border border-gray-300 input-info w-full pr-12 bg-transparent text-gray-300'
                 onChange={(e) => setAddressToSend(e.target.value)}
                 placeholder='Destination Address'
                 // type="textarea"
                 rows={3}
                 value={addressToSend} />
               <CameraIcon
-                className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-[#03F3FF]'
+                className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-gray-300'
                 onClick={() => dispatch(toggle('homeQRScanner'))}
               />
 
@@ -197,7 +194,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 <p className=' text-gray-700 dark:text-white mt-3 mb-1 font-poppins'>Amount</p>
 
                 <input
-                  className='font-poppins input input-bordered input-info w-full '
+                  className='font-poppins px-3 input border border-gray-300 bg-transparent text-gray-300 w-full'
                   max='10000000'
                   min='0'
                   onChange={(e) => {
@@ -221,11 +218,11 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 <p className=' absolute bottom-4 right-2 text-sm font-poppins'>{balanceInfo[cryptoAddress].symbol}</p>
               </div>
 
-              <p className='my-1 '>=</p>
+              <p className='my-1 dark:text-gray-300'>=</p>
 
               <div className='relative w-full'>
                 <input
-                  className='font-poppins  input input-bordered input-info w-full '
+                  className='font-poppins px-3 input bordered border-gray-300 bg-transparent tgext-gray-300 input-info w-full '
                   max='10000000'
                   min='0'
                   onChange={(e) => {
@@ -242,7 +239,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                   placeholder='0.0'
                   type='number'
                   value={amountInUsd} />
-                <p className='absolute bottom-4 right-2 text-sm font-poppins'>USD</p>
+                <p className='absolute bottom-4 right-2 text-sm font-poppins dark:text-gray-300'>USD</p>
               </div>
 
             </div>

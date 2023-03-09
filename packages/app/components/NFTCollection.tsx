@@ -18,8 +18,8 @@ function NFTCollection (): JSX.Element {
 
       <div className='flex items-start justify-between  w-full mt-2'>
         <div>
-          <p className='text-[10px] font-semibold text-white'>Floor</p>
-          <p className='text-[10px] text-white'>1.1ETH</p>
+          <p className='text-[10px] font-semibold text-black dark:text-white'>Floor</p>
+          <p className='text-[10px] text-black dark:text-white'>1.1ETH</p>
         </div>
         <div>
           <p className='text-[10px] font-semibold text-right text-white'>

@@ -66,9 +66,6 @@ function Profile ({ balance }: Props): JSX.Element {
                 className='h-[100px] z-10 relative px-2'
                 variants={fadeIn('left', 'tween', 0, 0.5)}
               >
-                {/* <p className='text-xl my-1 text-black dark:text-white font-inter font-semibold'>
-                  $200.00 USD </p> */}
-
                 <motion.p
                   className='text-xl my-1 text-black dark:text-white font-inter font-semibold'
                   variants={textContainer}
@@ -82,10 +79,10 @@ function Profile ({ balance }: Props): JSX.Element {
                 </motion.p>
 
                 <p className='text-xs text-[#ADADAD] dark:text-[#ADADAD] cursor-pointer font-inter mt-5'>
-                  + $22.10
+                  + $DEMO.00
                 </p>
                 <div className='absolute top-11 left-[70px] text-[10px] rounded-full py-[2px] px-[5px] border border-[#2EBE7B] font-roboto text-[#2EBE7B] flex items-center justify-center'>
-                  <p className='ml-1'>+1,2%</p>
+                  <p className='ml-1'>+DEMO%</p>
                   <ArrowUpIcon className='rotate-45 w-3 h-3' />
                 </div>
               </motion.div>

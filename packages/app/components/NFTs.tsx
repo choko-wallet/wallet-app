@@ -14,7 +14,7 @@ function NFTs (): JSX.Element {
       {/* <div className="flex flex-col bg-yellow-300 w-full"> */}
       <div className='grid grid-cols-1 mx-auto sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4   '>
         <div className='col-span-full flex justify-between items-end px-2'>
-          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-white m-3'>
+          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-black dark:text-white m-3'>
             Top Creators
           </p>
           <div className='flex  h-10 w-16 md:h-12 md:w-20 cursor-pointer'>
@@ -33,7 +33,7 @@ function NFTs (): JSX.Element {
 
       <div className='grid grid-cols-2 mx-auto sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8   '>
         <div className='col-span-full flex justify-between items-end px-2'>
-          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-white m-3 cursor-pointer'>
+          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-black dark:text-white m-3 cursor-pointer'>
             Trending Collections
           </p>
           <div className='flex  h-10 w-16 md:h-12 md:w-20 cursor-pointer'>
@@ -56,14 +56,14 @@ function NFTs (): JSX.Element {
 
       <div className=' w-[264px] sm:w-[530px] md:w-[570px] lg:w-[852px] xl:w-[1138px] mx-auto'>
         <div className=' flex flex-col px-2'>
-          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-white m-3'>
+          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-black dark:text-white m-3'>
             My NFT Collections
           </p>
 
           <div className='cursor-pointer m-4 rounded-lg my-3 w-[80px] h-[50px] border-2 border-[#4798B3] border-dashed '>
             <div className='mx-auto flex relative items-center w-[70px] h-[50px] my-auto  cursor-pointer justify-center'>
               <div className='h-[32px] w-[32px] rounded-full  my-auto flex relative items-center justify-center'>
-                <PlusSmIcon className=' text-white z-40 h-5 w-5 ' />
+                <PlusSmIcon className='text-black dark:text-white z-40 h-5 w-5 ' />
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@ function NFTs (): JSX.Element {
 
       <div className=' w-[264px] sm:w-[530px] md:w-[570px] lg:w-[852px] xl:w-[1138px] mx-auto'>
         <div className=' flex flex-col px-2'>
-          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-white m-3'>
+          <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-black dark:text-white m-3'>
             My Bookmarks
           </p>
         </div>
