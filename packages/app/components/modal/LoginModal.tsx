@@ -1,25 +1,25 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
-import router from "next/router";
-import { signIn } from "next-auth/react";
-import React from "react";
+import { Dialog } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
+import router from 'next/router';
+import { signIn } from 'next-auth/react';
+import React from 'react';
 
-import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
+import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
-import Modal from "../Modal";
+import Modal from '../Modal';
 
 const LoginModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
 
   const loginWithGoogle = async () => {
-    await signIn("google");
+    await signIn('google');
   };
 
   const loginWithGithub = async () => {
-    await signIn("github");
+    await signIn('github');
   };
 
   return (
@@ -30,7 +30,7 @@ const LoginModal = (): JSX.Element => {
           className='text-lg font-medium leading-6 flex items-center mb-3'
         >
           <p className=' text-black flex flex-grow font-poppins'> </p>
-          <div onClick={() => dispatch(setClose("landingLogin"))}>
+          <div onClick={() => dispatch(setClose('landingLogin'))}>
             <XIcon className=' text-[#B6B7BC] h-5 w-5 cursor-pointer md:h-8 md:w-8' />
           </div>
         </Dialog.Title>
@@ -84,7 +84,7 @@ const LoginModal = (): JSX.Element => {
 
           <button
             className=' text-[15px] md:text-[18px] text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 p-1 md:p-2 w-full bg-[#0170BF] font-inter'
-            onClick={() => router.push("/account")}
+            onClick={() => router.push('/account')}
           >
             Create a Seed Phrase
           </button>

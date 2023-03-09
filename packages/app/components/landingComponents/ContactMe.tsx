@@ -1,17 +1,21 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import Image from "next/image";
-import React from "react";
-import { SocialIcon } from "react-social-icons";
+import Image from 'next/image';
+import React from 'react';
+import { SocialIcon } from 'react-social-icons';
 
-import bg from "../../images/bg.png";
-import discIcon2 from "../../images/discord2.svg";
+import bg from '../../images/bg.png';
+import discIcon2 from '../../images/discord2.svg';
 
 const ContactMe = (): JSX.Element => {
   return (
-    <section className='snap-start relative' id='contact'>
-      <Image className='' layout='fill' objectFit='cover' src={bg} />
+    <section className='snap-start relative'
+      id='contact'>
+      <Image className=''
+        layout='fill'
+        objectFit='cover'
+        src={bg} />
 
       <div className='relative flex items-center justify-center h-screen text-center z-20'>
         {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
@@ -40,38 +44,38 @@ const ContactMe = (): JSX.Element => {
               bgColor='transparent'
               className='cursor-pointer'
               fgColor='white'
-              target='_blank'
               style={{ height: 36, width: 36 }}
+              target='_blank'
               url='https://github.com/choko-wallet'
             />
             <SocialIcon
               bgColor='transparent'
               className='cursor-pointer'
               fgColor='white'
-              target='_blank'
               style={{ height: 36, width: 36 }}
+              target='_blank'
               url='https://t.me/choko_wallet'
             />
             <SocialIcon
               bgColor='transparent'
               className='cursor-pointer'
               fgColor='white'
-              target='_blank'
               style={{ height: 36, width: 36 }}
+              target='_blank'
               url='https://twitter.com/choko_wallet'
             />
             <SocialIcon
               bgColor='transparent'
               className='cursor-pointer'
               fgColor='white'
-              target='_blank'
               style={{ height: 36, width: 36 }}
+              target='_blank'
               url='https://medium.com/@choko_wallet'
             />
 
             <a
               className='cursor-pointer inline-flex relative h-5 w-5 m-2'
-              href={"https://discord.gg/zkp8UEQctM"}
+              href={'https://discord.gg/zkp8UEQctM'}
               rel='noreferrer'
               target='_blank'
             >

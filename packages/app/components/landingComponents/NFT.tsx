@@ -1,28 +1,28 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
 
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
+import React from 'react';
+import Tilt from 'react-tilt';
 
-import bg from "../../images/bg.png";
+import bg from '../../images/bg.png';
+import nft4 from '../../images/nft4.png';
+import nft5 from '../../images/nft5.png';
+import nft6 from '../../images/nft6.png';
 // import nfts from '../../images/nfts.png';
-import SuperSwiper from "./SuperSwiper";
-import NFTCollection from "../NFTCollection";
-import { motion } from "framer-motion";
-import { fadeIn } from "@choko-wallet/app-utils";
-import nft4 from "../../images/nft4.png";
-import nft5 from "../../images/nft5.png";
-import nft6 from "../../images/nft6.png";
-import Tilt from "react-tilt";
 
 const NFT = (): JSX.Element => {
   return (
-    <section className='snap-start relative' id='nft'>
-      <Image className='' layout='fill' objectFit='cover' src={bg} />
+    <section className='snap-start relative'
+      id='nft'>
+      <Image className=''
+        layout='fill'
+        objectFit='cover'
+        src={bg} />
 
       <div className='relative flex items-center justify-center h-screen text-center z-20'>
         {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
@@ -38,9 +38,9 @@ const NFT = (): JSX.Element => {
             <Tilt className='hidden md:inline-flex w-full md:w-[220px] green-pink-gradient rounded-xl p-[1px]'>
               <div className='bg-[#151030] rounded-xl py-4 px-4 min-h-[280px] flex justify-evenly items-center flex-col'>
                 <img
-                  src={nft4.src}
                   alt='web-development'
                   className='w-full h-full object-contain'
+                  src={nft4.src}
                 />
 
                 <h3 className='text-white text-[20px] font-bold text-center pt-3'>
@@ -52,9 +52,9 @@ const NFT = (): JSX.Element => {
             <Tilt className='w-[260px] green-pink-gradient rounded-xl p-[1px]'>
               <div className='bg-[#151030] rounded-xl py-4 px-4 min-h-[280px] flex justify-evenly items-center flex-col'>
                 <img
-                  src={nft5.src}
                   alt='web-development'
                   className='w-full h-full object-contain'
+                  src={nft5.src}
                 />
 
                 <h3 className='text-white text-[20px] font-bold text-center pt-3'>
@@ -66,9 +66,9 @@ const NFT = (): JSX.Element => {
             <Tilt className='hidden md:inline-flex w-[220px] green-pink-gradient rounded-xl p-[1px]'>
               <div className='bg-[#151030] rounded-xl py-4 px-4 min-h-[280px] flex justify-evenly items-center flex-col'>
                 <img
-                  src={nft6.src}
                   alt='web-development'
                   className='w-full h-full object-contain'
+                  src={nft6.src}
                 />
 
                 <h3 className='text-white text-[20px] font-bold text-center pt-3'>

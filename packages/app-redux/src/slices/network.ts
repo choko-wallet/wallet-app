@@ -15,7 +15,7 @@ interface NetworkSliceItem {
 }
 
 const initialState: NetworkSliceItem = {
-  currentNetwork: u8aToHex(xxHash('skyekiwi')),
+  currentNetwork: u8aToHex(xxHash('goerli')),
   knownNetworks: {}
 };
 

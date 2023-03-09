@@ -1,12 +1,12 @@
 // Copyright 2021-2022 @choko-wallet/app-redux authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { blake2AsU8a } from "@polkadot/util-crypto";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { hexToU8a, u8aToHex } from "@skyekiwi/util";
+import { blake2AsU8a } from '@polkadot/util-crypto';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 
-import { mpcLocalKeyToAccount } from "@choko-wallet/app-utils/mpc";
-import { AccountOption, UserAccount } from "@choko-wallet/core";
+import { mpcLocalKeyToAccount } from '@choko-wallet/app-utils/mpc';
+import { AccountOption, UserAccount } from '@choko-wallet/core';
 
 /**
  * Wallet core account storage
@@ -36,7 +36,7 @@ const parseUserAccount = (rawData: Uint8Array): UserAccount[] => {
     );
 
     offset += serializedLength;
-    console.log("1");
+    console.log('1');
     const account = UserAccount.deserializeWithEncryptedKey(
       currentSerializedUserAccount
     );
@@ -63,7 +63,7 @@ const parseAAWalletCache = (rawData: string): string[] => {
 };
 
 export const addUserAccount = createAsyncThunk(
-  "users/add",
+  'users/add',
   async (
     payload: {
       option?: AccountOption;
@@ -82,7 +82,7 @@ export const addUserAccount = createAsyncThunk(
         accountOption = new AccountOption({
           accountType: 0,
           hasEncryptedPrivateKeyExported: false,
-          localKeyEncryptionStrategy: 1,
+          localKeyEncryptionStrategy: 1
         });
       }
 
@@ -95,7 +95,7 @@ export const addUserAccount = createAsyncThunk(
       return userAccount;
     } else if (importKey) {
       try {
-        console.log("2");
+        console.log('2');
 
         const userAccount = UserAccount.deserializeWithEncryptedKey(importKey);
 
@@ -104,12 +104,12 @@ export const addUserAccount = createAsyncThunk(
         return userAccount;
       } catch (e) {
         return rejectWithValue(
-          "invalid serialized userAccount with encrypted key"
+          'invalid serialized userAccount with encrypted key'
         );
       }
     } else {
       // unreachable!
-      return rejectWithValue("at least pass on either seeds or importKey");
+      return rejectWithValue('at least pass on either seeds or importKey');
     }
   }
 );
@@ -126,13 +126,13 @@ const initialState: UserSliceItem = {
   currentUserAccount: null,
   currentUserAccountIndex: -1, // keep track of the current usere
   mpcUserAccountIndex: -1, // keep track of which account is the mpc wallet addr
-  userAccount: [],
+  userAccount: []
 };
 
 /* eslint-disable sort-keys */
 export const userSlice = createSlice({
   initialState,
-  name: "user",
+  name: 'user',
   reducers: {
     noteAAWalletAddress: (state, action: PayloadAction<string[]>) => {
       const userAccountLength = action.payload.length;
@@ -143,15 +143,15 @@ export const userSlice = createSlice({
 
       state.currentUserAccount.aaWalletAddress =
         action.payload[state.currentUserAccountIndex];
-      localStorage.setItem("AAWalletCache", action.payload.join(""));
+      localStorage.setItem('AAWalletCache', action.payload.join(''));
     },
     loadUserAccount: (state) => {
       const rawSerializedUserAccount = localStorage.getItem(
-        "serialziedUserAccount"
+        'serialziedUserAccount'
       );
-      const aaWalletCache = localStorage.getItem("AAWalletCache");
-      const mpcKey = localStorage.getItem("mpcKey");
-      const mpcKeygenId = localStorage.getItem("mpcKeygenId");
+      const aaWalletCache = localStorage.getItem('AAWalletCache');
+      const mpcKey = localStorage.getItem('mpcKey');
+      const mpcKeygenId = localStorage.getItem('mpcKeygenId');
 
       let allAccounts: UserAccount[] = [];
 
@@ -159,9 +159,9 @@ export const userSlice = createSlice({
       // 1. we first try to load the mpc account - mpc account is always the first account
       if (
         mpcKey &&
-        mpcKey !== "null" &&
+        mpcKey !== 'null' &&
         mpcKeygenId &&
-        mpcKeygenId !== "null"
+        mpcKeygenId !== 'null'
       ) {
         // we have an MPC account
         allAccounts.push(mpcLocalKeyToAccount(mpcKey, hexToU8a(mpcKeygenId)));
@@ -169,12 +169,12 @@ export const userSlice = createSlice({
         state.currentUserAccountIndex = 0;
       } else if (
         rawSerializedUserAccount &&
-        rawSerializedUserAccount !== "null"
+        rawSerializedUserAccount !== 'null'
       ) {
         // 2. then we try to load local accounts
         allAccounts = [
           ...allAccounts,
-          ...parseUserAccount(hexToU8a(rawSerializedUserAccount)),
+          ...parseUserAccount(hexToU8a(rawSerializedUserAccount))
         ];
       } else {
         // we have non-account avalaible
@@ -210,10 +210,10 @@ export const userSlice = createSlice({
       }
     },
     removeAllAccounts: (state) => {
-      localStorage.removeItem("serialziedUserAccount");
-      localStorage.removeItem("AAWalletCache");
-      localStorage.removeItem("mpcKey");
-      localStorage.removeItem("mpcKeygenId");
+      localStorage.removeItem('serialziedUserAccount');
+      localStorage.removeItem('AAWalletCache');
+      localStorage.removeItem('mpcKey');
+      localStorage.removeItem('mpcKeygenId');
 
       state.currentUserAccount = null;
       state.userAccount = [];
@@ -224,16 +224,16 @@ export const userSlice = createSlice({
     ) => {
       const [localKey, keygenId] = action.payload;
 
-      localStorage.setItem("mpcKey", localKey);
-      localStorage.setItem("mpcKeygenId", u8aToHex(keygenId));
-    },
+      localStorage.setItem('mpcKey', localKey);
+      localStorage.setItem('mpcKeygenId', u8aToHex(keygenId));
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(addUserAccount.fulfilled, (state, action) => {
       const userAccount = action.payload;
 
       const maybeCurrentSerializedAccount = localStorage.getItem(
-        "serialziedUserAccount"
+        'serialziedUserAccount'
       );
 
       if (maybeCurrentSerializedAccount) {
@@ -245,7 +245,8 @@ export const userSlice = createSlice({
             offset,
             offset + len
           );
-          console.log("3", currentSerializedAccount);
+
+          console.log('3', currentSerializedAccount);
 
           const account = UserAccount.deserializeWithEncryptedKey(
             hexToU8a(currentSerializedAccount)
@@ -256,43 +257,41 @@ export const userSlice = createSlice({
           // Here we only care about the first publicKey
           // might need to be changed later
           if (
-            account.getAddress("ethereum") ===
-            userAccount.getAddress("ethereum")
+            account.getAddress('ethereum') ===
+            userAccount.getAddress('ethereum')
           ) {
-            throw new Error("User Account Already Exists");
+            throw new Error('User Account Already Exists');
           }
         }
       }
 
-      const localStorageContent = maybeCurrentSerializedAccount || "";
+      const localStorageContent = maybeCurrentSerializedAccount || '';
 
       localStorage.setItem(
-        "serialziedUserAccount",
+        'serialziedUserAccount',
         localStorageContent + u8aToHex(userAccount.serializeWithEncryptedKey())
       );
 
       // store the AA cache
-      let aaWalletCache = localStorage.getItem("AAWalletCache");
+      let aaWalletCache = localStorage.getItem('AAWalletCache');
 
       if (!aaWalletCache || aaWalletCache.length === 0) {
         // first account
-        aaWalletCache = "";
+        aaWalletCache = '';
       }
 
       aaWalletCache = aaWalletCache + userAccount.aaWalletAddress;
 
-      localStorage.setItem("AAWalletCache", aaWalletCache);
+      localStorage.setItem('AAWalletCache', aaWalletCache);
     });
-  },
+  }
 });
 
-export const {
-  decryptCurrentUserAccount,
+export const { decryptCurrentUserAccount,
   loadUserAccount,
   lockCurrentUserAccount,
   noteAAWalletAddress,
   noteMpcUserAccount,
   removeAllAccounts,
-  switchUserAccount,
-} = userSlice.actions;
+  switchUserAccount } = userSlice.actions;
 export default userSlice.reducer;

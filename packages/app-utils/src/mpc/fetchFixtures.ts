@@ -57,7 +57,7 @@ const fetchPeers = async (): Promise<MpcNodeFixtures> => {
     l: [
       peerIds.l,
       `/ip4/127.0.0.1/tcp/2622/ws/p2p/${peerIds.l}`
-    ],
+    ]
   };
 };
 
