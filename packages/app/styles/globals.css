@@ -437,3 +437,9 @@ input[type="number"] {
 .nftsMore {
   background-image: radial-gradient(rgb(222, 214, 214), #1a1a1a, #1a1a1a);
 }
+
+.green-pink-gradient {
+  background: "#00cea8";
+  background: linear-gradient(90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
+  background: -webkit-linear-gradient(-90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
+}
