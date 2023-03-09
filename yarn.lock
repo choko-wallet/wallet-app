@@ -1624,6 +1624,7 @@ __metadata:
     react-qr-reader: ^3.0.0-beta-1
     react-social-icons: ^5.14.0
     react-spinners: ^0.13.4
+    react-tilt: ^0.1.4
     react-transition-group: ^4.4.5
     react-typed: ^1.2.0
     recharts: ^2.4.3
@@ -11767,6 +11768,16 @@ __metadata:
     react: ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: cb58f916bbf00c4f7fc33c1a75a8c0f91a98a42af26944340a0e29e4b3a97937a03f0292bc444eb5f5f0bea099344b580f9c04a81524246dadbf0571bdb57e62
+  languageName: node
+  linkType: hard
+
+"react-tilt@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "react-tilt@npm:0.1.4"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0-beta || ^16.0.0
+    react-dom: ^15.0.0 || ^16.0.0-beta || ^16.0.0
+  checksum: b5492a9963de18d0e87cf0406d79565fca4ee4185ad318424df4d2b171a48ca6165e159053a8425c7f5af67196a95f8dad8dd03760367cbcaf11164ad6f7864d
   languageName: node
   linkType: hard
 
