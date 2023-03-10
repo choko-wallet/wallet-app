@@ -1,23 +1,23 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import emailjs from '@emailjs/browser';
-import { Dialog } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import React, { ChangeEvent, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
+import emailjs from "@emailjs/browser";
+import { Dialog } from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import React, { ChangeEvent, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
-import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
+import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
 
-import Modal from '../Modal';
+import Modal from "../Modal";
 
 const EmailPostModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
 
   const formRef = useRef();
   const [form, setForm] = useState({
-    email: '',
-    name: ''
+    email: "",
+    name: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,15 +25,15 @@ const EmailPostModal = (): JSX.Element => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target as HTMLInputElement;
 
-    console.log('name value', name, value);
+    console.log("name value", name, value);
     setForm({
       ...form,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const notification = toast.loading('Sending Email...');
+    const notification = toast.loading("Sending Email...");
 
     e.preventDefault();
     setLoading(true);
@@ -44,30 +44,30 @@ const EmailPostModal = (): JSX.Element => {
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
         {
           from_email: form.email,
-          from_name: form.name
+          from_name: form.name,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
       )
       .then(() => {
         setLoading(false);
 
-        toast.success('Thanks for joining beta waitlist', {
-          id: notification
+        toast.success("Thanks for joining beta waitlist", {
+          id: notification,
         });
 
         setForm({
-          email: '',
-          name: ''
+          email: "",
+          name: "",
         });
 
-        dispatch(setClose('landingEmailPost'));
+        dispatch(setClose("landingEmailPost"));
       })
       .catch((err) => {
         setLoading(false);
         console.error(err);
 
-        toast.error('Something went wrong', {
-          id: notification
+        toast.error("Something went wrong", {
+          id: notification,
         });
       });
     // .finally(() => {
@@ -88,10 +88,10 @@ const EmailPostModal = (): JSX.Element => {
           <div
             onClick={() => {
               setForm({
-                email: '',
-                name: ''
+                email: "",
+                name: "",
               });
-              dispatch(setClose('landingEmailPost'));
+              dispatch(setClose("landingEmailPost"));
             }}
           >
             <XIcon className=' text-gray-200 h-8 w-8 cursor-pointer dark:text-white' />
@@ -130,14 +130,14 @@ const EmailPostModal = (): JSX.Element => {
 
             <button
               className={`py-3 px-8 rounded-xl outline-none w-fit  font-bold shadow-md shadow-primary border border-gray-600 ${
-                form.email === '' || loading
-                  ? 'bg-gray-500 text-black cursor-not-allowed'
-                  : 'text-white bg-tertiary cursor-pointer'
+                form.email === "" || loading
+                  ? "bg-gray-500 text-black cursor-not-allowed"
+                  : "text-white bg-tertiary cursor-pointer"
               }`}
-              disabled={form.email === '' || loading}
+              disabled={form.email === "" || loading}
               type='submit'
             >
-              {loading ? 'Sending...' : 'Send'}
+              {loading ? "Sending..." : "Send"}
             </button>
           </form>
         </div>
