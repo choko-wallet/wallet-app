@@ -17,6 +17,7 @@ import bg from "../../images/bg.png";
 import landingGIF from "../../images/landing1.gif";
 // import EmailPostModal from "../modal/EmailPostModal";
 import LoginModal from "../modal/LoginModal";
+import LoginModal2 from "../modal/LoginModal2";
 
 const Hero = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -129,6 +130,15 @@ const Hero = (): JSX.Element => {
                   Enter
                 </button>
               </div>
+
+              <div className='flex justify-between mx-auto w-full lg:w-[390px] space-x-2 '>
+                <button
+                  className=' text-[12px] sm:text-[15px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] flex-1  border-[1px] border-white font-semibold bg-transparent font-inter'
+                  onClick={() => dispatch(setOpen("landingLogin2"))}
+                >
+                  Login Modal 2
+                </button>
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -206,6 +216,7 @@ const Hero = (): JSX.Element => {
 
       {/* <EmailPostModal /> */}
       <LoginModal />
+      <LoginModal2 />
     </section>
   );
 };
