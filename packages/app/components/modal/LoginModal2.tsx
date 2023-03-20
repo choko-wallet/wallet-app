@@ -47,28 +47,11 @@ const LoginModal2 = (): JSX.Element => {
           </div>
         </Dialog.Title>
 
+        <p className='w-[230px] md:w-full text-black font-semibold text-xl md:text-2xl  font-poppins mt-3 mb-6 text-center mx-auto '>
+          Set Up Recovery Method
+        </p>
+
         <div className=' flex flex-col items-center justify-center space-y-4 md:px-2 pb-5 md:pb-10'>
-          <div className='flex items-center justify-between mb-4'>
-            <img
-              className='rounded-full border p-[2px] w-10 h-10 sm:w-16 sm:h-16 '
-              src={nft2.src}
-              alt=''
-            />
-
-            <div className='flex-1 mx-4 '>
-              <h2 className='font-bold w-24 sm:w-full truncate'>
-                email@email.com
-              </h2>
-              <h3 className='text-sm text-gray-400 whitespace-nowrap w-24 sm:w-full truncate'>
-                Welcome to CHOKO WALLET
-              </h3>
-            </div>
-
-            <button className='text-sm font-semibold text-blue-400'>
-              Sign Out
-            </button>
-          </div>
-
           {/* two animate line  */}
           <div className='flex items-center justify-center space-x-3  mt-5'>
             <motion.div
@@ -181,40 +164,62 @@ const LoginModal2 = (): JSX.Element => {
           <AnimatePresence exitBeforeEnter>
             <motion.div
               animate={{ opacity: 1, x: 0 }}
-              className='mb-5 '
+              className='mb-5 w-full space-y-4 md:px-6 flex flex-col'
               exit={{ opacity: 0, x: -30 }}
               initial={{ opacity: 0, x: 30 }}
               key={step}
               transition={{ duration: 0.3 }}
             >
               {step === 1 && (
-                <div className='w-full max-w-2xl  '>
-                  <div className=' bg-white h-[180px] flex flex-col w-full '>
-                    <p className='w-[230px] md:w-full text-black font-semibold text-xl md:text-2xl  font-poppins mt-3 mb-6 text-center mx-auto '>
-                      Set Up Recovery Method
-                    </p>
+                <div className='w-full   '>
+                  <div className=' flex flex-col w-full space-y-4 py-5'>
+                    <button
+                      className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+                      // onClick={loginWithGoogle}
+                    >
+                      Continue with
+                      <img
+                        // loading='lazy'
+                        className='w-6 h-6 ml-3'
+                        src='https://authjs.dev/img/providers/google.svg'
+                      />
+                    </button>
 
-                    <div className=' text-[#C67391] flex flex-col  justify-center items-start '>
-                      <label className='checkContainer font-poppins pt-[2px]'>
-                        Another Social Login
-                        <input
-                          checked={check1}
-                          onClick={() => setCheck1(!check1)}
-                          type='checkbox'
-                        />
-                        <span className='checkmark'></span>
-                      </label>
+                    <button
+                      className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+                      // onClick={loginWithGithub}
+                    >
+                      Continue with
+                      <img
+                        // loading='lazy'
+                        className='w-6 h-6 ml-3'
+                        src='https://authjs.dev/img/providers/github.svg'
+                      />
+                    </button>
 
-                      <label className='checkContainer font-poppins pt-[2px]'>
-                        Google Auth
-                        <input
-                          checked={check2}
-                          onClick={() => setCheck2(!check2)}
-                          type='checkbox'
-                        />
-                        <span className='checkmark'></span>
-                      </label>
-                    </div>
+                    <button
+                      className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+                      // onClick={loginWithTwitter}
+                    >
+                      Continue with
+                      <img
+                        // loading='lazy'
+                        className='w-6 h-6 ml-3'
+                        src='https://authjs.dev/img/providers/twitter.svg'
+                      />
+                    </button>
+
+                    <button
+                      className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+                      // onClick={loginWithDiscord}
+                    >
+                      Continue with
+                      <img
+                        // loading='lazy'
+                        className='w-6 h-6 ml-3'
+                        src='https://authjs.dev/img/providers/discord.svg'
+                      />
+                    </button>
                   </div>
                   <button
                     className=' text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-1 md:p-2 w-full bg-blue-400 focus:bg-[#0170BF] font-inter'

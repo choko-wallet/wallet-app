@@ -22,6 +22,10 @@ const LoginModal = (): JSX.Element => {
     await signIn("github");
   };
 
+  const loginWithDiscord = async () => {
+    await signIn("discord");
+  };
+
   return (
     <Modal modalName='landingLogin'>
       <Dialog.Panel className='md:w-[400px] w-90 max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all '>
@@ -44,7 +48,7 @@ const LoginModal = (): JSX.Element => {
           </p>
 
           <button
-            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter  active:ring-[#0170BF] active:ring-2 '
+            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
             onClick={loginWithGoogle}
           >
             Continue with
@@ -56,7 +60,7 @@ const LoginModal = (): JSX.Element => {
           </button>
 
           <button
-            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 '
+            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
             onClick={loginWithGithub}
           >
             Continue with
@@ -64,6 +68,30 @@ const LoginModal = (): JSX.Element => {
               // loading='lazy'
               className='w-6 h-6 ml-3'
               src='https://authjs.dev/img/providers/github.svg'
+            />
+          </button>
+
+          <button
+            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+            // onClick={loginWithTwitter}
+          >
+            Continue with
+            <img
+              // loading='lazy'
+              className='w-6 h-6 ml-3'
+              src='https://authjs.dev/img/providers/twitter.svg'
+            />
+          </button>
+
+          <button
+            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+            onClick={loginWithDiscord}
+          >
+            Continue with
+            <img
+              // loading='lazy'
+              className='w-6 h-6 ml-3'
+              src='https://authjs.dev/img/providers/discord.svg'
             />
           </button>
 
