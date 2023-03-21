@@ -11,6 +11,11 @@ import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
 
 import Modal from "../Modal";
 
+import googleSvg from "../../images/google.svg";
+import githubSvg from "../../images/github.svg";
+import twitterSvg from "../../images/twitter.svg";
+import discordSvg from "../../images/discord.svg";
+
 const LoginModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
 
@@ -55,7 +60,8 @@ const LoginModal = (): JSX.Element => {
             <img
               // loading='lazy'
               className='w-6 h-6 ml-3'
-              src='https://authjs.dev/img/providers/google.svg'
+              src={googleSvg.src}
+              // src='https://authjs.dev/img/providers/google.svg'
             />
           </button>
 
@@ -67,7 +73,7 @@ const LoginModal = (): JSX.Element => {
             <img
               // loading='lazy'
               className='w-6 h-6 ml-3'
-              src='https://authjs.dev/img/providers/github.svg'
+              src={githubSvg.src}
             />
           </button>
 
@@ -79,7 +85,7 @@ const LoginModal = (): JSX.Element => {
             <img
               // loading='lazy'
               className='w-6 h-6 ml-3'
-              src='https://authjs.dev/img/providers/twitter.svg'
+              src={twitterSvg.src}
             />
           </button>
 
@@ -91,7 +97,7 @@ const LoginModal = (): JSX.Element => {
             <img
               // loading='lazy'
               className='w-6 h-6 ml-3'
-              src='https://authjs.dev/img/providers/discord.svg'
+              src={discordSvg.src}
             />
           </button>
 
