@@ -49,7 +49,10 @@ const LoginModal = (): JSX.Element => {
             <span className='text-black font-normal mr-2 whitespace-nowrap'>
               Connect to
             </span>
-            CHOKO WALLET
+            <span className='underline decoration-orange-400 underline-offset-4 decoration-4 mr-2'>
+              CHOKO
+            </span>
+            WALLET
           </p>
 
           <button
@@ -65,7 +68,7 @@ const LoginModal = (): JSX.Element => {
             />
           </button>
 
-          <button
+          {/* <button
             className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
             onClick={loginWithGithub}
           >
@@ -99,7 +102,7 @@ const LoginModal = (): JSX.Element => {
               className='w-6 h-6 ml-3'
               src={discordSvg.src}
             />
-          </button>
+          </button> */}
 
           <div className='flex w-full '>
             <p className=' text-[#747474] flex font-roboto text-[10px] '>

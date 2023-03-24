@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 // import { useRouter } from 'next/router';
 // import { signOut } from 'next-auth/react';
-import React from "react";
+import React, { useEffect } from "react";
 import Typed from "react-typed";
 
 // import BackgroundCircle from './BackgroundCircle';
@@ -18,12 +18,29 @@ import landingGIF from "../../images/landing1.gif";
 // import EmailPostModal from "../modal/EmailPostModal";
 import LoginModal from "../modal/LoginModal";
 import LoginModal2 from "../modal/LoginModal2";
+import LoginModal3 from "../modal/LoginModal3";
+import { useSession } from "next-auth/react";
 
 const Hero = (): JSX.Element => {
   const dispatch = useDispatch();
+  const { data: session } = useSession();
+  console.log("hero session", session);
+
   // const vidRef = useRef();
 
-  // useEffect(() => { vidRef.current.play(); }, []);
+  useEffect(() => {
+    if (!session?.user?.provider) {
+      return;
+    }
+
+    if (session?.user?.provider === "google") {
+      dispatch(setOpen("landingLogin2"));
+    }
+
+    if (session?.user?.provider === "github") {
+      dispatch(setOpen("landingLogin3"));
+    }
+  }, [session]);
 
   return (
     <section className='snap-center relative' id='hero'>
@@ -138,6 +155,13 @@ const Hero = (): JSX.Element => {
                 >
                   Login Modal 2
                 </button>
+
+                <button
+                  className=' text-[12px] sm:text-[15px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] flex-1  border-[1px] border-white font-semibold bg-transparent font-inter'
+                  onClick={() => dispatch(setOpen("landingLogin3"))}
+                >
+                  Login Modal 3
+                </button>
               </div>
             </div>
           </motion.div>
@@ -217,6 +241,7 @@ const Hero = (): JSX.Element => {
       {/* <EmailPostModal /> */}
       <LoginModal />
       <LoginModal2 />
+      <LoginModal3 />
     </section>
   );
 };

@@ -33,6 +33,7 @@ const initialState: StatusSliceItem = {
     landingEmailPost: false,
     landingLogin: false,
     landingLogin2: false,
+    landingLogin3: false,
   },
   loading: "",
 };
