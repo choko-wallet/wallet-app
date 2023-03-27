@@ -59,21 +59,23 @@ const LoginModal2 = (): JSX.Element => {
         </p>
 
         <div className=' flex flex-col items-center justify-center space-y-4 md:px-2 pb-5 md:pb-10 '>
-          <div className='flex items-center justify-between '>
+          <div className='flex items-center justify-between hover:bg-gray-200 rounded-md hover:shadow-md hover:shadow-slate-400/30'>
             <img
-              className='rounded-full border p-[2px] w-16 h-16 '
+              className='rounded-full border p-[2px] w-16 h-16 hover:opacity-80'
               src='https://lh3.googleusercontent.com/a/AGNmyxbU_kc17QfyWtxcS5SW0gsu2maw8IkOVCdIX40d=s96-c'
               alt=''
             />
 
-            <div className='flex-1 mx-4'>
-              <h2 className='font-bold'>Leo</h2>
-              <h3 className='text-sm text-gray-400'>lizhuyao666@gmail.com</h3>
+            <div className='flex-1 mx-4 hover:opacity-80'>
+              <h2 className='font-bold w-28 sm:w-44 md:w-48 truncate'>Leo</h2>
+              <h3 className='text-sm text-gray-400 w-28 sm:w-44 md:w-48 truncate'>
+                lizhuyao666@gmail.com
+              </h3>
             </div>
 
             <img
               // loading='lazy'
-              className='w-10 h-10 mr-3'
+              className='w-10 h-10 mr-3 hover:opacity-80'
               src={googleSvg.src}
             />
 
@@ -85,21 +87,25 @@ const LoginModal2 = (): JSX.Element => {
             </button> */}
           </div>
 
-          <div className='flex items-center justify-between '>
+          <div className='flex items-center justify-between hover:bg-gray-200 rounded-md hover:shadow-md hover:shadow-slate-400/30'>
             <img
-              className='rounded-full border p-[2px] w-16 h-16 '
+              className='rounded-full border p-[2px] w-16 h-16 hover:opacity-80'
               src={session?.user?.image}
               alt=''
             />
 
-            <div className='flex-1 mx-4'>
-              <h2 className='font-bold'>{session?.user?.name}</h2>
-              <h3 className='text-sm text-gray-400'>{session?.user?.email}</h3>
+            <div className='flex-1 mx-4 hover:opacity-80'>
+              <h2 className='font-bold w-28 sm:w-44 md:w-48 truncate'>
+                {session?.user?.name}
+              </h2>
+              <h3 className='text-sm text-gray-400 w-28 sm:w-44 md:w-48 truncate'>
+                {session?.user?.email}
+              </h3>
             </div>
 
             <img
               // loading='lazy'
-              className='w-10 h-10 mr-3'
+              className='w-10 h-10 mr-3 hover:opacity-80'
               src={githubSvg.src}
             />
           </div>

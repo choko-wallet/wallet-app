@@ -14,6 +14,7 @@ import githubSvg from "../../images/github.svg";
 import facebookSvg from "../../images/facebook.svg";
 import appleSvg from "../../images/apple.svg";
 import discordSvg from "../../images/discord.svg";
+import twitterSvg from "../../images/twitter.svg";
 
 import Modal from "../Modal";
 import { AnimatePresence, motion } from "framer-motion";
@@ -34,6 +35,14 @@ const LoginModal2 = (): JSX.Element => {
 
   const loginWithGithub = async () => {
     await signIn("github");
+  };
+
+  const loginWithSecodeProvider = async () => {
+    if (secondProvider === "") return;
+
+    if (secondProvider === "twitter") {
+      await signIn("twitter");
+    }
   };
 
   return (
@@ -68,8 +77,12 @@ const LoginModal2 = (): JSX.Element => {
             />
 
             <div className='flex-1 mx-4'>
-              <h2 className='font-bold'>{session?.user?.name}</h2>
-              <h3 className='text-sm text-gray-400'>{session?.user?.email}</h3>
+              <h2 className='font-bold w-16 sm:w-28 truncate'>
+                {session?.user?.name}
+              </h2>
+              <h3 className='text-sm text-gray-400 w-16 sm:w-32 md:w-40 truncate '>
+                {session?.user?.email}
+              </h3>
             </div>
 
             <img
@@ -169,15 +182,34 @@ const LoginModal2 = (): JSX.Element => {
                         <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
                       )}
                     </div>
+
+                    <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
+                      <button
+                        className='h-10 w-10 flex items-center justify-center active:scale-95 transition duration-150 ease-in-out '
+                        // onClick={loginWithGithub}
+                        onClick={() => setSecondProvider("twitter")}
+                      >
+                        <img
+                          // loading='lazy'
+                          className='w-10 h-10 hover:opacity-80'
+                          src={twitterSvg.src}
+                        />
+                      </button>
+                      {secondProvider === "twitter" ? (
+                        <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
+                      ) : (
+                        <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
+                      )}
+                    </div>
                   </div>
 
                   <button
-                    className={`absolute bottom-0 text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-1 md:p-2 w-full  focus:bg-[#0170BF] font-inter ${
+                    className={`absolute bottom-0 text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-full  focus:bg-[#0170BF] font-inter ${
                       secondProvider === ""
                         ? "bg-gray-500 text-black cursor-not-allowed"
                         : "text-white bg-blue-400 cursor-pointer"
                     }`}
-                    onClick={loginWithGithub}
+                    onClick={loginWithSecodeProvider}
                     disabled={secondProvider === ""}
                   >
                     Confirm

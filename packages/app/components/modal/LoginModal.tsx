@@ -56,7 +56,7 @@ const LoginModal = (): JSX.Element => {
           </p>
 
           <button
-            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
+            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-2 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
             onClick={loginWithGoogle}
           >
             Continue with
@@ -124,7 +124,7 @@ const LoginModal = (): JSX.Element => {
           </p>
 
           <button
-            className=' text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-1 md:p-2 w-full bg-blue-400 focus:bg-[#0170BF] font-inter'
+            className=' text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-full bg-blue-400 focus:bg-[#0170BF] font-inter'
             onClick={() => router.push("/account")}
           >
             Create a Seed Phrase
