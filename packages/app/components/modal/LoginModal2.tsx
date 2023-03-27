@@ -3,12 +3,10 @@
 
 import { Dialog } from "@headlessui/react";
 import { XIcon, CheckCircleIcon } from "@heroicons/react/outline";
-import router from "next/router";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import React, { useState } from "react";
 
 import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
-import nft2 from "../../images/nft2.png";
 import googleSvg from "../../images/google.svg";
 import githubSvg from "../../images/github.svg";
 import facebookSvg from "../../images/facebook.svg";
@@ -18,31 +16,17 @@ import twitterSvg from "../../images/twitter.svg";
 
 import Modal from "../Modal";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check } from "../landingComponents/Check";
 
 const LoginModal2 = (): JSX.Element => {
+  const { data: session } = useSession();
+
   const dispatch = useAppThunkDispatch();
   const [step, setStep] = useState<number>(1);
-  const [check1, setCheck1] = useState<boolean>(false);
-  const [check2, setCheck2] = useState<boolean>(false);
-  const [selectedAccount, setSelectedAccount] = useState<boolean>(false);
-  const { data: session } = useSession();
   const [secondProvider, setSecondProvider] = useState<string>("");
-
-  const loginWithGoogle = async () => {
-    await signIn("google");
-  };
-
-  const loginWithGithub = async () => {
-    await signIn("github");
-  };
 
   const loginWithSecodeProvider = async () => {
     if (secondProvider === "") return;
-
-    if (secondProvider === "twitter") {
-      await signIn("twitter");
-    }
+    await signIn(secondProvider);
   };
 
   return (
@@ -56,7 +40,6 @@ const LoginModal2 = (): JSX.Element => {
           <div
             onClick={() => {
               setStep(1);
-              setSelectedAccount(false);
               dispatch(setClose("landingLogin2"));
             }}
           >

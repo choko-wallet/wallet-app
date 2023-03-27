@@ -1,30 +1,28 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {
-  ArrowLeftIcon,
+import { ArrowLeftIcon,
   ArrowRightIcon,
   CheckIcon,
   DuplicateIcon,
   RefreshIcon,
-  XIcon,
-} from "@heroicons/react/outline";
-import { cryptoWaitReady, mnemonicGenerate } from "@polkadot/util-crypto";
-import ProgressBar from "@ramonak/react-progress-bar";
-import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
-import Loading from "packages/app/components/Loading";
-import React, { useEffect, useState } from "react";
-import CopyToClipboard from "react-copy-to-clipboard";
+  XIcon } from '@heroicons/react/outline';
+import { cryptoWaitReady, mnemonicGenerate } from '@polkadot/util-crypto';
+import ProgressBar from '@ramonak/react-progress-bar';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
+import Loading from 'packages/app/components/Loading';
+import React, { useEffect, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 // redux
-import { useDispatch } from "react-redux";
+import { useDispatch } from 'react-redux';
 
-import { addUserAccount } from "@choko-wallet/app-redux";
+import { addUserAccount } from '@choko-wallet/app-redux';
 
 /**
  * Guide user to create an account with seed phrase
  */
-function CreateWallet(): JSX.Element {
+function CreateWallet (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -32,16 +30,16 @@ function CreateWallet(): JSX.Element {
   const [check2, setCheck2] = useState<boolean>(false);
 
   const [step, setStep] = useState<number>(1);
-  const [seeds, setSeeds] = useState<string>("");
+  const [seeds, setSeeds] = useState<string>('');
   const [quizMnemonic, setQuizMnemonic] = useState<number>(1);
 
-  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>("");
+  const [seedsStringForCopy, setSeedsStringForCopy] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
-  const [verifyMnemonic, setVerifyMnemonic] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [repeatPassword, setRepeatPassword] = useState<string>("");
+  const [verifyMnemonic, setVerifyMnemonic] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [repeatPassword, setRepeatPassword] = useState<string>('');
 
-  const [redirectRequest, setRedirectRequest] = useState<string>("");
+  const [redirectRequest, setRedirectRequest] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   const refreshMnemonic = () => {
@@ -67,9 +65,9 @@ function CreateWallet(): JSX.Element {
   };
 
   useEffect(() => {
-    const redirectParams = localStorage.getItem("requestParams");
+    const redirectParams = localStorage.getItem('requestParams');
 
-    localStorage.removeItem("requestParams");
+    localStorage.removeItem('requestParams');
 
     if (redirectParams) {
       setRedirectRequest(redirectParams);
@@ -104,7 +102,7 @@ function CreateWallet(): JSX.Element {
           <motion.div
             className='h-2 '
             layout
-            transition={{ layout: { duration: 0.5, type: "tween" } }}
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}
           >
             {step === 1 ? (
               <motion.div
@@ -128,7 +126,7 @@ function CreateWallet(): JSX.Element {
           <motion.div
             className='h-2 '
             layout
-            transition={{ layout: { duration: 0.5, type: "tween" } }}
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}
           >
             {step === 2 ? (
               <motion.div
@@ -160,7 +158,7 @@ function CreateWallet(): JSX.Element {
           <motion.div
             className='h-2 '
             layout
-            transition={{ layout: { duration: 0.5, type: "tween" } }}
+            transition={{ layout: { duration: 0.5, type: 'tween' } }}
           >
             {step === 3 ? (
               <motion.div
@@ -218,10 +216,10 @@ function CreateWallet(): JSX.Element {
               step === 2
                 ? 0
                 : step === 3
-                ? password && repeatPassword && password === repeatPassword
-                  ? 100
+                  ? password && repeatPassword && password === repeatPassword
+                    ? 100
+                    : 0
                   : 0
-                : 0
             }
             customLabel=' '
             height='3px'
@@ -245,14 +243,14 @@ function CreateWallet(): JSX.Element {
         <div className='hidden md:flex w-full max-w-2xl justify-center mt-5 h-5 relative  '>
           <p
             className={`absolute top-0 -left-12 text-xs md:text-sm font-poppins ${
-              step > 1 ? "text-[#4075A9]" : "text-white"
+              step > 1 ? 'text-[#4075A9]' : 'text-white'
             }`}
           >
             Generate Mnemonic
           </p>
           <p
             className={`absolute top-0 text-xs md:text-sm font-poppins pr-2 ${
-              step > 2 ? "text-[#4075A9]" : "text-white"
+              step > 2 ? 'text-[#4075A9]' : 'text-white'
             }`}
           >
             Verify
@@ -263,8 +261,8 @@ function CreateWallet(): JSX.Element {
               password &&
               repeatPassword &&
               password === repeatPassword
-                ? "text-[#4075A9]"
-                : "text-white"
+                ? 'text-[#4075A9]'
+                : 'text-white'
             }`}
           >
             Set Password
@@ -284,11 +282,11 @@ function CreateWallet(): JSX.Element {
               <div className='w-full max-w-2xl  '>
                 <div className='mt-8 md:mt-16 bg-white h-[480px] md:h-96 rounded-[10px] flex flex-col justify-center w-full max-w-3xl px-[30px] md:p-12 '>
                   <p className='w-[230px] md:w-full text-black font-semibold text-xl md:text-2xl  font-poppins md:mt-3 mb-6 text-center mx-auto  -mt-7'>
-                    Generated 12-word mnemonic seed:{" "}
+                    Generated 12-word mnemonic seed:{' '}
                   </p>
 
                   <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 '>
-                    {seeds.split(" ").map((seed, index) => (
+                    {seeds.split(' ').map((seed, index) => (
                       <div
                         className='border border-[#94C5E3] w-[120px] h-[33px]  rounded-lg flex items-center justify-center p-1 md:p-3 py-2 mx-1'
                         key={index}
@@ -340,7 +338,7 @@ function CreateWallet(): JSX.Element {
                 <div className='flex justify-evenly mt-12 md:mt-20'>
                   <button
                     className='bg-[#F5CBD5] rounded-full p-2'
-                    onClick={() => router.push("/")}
+                    onClick={() => router.push('/')}
                   >
                     <XIcon className='h-6 duration-300 hover:scale-125 transtion east-out' />
                   </button>
@@ -413,15 +411,15 @@ function CreateWallet(): JSX.Element {
                   <button
                     className={`p-2 bg-[#0170BF] text-white rounded-full flex items-center justify-center ' ${
                       verifyMnemonic.toLowerCase() ===
-                        seeds.split(" ")[quizMnemonic - 1] &&
+                        seeds.split(' ')[quizMnemonic - 1] &&
                       check1 &&
                       check2
-                        ? ""
-                        : "bg-[#7AAAC9] text-gray-300 cursor-not-allowed"
+                        ? ''
+                        : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'
                     }`}
                     disabled={
                       verifyMnemonic.toLowerCase() !==
-                        seeds.split(" ")[quizMnemonic - 1] ||
+                        seeds.split(' ')[quizMnemonic - 1] ||
                       !check1 ||
                       !check2
                     }
@@ -483,9 +481,9 @@ function CreateWallet(): JSX.Element {
                     className={`p-2 bg-[#0170BF] text-white rounded-full flex items-center justify-center  
             ${
               password && repeatPassword && password === repeatPassword
-                ? ""
-                : "bg-[#7AAAC9] text-gray-300 cursor-not-allowed"
-            }`}
+                ? ''
+                : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'
+              }`}
                     disabled={
                       !password ||
                       !repeatPassword ||

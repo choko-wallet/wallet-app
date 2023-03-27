@@ -19,6 +19,15 @@ export function ext_run_keygen(auth_header: string, payload: string, client_iden
 * @returns {Promise<string>}
 */
 export function ext_run_sign(auth_header: string, payload: string, local_key: string, client_identity: string, client_addr: string, enable_log: boolean): Promise<string>;
+/**
+* @param {string} auth_header
+* @param {string} payload
+* @param {string} client_identity
+* @param {string} client_addr
+* @param {boolean} enable_log
+* @returns {Promise<string>}
+*/
+export function ext_run_key_refreh(auth_header: string, payload: string, client_identity: string, client_addr: string, enable_log: boolean): Promise<string>;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -26,6 +35,7 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly ext_run_keygen: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => number;
   readonly ext_run_sign: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number) => number;
+  readonly ext_run_key_refreh: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => number;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;

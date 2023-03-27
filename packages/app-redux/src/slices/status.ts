@@ -1,7 +1,7 @@
 // Copyright 2021-2022 @choko-wallet/app-redux authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
 /**
  * statusSlice is used for controlling model behaviours & Loading behavior
@@ -31,16 +31,16 @@ const initialState: StatusSliceItem = {
     requestPassword: false,
     testRequest: false,
     landingEmailPost: false,
-    landingLogin: false,
+    landingLogin1: false,
     landingLogin2: false,
-    landingLogin3: false,
+    landingLogin3: false
   },
-  loading: "",
+  loading: ''
 };
 
 export const statusSlice = createSlice({
   initialState,
-  name: "status",
+  name: 'status',
   reducers: {
     setOpen: (state, action: PayloadAction<string>) => {
       const name = action.payload;
@@ -80,9 +80,9 @@ export const statusSlice = createSlice({
     },
 
     endLoading: (state) => {
-      state.loading = "";
-    },
-  },
+      state.loading = '';
+    }
+  }
 });
 
 export const { endLoading, setClose, setOpen, startLoading, toggle } =

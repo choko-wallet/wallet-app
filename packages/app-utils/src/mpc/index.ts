@@ -3,7 +3,7 @@
 
 /* tslint:disable */
 /* eslint-disable */
-import initWasm, {ext_run_keygen, ext_run_sign} from './skw_mpc_wasm';
+import initWasm, {ext_run_keygen, ext_run_key_refreh, ext_run_sign} from './skw_mpc_wasm';
 
 import { UserAccount } from '@choko-wallet/core';
 import {defaultMpcAccountOption} from '@choko-wallet/core/accountOption'
@@ -14,35 +14,44 @@ import { extractPublicKey, MpcRequest, SerializedLocalKey, SerializedSignature }
 import { u8aToHex } from '@skyekiwi/util';
 import { fetchPeers } from './fetchFixtures';
 
-const certificateToAuthHeader = (cert: Certificate): string => {
+const certificateToAuthHeader = (primary: Certificate, secondary: Certificate, additional?: Certificate): string => {
+  const additionalCert = additional ? {
+    payload: u8aToHex(additional.payload),
+    signature: u8aToHex(additional.signature),
+  } : null;
+
   return JSON.stringify({
-    proof: {
-      payload: u8aToHex(cert.payload),
-      signature: u8aToHex(cert.signature)
-    }
+    primary: {
+      payload: u8aToHex(primary.payload),
+      signature: u8aToHex(primary.signature)
+    }, 
+    secondary: {
+      payload: u8aToHex(secondary.payload),
+      signature: u8aToHex(secondary.signature)
+    },
+    additional: additionalCert,
   });
 }
 
-const clientAddr = "/dns/c.mpc.choko.app/tcp/443/wss";
+// const clientAddr = "/dns/c.mpc.choko.app/tcp/443/wss";
+const clientAddr = "/ip4/100.104.199.31/tcp/2619/ws";
 
 const runKeygenRequest = async (
   payloadId: Uint8Array,
-  usageCertificate: Certificate,
+  serializedAuthHeader: string,
+
   enableLog = true,
-  existingKey?: Uint8Array
 ): Promise<SerializedLocalKey> => {
   const fixture = await fetchPeers();
 
-  console.log(fixture)
-
   await initWasm();
-  // const payloadId = secureGenerateRandomKey();
-  const keygenRequst = MpcRequest.newKeyGenRequest(fixture, payloadId, existingKey);
-  
-  console.log(keygenRequst)
+  const keygenRequst = MpcRequest.newKeyGenRequest(fixture, payloadId);
+
+  console.log(keygenRequst.serialize())
   return await ext_run_keygen(
-    certificateToAuthHeader(usageCertificate),
+    serializedAuthHeader,
     keygenRequst.serialize(),
+
     fixture.c[0], // peerId
     clientAddr,
     enableLog
@@ -51,26 +60,53 @@ const runKeygenRequest = async (
 
 const runSignRequest = async (
   payloadId: Uint8Array,
-  auth: string,
+  serializedAuthHeader: string,
+  localKey: string,
   message: Uint8Array,
-  keygenId: Uint8Array,
-  localKey: SerializedLocalKey,
   enableLog: boolean
 ): Promise<SerializedSignature> => {
   const fixture = await fetchPeers();
   await initWasm();
-  // const payloadId = secureGenerateRandomKey();
-  const signRequet = MpcRequest.newSignRequest(fixture, payloadId, message, keygenId);
+
+  const signRequet = MpcRequest.newSignRequest(fixture, payloadId, message);
 
   return await ext_run_sign(
-    auth,
+    serializedAuthHeader,
+
     signRequet.serialize(),
     localKey,
+
+    fixture.c[0], // peerId
+    clientAddr,
+
+    enableLog
+  );
+};
+
+
+const runKeyRefreshRequest = async (
+  payloadId: Uint8Array,
+  serializedAuthHeader: string,
+
+  enableLog = true,
+): Promise<SerializedLocalKey> => {
+  const fixture = await fetchPeers();
+
+  await initWasm();
+  const keyrefreshRequest = MpcRequest.newKeyRefreshRequest(fixture, payloadId);
+
+  console.log(keyrefreshRequest.serialize())
+
+  return await ext_run_key_refreh(
+    serializedAuthHeader,
+    keyrefreshRequest.serialize(),
+
     fixture.c[0], // peerId
     clientAddr,
     enableLog
   );
 };
+
 
 const mpcLocalKeyToAccount = (
   localKey: SerializedLocalKey,
@@ -89,4 +125,4 @@ const mpcLocalKeyToAccount = (
   return userAccount;
 };
 
-export { runKeygenRequest, runSignRequest, mpcLocalKeyToAccount };
+export { certificateToAuthHeader, runKeygenRequest, runSignRequest, runKeyRefreshRequest, mpcLocalKeyToAccount };

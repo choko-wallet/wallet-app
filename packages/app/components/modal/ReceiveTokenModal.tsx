@@ -1,29 +1,25 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from "@headlessui/react";
-import {
-  CheckIcon,
+import { Dialog } from '@headlessui/react';
+import { CheckIcon,
   DocumentDuplicateIcon,
   DownloadIcon,
-  XIcon,
-} from "@heroicons/react/outline";
-import { useTheme } from "next-themes";
-import React, { useState } from "react";
-import CopyToClipboard from "react-copy-to-clipboard";
-import QRCode from "react-qr-code";
-import { useSelector } from "react-redux";
+  XIcon } from '@heroicons/react/outline';
+import { useTheme } from 'next-themes';
+import React, { useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import QRCode from 'react-qr-code';
+import { useSelector } from 'react-redux';
 
-import {
-  selectCurrentNetwork,
+import { selectCurrentNetwork,
   selectCurrentUserAccount,
   selectKnownNetworks,
   setClose,
-  useAppThunkDispatch,
-} from "@choko-wallet/app-redux";
-import { encodeAddr } from "@choko-wallet/app-utils";
+  useAppThunkDispatch } from '@choko-wallet/app-redux';
+import { encodeAddr } from '@choko-wallet/app-utils';
 
-import Modal from "../Modal";
+import Modal from '../Modal';
 
 /**
  * The dropdown to receive crypto and display a QR code
@@ -65,7 +61,7 @@ const ReceiveTokenModal = (): JSX.Element => {
               Receive Crypto
             </p>
 
-            <div onClick={() => dispatch(setClose("homeReceive"))}>
+            <div onClick={() => dispatch(setClose('homeReceive'))}>
               <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
             </div>
           </Dialog.Title>
@@ -95,14 +91,14 @@ const ReceiveTokenModal = (): JSX.Element => {
             <div className='relative h-64 w-64 mx-auto m-3 '>
               <QRCode
                 size={256}
-                style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
                 value={currentAddress}
               />
             </div>
 
             {/* <p className='dark:text-white text-gray-700 text-sm pt-3 font-poppins'>Send only {cryptoToReceive.name} to this deposit address.</p> */}
             <p className='dark:text-white text-gray-700 text-sm font-poppins'>
-              Ensure the network is{" "}
+              Ensure the network is{' '}
               <span className='text-red-400 ml-2'>
                 {knownNetworks[currentNetwork].info}
               </span>

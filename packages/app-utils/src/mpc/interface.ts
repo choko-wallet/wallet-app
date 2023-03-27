@@ -11,52 +11,10 @@ export type Multiaddr = string;
 
 export type NodeInfo = [PeerId, Multiaddr];
 
-export type KeyGenRequestType = {
-  keygen: null | Uint8Array,
-};
-
-export type SignRequestType = {
-  message: Uint8Array,
-  keygenId: Uint8Array,
-  keygenPeers: NodeInfo[],
-};
-
-const serializeKeyGenRequest = (request: KeyGenRequestType): string => {
-  if (request.keygen && request.keygen.length !== 32) {
-    throw new Error('keygen request existing key length error');
-  }
-
-  return JSON.stringify({
-    KeyGen: request.keygen ? Array.from(request.keygen) : null
-  });
-};
-
-const serializeSignRequest = (request: SignRequestType): string => {
-  if (request.message.length !== 32) {
-    throw new Error('sign request message length error');
-  }
-
-  if (request.keygenId.length !== 32) {
-    throw new Error('sign request keygenId length error');
-  }
-
-  /* eslint-disable */
-  return JSON.stringify({
-    SignOffline: {
-      message: Array.from(request.message),
-      keygen_id: Array.from(request.keygenId),
-      keygen_peers: request.keygenPeers
-    }
-  });
-  /* eslint-enable */
-};
-
 export class MpcRequest {
   payloadId: Uint8Array
-  payloadType: {
-    keygen: KeyGenRequestType | null,
-    sign: SignRequestType | null,
-  }
+  mode: "KeyGen" | "Sign" | "KeyRefresh"
+  messageToSign: Uint8Array
 
   peers: NodeInfo[]
   sender: PeerId
@@ -66,84 +24,84 @@ export class MpcRequest {
 
   constructor (
     mpcNodeFixtures: MpcNodeFixtures,
-    mode: 'keygen' | 'sign',
+
+    mode: "KeyGen" | "Sign" | "KeyRefresh",
     payloadId: Uint8Array,
-    payloadType: KeyGenRequestType | SignRequestType,
+    messageToSign?: Uint8Array,
+
     peers?: NodeInfo[],
     sender?: PeerId,
     n = 3,
     t = 2
   ) {
     this.payloadId = payloadId;
+    this.mode = mode;
 
-    switch (mode) {
-      case 'keygen':
-        this.payloadType = {
-          keygen: payloadType as KeyGenRequestType,
-          sign: undefined
-        };
-        this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1, mpcNodeFixtures.f2];
-        break;
-      case 'sign':
-        this.payloadType = {
-          keygen: undefined,
-          sign: payloadType as SignRequestType
-        };
-        this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1];
-        break;
+    if (['KeyGen', 'KeyRefresh'].includes(this.mode)) {
+      this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1, mpcNodeFixtures.f2];
+    } else if (this.mode === 'Sign') {
+      this.messageToSign = messageToSign;
+      this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1];
     }
-
+    
     this.sender = sender || mpcNodeFixtures.l[0];
 
     this.n = n;
     this.t = t;
   }
 
-  public static newKeyGenRequest (mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array, existingKey?: Uint8Array): MpcRequest {
-    return new MpcRequest(
-      mpcNodeFixtures,
-      'keygen', payloadId, { keygen: existingKey || null }
-    );
+  public static newKeyGenRequest (mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array): MpcRequest {
+    return new MpcRequest( mpcNodeFixtures, 'KeyGen', payloadId );
   }
 
   public static newSignRequest (
-    mpcNodeFixtures: MpcNodeFixtures,
-    payloadId: Uint8Array,
-    message: Uint8Array,
-    keygenId: Uint8Array
+    mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array, message: Uint8Array,
   ): MpcRequest {
+    if (message.length !== 32) {
+      throw new Error("wrong message length");
+    }
+
     return new MpcRequest(
-      mpcNodeFixtures,
-      'sign', payloadId, {
-        keygenId: keygenId,
-        keygenPeers: [mpcNodeFixtures.l, mpcNodeFixtures.f1, mpcNodeFixtures.f2],
-        message: message
-      }
+      mpcNodeFixtures, 'Sign', payloadId, message
     );
   }
 
+  public static newKeyRefreshRequest (mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array): MpcRequest {
+    return new MpcRequest( mpcNodeFixtures, 'KeyRefresh', payloadId );
+  }
+
   public serialize (): string {
-    let payloadTypeString = '';
+    if (['KeyGen', 'KeyRefresh'].includes(this.mode)) {
+      /* eslint-disable */
+      return JSON.stringify({
+        payload_id: u8aToHex(this.payloadId),
+        payload_type: this.mode,
+  
+        peers: this.peers,
+        sender: this.sender,
+        n: this.n,
+        t: this.t
+      });
+      /* eslint-enable */
+    } else if (this.mode === "Sign") {
+      /* eslint-disable */
+      return JSON.stringify({
+        payload_id: u8aToHex(this.payloadId),
+        payload_type: {
+          "SignOffline": {
+            "message": u8aToHex(this.messageToSign)
+          }
+        },
 
-    if (this.payloadType.keygen) {
-      payloadTypeString = serializeKeyGenRequest(this.payloadType.keygen);
-    } else if (this.payloadType.sign) {
-      payloadTypeString = serializeSignRequest(this.payloadType.sign);
+        peers: this.peers,
+        sender: this.sender,
+        n: this.n,
+        t: this.t
+      });
+      /* eslint-enable */
     } else {
-      throw new Error('needs to specify a request type');
+      throw new Error("unknow request mode")
     }
-
-    /* eslint-disable */
-    return JSON.stringify({
-      payload_id: Array.from(this.payloadId),
-      payload_type: JSON.parse(payloadTypeString),
-
-      peers: this.peers,
-      sender: this.sender,
-      n: this.n,
-      t: this.t
-    });
-    /* eslint-enable */
   }
 }
 

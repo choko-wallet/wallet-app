@@ -12,9 +12,6 @@ import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
 import Modal from "../Modal";
 
 import googleSvg from "../../images/google.svg";
-import githubSvg from "../../images/github.svg";
-import twitterSvg from "../../images/twitter.svg";
-import discordSvg from "../../images/discord.svg";
 
 const LoginModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
@@ -23,23 +20,15 @@ const LoginModal = (): JSX.Element => {
     await signIn("google");
   };
 
-  const loginWithGithub = async () => {
-    await signIn("github");
-  };
-
-  const loginWithDiscord = async () => {
-    await signIn("discord");
-  };
-
   return (
-    <Modal modalName='landingLogin'>
+    <Modal modalName='landingLogin1'>
       <Dialog.Panel className='md:w-[400px] w-90 max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all '>
         <Dialog.Title
           as='h3'
           className='text-lg font-medium leading-6 flex items-center mb-3'
         >
           <p className=' text-black flex flex-grow font-poppins'> </p>
-          <div onClick={() => dispatch(setClose("landingLogin"))}>
+          <div onClick={() => dispatch(setClose("landingLogin1"))}>
             <XIcon className=' text-[#B6B7BC] h-5 w-5 cursor-pointer md:h-8 md:w-8' />
           </div>
         </Dialog.Title>
@@ -52,7 +41,6 @@ const LoginModal = (): JSX.Element => {
             <span className='underline decoration-orange-400 underline-offset-4 decoration-4 mr-2'>
               CHOKO
             </span>
-            WALLET
           </p>
 
           <button
@@ -119,8 +107,8 @@ const LoginModal = (): JSX.Element => {
             <div className='w-full h-[1px] bg-gray-300'></div>
           </div>
 
-          <p className=' text-[#747474] flex flex-grow font-roboto text-[12px]'>
-            Create a Choko Wallet account to continue
+          <p className=' text-[#747474] flex flex-grow font-roboto text-center text-[12px]'>
+            If you are aboslutely sure what you are doing with a crypto wallet
           </p>
 
           <button

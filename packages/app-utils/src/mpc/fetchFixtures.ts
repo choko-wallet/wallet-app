@@ -35,28 +35,27 @@ import { MpcNodeFixtures, PeerIds } from './types';
 
 const fetchPeers = async (): Promise<MpcNodeFixtures> => {
   const res = await superagent
-    .get('https://auth.choko.app/info/peerid')
+    // .get('https://auth.choko.app/info/peerid')
+    .get('http://localhost:8080/info/peerid')
     .accept('json');
   const peerIds = JSON.parse(res.text) as PeerIds;
-
-  console.log('peerIds', peerIds);
 
   return {
     c: [
       peerIds.c,
-      `/ip4/127.0.0.1/tcp/2619/ws/p2p/${peerIds.c}`
+      `/ip4/100.104.199.31/tcp/2619/ws/p2p/${peerIds.c}`
     ],
     f1: [
       peerIds.f1,
-      `/ip4/127.0.0.1/tcp/2620/ws/p2p/${peerIds.f1}`
+      `/ip4/100.104.199.31/tcp/2620/ws/p2p/${peerIds.f1}`
     ],
     f2: [
       peerIds.f2,
-      `/ip4/127.0.0.1/tcp/2621/ws/p2p/${peerIds.f2}`
+      `/ip4/100.104.199.31/tcp/2621/ws/p2p/${peerIds.f2}`
     ],
     l: [
       peerIds.l,
-      `/ip4/127.0.0.1/tcp/2622/ws/p2p/${peerIds.l}`
+      `/ip4/100.104.199.31/tcp/2622/ws/p2p/${peerIds.l}`
     ]
   };
 };
