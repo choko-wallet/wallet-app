@@ -9,6 +9,8 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import TwitterProvider from "next-auth/providers/twitter";
 import DiscordProvider from "next-auth/providers/discord";
+import RedditProvider from "next-auth/providers/reddit";
+import FacebookProvider from "next-auth/providers/facebook";
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -29,7 +31,14 @@ export const authOptions = {
     DiscordProvider({
       clientId: process.env.DISCORD_ID!,
       clientSecret: process.env.DISCORD_SECRET!,
-      // version: "2.0",
+    }),
+    RedditProvider({
+      clientId: process.env.REDDIT_ID!,
+      clientSecret: process.env.REDDIT_SECRET!,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_ID!,
+      clientSecret: process.env.FACEBOOK_SECRET!,
     }),
   ],
   callbacks: {

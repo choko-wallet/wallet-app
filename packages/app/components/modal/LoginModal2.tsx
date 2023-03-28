@@ -11,6 +11,8 @@ import googleSvg from "../../images/google.svg";
 import githubSvg from "../../images/github.svg";
 import facebookSvg from "../../images/facebook.svg";
 import appleSvg from "../../images/apple.svg";
+import redditSvg from "../../images/reddit.svg";
+
 import discordSvg from "../../images/discord.svg";
 import twitterSvg from "../../images/twitter.svg";
 
@@ -48,10 +50,26 @@ const LoginModal2 = (): JSX.Element => {
         </Dialog.Title>
 
         <p className='w-[230px] md:w-full text-black font-semibold text-xl md:text-xl  font-poppins mt-3 mb-6 text-center mx-auto '>
-          Set Up Your Account
+          Sign Up
         </p>
 
-        <div className='flex items-center justify-between my-10'>
+        <div className=' w-[230px] flex items-center justify-center mx-auto  my-2'>
+          <div className='h-5 w-5 rounded-full bg-green-500 hover:bg-green-400 flex items-center justify-center'>
+            <p className='text-[10px] text-white'>1</p>
+          </div>
+          <div className='h-[2px] w-[90px] rounded-full bg-green-300 hover:bg-green-400'></div>
+          <div className='h-5 w-5 rounded-full bg-green-500 hover:bg-green-400 flex items-center justify-center'>
+            <p className='text-[10px] text-white'>2</p>
+          </div>
+          <div className='h-[2px] w-[90px] rounded-full bg-gray-300 hover:bg-gray-400'></div>
+          <div className='h-[10px] w-[10px] rounded-full bg-gray-500 hover:bg-gray-400'></div>
+        </div>
+
+        <p className='w-[230px] md:w-full text-black font-semibold text-sm font-poppins text-center mx-auto hover:text-gray-700'>
+          Note: This is the default
+        </p>
+
+        <div className='flex items-center justify-between my-3 '>
           <div className='flex items-center flex-1 bg-gray-100 hover:bg-gray-300/70 rounded-lg p-2 mx-1'>
             <img
               className='rounded-full border p-[2px] w-16 h-16 hover:opacity-80'
@@ -77,7 +95,7 @@ const LoginModal2 = (): JSX.Element => {
           <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer md:h-8 md:w-8' />
         </div>
 
-        <div className=' flex flex-col items-center justify-center space-y-4 md:px-2 pb-5 md:pb-10 '>
+        <div className=' flex flex-col items-center justify-center space-y-4 md:px-2 pb-5   '>
           <AnimatePresence exitBeforeEnter>
             <motion.div
               animate={{ opacity: 1, x: 0 }}
@@ -88,7 +106,7 @@ const LoginModal2 = (): JSX.Element => {
               transition={{ duration: 0.3 }}
             >
               {step === 1 && (
-                <div className='w-full relative h-[160px] space-y-5 '>
+                <div className='w-full relative h-[140px] space-y-5  '>
                   <div className=' flex w-full items-center justify-evenly py-5'>
                     <div className='relative h-[70px] w-10 flex flex-col items-center group'>
                       <button
@@ -103,6 +121,51 @@ const LoginModal2 = (): JSX.Element => {
                         />
                       </button>
                       {secondProvider === "github" ? (
+                        <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
+                      ) : (
+                        <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
+                      )}
+                    </div>
+
+                    <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
+                      <button
+                        className='h-10 w-10 flex items-center justify-center active:scale-95 transition duration-150 ease-in-out '
+                        // onClick={loginWithGithub}
+                        onClick={() => setSecondProvider("discord")}
+                      >
+                        <a
+                          className=''
+                          href={"https://discord.gg/zkp8UEQctM"}
+                          rel='noreferrer'
+                          target='_blank'
+                        >
+                          <img
+                            // loading='lazy'
+                            className='w-10 h-10 hover:opacity-80'
+                            src={discordSvg.src}
+                          />
+                        </a>
+                      </button>
+                      {secondProvider === "discord" ? (
+                        <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
+                      ) : (
+                        <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
+                      )}
+                    </div>
+
+                    <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
+                      <button
+                        className='h-10 w-10 flex items-center justify-center active:scale-95 transition duration-150 ease-in-out '
+                        // onClick={loginWithGithub}
+                        onClick={() => setSecondProvider("reddit")}
+                      >
+                        <img
+                          // loading='lazy'
+                          className='w-10 h-10 hover:opacity-80'
+                          src={redditSvg.src}
+                        />
+                      </button>
+                      {secondProvider === "reddit" ? (
                         <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
                       ) : (
                         <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
@@ -128,7 +191,7 @@ const LoginModal2 = (): JSX.Element => {
                       )}
                     </div>
 
-                    <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
+                    {/* <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
                       <button
                         className='h-10 w-10 flex items-center justify-center active:scale-95 transition duration-150 ease-in-out '
                         // onClick={loginWithGithub}
@@ -145,28 +208,9 @@ const LoginModal2 = (): JSX.Element => {
                       ) : (
                         <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
                       )}
-                    </div>
+                    </div> */}
 
-                    <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
-                      <button
-                        className='h-10 w-10 flex items-center justify-center active:scale-95 transition duration-150 ease-in-out '
-                        // onClick={loginWithGithub}
-                        onClick={() => setSecondProvider("discord")}
-                      >
-                        <img
-                          // loading='lazy'
-                          className='w-10 h-10 hover:opacity-80'
-                          src={discordSvg.src}
-                        />
-                      </button>
-                      {secondProvider === "discord" ? (
-                        <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
-                      ) : (
-                        <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
-                      )}
-                    </div>
-
-                    <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
+                    {/* <div className='relative h-[70px] w-10 flex flex-col items-center  group'>
                       <button
                         className='h-10 w-10 flex items-center justify-center active:scale-95 transition duration-150 ease-in-out '
                         // onClick={loginWithGithub}
@@ -183,7 +227,7 @@ const LoginModal2 = (): JSX.Element => {
                       ) : (
                         <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
                       )}
-                    </div>
+                    </div> */}
                   </div>
 
                   <button
@@ -197,11 +241,6 @@ const LoginModal2 = (): JSX.Element => {
                   >
                     Confirm
                   </button>
-
-                  <div className='absolute -bottom-12 w-full  flex items-center justify-center'>
-                    <div className='h-5 w-5 rounded-full bg-green-600 mx-3'></div>
-                    <div className='h-5 w-5 rounded-full bg-gray-300 mx-3'></div>
-                  </div>
                 </div>
               )}
             </motion.div>
