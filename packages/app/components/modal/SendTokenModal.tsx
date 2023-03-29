@@ -1,36 +1,42 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BalanceInfo } from '@choko-wallet/app-utils';
+import type { BalanceInfo } from "@choko-wallet/app-utils";
 
-import { Dialog } from '@headlessui/react';
-import { CameraIcon,
+import { Dialog } from "@headlessui/react";
+import {
+  CameraIcon,
   CheckIcon,
   DocumentDuplicateIcon,
   DotsHorizontalIcon,
   PaperAirplaneIcon,
-  XIcon } from '@heroicons/react/outline';
-import { useTheme } from 'next-themes';
-import React, { useEffect, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { QrReader } from 'react-qr-reader';
-import { useDispatch, useSelector } from 'react-redux';
+  XIcon,
+} from "@heroicons/react/outline";
+import { useTheme } from "next-themes";
+import React, { useEffect, useState } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { QrReader } from "react-qr-reader";
+import { useDispatch, useSelector } from "react-redux";
 
-import { endLoading,
+import {
+  endLoading,
   selectCurrentNetwork,
   selectCurrentUserAccount,
   selectKnownNetworks,
   selectStatus,
   setClose,
   startLoading,
-  toggle } from '@choko-wallet/app-redux';
-import { encodeAddr,
+  toggle,
+} from "@choko-wallet/app-redux";
+import {
+  encodeAddr,
   ethEncodeTxToUrl,
   polkadotEncodeTxToUrl,
-  toastFail } from '@choko-wallet/app-utils';
+  toastFail,
+} from "@choko-wallet/app-utils";
 
-import Modal from '../Modal';
-import DropdownForSend from './DropdownForSend';
+import Modal from "../Modal";
+import DropdownForSend from "./DropdownForSend";
 
 /**
  * Modal wrapper to send crypto to another account
@@ -46,8 +52,8 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
   const [loading, setLaoding] = useState(true);
 
-  const [addressToSend, setAddressToSend] = useState<string>('');
-  const [cryptoAddress, setCryptoAddress] = useState<string>('native');
+  const [addressToSend, setAddressToSend] = useState<string>("");
+  const [cryptoAddress, setCryptoAddress] = useState<string>("native");
 
   // Value to be sent
   const [amount, setAmount] = useState<number>(0);
@@ -79,14 +85,14 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
 
     // no need to await
     void (async () => {
-      dispatch(startLoading('Generating Payload ...'));
+      dispatch(startLoading("Generating Payload ..."));
 
       const network = knownNetworks[currentNetwork];
 
       try {
         // 发送的参数输入非法字符 encode报错 用try catch 给toast
         switch (network.networkType) {
-          case 'polkadot': {
+          case "polkadot": {
             const requestUrl = await polkadotEncodeTxToUrl(
               network,
               currentUserAccount,
@@ -94,12 +100,12 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               amount
             );
 
-            console.log('requestUrl', requestUrl);
+            console.log("requestUrl", requestUrl);
             dispatch(endLoading());
             break;
           }
 
-          case 'ethereum': {
+          case "ethereum": {
             const requestUrl = ethEncodeTxToUrl(
               network,
               currentUserAccount,
@@ -116,13 +122,13 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
           }
         }
       } catch (e) {
-        console.log('sendTransaction-err', e);
+        console.log("sendTransaction-err", e);
         dispatch(endLoading());
-        toastFail('Someting Wrong! Please try again.');
+        toastFail("Someting Wrong! Please try again.");
       }
     })();
 
-    dispatch(setClose('homeSend'));
+    dispatch(setClose("homeSend"));
     setSendTransactionLoading(false);
   };
 
@@ -150,7 +156,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 Send Crypto
               </p>
             </div>
-            <div onClick={() => dispatch(setClose('homeSend'))}>
+            <div onClick={() => dispatch(setClose("homeSend"))}>
               <XIcon className='  h-8 w-8 cursor-pointer text-black dark:text-white' />
             </div>
           </Dialog.Title>
@@ -198,7 +204,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               />
               <CameraIcon
                 className='absolute top-9 right-2 text-gray-600 ml-2 p-1 h-7 w-7 bg-gray-200 dark:bg-primary cursor-pointer rounded-full dark:text-gray-300'
-                onClick={() => dispatch(toggle('homeQRScanner'))}
+                onClick={() => dispatch(toggle("homeQRScanner"))}
               />
             </div>
 
@@ -206,11 +212,11 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               <div>
                 <QrReader
                   className='absolute top-0 right-5 left-5 bottom-0 z-40'
-                  constraints={{ facingMode: 'user' }}
+                  constraints={{ facingMode: "user" }}
                   onResult={(result, error) => {
                     if (result) {
                       // setAddressToSend(result?.text)
-                      dispatch(setClose('homeQRScanner'));
+                      dispatch(setClose("homeQRScanner"));
                     }
 
                     if (error) {
@@ -221,7 +227,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
                 <div className='absolute top-16 right-10 z-50 rounded-full p-2 bg-red-100'>
                   <XIcon
                     className='h-5 w-5'
-                    onClick={() => dispatch(setClose('homeQRScanner'))}
+                    onClick={() => dispatch(setClose("homeQRScanner"))}
                   />
                 </div>
               </div>
@@ -299,7 +305,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               </div>
             </div>
             <p className='font-poppins text-gray-700 dark:text-white text-sm'>
-              {balanceInfo[cryptoAddress].name} price:{' '}
+              {balanceInfo[cryptoAddress].name} price:{" "}
               {balanceInfo[cryptoAddress].priceInUSD}
             </p>
 
@@ -312,12 +318,12 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             {!sendTransactionLoading ? (
               <button
                 className={`font-poppins py-3 px-6 font-medium text-[18px]  rounded-[10px] outline-none' ${
-                  amount && amount !== 0 && addressToSend !== ''
-                    ? 'text-primary bg-blue-gradient'
-                    : 'bg-[#7AAAC9] text-gray-300 cursor-not-allowed'
+                  amount && amount !== 0 && addressToSend !== ""
+                    ? "text-primary bg-blue-gradient transition-colors duration-200"
+                    : "bg-[#7AAAC9] text-gray-300 cursor-not-allowed"
                 }`}
                 disabled={
-                  amount === 0 || amount === null || addressToSend === ''
+                  amount === 0 || amount === null || addressToSend === ""
                 }
                 onClick={() => sendTransaction()}
                 type='button'

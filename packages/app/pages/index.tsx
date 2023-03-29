@@ -1,72 +1,105 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { NextPage, NextPageContext } from 'next';
+import type { NextPage, NextPageContext } from "next";
 
-import { secureGenerateRandomKey } from '@skyekiwi/crypto';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { signOut, useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import { secureGenerateRandomKey } from "@skyekiwi/crypto";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 
-import { loadUserAccount,
+import {
+  loadUserAccount,
   noteMpcUserAccount,
   selectLoading,
   selectUserAccount,
   setOpen,
   startLoading,
   useDispatch,
-  useSelector } from '@choko-wallet/app-redux';
-import { certificateToAuthHeader, runKeygenRequest, runKeyRefreshRequest } from '@choko-wallet/app-utils/mpc';
+  useSelector,
+} from "@choko-wallet/app-redux";
+import {
+  certificateToAuthHeader,
+  runKeygenRequest,
+  runKeyRefreshRequest,
+} from "@choko-wallet/app-utils/mpc";
 import {
   preimageOAuthProofOfOwnership,
-  validateOAuthProofOfOwnership } from '@choko-wallet/auth-client';
+  validateOAuthProofOfOwnership,
+} from "@choko-wallet/auth-client";
 
-import ContactMe from '../components/landingComponents/ContactMe';
-import Header from '../components/landingComponents/Header';
-import Hero from '../components/landingComponents/Hero';
-import NFT from '../components/landingComponents/NFT';
-import Loading from '../components/Loading';
-import { Session } from 'next-auth';
+import ContactMe from "../components/landingComponents/ContactMe";
+import Header from "../components/landingComponents/Header";
+import Hero from "../components/landingComponents/Hero";
+import NFT from "../components/landingComponents/NFT";
+import Loading from "../components/Loading";
+import { Session } from "next-auth";
 
 interface Props {
   token: string;
 }
 
 const generateOrRefreshAccount = async (
-  primaryProvider: string, primaryEmail: string, primaryToken: string,
-  secondaryProvider: string, secondaryEmail: string, secondaryToken: string,
+  primaryProvider: string,
+  primaryEmail: string,
+  primaryToken: string,
+  secondaryProvider: string,
+  secondaryEmail: string,
+  secondaryToken: string
 ): Promise<string> => {
   // 0. we always try to fetch both cert & other setups
-  const primaryCert = await validateOAuthProofOfOwnership(primaryProvider, primaryEmail, primaryToken, "http://localhost:8080");
-  const secondaryCert = await validateOAuthProofOfOwnership(secondaryProvider, secondaryEmail, secondaryToken, "http://localhost:8080");
+  const primaryCert = await validateOAuthProofOfOwnership(
+    primaryProvider,
+    primaryEmail,
+    primaryToken,
+    "http://localhost:8080"
+  );
+  const secondaryCert = await validateOAuthProofOfOwnership(
+    secondaryProvider,
+    secondaryEmail,
+    secondaryToken,
+    "http://localhost:8080"
+  );
 
   const authHeader = certificateToAuthHeader(primaryCert, secondaryCert);
   const jobId = secureGenerateRandomKey();
 
   // 1. try to see if we have an account or not
-  if(await preimageOAuthProofOfOwnership(primaryProvider, primaryEmail, "http://localhost:8080")) {
+  if (
+    await preimageOAuthProofOfOwnership(
+      primaryProvider,
+      primaryEmail,
+      "http://localhost:8080"
+    )
+  ) {
     // the user already exists
     // we do a key refresh and disable the old key
     const key = await runKeyRefreshRequest(jobId, authHeader);
-    if (key.indexOf('Node Returns Error') !== -1) {
+    if (key.indexOf("Node Returns Error") !== -1) {
       throw new Error(key);
     }
-  
+
     return key;
   } else {
     // new account - we do a key generation
     const key = await runKeygenRequest(jobId, authHeader);
-    if (key.indexOf('Node Returns Error') !== -1) {
+    if (key.indexOf("Node Returns Error") !== -1) {
       throw new Error(key);
     }
-  
+
     return key;
   }
 };
 
 const primaryProviders = ["google"];
-const secondaryProviders = ["github", "twitter", "facebook", "discord", "apple"]
+const secondaryProviders = [
+  "github",
+  "twitter",
+  "facebook",
+  "discord",
+  "apple",
+];
 
 const Home: NextPage<Props> = ({ token }: Props) => {
   const { data: session } = useSession();
@@ -74,15 +107,14 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   const [currentStep, setCurrentStep] = useState(1);
   const dispatch = useDispatch();
 
-
   const router = useRouter();
   const loadingText = useSelector(selectLoading);
   const accounts = useSelector(selectUserAccount);
 
-
   useEffect(() => {
     if (
-      session && session.user &&
+      session &&
+      session.user &&
       primaryProviders.includes(session.user.provider)
     ) {
       // step 2
@@ -92,29 +124,31 @@ const Home: NextPage<Props> = ({ token }: Props) => {
 
       // init secondary auth
       setCurrentStep(2);
-      dispatch(setOpen('landingLogin2'));
+      dispatch(setOpen("landingLogin2"));
 
-      return
+      return;
     }
 
     if (
-      localStorage.getItem("primarySession") && localStorage.getItem("primaryToken") &&
-      session && session.user &&
+      localStorage.getItem("primarySession") &&
+      localStorage.getItem("primaryToken") &&
+      session &&
+      session.user &&
       secondaryProviders.includes(session.user.provider)
     ) {
       // step 3
       setCurrentStep(3);
-      dispatch(setOpen('landingLogin3'));
+      dispatch(setOpen("landingLogin3"));
 
-      return
+      return;
     }
-  }, [session])
+  }, [session]);
 
   useEffect(() => {
     if (accounts && accounts.length > 0) {
       // we have accounts locally
       // router.push('/home').catch(console.error);
-    } 
+    }
     // else if (session) {
     //   // we don't have any account but the user is signed in with session
     //   // gotta generate an mpc account for user
@@ -142,11 +176,12 @@ const Home: NextPage<Props> = ({ token }: Props) => {
     // }
   }, [accounts, session, router, dispatch, token]);
 
-
   const enterChoko = async () => {
-    dispatch(startLoading('Setting up an MPC Account ... '));
+    dispatch(startLoading("Setting up an MPC Account ... "));
 
-    const primarySession: Session = JSON.parse(localStorage.getItem("primarySession"));
+    const primarySession: Session = JSON.parse(
+      localStorage.getItem("primarySession")
+    );
     const primaryToken = localStorage.getItem("primaryToken");
 
     const secondarySession = session;
@@ -154,17 +189,21 @@ const Home: NextPage<Props> = ({ token }: Props) => {
 
     try {
       const key = await generateOrRefreshAccount(
-        primarySession.user.provider, primarySession.user.email, primaryToken,
-        secondarySession.user.provider, secondarySession.user.email, secondaryToken,
-      )
+        primarySession.user.provider,
+        primarySession.user.email,
+        primaryToken,
+        secondarySession.user.provider,
+        secondarySession.user.email,
+        secondaryToken
+      );
 
       dispatch(noteMpcUserAccount([key, new Uint8Array(32)]));
-      router.push('/home').catch(console.error);
+      router.push("/home").catch(console.error);
     } catch (e) {
       // signOut().catch(console.error);
       console.error("HERE", e);
     }
-  }
+  };
   useEffect(() => {
     try {
       dispatch(loadUserAccount());
@@ -189,20 +228,20 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   );
 };
 
-export function getServerSideProps (context: NextPageContext) {
+export function getServerSideProps(context: NextPageContext) {
   const userCookie = context.req.headers.cookie;
 
   try {
     const sessionToken = userCookie
-      .split(';')
-      .filter((c) => c.indexOf('next-auth.session-token') !== -1);
+      .split(";")
+      .filter((c) => c.indexOf("next-auth.session-token") !== -1);
 
     if (sessionToken.length > 0) {
       // expect the token to have content!
-      const token = sessionToken[0].split('=')[1];
+      const token = sessionToken[0].split("=")[1];
 
       return {
-        props: { token }
+        props: { token },
       };
     } else {
       return { props: { token: null } };

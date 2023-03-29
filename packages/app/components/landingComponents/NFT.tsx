@@ -1,31 +1,35 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
 
-import Image from 'next/image';
-import React from 'react';
+import Image from "next/image";
+import React from "react";
 // @ts-ignore
-import Tilt from 'react-tilt';
+import Tilt from "react-tilt";
 
-import bg from '../../images/bg.png';
-import nft4 from '../../images/nft4.png';
-import nft5 from '../../images/nft5.png';
-import nft6 from '../../images/nft6.png';
+import bg from "../../images/bg.png";
+import nft4 from "../../images/nft4.png";
+import nft5 from "../../images/nft5.png";
+import nft6 from "../../images/nft6.png";
+import ThreeDStarBg from "./ThreeDStarBg";
 // import nfts from '../../images/nfts.png';
 
 const NFT = (): JSX.Element => {
   return (
-    <section className='snap-start relative'
-      id='nft'>
-      <Image className=''
+    <section className='snap-start relative' id='nft'>
+      <div className='relative h-screen w-full bg-[#050816]'>
+        <ThreeDStarBg />
+        {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
+      </div>
+      {/* <Image className=''
         layout='fill'
         objectFit='cover'
-        src={bg} />
+        src={bg} /> */}
 
-      <div className='relative flex items-center justify-center h-screen text-center z-20'>
+      <div className='absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center z-20'>
         {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
           Contact
         </h3> */}

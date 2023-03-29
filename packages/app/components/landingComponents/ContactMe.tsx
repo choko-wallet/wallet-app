@@ -1,23 +1,28 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import Image from 'next/image';
-import React from 'react';
-import { SocialIcon } from 'react-social-icons';
+import Image from "next/image";
+import React from "react";
+import { SocialIcon } from "react-social-icons";
 
-import bg from '../../images/bg.png';
-import discIcon2 from '../../images/discord2.svg';
+import bg from "../../images/bg.png";
+import discIcon2 from "../../images/discord2.svg";
+import ThreeDEarth from "./ThreeDEarth";
+import ThreeDStarBg from "./ThreeDStarBg";
 
 const ContactMe = (): JSX.Element => {
   return (
-    <section className='snap-start relative'
-      id='contact'>
-      <Image className=''
+    <section className='snap-start relative' id='contact'>
+      <div className='relative h-screen w-full bg-[#050816]'>
+        <ThreeDStarBg />
+        {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
+      </div>
+      {/* <Image className=''
         layout='fill'
         objectFit='cover'
-        src={bg} />
+        src={bg} /> */}
 
-      <div className='relative flex items-center justify-center h-screen text-center z-20'>
+      <div className='absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center h-screen text-center z-20'>
         {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
           Contact
         </h3> */}
@@ -75,7 +80,7 @@ const ContactMe = (): JSX.Element => {
 
             <a
               className='cursor-pointer inline-flex relative h-5 w-5 m-2'
-              href={'https://discord.gg/zkp8UEQctM'}
+              href={"https://discord.gg/zkp8UEQctM"}
               rel='noreferrer'
               target='_blank'
             >

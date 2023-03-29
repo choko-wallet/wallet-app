@@ -234,7 +234,7 @@ const LoginModal2 = (): JSX.Element => {
                     className={`absolute bottom-0 text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-full  focus:bg-[#0170BF] font-inter ${
                       secondProvider === ""
                         ? "bg-gray-500 text-black cursor-not-allowed"
-                        : "text-white bg-blue-400 cursor-pointer"
+                        : "text-white bg-blue-400 cursor-pointer transition-colors duration-200"
                     }`}
                     onClick={loginWithSecodeProvider}
                     disabled={secondProvider === ""}

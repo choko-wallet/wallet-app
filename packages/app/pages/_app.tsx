@@ -73,10 +73,10 @@ function Root({
           href='https://fonts.googleapis.com/css2?family=Stick&display=swap'
           rel='stylesheet'
         />
-        {/* <link
+        <link
           href='https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap'
           rel='stylesheet'
-        /> */}
+        />
       </Head>
 
       <SessionProvider session={pageProps.session}>

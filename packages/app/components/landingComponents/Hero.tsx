@@ -20,6 +20,9 @@ import landingGIF from "../../images/landing1.gif";
 import LoginModal from "../modal/LoginModal";
 import LoginModal2 from "../modal/LoginModal2";
 import LoginModal3 from "../modal/LoginModal3";
+import ThreeDEarth from "./ThreeDEarth";
+import ThreeDEarthZoom from "./ThreeDEarthZoom";
+import ThreeDStarBg from "./ThreeDStarBg";
 
 interface Props {
   currentStep: number;
@@ -33,8 +36,9 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
 
   return (
     <section className='snap-center relative' id='hero'>
-      <div className='relative h-screen w-full'>
-        <Image className='' layout='fill' objectFit='cover' src={bg} />
+      <div className='relative h-screen w-full bg-[#050816]'>
+        <ThreeDStarBg />
+        {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
       </div>
 
       <div className='absolute top-0 bottom-0 left-0 right-0 z-10 lg:flex lg:items-center lg:justify-center '>
@@ -79,7 +83,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
             </p>
           </motion.div>
 
-          <motion.div
+          {/* <motion.div
             animate={{
               opacity: 1,
               scale: 1,
@@ -94,15 +98,16 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
             transition={{
               duration: 1.5,
             }}
-          >
-            <div className='block lg:hidden z-40 relative flex-shrink-0 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
-              <img
+          > */}
+          <div className='block  lg:hidden z-40 relative flex-shrink-0 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
+            {/* <img
                 alt=''
                 className='z-40 m-1 object-contain '
                 src={landingGIF.src}
-              />
-            </div>
-          </motion.div>
+              /> */}
+            <ThreeDEarth />
+          </div>
+          {/* </motion.div> */}
 
           {/* <div className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'> */}
           <motion.div
@@ -142,7 +147,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           </motion.div>
         </motion.div>
 
-        <motion.div
+        {/* <motion.div
           animate={{
             opacity: 1,
             scale: 1,
@@ -157,15 +162,17 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           transition={{
             duration: 1.5,
           }}
-        >
-          <div className='hidden lg:inline z-40 relative flex-shrink-0  '>
-            <img
-              alt=''
-              className='z-40 m-12 object-contain w-[400px] h-[400px] xl:w-[400px] xl:h-[400px]'
-              src={landingGIF.src}
-            />
-          </div>
-        </motion.div>
+        > */}
+        <div className='hidden lg:inline z-40  lg:h-[550px] lg:w-[450px] xl:h-[660px] xl:w-[600px] '>
+          {/* className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]' */}
+          {/* <img
+            alt=''
+            className='z-40 m-12 object-contain w-[400px] h-[400px] xl:w-[400px] xl:h-[400px]'
+            src={landingGIF.src}
+          /> */}
+          <ThreeDEarthZoom />
+        </div>
+        {/* </motion.div> */}
       </div>
 
       <div className='absolute bottom-3 left-0 right-0 h-10 flex items-center justify-center z-50'>
