@@ -7,7 +7,7 @@ import { SocialIcon } from "react-social-icons";
 
 import bg from "../../images/bg.png";
 import discIcon2 from "../../images/discord2.svg";
-import ThreeDEarth from "./ThreeDEarth";
+import ThreeDCubeCanvas from "./ThreeDCubeCanvas";
 import ThreeDStarBg from "./ThreeDStarBg";
 
 const ContactMe = (): JSX.Element => {
@@ -23,28 +23,16 @@ const ContactMe = (): JSX.Element => {
         src={bg} /> */}
 
       <div className='absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center h-screen text-center z-20'>
-        {/* <h3 className='absolute top-20 uppercase tracking-[20px] text-gray-500 text-2xl'>
-          Contact
-        </h3> */}
-
-        <div className='flex flex-col space-y-20 '>
-          <p className='text-6xl sm:text-7xl md:text-[100px] lg:text-[120px] font-semibold text-center  mb-10  font-stick'>
+        <div className='flex flex-col space-y-10 '>
+          <p className='text-5xl sm:text-7xl md:text-[100px] lg:text-[120px] font-semibold text-center mb-5 font-stick'>
             Who’s Choko?
           </p>
-          {/* <div className='flex items-center justify-center space-x-4'>
 
-            <SocialIcon
-              bgColor='transparent'
-              className='cursor-pointer'
-              fgColor='white'
-              network='email'
-            />
+          <div className='h-36 w-full sm:h-48 md:h-64 lg:h-96 '>
+            <ThreeDCubeCanvas />
+          </div>
 
-            <p className='text-2xl'>contact@choko.app</p>
-
-          </div> */}
-
-          <div className='flex items-center justify-center pt-10 md:pt-20 '>
+          <div className='flex items-center justify-center pt-5 '>
             <SocialIcon
               bgColor='transparent'
               className='cursor-pointer'

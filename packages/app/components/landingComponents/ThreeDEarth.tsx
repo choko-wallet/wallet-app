@@ -12,7 +12,11 @@ const Earth = () => {
   );
 };
 
-const ThreeDEarth = () => {
+interface Props {
+  zoom: Boolean;
+}
+
+const ThreeDEarth = ({ zoom }: Props) => {
   return (
     <Canvas
       shadows
@@ -29,7 +33,11 @@ const ThreeDEarth = () => {
       <Suspense fallback={<ThreeDLoader />}>
         <OrbitControls
           autoRotate
-          enableZoom={true}
+          enableZoom={zoom}
+          minDistance={7}
+          maxDistance={50}
+          // maxZoom={50}
+          // minZoom={10}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />

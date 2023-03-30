@@ -35,6 +35,7 @@ import Hero from "../components/landingComponents/Hero";
 import NFT from "../components/landingComponents/NFT";
 import Loading from "../components/Loading";
 import { Session } from "next-auth";
+import Curation from "../components/landingComponents/Curation";
 
 interface Props {
   token: string;
@@ -215,14 +216,16 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   if (loadingText) return <Loading />;
 
   return (
-    <div className='bg-[#242424] text-white h-screen snap-y snap-mandatory overflow-x-hidden overflow-y-scroll z-0 '>
+    <div className='bg-[#050816] text-white h-screen snap-y snap-mandatory overflow-x-hidden overflow-y-scroll z-0 '>
       <Head>
         <title>CHOKO WALLET</title>
       </Head>
 
       <Header />
+
       <Hero currentStep={currentStep} enterChoko={enterChoko} />
       <NFT />
+      <Curation />
       <ContactMe />
     </div>
   );

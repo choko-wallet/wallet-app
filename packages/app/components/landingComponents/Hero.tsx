@@ -21,7 +21,6 @@ import LoginModal from "../modal/LoginModal";
 import LoginModal2 from "../modal/LoginModal2";
 import LoginModal3 from "../modal/LoginModal3";
 import ThreeDEarth from "./ThreeDEarth";
-import ThreeDEarthZoom from "./ThreeDEarthZoom";
 import ThreeDStarBg from "./ThreeDStarBg";
 
 interface Props {
@@ -105,7 +104,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
                 className='z-40 m-1 object-contain '
                 src={landingGIF.src}
               /> */}
-            <ThreeDEarth />
+            <ThreeDEarth zoom={false} />
           </div>
           {/* </motion.div> */}
 
@@ -170,7 +169,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
             className='z-40 m-12 object-contain w-[400px] h-[400px] xl:w-[400px] xl:h-[400px]'
             src={landingGIF.src}
           /> */}
-          <ThreeDEarthZoom />
+          <ThreeDEarth zoom={true} />
         </div>
         {/* </motion.div> */}
       </div>
