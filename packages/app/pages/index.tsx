@@ -48,12 +48,12 @@ const generateOrRefreshAccount = async (
   const primaryCert = await validateOAuthProofOfOwnership(
     primaryProvider,
     primaryEmail,
-    primaryToken,
+    primaryToken
   );
   const secondaryCert = await validateOAuthProofOfOwnership(
     secondaryProvider,
     secondaryEmail,
-    secondaryToken,
+    secondaryToken
   );
 
   const authHeader = certificateToAuthHeader(primaryCert, secondaryCert);
@@ -66,12 +66,12 @@ const generateOrRefreshAccount = async (
   if (
     await preimageOAuthProofOfOwnership(
       primaryProvider,
-      primaryEmail,
-  
+      primaryEmail
+
     ) && await preimageOAuthProofOfOwnership(
       secondaryProvider,
-      secondaryEmail,
-  
+      secondaryEmail
+
     )
   ) {
     console.log('Doing Key Refresh');
