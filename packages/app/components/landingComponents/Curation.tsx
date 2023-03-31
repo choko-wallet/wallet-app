@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // import Image from "next/image";
-import React from 'react';
+import React from "react";
 
-import ThreeDGallery from './ThreeDGallery';
-import ThreeDStarBg from './ThreeDStarBg';
+import ThreeDGallery from "./ThreeDGallery";
+import ThreeDStarBg from "./ThreeDStarBg";
 // import nft7 from "../images/nft7.png";
 
 // const pexel = (id: number) =>
@@ -13,7 +13,7 @@ import ThreeDStarBg from './ThreeDStarBg';
 
 const images = [
   // Front
-  { position: [0, 0, 1.5], rotation: [0, 0, 0], url: './blank.svg' },
+  { position: [0, 0, 1.5], rotation: [0, 0, 0], url: "./blank.svg" },
   // // Back
   // { position: [-0.8, 0, -0.6], rotation: [0, 0, 0], url: "./nft.png" },
   // { position: [0.8, 0, -0.6], rotation: [0, 0, 0], url: "./nft3.png" },
@@ -21,12 +21,12 @@ const images = [
   {
     position: [-1.75, 0, 0.25],
     rotation: [0, Math.PI / 2.5, 0],
-    url: './blockchain4.jpg'
+    url: "./blockchain4.jpg",
   },
   {
     position: [-2.15, 0, 1.5],
     rotation: [0, Math.PI / 2.5, 0],
-    url: './metaverse1.jpg'
+    url: "./metaverse1.jpg",
   },
   // {
   //   position: [-2, 0, 2.75],
@@ -37,13 +37,13 @@ const images = [
   {
     position: [1.75, 0, 0.25],
     rotation: [0, -Math.PI / 2.5, 0],
-    url: './web3-4.jpg'
+    url: "./web3-4.jpg",
   },
   {
     position: [2.15, 0, 1.5],
     rotation: [0, -Math.PI / 2.5, 0],
-    url: './metaverse3.jpg'
-  }
+    url: "./metaverse3.jpg",
+  },
   // {
   //   position: [2, 0, 2.75],
   //   rotation: [0, -Math.PI / 2.5, 0],
@@ -53,13 +53,12 @@ const images = [
 
 const Curation = (): JSX.Element => {
   return (
-    <section className='snap-start relative'
-      id='nft'>
+    <section className='snap-start relative' id='nft'>
       <div className='relative h-screen w-full bg-[#050816]'>
         <ThreeDStarBg />
       </div>
 
-      <div className='absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center z-20'>
+      <div className='absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center z-20 overflow-hidden'>
         <div className='flex flex-col w-full h-full'>
           <div className='h-full w-full '>
             <p className='text-[25px] sm:text-4xl md:text-5xl lg:text-[56px] font-semibold text-center mt-20 font-sso'>
