@@ -49,13 +49,11 @@ const generateOrRefreshAccount = async (
     primaryProvider,
     primaryEmail,
     primaryToken,
-    'http://localhost:8080'
   );
   const secondaryCert = await validateOAuthProofOfOwnership(
     secondaryProvider,
     secondaryEmail,
     secondaryToken,
-    'http://localhost:8080'
   );
 
   const authHeader = certificateToAuthHeader(primaryCert, secondaryCert);
@@ -69,11 +67,11 @@ const generateOrRefreshAccount = async (
     await preimageOAuthProofOfOwnership(
       primaryProvider,
       primaryEmail,
-      'http://localhost:8080'
+  
     ) && await preimageOAuthProofOfOwnership(
       secondaryProvider,
       secondaryEmail,
-      'http://localhost:8080'
+  
     )
   ) {
     console.log('Doing Key Refresh');
@@ -95,8 +93,8 @@ const generateOrRefreshAccount = async (
       throw new Error(key);
     }
 
-    await confirmOAuthProofOfOwnership(primaryProvider, primaryEmail, primaryToken, 'http://localhost:8080');
-    await confirmOAuthProofOfOwnership(secondaryProvider, secondaryEmail, secondaryToken, 'http://localhost:8080');
+    await confirmOAuthProofOfOwnership(primaryProvider, primaryEmail, primaryToken);
+    await confirmOAuthProofOfOwnership(secondaryProvider, secondaryEmail, secondaryToken);
 
     return key;
   }

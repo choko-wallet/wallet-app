@@ -33,8 +33,8 @@ const certificateToAuthHeader = (primary: Certificate, secondary: Certificate, a
   });
 }
 
-// const clientAddr = "/dns/c.mpc.choko.app/tcp/443/wss";
-const clientAddr = "/ip4/100.104.199.31/tcp/2619/ws";
+const clientAddr = "/dns/c.mpc.choko.app/tcp/443/wss";
+// const clientAddr = "/ip4/100.104.199.31/tcp/2619/ws";
 
 const runKeygenRequest = async (
   payloadId: Uint8Array,
