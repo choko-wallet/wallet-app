@@ -1,35 +1,41 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { NextPage, NextPageContext } from 'next';
+import type { NextPage, NextPageContext } from "next";
 
-import { secureGenerateRandomKey } from '@skyekiwi/crypto';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { Session } from 'next-auth';
-import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import { secureGenerateRandomKey } from "@skyekiwi/crypto";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { Session } from "next-auth";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 
-import { loadUserAccount,
+import {
+  loadUserAccount,
   noteMpcUserAccount,
   selectLoading,
   selectUserAccount,
   setOpen,
   startLoading,
   useDispatch,
-  useSelector } from '@choko-wallet/app-redux';
-import { certificateToAuthHeader,
+  useSelector,
+} from "@choko-wallet/app-redux";
+import {
+  certificateToAuthHeader,
   runKeygenRequest,
-  runKeyRefreshRequest } from '@choko-wallet/app-utils/mpc';
-import { preimageOAuthProofOfOwnership,
-  validateOAuthProofOfOwnership } from '@choko-wallet/auth-client';
+  runKeyRefreshRequest,
+} from "@choko-wallet/app-utils/mpc";
+import {
+  preimageOAuthProofOfOwnership,
+  validateOAuthProofOfOwnership,
+} from "@choko-wallet/auth-client";
 
-import ContactMe from '../components/landingComponents/ContactMe';
-import Curation from '../components/landingComponents/Curation';
-import Header from '../components/landingComponents/Header';
-import Hero from '../components/landingComponents/Hero';
-import NFT from '../components/landingComponents/NFT';
-import Loading from '../components/Loading';
+import ContactMe from "../components/landingComponents/ContactMe";
+import Curation from "../components/landingComponents/Curation";
+import Header from "../components/landingComponents/Header";
+import Hero from "../components/landingComponents/Hero";
+import NFT from "../components/landingComponents/NFT";
+import Loading from "../components/Loading";
 
 interface Props {
   token: string;
@@ -48,13 +54,13 @@ const generateOrRefreshAccount = async (
     primaryProvider,
     primaryEmail,
     primaryToken,
-    'http://localhost:8080'
+    "http://localhost:8080"
   );
   const secondaryCert = await validateOAuthProofOfOwnership(
     secondaryProvider,
     secondaryEmail,
     secondaryToken,
-    'http://localhost:8080'
+    "http://localhost:8080"
   );
 
   const authHeader = certificateToAuthHeader(primaryCert, secondaryCert);
@@ -65,14 +71,14 @@ const generateOrRefreshAccount = async (
     await preimageOAuthProofOfOwnership(
       primaryProvider,
       primaryEmail,
-      'http://localhost:8080'
+      "http://localhost:8080"
     )
   ) {
     // the user already exists
     // we do a key refresh and disable the old key
     const key = await runKeyRefreshRequest(jobId, authHeader);
 
-    if (key.indexOf('Node Returns Error') !== -1) {
+    if (key.indexOf("Node Returns Error") !== -1) {
       throw new Error(key);
     }
 
@@ -81,7 +87,7 @@ const generateOrRefreshAccount = async (
     // new account - we do a key generation
     const key = await runKeygenRequest(jobId, authHeader);
 
-    if (key.indexOf('Node Returns Error') !== -1) {
+    if (key.indexOf("Node Returns Error") !== -1) {
       throw new Error(key);
     }
 
@@ -89,13 +95,13 @@ const generateOrRefreshAccount = async (
   }
 };
 
-const primaryProviders = ['google'];
+const primaryProviders = ["google"];
 const secondaryProviders = [
-  'github',
-  'twitter',
-  'facebook',
-  'discord',
-  'apple'
+  "github",
+  "twitter",
+  "facebook",
+  "discord",
+  "apple",
 ];
 
 const Home: NextPage<Props> = ({ token }: Props) => {
@@ -116,26 +122,26 @@ const Home: NextPage<Props> = ({ token }: Props) => {
     ) {
       // step 2
       // dump session into localStorage
-      localStorage.setItem('primarySession', JSON.stringify(session));
-      localStorage.setItem('primaryToken', token);
+      localStorage.setItem("primarySession", JSON.stringify(session));
+      localStorage.setItem("primaryToken", token);
 
       // init secondary auth
       setCurrentStep(2);
-      dispatch(setOpen('landingLogin2'));
+      dispatch(setOpen("landingLogin2"));
 
       return;
     }
 
     if (
-      localStorage.getItem('primarySession') &&
-      localStorage.getItem('primaryToken') &&
+      localStorage.getItem("primarySession") &&
+      localStorage.getItem("primaryToken") &&
       session &&
       session.user &&
       secondaryProviders.includes(session.user.provider)
     ) {
       // step 3
       setCurrentStep(3);
-      dispatch(setOpen('landingLogin3'));
+      dispatch(setOpen("landingLogin3"));
     }
   }, [session]);
 
@@ -172,12 +178,12 @@ const Home: NextPage<Props> = ({ token }: Props) => {
   }, [accounts, session, router, dispatch, token]);
 
   const enterChoko = async () => {
-    dispatch(startLoading('Setting up an MPC Account ... '));
+    dispatch(startLoading("Setting up an MPC Account ... "));
 
     const primarySession: Session = JSON.parse(
-      localStorage.getItem('primarySession')
+      localStorage.getItem("primarySession")
     );
-    const primaryToken = localStorage.getItem('primaryToken');
+    const primaryToken = localStorage.getItem("primaryToken");
 
     const secondarySession = session;
     const secondaryToken = token;
@@ -193,10 +199,10 @@ const Home: NextPage<Props> = ({ token }: Props) => {
       );
 
       dispatch(noteMpcUserAccount([key, new Uint8Array(32)]));
-      router.push('/home').catch(console.error);
+      router.push("/home").catch(console.error);
     } catch (e) {
       // signOut().catch(console.error);
-      console.error('HERE', e);
+      console.error("HERE", e);
     }
   };
 
@@ -218,29 +224,28 @@ const Home: NextPage<Props> = ({ token }: Props) => {
 
       <Header />
 
-      <Hero currentStep={currentStep}
-        enterChoko={enterChoko} />
-      <NFT />
-      <Curation />
+      <Hero currentStep={currentStep} enterChoko={enterChoko} />
+      {/* <NFT />
+      <Curation /> */}
       <ContactMe />
     </div>
   );
 };
 
-export function getServerSideProps (context: NextPageContext) {
+export function getServerSideProps(context: NextPageContext) {
   const userCookie = context.req.headers.cookie;
 
   try {
     const sessionToken = userCookie
-      .split(';')
-      .filter((c) => c.indexOf('next-auth.session-token') !== -1);
+      .split(";")
+      .filter((c) => c.indexOf("next-auth.session-token") !== -1);
 
     if (sessionToken.length > 0) {
       // expect the token to have content!
-      const token = sessionToken[0].split('=')[1];
+      const token = sessionToken[0].split("=")[1];
 
       return {
-        props: { token }
+        props: { token },
       };
     } else {
       return { props: { token: null } };
