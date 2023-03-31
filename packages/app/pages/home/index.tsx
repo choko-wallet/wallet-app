@@ -214,7 +214,7 @@ export default function Home (): JSX.Element {
               </div>
             </div>
 
-            <div className='absolute top-2 left-12 bg-gradient-to-r from-[#DEE8F1] dark:from-[#0A0A0B] to-transparent h-[58px] w-6 md:hidden z-50'></div>
+            <div className='absolute top-2 left-12 bg-gradient-to-r from-[#DEE8F1] dark:from-[] to-transparent h-[58px] w-6 md:hidden z-50'></div>
 
             <div className='bg-gray-300 dark:bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen overflow-x-scroll scrollbar-thin whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
               {tabs.map((item) => (

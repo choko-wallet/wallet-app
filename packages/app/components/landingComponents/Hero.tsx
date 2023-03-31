@@ -16,8 +16,13 @@ import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 import LoginModal from '../modal/LoginModal';
 import LoginModal2 from '../modal/LoginModal2';
 import LoginModal3 from '../modal/LoginModal3';
+/* eslint-disable */
+// @ts-ignore
 import ThreeDEarth from './ThreeDEarth';
+// @ts-ignore
 import ThreeDStarBg from './ThreeDStarBg';
+
+/* eslint-enable */
 
 interface Props {
   currentStep: number;

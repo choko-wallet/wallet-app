@@ -47,7 +47,6 @@ const runKeygenRequest = async (
   await initWasm();
   const keygenRequst = MpcRequest.newKeyGenRequest(fixture, payloadId);
 
-  console.log(keygenRequst.serialize())
   return await ext_run_keygen(
     serializedAuthHeader,
     keygenRequst.serialize(),
@@ -108,20 +107,16 @@ const runKeyRefreshRequest = async (
 };
 
 
-const mpcLocalKeyToAccount = (
-  localKey: SerializedLocalKey,
-  keygenId: Uint8Array,
-): UserAccount => {
+const mpcLocalKeyToAccount = (localKey: SerializedLocalKey): UserAccount => {
   const publicKey = extractPublicKey(localKey);
   const userAccount = new UserAccount(defaultMpcAccountOption);
 
   userAccount.publicKeys = [
-    new Uint8Array(33),
-    new Uint8Array(33),
-    publicKey
+    publicKey,
+    new Uint8Array(32),
   ];
 
-  userAccount.noteMpcWallet(keygenId, localKey);
+  userAccount.noteMpcWallet(localKey);
   return userAccount;
 };
 

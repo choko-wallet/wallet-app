@@ -1514,41 +1514,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@choko-wallet/abi@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/abi@npm:0.1.10-15"
+"@choko-wallet/abi@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/abi@npm:0.1.10-19"
   dependencies:
-    "@choko-wallet/core": 0.1.10-15
+    "@choko-wallet/core": 0.1.10-19
     ethers: ^5.7.2
-  checksum: 13ee9aa9e290c0de0aa5cc4c7c06fbd1bb17d36dce83e958c45a24b54109944047dc62bbf85c5a5f8cc146973c2b2634d8a470214f51643e3cb7e0a9b51c8874
+  checksum: 372cd9c41bd843aec05c2e19316a50aadb8c7df2ff213bc06edbb7e8cfe73243e93b60210b4e5ee1debad7b07bd712f47e16280c58833d59c3e561eaa961d752
   languageName: node
   linkType: hard
 
-"@choko-wallet/account-abstraction@npm:0.1.10-13":
-  version: 0.1.10-13
-  resolution: "@choko-wallet/account-abstraction@npm:0.1.10-13"
+"@choko-wallet/account-abstraction@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/account-abstraction@npm:0.1.10-19"
   dependencies:
-    "@choko-wallet/core": 0.1.10-13
+    "@choko-wallet/core": 0.1.10-19
     "@skyekiwi/util": ^1.0.1
     ethers: ^5.7.2
     isomorphic-ws: ^5.0.0
     messaging-sdk: ^0.0.3
     superagent: ^8.0.4
-  checksum: 2f5ad34a609b542388bd35fcff086ce93796cd4b8e3013c9a0d3bae0d1ba2b4f9e3b9f1c21c698070a6ae735c12adf17cd163586f4df448b5e5e1b4bd43a01a8
-  languageName: node
-  linkType: hard
-
-"@choko-wallet/account-abstraction@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/account-abstraction@npm:0.1.10-15"
-  dependencies:
-    "@choko-wallet/core": 0.1.10-15
-    "@skyekiwi/util": ^1.0.1
-    ethers: ^5.7.2
-    isomorphic-ws: ^5.0.0
-    messaging-sdk: ^0.0.3
-    superagent: ^8.0.4
-  checksum: df0aa7be47fc5da5282244af30b9f7937be98882da2a60ab4a8eee3f07e91037da7a5c666115e2ee6680d5196f80e640cd8718a9221c9b2c1d45c3e77a532d1e
+  checksum: 798f498afd145d11228515dbf6b0774d76c33b5e236eb94622a4e39d29529abd42bbe27d2af881d71060fa9974969bc3d3d3206f0c1f6c1666773946c2fba2e3
   languageName: node
   linkType: hard
 
@@ -1569,7 +1555,7 @@ __metadata:
     "@choko-wallet/app-common": 0.1.0
     "@choko-wallet/app-redux": 0.1.0
     "@choko-wallet/app-utils": 0.1.0
-    "@choko-wallet/core": 0.1.10-13
+    "@choko-wallet/core": 0.1.10-19
     "@headlessui/react": ^1.7.7
     "@heroicons/react": ^1.0.6
     next: 12.3.1
@@ -1594,8 +1580,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@choko-wallet/app-redux@workspace:packages/app-redux"
   dependencies:
-    "@choko-wallet/core": 0.1.10-13
-    "@choko-wallet/known-networks": 0.1.10-13
+    "@choko-wallet/core": 0.1.10-19
+    "@choko-wallet/known-networks": 0.1.10-19
     "@polkadot/util-crypto": ^10.2.1
     "@reduxjs/toolkit": ^1.9.1
     "@skyekiwi/util": 1.0.2-5
@@ -1608,11 +1594,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@choko-wallet/app-utils@workspace:packages/app-utils"
   dependencies:
-    "@choko-wallet/abi": 0.1.10-15
-    "@choko-wallet/account-abstraction": 0.1.10-15
-    "@choko-wallet/core": 0.1.10-15
-    "@choko-wallet/mpc": 0.1.10-15
-    "@choko-wallet/sdk": 0.1.10-15
+    "@choko-wallet/abi": 0.1.10-19
+    "@choko-wallet/account-abstraction": 0.1.10-19
+    "@choko-wallet/core": 0.1.10-19
+    "@choko-wallet/mpc": 0.1.10-19
+    "@choko-wallet/sdk": 0.1.10-19
     "@polkadot/api": ^9.10.4
     "@polkadot/util-crypto": ^10.2.1
     "@skyekiwi/util": 1.0.2-5
@@ -1629,19 +1615,19 @@ __metadata:
   resolution: "@choko-wallet/app@workspace:packages/app"
   dependencies:
     "@badrap/bar-of-progress": ^0.2.1
-    "@choko-wallet/account-abstraction": 0.1.10-15
+    "@choko-wallet/account-abstraction": 0.1.10-19
     "@choko-wallet/app-common": 0.1.0
     "@choko-wallet/app-header": 0.1.0
     "@choko-wallet/app-network-sidebar": 0.1.0
     "@choko-wallet/app-redux": 0.1.0
     "@choko-wallet/app-utils": 0.1.0
-    "@choko-wallet/auth-client": 0.1.10-15
+    "@choko-wallet/auth-client": 0.1.10-19
     "@choko-wallet/balance-module": 0.1.0
-    "@choko-wallet/core": 0.1.10-15
-    "@choko-wallet/known-networks": 0.1.10-15
-    "@choko-wallet/mpc": 0.1.10-15
-    "@choko-wallet/request-handler": 0.1.10-15
-    "@choko-wallet/sdk": 0.1.10-15
+    "@choko-wallet/core": 0.1.10-19
+    "@choko-wallet/known-networks": 0.1.10-19
+    "@choko-wallet/mpc": 0.1.10-19
+    "@choko-wallet/request-handler": 0.1.10-19
+    "@choko-wallet/sdk": 0.1.10-19
     "@emailjs/browser": ^3.10.0
     "@headlessui/react": ^1.6.6
     "@heroicons/react": ^1.0.6
@@ -1692,27 +1678,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/auth-client@npm:0.1.10-13":
-  version: 0.1.10-13
-  resolution: "@choko-wallet/auth-client@npm:0.1.10-13"
+"@choko-wallet/auth-client@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/auth-client@npm:0.1.10-19"
   dependencies:
     "@noble/hashes": ^1.2.0
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
     superagent: ^8.0.9
-  checksum: ecff7f070d6960d17d5544163761e68a199ef896994068c94049700361400b74b51d27aaab79eab5dbdd574702261084d2357b076fbc23bf8afe153b0b2b6068
-  languageName: node
-  linkType: hard
-
-"@choko-wallet/auth-client@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/auth-client@npm:0.1.10-15"
-  dependencies:
-    "@noble/hashes": ^1.2.0
-    "@skyekiwi/crypto": 1.0.2-5
-    "@skyekiwi/util": 1.0.2-5
-    superagent: ^8.0.9
-  checksum: 47c6e91e7f78ad2ab07b5f7172a9a3fc4b8f523e5c79a23041e4f7465ae8745bd2295f9f69dcf03f695098ebfa79aeb05d0826f1d1bf7dc81594689037151930
+  checksum: 6a439f9af128e1f2953415d766b27e758d7a21c1f3865ee57cad81f0538612b66a2a6b2609411d42ee13f215cc031ef1cb3e65e4a7fcf25ab2f86d986ecc066e
   languageName: node
   linkType: hard
 
@@ -1728,91 +1702,65 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@choko-wallet/core@npm:0.1.10-13":
-  version: 0.1.10-13
-  resolution: "@choko-wallet/core@npm:0.1.10-13"
+"@choko-wallet/core@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/core@npm:0.1.10-19"
   dependencies:
-    "@choko-wallet/account-abstraction": 0.1.10-13
-    "@choko-wallet/auth-client": 0.1.10-13
-    "@choko-wallet/known-networks": 0.1.10-13
+    "@choko-wallet/account-abstraction": 0.1.10-19
+    "@choko-wallet/auth-client": 0.1.10-19
+    "@choko-wallet/known-networks": 0.1.10-19
     "@polkadot/util-crypto": ^10.1.11
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
     ethers: ^5.7.2
     pako: ^2.0.4
-  checksum: e6dc307f112c73b6035206d2d430f5134c76de9b64ddcdc5f2f612a3ba13be31eb890b346824ecf2ddb75d8d0eea61384c170a653b8ea7e169ecc5838593d4d3
+  checksum: fe7480c7b430d0c90d57204e03286d7da4258c4d0d473c0d3d7163edb06571dd7d9ba2f17917786471b12a3b7ea046527175b7a3f6f5ee2249f502454bc73e8f
   languageName: node
   linkType: hard
 
-"@choko-wallet/core@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/core@npm:0.1.10-15"
+"@choko-wallet/known-networks@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/known-networks@npm:0.1.10-19"
   dependencies:
-    "@choko-wallet/account-abstraction": 0.1.10-15
-    "@choko-wallet/auth-client": 0.1.10-15
-    "@choko-wallet/known-networks": 0.1.10-15
-    "@polkadot/util-crypto": ^10.1.11
+    "@choko-wallet/core": 0.1.10-19
+    "@skyekiwi/util": 1.0.2-5
+  checksum: 76ed9b2873f9f42c8ad8f4b6e33a4b77fff0fd3e54187c5b023adb23125aafdaacbfba9555de5573a8d577f900225051fcf3873ea25eaf882efee1591e992ac8
+  languageName: node
+  linkType: hard
+
+"@choko-wallet/mpc@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/mpc@npm:0.1.10-19"
+  dependencies:
+    "@choko-wallet/core": 0.1.10-19
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
-    ethers: ^5.7.2
-    pako: ^2.0.4
-  checksum: 106678240d57e9a5ee794995627df0d00940b82d3765f7fb2f56047b79caaf4fedd4a3e70283f63273adad957471ad05fe5da17c214d466dd238e9eea5ac259f
+  checksum: 8a1176cc9404072de9176c9cc08c6e30fcfc644abc5127512b5b4b34bd8854f64b33984a5b6e4fec7623b1d3e1d0ccbce9705486b4e64c70832d096d8cd0efd9
   languageName: node
   linkType: hard
 
-"@choko-wallet/known-networks@npm:0.1.10-13":
-  version: 0.1.10-13
-  resolution: "@choko-wallet/known-networks@npm:0.1.10-13"
+"@choko-wallet/request-handler@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/request-handler@npm:0.1.10-19"
   dependencies:
-    "@choko-wallet/core": 0.1.10-13
-    "@skyekiwi/util": 1.0.2-5
-  checksum: a34fbd272bbe294787fb42459e9f710976729e140350a40ad1fc91934b1c994d14c0e6d84ba3185587a4c85d4e4a9edbf998a2378d4c0863b1523e61dffd10ab
-  languageName: node
-  linkType: hard
-
-"@choko-wallet/known-networks@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/known-networks@npm:0.1.10-15"
-  dependencies:
-    "@choko-wallet/core": 0.1.10-15
-    "@skyekiwi/util": 1.0.2-5
-  checksum: b4cfd969af9807156bd1c61f48a142a1d14b9d417d8b008ea77b0d939f990524a0806a06363c897ada44adc1ed17ffc830c0b9ea0a8c01101296d6f0c3c26c2e
-  languageName: node
-  linkType: hard
-
-"@choko-wallet/mpc@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/mpc@npm:0.1.10-15"
-  dependencies:
-    "@choko-wallet/core": 0.1.10-15
-    "@skyekiwi/crypto": 1.0.2-5
-    "@skyekiwi/util": 1.0.2-5
-  checksum: 0a59f0b889a61251202968712bf86b9985b37276fc56eaa8cb8a1a7f8b1ae83e7d6fd79da158907d157b5c5c04ab98d84070964df197b6a44e3f87517645c427
-  languageName: node
-  linkType: hard
-
-"@choko-wallet/request-handler@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/request-handler@npm:0.1.10-15"
-  dependencies:
-    "@choko-wallet/abi": 0.1.10-15
-    "@choko-wallet/account-abstraction": 0.1.10-15
-    "@choko-wallet/core": 0.1.10-15
+    "@choko-wallet/abi": 0.1.10-19
+    "@choko-wallet/account-abstraction": 0.1.10-19
+    "@choko-wallet/core": 0.1.10-19
     "@polkadot/keyring": ^10.1.11
     "@polkadot/util-crypto": ^10.1.11
     "@skyekiwi/crypto": 1.0.2-5
     "@skyekiwi/util": 1.0.2-5
     ethers: ^5.7.2
-  checksum: 65beaa3791c1bdf086f2e8eb273967a1a4ebf6f644fb287e4ee5e8abd22ee7f31786d6e41d5f002c5f97a458b013eb1fef861d38fd49bd94eac437d8ee7f3b7c
+  checksum: 1916a701b26eb79809004183121c48ce73ffec8def7393c2f848b4c368f6c2d1d96423b6b820b251f4210b8681815306774a6a6aa07b1fdce43115f44b2f2116
   languageName: node
   linkType: hard
 
-"@choko-wallet/sdk@npm:0.1.10-15":
-  version: 0.1.10-15
-  resolution: "@choko-wallet/sdk@npm:0.1.10-15"
+"@choko-wallet/sdk@npm:0.1.10-19":
+  version: 0.1.10-19
+  resolution: "@choko-wallet/sdk@npm:0.1.10-19"
   dependencies:
-    "@choko-wallet/core": 0.1.10-15
-  checksum: 95ea877568768ed180efc5e0d4ae7574e24201ffe3570b13cd30e8d9f13be3eef0e9ae2b81b279a1bcfbbf7c1180fefa8c7816eb891744551959686660ddf052
+    "@choko-wallet/core": 0.1.10-19
+  checksum: 3f7be162863cc65ca52554c85ee8d73c7bd55629113773f734c3d69914321067da392a9efeded0f87930009baee43bbec1e39761f4a085cf07578ed4a076ac08
   languageName: node
   linkType: hard
 

@@ -1,5 +1,5 @@
-// [object Object]
-// SPDX-License-Identifier: Apache-2.0
+/* tslint:disable */
+/* eslint-disable */
 
 import { websocket_transport } from './snippets/libp2p-wasm-ext-2e7aa19fa5e25979/src/websockets.js';
 

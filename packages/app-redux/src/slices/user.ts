@@ -151,20 +151,14 @@ export const userSlice = createSlice({
       );
       const aaWalletCache = localStorage.getItem('AAWalletCache');
       const mpcKey = localStorage.getItem('mpcKey');
-      const mpcKeygenId = localStorage.getItem('mpcKeygenId');
 
       let allAccounts: UserAccount[] = [];
 
       // User land
       // 1. we first try to load the mpc account - mpc account is always the first account
-      if (
-        mpcKey &&
-        mpcKey !== 'null' &&
-        mpcKeygenId &&
-        mpcKeygenId !== 'null'
-      ) {
+      if (mpcKey && mpcKey !== 'null') {
         // we have an MPC account
-        allAccounts.push(mpcLocalKeyToAccount(mpcKey, hexToU8a(mpcKeygenId)));
+        allAccounts.push(mpcLocalKeyToAccount(mpcKey));
         state.mpcUserAccountIndex = 0;
         state.currentUserAccountIndex = 0;
       } else if (
@@ -213,19 +207,17 @@ export const userSlice = createSlice({
       localStorage.removeItem('serialziedUserAccount');
       localStorage.removeItem('AAWalletCache');
       localStorage.removeItem('mpcKey');
-      localStorage.removeItem('mpcKeygenId');
 
       state.currentUserAccount = null;
       state.userAccount = [];
     },
     noteMpcUserAccount: (
       _state,
-      action: PayloadAction<[string, Uint8Array]>
+      action: PayloadAction<string>
     ) => {
-      const [localKey, keygenId] = action.payload;
+      const localKey = action.payload;
 
       localStorage.setItem('mpcKey', localKey);
-      localStorage.setItem('mpcKeygenId', u8aToHex(keygenId));
     }
   },
   extraReducers: (builder) => {

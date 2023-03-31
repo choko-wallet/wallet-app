@@ -73,7 +73,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   };
 
   const sendTransaction = () => {
-    // 参数 cryptoToSend amount addressToSend
     if (sendTransactionLoading) return;
     setSendTransactionLoading(true);
 
@@ -84,7 +83,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
       const network = knownNetworks[currentNetwork];
 
       try {
-        // 发送的参数输入非法字符 encode报错 用try catch 给toast
         switch (network.networkType) {
           case 'polkadot': {
             const requestUrl = await polkadotEncodeTxToUrl(
@@ -94,7 +92,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
               amount
             );
 
-            console.log('requestUrl', requestUrl);
+            window.location.href = requestUrl;
             dispatch(endLoading());
             break;
           }
@@ -110,7 +108,6 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
             );
 
             window.location.href = requestUrl;
-            // console.log('requestUrl', requestUrl);
             dispatch(endLoading());
             break;
           }
@@ -139,7 +136,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   return (
     <Modal modalName='homeSend'>
       <div className={theme}>
-        <Dialog.Panel className='w-[360px] md:w-[500px]  transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#00f6ff]'>
+        <Dialog.Panel className='w-[360px] md:w-[500px]  transform overflow-hidden rounded-2xl bg-white dark:bg-gray-700 from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#F5CBD5]'>
           <Dialog.Title
             as='h3'
             className='text-lg  font-medium leading-6 flex items-center mb-6 '

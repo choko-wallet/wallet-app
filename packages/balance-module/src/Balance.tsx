@@ -3,8 +3,8 @@
 
 import type { BalanceInfo } from '@choko-wallet/app-utils';
 
-import { ArrowUpIcon, DownloadIcon, PaperAirplaneIcon, PlusSmIcon, SearchIcon } from '@heroicons/react/outline';
-import React, { useEffect, useRef, useState } from 'react';
+import { ArrowUpIcon, DownloadIcon, PaperAirplaneIcon, PlusSmIcon } from '@heroicons/react/outline';
+import React, { useEffect, useState } from 'react';
 
 import { Button, Switch } from '@choko-wallet/app-common';
 import { selectCurrentNetwork, selectKnownNetworks, setOpen, useDispatch, useSelector } from '@choko-wallet/app-redux';
@@ -21,7 +21,7 @@ interface Props {
 
 function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
-  const ref = useRef(null);
+  // const ref = useRef(null);
 
   const knownNetworks = useSelector(selectKnownNetworks);
   const currentNetwork = useSelector(selectCurrentNetwork);
@@ -60,15 +60,15 @@ function Balance ({ balance }: Props): JSX.Element {
     setBalanceTotal(Number(b).toLocaleString(undefined, { maximumFractionDigits: 2 }));
   }, [balance]);
 
-  const handleClick = () => {
-    setSearchInputOpen(true);
+  // const handleClick = () => {
+  //   setSearchInputOpen(true);
 
-    // TODO: what's this for?
-    /* eslint-disable */
-    // @ts-ignore
-    // ref.current.focus();
-    /* eslint-enable */
-  };
+  //   // TODO: what's this for?
+  //   /* eslint-disable */
+  //   // @ts-ignore
+  //   // ref.current.focus();
+  //   /* eslint-enable */
+  // };
 
   return (
     <div className='relative flex flex-col bg-white dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'>
@@ -110,15 +110,14 @@ function Balance ({ balance }: Props): JSX.Element {
 
         <div className='flex items-center justify-start xl:w-72' >
           <p className='hidden sm:inline-flex text-black text-xs font-poppins dark:text-gray-400'>Your Portfolio</p>
-          {searchInputOpen
+          {/* searchInputOpen
             ? null
             : <SearchIcon className=' text-gray-500 px-1 h-6 w-6 cursor-pointer'
-              onClick={() => handleClick()} />
-          }
+              onClick={() => handleClick()} /> /*}
 
           {/* {searchInputOpen
             ?  */}
-          <div className={`hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5] ${searchInputOpen ? 'opacity-100' : 'opacity-0'}`}>
+          {/* <div className={`hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] bg-[#F5F5F5] ${searchInputOpen ? 'opacity-100' : 'opacity-0'}`}>
             <input
               className=' pl-5 text-xs text-gray-600 placeholder-gray-400 bg-transparent outline-none '
               onBlur={() => {
@@ -131,7 +130,7 @@ function Balance ({ balance }: Props): JSX.Element {
               type='text'
               value={searchInput} />
 
-          </div>
+          </div> */}
           {/* : <div className='hidden lg:inline-flex ml-1 mr-2 py-1 w-[150px] items-center rounded-[10px] '>
             </div>
           } */}

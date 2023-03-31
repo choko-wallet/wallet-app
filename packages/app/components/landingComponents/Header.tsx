@@ -1,10 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 // import Image from 'next/image';
-import Link from "next/link";
-import React from "react";
+import Link from 'next/link';
+import React from 'react';
 // import { SocialIcon } from 'react-social-icons';
 
 // import logo1 from '../../images/logo1.svg';
@@ -16,16 +16,16 @@ const Header = (): JSX.Element => {
         animate={{
           opacity: 1,
           scale: 1,
-          x: 0,
+          x: 0
         }}
         className='flex items-center'
         initial={{
           opacity: 0,
           scale: 0.5,
-          x: -500,
+          x: -500
         }}
         transition={{
-          duration: 1.5,
+          duration: 1.5
         }}
       >
         <p className='text-[15px] md:text-[20px] text-white font-roboto font-semibold '>
@@ -39,16 +39,16 @@ const Header = (): JSX.Element => {
             animate={{
               opacity: 1,
               scale: 1,
-              x: 0,
+              x: 0
             }}
             className='flex items-center cursor-pointer'
             initial={{
               opacity: 0,
               scale: 0.5,
-              x: 500,
+              x: 500
             }}
             transition={{
-              duration: 1.5,
+              duration: 1.5
             }}
           >
             {/* <SocialIcon
@@ -71,16 +71,16 @@ const Header = (): JSX.Element => {
             animate={{
               opacity: 1,
               scale: 1,
-              x: 0,
+              x: 0
             }}
             className='flex items-center cursor-pointer'
             initial={{
               opacity: 0,
               scale: 0.5,
-              x: 500,
+              x: 500
             }}
             transition={{
-              duration: 1.5,
+              duration: 1.5
             }}
           >
             {/* <SocialIcon

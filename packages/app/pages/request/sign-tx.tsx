@@ -7,9 +7,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { secureGenerateRandomKey } from '@skyekiwi/crypto';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { BigNumber, ethers } from 'ethers';
-import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import Modal from 'packages/app/components/Modal';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -27,14 +25,9 @@ import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
 
 import Loading from '../../components/Loading';
 
-interface Props {
-  token: string;
-}
-
-function SignTxHandler ({ token }: Props): JSX.Element {
+function SignTxHandler (): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { data: session } = useSession();
 
   const currentUserAccount = useSelector(selectCurrentUserAccount);
   const userAccount = useSelector(selectUserAccount);
@@ -63,14 +56,6 @@ function SignTxHandler ({ token }: Props): JSX.Element {
 
       setRequest(request);
       setCallback(callbackUrl);
-
-      // if (!localStorage.getItem('serialziedUserAccount')) {
-      //   localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
-      //   void router.push('/account');
-      // } else {
-      //   setCallback(callbackUrl);
-      //   setRequest(request);
-      // }
     } catch (e) {
       console.log('decodeSend-err', e);
       setDecodingTx(false);
@@ -162,12 +147,14 @@ function SignTxHandler ({ token }: Props): JSX.Element {
     if (currentUserAccount.option.accountType === 0) {
       dispatch(setOpen('signTxPasswordModal'));
     } else if (currentUserAccount.option.accountType === 1) {
-      unlock().catch(console.error);
+      unlock();
     }
   }
 
-  async function unlock () {
+  function unlock () {
     if (!request) return;
+
+    console.log(request, currentUserAccount);
 
     if (currentUserAccount.option.accountType === 0) {
       try {
@@ -232,22 +219,16 @@ function SignTxHandler ({ token }: Props): JSX.Element {
         });
       }
     } else if (currentUserAccount.option.accountType === 1) {
-      const authHeader = await currentUserAccount.getMpcOAuthUsageCertificate(
-        session.user.provider, session.user.email, token
-      );
-
-      console.log('sendingtx', authHeader);
-
       void (async () => {
         const signTx = new SignTxDescriptor();
 
         try {
           setSendingTx(true);
 
-          // try {
+          const authHeader = localStorage.getItem('authHeader');
           const response = await signTx.requestHandler(request, currentUserAccount, async (msg: Uint8Array, account: UserAccount, auth?: string): Promise<Uint8Array> => {
             const signId = secureGenerateRandomKey();
-            const res = await runSignRequest(signId, auth, msg, account.mpcKeygenId, account.mpcLocalKey, true);
+            const res = await runSignRequest(signId, auth, account.mpcLocalKey, msg, true);
 
             return extractSignature(res);
           }, authHeader);
@@ -424,25 +405,6 @@ function SignTxHandler ({ token }: Props): JSX.Element {
       </Modal>
     </main>
   );
-}
-
-export function getServerSideProps (context: NextPageContext) {
-  const userCookie = context.req.headers.cookie;
-
-  const sessionToken = userCookie
-    .split(';')
-    .filter((c) => c.indexOf('next-auth.session-token') !== -1);
-
-  if (sessionToken.length > 0) {
-    // expect the token to have content!
-    const token = sessionToken[0].split('=')[1];
-
-    return {
-      props: { token }
-    };
-  } else {
-    return { props: { token: null } };
-  }
 }
 
 export default SignTxHandler;

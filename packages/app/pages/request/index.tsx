@@ -15,7 +15,7 @@ function RequestRouter (): JSX.Element {
   const [mounted, setMounted] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const accouns = useSelector(selectUserAccount);
+  const accounts = useSelector(selectUserAccount);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -61,10 +61,10 @@ function RequestRouter (): JSX.Element {
           break;
       }
     }
-  }, [accouns, router, router.isReady, router.query, dispatch]);
+  }, [accounts, router, router.isReady, router.query, dispatch]);
 
   useEffect(() => {
-    dispatch(loadUserAccount);
+    dispatch(loadUserAccount());
     setMounted(true);
   }, [dispatch]);
 

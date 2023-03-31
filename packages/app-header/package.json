@@ -16,7 +16,7 @@
     "@choko-wallet/app-common": "0.1.0",
     "@choko-wallet/app-redux": "0.1.0",
     "@choko-wallet/app-utils": "0.1.0",
-    "@choko-wallet/core": "0.1.10-13",
+    "@choko-wallet/core": "0.1.10-19",
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^1.0.6",
     "next": "12.3.1",

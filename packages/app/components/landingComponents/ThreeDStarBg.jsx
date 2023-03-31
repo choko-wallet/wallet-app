@@ -1,3 +1,6 @@
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import { useState, useRef, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Preload } from "@react-three/drei";
@@ -7,8 +10,6 @@ const Stars = (props) => {
   const ref = useRef();
 
   const starsArray = Float32Array.from(Object.values(stars));
-
-  // console.log(starsArray);
 
   useFrame((state, delta) => {
     ref.current.rotation.x -= delta / 10;
