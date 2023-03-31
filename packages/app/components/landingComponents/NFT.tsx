@@ -1,25 +1,28 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
 
-import Image from "next/image";
-import React from "react";
+import React from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import Tilt from "react-tilt";
+import Tilt from 'react-tilt';
 
-import bg from "../../images/bg.png";
-import nft4 from "../../images/nft4.png";
-import nft5 from "../../images/nft5.png";
-import nft6 from "../../images/nft6.png";
-import ThreeDStarBg from "./ThreeDStarBg";
+// import nft4 from '../../images/nft4.png';
+// import nft5 from '../../images/nft5.png';
+// import nft6 from '../../images/nft6.png';
+import nfta from '../../images/nfta.jpg';
+import nftb from '../../images/nftb.jpg';
+import nftc from '../../images/nftc.jpg';
+import ThreeDStarBg from './ThreeDStarBg';
 // import nfts from '../../images/nfts.png';
 
 const NFT = (): JSX.Element => {
   return (
-    <section className='snap-start relative' id='nft'>
+    <section className='snap-start relative'
+      id='nft'>
       <div className='relative h-screen w-full bg-[#050816]'>
         <ThreeDStarBg />
         {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
@@ -45,7 +48,7 @@ const NFT = (): JSX.Element => {
                 <img
                   alt='web-development'
                   className='w-full h-full object-contain'
-                  src={nft4.src}
+                  src={nfta.src}
                 />
 
                 <h3 className='text-white text-[20px] font-bold text-center pt-3'>
@@ -59,7 +62,7 @@ const NFT = (): JSX.Element => {
                 <img
                   alt='web-development'
                   className='w-full h-full object-contain'
-                  src={nft5.src}
+                  src={nftb.src}
                 />
 
                 <h3 className='text-white text-[20px] font-bold text-center pt-3'>
@@ -73,7 +76,7 @@ const NFT = (): JSX.Element => {
                 <img
                   alt='web-development'
                   className='w-full h-full object-contain'
-                  src={nft6.src}
+                  src={nftc.src}
                 />
 
                 <h3 className='text-white text-[20px] font-bold text-center pt-3'>

@@ -1,24 +1,25 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
-import { signOut, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { Dialog } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
+import { Session } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
 
-import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
-import googleSvg from "../../images/google.svg";
-import githubSvg from "../../images/github.svg";
-import facebookSvg from "../../images/facebook.svg";
-import appleSvg from "../../images/apple.svg";
-import discordSvg from "../../images/discord.svg";
+import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
-import Modal from "../Modal";
-import { Session } from "next-auth";
+import appleSvg from '../../images/apple.svg';
+import discordSvg from '../../images/discord.svg';
+import facebookSvg from '../../images/facebook.svg';
+import githubSvg from '../../images/github.svg';
+import googleSvg from '../../images/google.svg';
+import Modal from '../Modal';
 
 interface Props {
   enterChoko: () => Promise<void>;
 }
+
 const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
   const dispatch = useAppThunkDispatch();
   const { data: session } = useSession();
@@ -26,12 +27,15 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
 
   useEffect(() => {
     if (!session) return;
-    const primaryProviderString = localStorage.getItem("primarySession");
+    const primaryProviderString = localStorage.getItem('primarySession');
+
     setPrimaryProvider(JSON.parse(primaryProviderString));
   }, [session]);
 
   const providerToImage = (provider: string): string => {
     switch (provider) {
+      /* eslint-disable */
+      // @ts-ignore
       case "github":
         return githubSvg.src;
       case "twitter":
@@ -42,10 +46,12 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
         return discordSvg.src;
       default:
         return githubSvg.src;
+      /* eslint-enable */
     }
   };
 
   if (!primaryProvider) return null;
+
   return (
     <Modal modalName='landingLogin3'>
       <Dialog.Panel className='w-[300px] sm:w-[360px] md:w-[400px] transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all '>
@@ -56,7 +62,7 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
           <p className=' text-black flex flex-grow font-poppins'> </p>
           <div
             onClick={() => {
-              dispatch(setClose("landingLogin3"));
+              dispatch(setClose('landingLogin3'));
             }}
           >
             <XIcon className=' text-[#B6B7BC] h-5 w-5 cursor-pointer md:h-8 md:w-8' />
@@ -67,7 +73,13 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
           Your Selected Credentials
         </p>
 
-        <div className=' w-[230px] flex items-center justify-center mx-auto  my-2'>
+        <div className='flex space-x-2 items-center justify-center mb-3'>
+          <div className='w-2 h-2 bg-gray-700 rounded-full'></div>
+          <div className='w-2 h-2 bg-gray-700 rounded-full'></div>
+          <div className='w-8 h-2 bg-gray-700 rounded-full'></div>
+        </div>
+
+        {/* <div className=' w-[230px] flex items-center justify-center mx-auto  my-2'>
           <div className='h-5 w-5 rounded-full bg-green-500 hover:bg-green-400 flex items-center justify-center'>
             <p className='text-[10px] text-white'>1</p>
           </div>
@@ -79,9 +91,9 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
           <div className='h-5 w-5 rounded-full bg-green-500 hover:bg-green-400 flex items-center justify-center'>
             <p className='text-[10px] text-white'>3</p>
           </div>
-        </div>
+        </div> */}
 
-        <p className=' text-[#747474] flex flex-grow font-roboto text-center text-[14px]'>
+        <p className=' text-[#747474] flex flex-grow font-roboto text-center text-[14px] mb-3'>
           PLEASE REMEMBER THESE CREDENTIALS! We link your Web3 Account with the
           combination you selected.
         </p>
@@ -89,9 +101,9 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
         <div className=' flex flex-col items-center justify-center space-y-4 md:px-2 pb-5 md:pb-10 '>
           <div className='flex items-center justify-between hover:bg-gray-200 rounded-md hover:shadow-md hover:shadow-slate-400/30'>
             <img
+              alt=''
               className='rounded-full border p-[2px] w-16 h-16 hover:opacity-80'
               src={primaryProvider?.user?.image}
-              alt=''
             />
 
             <div className='flex-1 mx-4 hover:opacity-80'>
@@ -106,15 +118,18 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
             <img
               // loading='lazy'
               className='w-10 h-10 mr-3 hover:opacity-80'
+              /* eslint-disable */
+              // @ts-ignore
               src={googleSvg.src}
+              /* eslint-enable */
             />
           </div>
 
           <div className='flex items-center justify-between hover:bg-gray-200 rounded-md hover:shadow-md hover:shadow-slate-400/30'>
             <img
+              alt=''
               className='rounded-full border p-[2px] w-16 h-16 hover:opacity-80'
               src={session?.user?.image}
-              alt=''
             />
 
             <div className='flex-1 mx-4 hover:opacity-80'>
@@ -134,14 +149,16 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
           </div>
 
           <button
-            onClick={() => signOut()}
             className='text-sm font-semibold text-blue-400'
+            onClick={() => signOut()}
           >
             Sign Out
           </button>
 
           <button
-            className={`bottom-0 text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-full  focus:bg-[#0170BF] font-inter bg-blue-400 cursor-pointer`}
+            className={
+              'bottom-0 text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-full  focus:bg-[#0170BF] font-inter bg-blue-400 cursor-pointer'
+            }
             onClick={enterChoko}
           >
             ENTER CHOKO

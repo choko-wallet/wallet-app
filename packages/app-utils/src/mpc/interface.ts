@@ -13,7 +13,7 @@ export type NodeInfo = [PeerId, Multiaddr];
 
 export class MpcRequest {
   payloadId: Uint8Array
-  mode: "KeyGen" | "Sign" | "KeyRefresh"
+  mode: 'KeyGen' | 'Sign' | 'KeyRefresh'
   messageToSign: Uint8Array
 
   peers: NodeInfo[]
@@ -25,7 +25,7 @@ export class MpcRequest {
   constructor (
     mpcNodeFixtures: MpcNodeFixtures,
 
-    mode: "KeyGen" | "Sign" | "KeyRefresh",
+    mode: 'KeyGen' | 'Sign' | 'KeyRefresh',
     payloadId: Uint8Array,
     messageToSign?: Uint8Array,
 
@@ -43,7 +43,7 @@ export class MpcRequest {
       this.messageToSign = messageToSign;
       this.peers = peers || [mpcNodeFixtures.l, mpcNodeFixtures.f1];
     }
-    
+
     this.sender = sender || mpcNodeFixtures.l[0];
 
     this.n = n;
@@ -51,14 +51,14 @@ export class MpcRequest {
   }
 
   public static newKeyGenRequest (mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array): MpcRequest {
-    return new MpcRequest( mpcNodeFixtures, 'KeyGen', payloadId );
+    return new MpcRequest(mpcNodeFixtures, 'KeyGen', payloadId);
   }
 
   public static newSignRequest (
-    mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array, message: Uint8Array,
+    mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array, message: Uint8Array
   ): MpcRequest {
     if (message.length !== 32) {
-      throw new Error("wrong message length");
+      throw new Error('wrong message length');
     }
 
     return new MpcRequest(
@@ -67,7 +67,7 @@ export class MpcRequest {
   }
 
   public static newKeyRefreshRequest (mpcNodeFixtures: MpcNodeFixtures, payloadId: Uint8Array): MpcRequest {
-    return new MpcRequest( mpcNodeFixtures, 'KeyRefresh', payloadId );
+    return new MpcRequest(mpcNodeFixtures, 'KeyRefresh', payloadId);
   }
 
   public serialize (): string {
@@ -83,7 +83,7 @@ export class MpcRequest {
         t: this.t
       });
       /* eslint-enable */
-    } else if (this.mode === "Sign") {
+    } else if (this.mode === 'Sign') {
       /* eslint-disable */
       return JSON.stringify({
         payload_id: u8aToHex(this.payloadId),
@@ -100,7 +100,7 @@ export class MpcRequest {
       });
       /* eslint-enable */
     } else {
-      throw new Error("unknow request mode")
+      throw new Error('unknow request mode');
     }
   }
 }

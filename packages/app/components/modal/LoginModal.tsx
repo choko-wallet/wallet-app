@@ -1,23 +1,22 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
-import router from "next/router";
-import { signIn } from "next-auth/react";
-import React from "react";
+import { Dialog } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
+import router from 'next/router';
+import { signIn } from 'next-auth/react';
+import React from 'react';
 
-import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
+import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
-import Modal from "../Modal";
-
-import googleSvg from "../../images/google.svg";
+import googleSvg from '../../images/google.svg';
+import Modal from '../Modal';
 
 const LoginModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
 
   const loginWithGoogle = async () => {
-    await signIn("google");
+    await signIn('google');
   };
 
   return (
@@ -28,7 +27,7 @@ const LoginModal = (): JSX.Element => {
           className='text-lg font-medium leading-6 flex items-center mb-3'
         >
           <p className=' text-black flex flex-grow font-poppins'> </p>
-          <div onClick={() => dispatch(setClose("landingLogin1"))}>
+          <div onClick={() => dispatch(setClose('landingLogin1'))}>
             <XIcon className=' text-[#B6B7BC] h-5 w-5 cursor-pointer md:h-8 md:w-8' />
           </div>
         </Dialog.Title>
@@ -43,6 +42,12 @@ const LoginModal = (): JSX.Element => {
             </span>
           </p>
 
+          <div className='flex space-x-2 items-center justify-center'>
+            <div className='w-8 h-2 bg-gray-700 rounded-full'></div>
+            <div className='w-2 h-2 bg-gray-300 rounded-full'></div>
+            <div className='w-2 h-2 bg-gray-300 rounded-full'></div>
+          </div>
+
           <button
             className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-2 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
             onClick={loginWithGoogle}
@@ -51,46 +56,13 @@ const LoginModal = (): JSX.Element => {
             <img
               // loading='lazy'
               className='w-6 h-6 ml-3'
+              /* eslint-disable */
+              // @ts-ignore
               src={googleSvg.src}
+              /* eslint-enable */
               // src='https://authjs.dev/img/providers/google.svg'
             />
           </button>
-
-          {/* <button
-            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
-            onClick={loginWithGithub}
-          >
-            Continue with
-            <img
-              // loading='lazy'
-              className='w-6 h-6 ml-3'
-              src={githubSvg.src}
-            />
-          </button>
-
-          <button
-            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
-            // onClick={loginWithTwitter}
-          >
-            Continue with
-            <img
-              // loading='lazy'
-              className='w-6 h-6 ml-3'
-              src={twitterSvg.src}
-            />
-          </button>
-
-          <button
-            className='flex items-center justify-center text-[15px] md:text-[18px] text-black rounded-md hover:shadow-sm p-1 md:p-2 w-full border border-gray-300 bg-transparent font-inter hover:ring-[#0170BF] hover:ring-2 transition duration-150 active:scale-95 ease-in-out'
-            onClick={loginWithDiscord}
-          >
-            Continue with
-            <img
-              // loading='lazy'
-              className='w-6 h-6 ml-3'
-              src={discordSvg.src}
-            />
-          </button> */}
 
           <div className='flex w-full '>
             <p className=' text-[#747474] flex font-roboto text-[10px] '>
@@ -113,7 +85,7 @@ const LoginModal = (): JSX.Element => {
 
           <button
             className=' text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-full bg-blue-400 focus:bg-[#0170BF] font-inter'
-            onClick={() => router.push("/account")}
+            onClick={() => router.push('/account')}
           >
             Create a Seed Phrase
           </button>
