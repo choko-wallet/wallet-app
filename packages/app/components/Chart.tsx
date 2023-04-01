@@ -68,8 +68,7 @@ function Chart (): JSX.Element {
   return (
     <div>
       {showChart
-
-        ? <div className='bg-[#121212] w-[560px] h-[260px] rounded-lg'>
+        ? <div className='bg-[#121212] w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] rounded-lg'>
           <ResponsiveContainer debounce={1000}
             height='100%'
             width='100%'>
@@ -83,8 +82,7 @@ function Chart (): JSX.Element {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        : <div className='w-[560px] h-[260px] bg-[#121212] rounded-lg'></div>
-
+        : <div className='w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] bg-[#121212] rounded-lg'></div>
       }
     </div>
   );

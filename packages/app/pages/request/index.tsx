@@ -4,6 +4,8 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
+import { loadUserAccount, selectUserAccount, useDispatch, useSelector } from '@choko-wallet/app-redux';
+
 /**
  * Router for requests.
  * If there is no UserAccount found. Store the requestParams to localStorage and delete when done.
@@ -11,17 +13,23 @@ import React, { useEffect, useState } from 'react';
 function RequestRouter (): JSX.Element {
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  const accounts = useSelector(selectUserAccount);
 
   useEffect(() => {
     if (!router.isReady) return;
     const requestType = router.query.requestType as string;
 
     const localAccount = localStorage.getItem('serialziedUserAccount');
+    const mpcKey = localStorage.getItem('mpcKey');
 
-    if (!localAccount || localAccount.length === 0) {
+    if (
+      (!localAccount || localAccount.length === 0) && (!mpcKey || mpcKey.length === 0)
+    ) {
       console.log(`requestType=${router.query.requestType as string}&payload=${router.query.payload as string}&callbackUrl=${encodeURIComponent(router.query.callbackUrl as string)}`);
       localStorage.setItem('requestParams', `requestType=${router.query.requestType as string}&payload=${router.query.payload as string}&callbackUrl=${encodeURIComponent(router.query.callbackUrl as string)}`);
-      void router.push('/account');
+      void router.push('/');
     } else {
       switch (requestType) {
         case 'connectDapp':
@@ -53,11 +61,12 @@ function RequestRouter (): JSX.Element {
           break;
       }
     }
-  }, [router, router.isReady, router.query]);
+  }, [accounts, router, router.isReady, router.query, dispatch]);
 
   useEffect(() => {
+    dispatch(loadUserAccount());
     setMounted(true);
-  }, []);
+  }, [dispatch]);
 
   if (!mounted) {
     return null;

@@ -1,9 +1,10 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import emailjs from '@emailjs/browser';
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
 import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
@@ -12,74 +13,134 @@ import Modal from '../Modal';
 
 const EmailPostModal = (): JSX.Element => {
   const dispatch = useAppThunkDispatch();
-  const [emailInput, setEmailInput] = useState<string>('');
 
-  const join = async () => {
-    // 发送post 关闭modal
+  const formRef = useRef();
+  const [form, setForm] = useState({
+    email: '',
+    name: ''
+  });
 
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target as HTMLInputElement;
+
+    console.log('name value', name, value);
+    setForm({
+      ...form,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const notification = toast.loading('Sending Email...');
 
-    if (!emailInput) {
-      throw new Error('Please input your email');
-    }
+    e.preventDefault();
+    setLoading(true);
 
-    try {
-      const response = await fetch('http://localhost:5000', {
-        body: JSON.stringify({
-          email: emailInput
-        }),
-        headers: {
-          'Content-Type': 'application/json'
+    emailjs
+      .send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+        {
+          from_email: form.email,
+          from_name: form.name
         },
-        method: 'POST'
-      });
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      )
+      .then(() => {
+        setLoading(false);
 
-      const data = await response.json();
+        toast.success('Thanks for joining beta waitlist', {
+          id: notification
+        });
 
-      console.log('1', data);
-      toast.success('Thanks for joining beta waitlist', {
-        id: notification
+        setForm({
+          email: '',
+          name: ''
+        });
+
+        dispatch(setClose('landingEmailPost'));
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error(err);
+
+        toast.error('Something went wrong', {
+          id: notification
+        });
       });
-    } catch (err) {
-      toast.error('Something went wrong', {
-        id: notification
-      });
-    } finally {
-      setEmailInput('');
-      dispatch(setClose('landingEmailPost'));
-    }
+    // .finally(() => {
+    //   dispatch(setClose("landingEmailPost"));
+    // });
   };
 
   return (
     <Modal modalName='landingEmailPost'>
-      <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
+      <Dialog.Panel className='md:w-[600px] w-96 max-w-md transform overflow-hidden rounded-2xl bg-black-100 dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#c67391]'>
         <Dialog.Title
           as='h3'
           className='text-lg font-medium leading-6 flex items-center mb-6'
         >
-          <p className=' text-gray-700 dark:text-white flex flex-grow font-poppins'>Join beta waitlist</p>
-          <div onClick={() => dispatch(setClose('landingEmailPost'))}>
-            <XIcon className=' text-black h-8 w-8 cursor-pointer dark:text-white' />
+          <p className=' text-gray-200 dark:text-white flex flex-grow font-poppins'>
+            Join beta waitlist
+          </p>
+          <div
+            onClick={() => {
+              setForm({
+                email: '',
+                name: ''
+              });
+              dispatch(setClose('landingEmailPost'));
+            }}
+          >
+            <XIcon className=' text-gray-200 h-8 w-8 cursor-pointer dark:text-white' />
           </div>
         </Dialog.Title>
 
-        <div className='flex items-center py-2 rounded-full md:border-2 md:shadow-sm'>
+        <div className=' p-2 rounded-lg'>
+          <form
+            className=' flex flex-col gap-4'
+            onSubmit={handleSubmit}
+            ref={formRef}
+          >
+            <label className='flex flex-col'>
+              <span className='text-white font-medium mb-4'>Your Name</span>
+              <input
+                className='bg-[#151030] py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+                name='name'
+                onChange={handleChange}
+                placeholder="What's your name?"
+                type='text'
+                value={form.name}
+              />
+            </label>
 
-          <input
-            className='flex-grow pl-5 text-sm text-gray-600 placeholder-gray-400 bg-transparent outline-none '
-            onChange={(e) => setEmailInput(e.target.value)}
-            placeholder={'Please input your email'}
-            type='text'
-            value={emailInput} />
+            <label className='flex flex-col'>
+              <span className='text-white font-medium mb-4'>Your email</span>
+              <input
+                className='bg-[#151030] py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium'
+                name='email'
+                onChange={handleChange}
+                placeholder="What's your email?"
+                type='email'
+                value={form.email}
+              />
+            </label>
+
+            <button
+              className={`py-3 px-8 rounded-xl outline-none w-fit  font-bold shadow-md shadow-primary border border-gray-600 ${
+                form.email === '' || loading
+                  ? 'bg-gray-500 text-black cursor-not-allowed'
+                  : 'text-white bg-tertiary cursor-pointer'
+              }`}
+              disabled={form.email === '' || loading}
+              type='submit'
+            >
+              {loading ? 'Sending...' : 'Send'}
+            </button>
+          </form>
         </div>
-
-        {emailInput && (
-          <div className='flex'>
-            <button className='px-5 py-2 my-5 font-bold text-purple-800 transition duration-150 bg-white rounded-full shadow-md hover:shadow-xl active:scale-90 '
-              onClick={join}>Join</button>
-          </div>
-        )}
-
       </Dialog.Panel>
     </Modal>
   );

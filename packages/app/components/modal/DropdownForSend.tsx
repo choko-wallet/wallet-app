@@ -37,7 +37,7 @@ function DropdownForSend ({ balanceInfo, setCryptoAddress }: Props): JSX.Element
   return (
     <div className=' w-full  text-right'>
       <Menu as='div'
-        className='relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-blue-300'>
+        className='relative h-12 pt-1 inline-block text-left w-full border rounded-lg border-gray-300 dark:border-gray-300'>
         <div>
           <Menu.Button className='inline-flex items-center justify-center rounded-md w-full bg-white dark:bg-transparent px-4 py-2 text-sm font-medium text-gray-600 hover:bg-opacity-30 focus:outline-none '>
 

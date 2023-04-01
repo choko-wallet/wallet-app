@@ -1,6 +1,4 @@
-// Copyright 2021-2022 @choko-wallet/app-utils authors & contributors
-// SPDX-License-Identifier: Apache-2.0
-
+/* tslint:disable */
 /* eslint-disable */
 
 // Copyright 2020 Parity Technologies (UK) Ltd.
@@ -63,6 +61,7 @@ const multiaddr_to_ws = (addr) => {
 
 // Attempt to dial a multiaddress.
 const dial = (addr) => {
+  console.log(multiaddr_to_ws(addr))
   const ws = new WebSocket(multiaddr_to_ws(addr));
 
   ws.binaryType = 'arraybuffer';

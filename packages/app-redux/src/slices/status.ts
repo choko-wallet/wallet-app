@@ -10,9 +10,9 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 /* eslint-disable sort-keys */
 interface StatusSliceItem {
   status: {
-    [key: string]: boolean
-  },
-  loading: string
+    [key: string]: boolean;
+  };
+  loading: string;
 }
 
 const initialState: StatusSliceItem = {
@@ -31,7 +31,9 @@ const initialState: StatusSliceItem = {
     requestPassword: false,
     testRequest: false,
     landingEmailPost: false,
-    landingLogin: false
+    landingLogin1: false,
+    landingLogin2: false,
+    landingLogin3: false
   },
   loading: ''
 };
@@ -83,5 +85,6 @@ export const statusSlice = createSlice({
   }
 });
 
-export const { endLoading, setClose, setOpen, startLoading, toggle } = statusSlice.actions;
+export const { endLoading, setClose, setOpen, startLoading, toggle } =
+  statusSlice.actions;
 export default statusSlice.reducer;

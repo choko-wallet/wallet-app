@@ -2,14 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   /* Your default theme */
   --background: white;
   --foreground: black;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --background: black;
   --foreground: white;
 }
@@ -33,23 +32,27 @@
 }
 
 .bg-blue-gradient {
-  background: linear-gradient(157.81deg,
-      #def9fa -43.27%,
-      #bef3f5 -21.24%,
-      #9dedf0 12.19%,
-      #7de7eb 29.82%,
-      #5ce1e6 51.94%,
-      #33bbcf 90.29%);
+  background: linear-gradient(
+    157.81deg,
+    #def9fa -43.27%,
+    #bef3f5 -21.24%,
+    #9dedf0 12.19%,
+    #7de7eb 29.82%,
+    #5ce1e6 51.94%,
+    #33bbcf 90.29%
+  );
 }
 
 .text-gradient {
-  background: radial-gradient(64.18% 64.18% at 71.16% 35.69%,
-      #def9fa 0.89%,
-      #bef3f5 17.23%,
-      #9dedf0 42.04%,
-      #7de7eb 55.12%,
-      #5ce1e6 71.54%,
-      #33bbcf 100%);
+  background: radial-gradient(
+    64.18% 64.18% at 71.16% 35.69%,
+    #def9fa 0.89%,
+    #bef3f5 17.23%,
+    #9dedf0 42.04%,
+    #7de7eb 55.12%,
+    #5ce1e6 71.54%,
+    #33bbcf 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -68,8 +71,7 @@
 
 .bg__gradient {
   /* background-image: radial-gradient(circle, black, transparent); */
-  background: radial-gradient(black 50%, rgb(16, 15, 15) 80%,
-      transparent 100%);
+  background: radial-gradient(black 50%, rgb(16, 15, 15) 80%, transparent 100%);
 }
 
 .blue__gradient {
@@ -102,11 +104,13 @@
 }
 
 .gradient-border {
-  background: linear-gradient(168.82deg,
-      #fb37ff 1.7%,
-      rgba(155, 111, 238, 0) 27.12%,
-      rgba(123, 127, 234, 0) 61.28%,
-      #1bb2de 99.52%);
+  background: linear-gradient(
+    168.82deg,
+    #fb37ff 1.7%,
+    rgba(155, 111, 238, 0) 27.12%,
+    rgba(123, 127, 234, 0) 61.28%,
+    #1bb2de 99.52%
+  );
 }
 
 input::-webkit-outer-spin-button,
@@ -117,8 +121,6 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
-
-
 
 .drawer-enter {
   left: -340px;
@@ -142,12 +144,9 @@ input[type="number"] {
   overflow-wrap: break-word;
 }
 
-
 .colorx {
   background: #fb37ff;
 }
-
-
 
 .checkContainer {
   display: block;
@@ -183,13 +182,13 @@ input[type="number"] {
 }
 
 /* On mouse-over, add a grey background color */
-.checkContainer:hover input~.checkmark {
+.checkContainer:hover input ~ .checkmark {
   background-color: #ccc;
 }
 
 /* When the checkbox is checked, add a background */
-.checkContainer input:checked~.checkmark {
-  background-color: #EDEDED;
+.checkContainer input:checked ~ .checkmark {
+  background-color: #ededed;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -200,7 +199,7 @@ input[type="number"] {
 }
 
 /* Show the checkmark when checked */
-.checkContainer input:checked~.checkmark:after {
+.checkContainer input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -216,7 +215,6 @@ input[type="number"] {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-
 
 .checkContainer2 {
   display: block;
@@ -247,15 +245,13 @@ input[type="number"] {
   left: 0;
   height: 25px;
   width: 25px;
-  background-color: #F5CBD5;
+  background-color: #f5cbd5;
   border-radius: 9999px;
 }
 
-
-
 /* When the checkbox is checked, add a background */
-.checkContainer2 input:checked~.checkmark2 {
-  background-color: #4075A9;
+.checkContainer2 input:checked ~ .checkmark2 {
+  background-color: #4075a9;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -266,7 +262,7 @@ input[type="number"] {
 }
 
 /* Show the checkmark when checked */
-.checkContainer2 input:checked~.checkmark2:after {
+.checkContainer2 input:checked ~ .checkmark2:after {
   display: block;
 }
 
@@ -282,10 +278,6 @@ input[type="number"] {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-
-
-
-
 
 /* 
 ::-webkit-scrollbar {
@@ -367,7 +359,6 @@ input[type="number"] {
   align-items: center;
   justify-content: center;
   /* background: red; */
-
 }
 
 .slider-controler .swiper-button-next {
@@ -424,7 +415,7 @@ input[type="number"] {
 }
 
 .slider-controler .slider-arrow::after {
-  content: '';
+  content: "";
 }
 
 .swiper-pagination {
@@ -441,4 +432,14 @@ input[type="number"] {
 
 .swiper-pagination .swiper-pagination-bullet-active {
   background: #00ff00;
+}
+
+.nftsMore {
+  background-image: radial-gradient(rgb(222, 214, 214), #1a1a1a, #1a1a1a);
+}
+
+.green-pink-gradient {
+  background: "#00cea8";
+  background: linear-gradient(90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
+  background: -webkit-linear-gradient(-90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
 }

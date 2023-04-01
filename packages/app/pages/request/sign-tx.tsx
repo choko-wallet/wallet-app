@@ -4,6 +4,7 @@
 import { Dialog } from '@headlessui/react';
 import { CheckIcon, XIcon } from '@heroicons/react/outline';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { secureGenerateRandomKey } from '@skyekiwi/crypto';
 import { hexToU8a, u8aToHex } from '@skyekiwi/util';
 import { BigNumber, ethers } from 'ethers';
 import { useRouter } from 'next/router';
@@ -15,6 +16,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { decodeContractCall, decodeTransaction } from '@choko-wallet/abi';
 import { decryptCurrentUserAccount, loadUserAccount, lockCurrentUserAccount, noteAAWalletAddress, selectCurrentUserAccount, selectUserAccount, setClose, setOpen, switchUserAccount } from '@choko-wallet/app-redux';
 import { encodeAddr, fetchAAWalletAddress, getAlchemy } from '@choko-wallet/app-utils';
+import { runSignRequest } from '@choko-wallet/app-utils/mpc';
+import { extractSignature } from '@choko-wallet/app-utils/mpc/interface';
+import { UserAccount } from '@choko-wallet/core';
 import { SignTxType } from '@choko-wallet/core/types';
 import { compressParameters, decompressParameters } from '@choko-wallet/core/util';
 import { SignTxDescriptor, SignTxRequest } from '@choko-wallet/request-handler';
@@ -46,17 +50,12 @@ function SignTxHandler (): JSX.Element {
     const payload = router.query.payload as string;
     const callbackUrl = router.query.callbackUrl as string;
 
-    try { // 非法参数 删除或篡改参数访问 解密报错 用try catch 控制台报错
+    try {
       const u8aRequest = decompressParameters(hexToU8a(payload));
       const request = SignTxRequest.deserialize(u8aRequest);
 
-      if (!localStorage.getItem('serialziedUserAccount')) {
-        localStorage.setItem('requestParams', `payload=${payload}&callbackUrl=${callbackUrl}`);
-        void router.push('/account');
-      } else {
-        setCallback(callbackUrl);
-        setRequest(request);
-      }
+      setRequest(request);
+      setCallback(callbackUrl);
     } catch (e) {
       console.log('decodeSend-err', e);
       setDecodingTx(false);
@@ -73,7 +72,6 @@ function SignTxHandler (): JSX.Element {
   useEffect(() => {
     if (!userAccount) return;
     if (!request) return;
-
     const len = userAccount.length;
 
     for (let i = 0; i < len; ++i) {
@@ -145,76 +143,114 @@ function SignTxHandler (): JSX.Element {
     })();
   }, [mounted, request, dispatch, userAccount, currentUserAccount]);
 
+  function proceedTransaction () {
+    if (currentUserAccount.option.accountType === 0) {
+      dispatch(setOpen('signTxPasswordModal'));
+    } else if (currentUserAccount.option.accountType === 1) {
+      unlock();
+    }
+  }
+
   function unlock () {
     if (!request) return;
 
-    try {
-      dispatch(decryptCurrentUserAccount(password));
+    console.log(request, currentUserAccount);
 
-      if (currentUserAccount && !currentUserAccount.isLocked) {
-        setPassword('');
-        dispatch(setClose('signTxPasswordModal'));
+    if (currentUserAccount.option.accountType === 0) {
+      try {
+        dispatch(decryptCurrentUserAccount(password));
 
-        void (async () => {
-          const signTx = new SignTxDescriptor();
+        if (currentUserAccount && !currentUserAccount.isLocked) {
+          setPassword('');
+          dispatch(setClose('signTxPasswordModal'));
 
-          try {
-            setSendingTx(true);
+          void (async () => {
+            const signTx = new SignTxDescriptor();
 
-            // try {
-            const response = await signTx.requestHandler(request, currentUserAccount);// 这一步是发送
-            const s = response.serialize();
+            try {
+              setSendingTx(true);
 
-            dispatch(lockCurrentUserAccount());
-            window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
-            // setSendingTx(false);// 已经redirect了 发送成功最好给提示 在home？
-            // 点击x 关闭交易 跳转到loading 感觉应该跳转到home
+              // try {
+              const response = await signTx.requestHandler(request, currentUserAccount);
+              const s = response.serialize();
 
-            // } catch (e) {
-            //   setSendingTx(false);
-            //   console.log('sendtxerror', e);
-            // }
-          } catch (err) {
-            setSendingTx(false);
+              dispatch(lockCurrentUserAccount());
+              window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+            } catch (err) {
+              setSendingTx(false);
 
-            console.log('err', err);
-            toast('Something Wrong', {
-              style: {
-                background: 'red',
-                color: 'white',
-                fontFamily: 'Poppins',
-                fontSize: '16px',
-                fontWeight: 'bolder',
-                padding: '20px'
-              }
-            });
+              console.log('err', err);
+              toast('Something Wrong', {
+                style: {
+                  background: 'red',
+                  color: 'white',
+                  fontFamily: 'Poppins',
+                  fontSize: '16px',
+                  fontWeight: 'bolder',
+                  padding: '20px'
+                }
+              });
+            }
+          })();
+        }
+
+        toast('Password Correct, Redirecting...', {
+          duration: 5000,
+          icon: '👏',
+          style: {
+            background: 'green',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '17px',
+            fontWeight: 'bolder',
+            padding: '20px'
           }
-        })();
+        });
+      } catch (e) {
+        toast('Wrong Password!', {
+          style: {
+            background: 'red',
+            color: 'white',
+            fontFamily: 'Poppins',
+            fontSize: '16px',
+            fontWeight: 'bolder',
+            padding: '20px'
+          }
+        });
       }
+    } else if (currentUserAccount.option.accountType === 1) {
+      void (async () => {
+        const signTx = new SignTxDescriptor();
 
-      toast('Password Correct, Redirecting...', {
-        duration: 5000,
-        icon: '👏',
-        style: {
-          background: 'green',
-          color: 'white',
-          fontFamily: 'Poppins',
-          fontSize: '17px',
-          fontWeight: 'bolder',
-          padding: '20px'
+        try {
+          setSendingTx(true);
+
+          const authHeader = localStorage.getItem('authHeader');
+          const response = await signTx.requestHandler(request, currentUserAccount, async (msg: Uint8Array, account: UserAccount, auth?: string): Promise<Uint8Array> => {
+            const signId = secureGenerateRandomKey();
+            const res = await runSignRequest(signId, auth, account.mpcLocalKey, msg, true);
+
+            return extractSignature(res);
+          }, authHeader);
+          const s = response.serialize();
+
+          window.location.href = callback + `?response=${u8aToHex(compressParameters(s))}&responseType=signTx`;
+        } catch (err) {
+          setSendingTx(false);
+
+          console.log('err', err);
+          toast('Something Wrong', {
+            style: {
+              background: 'red',
+              color: 'white',
+              fontFamily: 'Poppins',
+              fontSize: '16px',
+              fontWeight: 'bolder',
+              padding: '20px'
+            }
+          });
         }
-      });
-    } catch (e) {
-      toast('Wrong Password!', {
-        style: {
-          background: 'red',
-          color: 'white',
-          fontFamily: 'Poppins',
-          fontSize: '16px',
-          fontWeight: 'bolder',
-          padding: '20px'
-        }
-      });
+      })();
     }
   }
 
@@ -324,7 +360,7 @@ function SignTxHandler (): JSX.Element {
       } */}
       <div className='col-span-4 col-start-4 md:col-span-2 md:col-start-6'>
         <button className='btn btn-success btn-circle btn-lg'
-          onClick={() => dispatch(setOpen('signTxPasswordModal'))}>
+          onClick={() => proceedTransaction()}>
           <CheckIcon className='h-8 duration-300 hover:scale-125 transtion east-out' />
         </button>
       </div>

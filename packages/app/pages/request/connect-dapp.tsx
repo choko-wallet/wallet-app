@@ -158,7 +158,7 @@ function ConnectDappHandler (): JSX.Element {
                       m-5 relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none col-span-12`
                   }
                   key={index}
-                  onClick={() => dispatch(switchUserAccount(index))}
+                  onClickCapture={() => dispatch(switchUserAccount(index))}
                   value={index}
                 >
                   {({ checked }) => (

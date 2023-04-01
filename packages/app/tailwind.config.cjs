@@ -25,11 +25,10 @@ module.exports = {
         dimBlue: 'rgba(9, 151, 124, 0.1)',
         footerBg: '#d8c9d8', // bg-footerBg
         primary: '#00040f'
-
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
-        josefin: ['Josefin Sans', 'sans-serif'],
+        // josefin: ['Josefin Sans', 'sans-serif'],
         kanit: ['Kanit', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
@@ -49,11 +48,9 @@ module.exports = {
         nxl: '2000px'
       }
     }
-
   },
   variants: {
     // ...
     scrollbar: ['dark']
   }
-
 };

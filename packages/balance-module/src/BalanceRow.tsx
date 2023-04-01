@@ -42,7 +42,7 @@ function BalanceRow ({ balance, img, name, price, symbol }: Props): JSX.Element 
           </div>
 
           <div className='flex flex-col flex-1 py-[10px] sm:ml-3 sm:pt-0 '>
-            <p className='w-full h-full  max-w-64 truncate flex flex-grow font-semibold text-black dark:text-white text-[15px] sm:text-[22px]  font-poppins group-hover:text-[#F5CBD5]'>
+            <p className='text-left w-full h-full max-w-64 text-ellipsis flex flex-grow font-semibold text-black dark:text-white text-[15px] sm:text-[22px]  font-poppins group-hover:text-[#F5CBD5] '>
               {name}
             </p>
             {price === undefined

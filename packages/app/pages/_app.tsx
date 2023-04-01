@@ -29,35 +29,52 @@ Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
 // function Root({ Component, pageProps: { session, ...pageProps }, }: AppProps): JSX.Element {
-function Root ({ Component, pageProps }: AppProps<{ session: Session; }>): JSX.Element {
+function Root ({ Component,
+  pageProps }: AppProps<{ session: Session }>): JSX.Element {
   return (
     <Provider store={store}>
       <Head>
-        {
+        {/* {
           process.env.NEXT_PUBLIC_ENABLE_TRACKING &&
           <script async
             data-website-id='c309f7b0-7e50-4944-b73b-1e779ac13207'
             defer
             src='https://analytics.skye.kiwi/umami.js'></script>
-        }
-        <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Rubik&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=VT323&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Roboto&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Kanit&family=Roboto&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Inter&family=Kanit&family=Roboto&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Stick&display=swap'
-          rel='stylesheet' />
-        <link href='https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap'
-          rel='stylesheet' />
+        } */}
+        <link
+          href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap'
+          rel='stylesheet'
+        />
+        {/* <link href='https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;700&display=swap'
+          rel='stylesheet' /> */}
+        <link
+          href='https://fonts.googleapis.com/css2?family=Rubik&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css2?family=VT323&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Roboto&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Kanit&family=Roboto&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Inter&family=Kanit&family=Roboto&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Stick&display=swap'
+          rel='stylesheet'
+        />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap'
+          rel='stylesheet'
+        />
       </Head>
 
       <SessionProvider session={pageProps.session}>

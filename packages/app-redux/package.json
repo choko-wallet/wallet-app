@@ -13,11 +13,11 @@
     "url": "https://github.com/choko-wallet/wallet-app"
   },
   "dependencies": {
-    "@choko-wallet/core": "^0.1.9",
-    "@choko-wallet/known-networks": "^0.1.9",
+    "@choko-wallet/core": "0.1.10-19",
+    "@choko-wallet/known-networks": "0.1.10-19",
     "@polkadot/util-crypto": "^10.2.1",
     "@reduxjs/toolkit": "^1.9.1",
-    "@skyekiwi/util": "^1.0.1",
+    "@skyekiwi/util": "1.0.2-5",
     "react": "18.1.0",
     "react-redux": "^8.0.5"
   }

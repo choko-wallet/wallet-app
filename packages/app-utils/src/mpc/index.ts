@@ -3,112 +3,121 @@
 
 /* tslint:disable */
 /* eslint-disable */
+import initWasm, {ext_run_keygen, ext_run_key_refreh, ext_run_sign} from './skw_mpc_wasm';
 
-import initWasm, { ext_run_keygen, ext_run_sign } from './skw_mpc_wasm';
+import { UserAccount } from '@choko-wallet/core';
+import {defaultMpcAccountOption} from '@choko-wallet/core/accountOption'
 
-const keygenRequestBase = {
-  payload_id: [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  ],
-  payload_type: {
-    // @ts-ignore
-    KeyGen: null
-  },
-  peers: [
-    [
-      '12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba',
-      '/ip4/100.104.199.31/tcp/2619/ws/p2p/12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba'
-    ],
-    [
-      '12D3KooWK99VoVxNE7XzyBwXEzW7xhK7Gpv85r9F3V3fyKSUKPH5',
-      '/ip4/100.104.199.31/tcp/2620/ws/p2p/12D3KooWK99VoVxNE7XzyBwXEzW7xhK7Gpv85r9F3V3fyKSUKPH5'
-    ],
-    [
-      '12D3KooWJWoaqZhDaoEFshF7Rh1bpY9ohihFhzcW6d69Lr2NASuq',
-      '/ip4/100.104.199.31/tcp/2621/ws/p2p/12D3KooWJWoaqZhDaoEFshF7Rh1bpY9ohihFhzcW6d69Lr2NASuq'
-    ]
-  ],
-  sender: '12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba',
-  t: 2,
-  n: 3
-};
+import { Certificate } from '@choko-wallet/auth-client/types';
 
-const signRequestBase = {
-  payload_id: [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  ],
-  payload_type: {
-    SignOffline: {
-      message: [
-        153, 137, 54, 6, 208, 242, 9, 109,
-        205, 141, 170, 237, 173, 109, 240, 83,
-        63, 99, 209, 55, 95, 138, 242, 111,
-        173, 209, 74, 11, 155, 198, 45, 110
-      ],
-      keygen_id: [
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-      ],
-      keygen_peers: [
-        [
-          '12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba',
-          '/ip4/100.104.199.31/tcp/2619/ws/p2p/12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba'
-        ],
-        [
-          '12D3KooWK99VoVxNE7XzyBwXEzW7xhK7Gpv85r9F3V3fyKSUKPH5',
-          '/ip4/100.104.199.31/tcp/2620/ws/p2p/12D3KooWK99VoVxNE7XzyBwXEzW7xhK7Gpv85r9F3V3fyKSUKPH5'
-        ],
-        [
-          '12D3KooWJWoaqZhDaoEFshF7Rh1bpY9ohihFhzcW6d69Lr2NASuq',
-          '/ip4/100.104.199.31/tcp/2621/ws/p2p/12D3KooWJWoaqZhDaoEFshF7Rh1bpY9ohihFhzcW6d69Lr2NASuq'
-        ]
-      ]
-    }
-  },
-  peers: [
-    [
-      '12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba',
-      '/ip4/100.104.199.31/tcp/2619/ws/p2p/12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba'
-    ],
-    [
-      '12D3KooWK99VoVxNE7XzyBwXEzW7xhK7Gpv85r9F3V3fyKSUKPH5',
-      '/ip4/100.104.199.31/tcp/2620/ws/p2p/12D3KooWK99VoVxNE7XzyBwXEzW7xhK7Gpv85r9F3V3fyKSUKPH5'
-    ]
-  ],
-  sender: '12D3KooWRndVhVZPCiQwHBBBdg769GyrPUW13zxwqQyf9r3ANaba',
-  t: 2,
-  n: 3
-};
+import { extractPublicKey, MpcRequest, SerializedLocalKey, SerializedSignature } from './interface';
+import { u8aToHex } from '@skyekiwi/util';
+import { fetchPeers } from './fetchFixtures';
 
-const runKeygen = async (jobId: Uint8Array) => {
+const certificateToAuthHeader = (primary: Certificate, secondary: Certificate, additional?: Certificate): string => {
+  const additionalCert = additional ? {
+    payload: u8aToHex(additional.payload),
+    signature: u8aToHex(additional.signature),
+  } : null;
+
+  return JSON.stringify({
+    primary: {
+      payload: u8aToHex(primary.payload),
+      signature: u8aToHex(primary.signature)
+    }, 
+    secondary: {
+      payload: u8aToHex(secondary.payload),
+      signature: u8aToHex(secondary.signature)
+    },
+    additional: additionalCert,
+  });
+}
+
+const clientAddr = "/dns/c.mpc.choko.app/tcp/443/wss";
+// const clientAddr = "/ip4/100.104.199.31/tcp/2619/ws";
+
+const runKeygenRequest = async (
+  payloadId: Uint8Array,
+  serializedAuthHeader: string,
+
+  enableLog = true,
+): Promise<SerializedLocalKey> => {
+  const fixture = await fetchPeers();
+
   await initWasm();
-
-  const keygenRequest = keygenRequestBase;
-
-  keygenRequest.payload_id = Array.from(jobId);
+  const keygenRequst = MpcRequest.newKeyGenRequest(fixture, payloadId);
 
   return await ext_run_keygen(
-    JSON.stringify(keygenRequest),
-    '12D3KooWPT98FXMfDQYavZm66EeVjTqP9Nnehn1gyaydqV8L8BQw',
-    '/ip4/100.104.199.31/tcp/2622/ws',
-    false
+    serializedAuthHeader,
+    keygenRequst.serialize(),
+
+    fixture.c[0], // peerId
+    clientAddr,
+    enableLog
   );
 };
 
-const runSign = async (jobId: Uint8Array, keygenJobId: Uint8Array, localKey: string) => {
+const runSignRequest = async (
+  payloadId: Uint8Array,
+  serializedAuthHeader: string,
+  localKey: string,
+  message: Uint8Array,
+  enableLog: boolean
+): Promise<SerializedSignature> => {
+  const fixture = await fetchPeers();
   await initWasm();
 
-  const signRequest = signRequestBase;
-
-  signRequest.payload_id = Array.from(jobId);
-  signRequest.payload_type.SignOffline.keygen_id = Array.from(keygenJobId);
+  const signRequet = MpcRequest.newSignRequest(fixture, payloadId, message);
 
   return await ext_run_sign(
-    JSON.stringify(signRequest),
+    serializedAuthHeader,
+
+    signRequet.serialize(),
     localKey,
-    '12D3KooWPT98FXMfDQYavZm66EeVjTqP9Nnehn1gyaydqV8L8BQw',
-    '/ip4/100.104.199.31/tcp/2622/ws',
-    false
+
+    fixture.c[0], // peerId
+    clientAddr,
+
+    enableLog
   );
 };
 
-export { runKeygen, runSign };
+
+const runKeyRefreshRequest = async (
+  payloadId: Uint8Array,
+  serializedAuthHeader: string,
+
+  enableLog = true,
+): Promise<SerializedLocalKey> => {
+  const fixture = await fetchPeers();
+
+  await initWasm();
+  const keyrefreshRequest = MpcRequest.newKeyRefreshRequest(fixture, payloadId);
+
+  console.log(keyrefreshRequest.serialize())
+
+  return await ext_run_key_refreh(
+    serializedAuthHeader,
+    keyrefreshRequest.serialize(),
+
+    fixture.c[0], // peerId
+    clientAddr,
+    enableLog
+  );
+};
+
+
+const mpcLocalKeyToAccount = (localKey: SerializedLocalKey): UserAccount => {
+  const publicKey = extractPublicKey(localKey);
+  const userAccount = new UserAccount(defaultMpcAccountOption);
+
+  userAccount.publicKeys = [
+    publicKey,
+    new Uint8Array(32),
+  ];
+
+  userAccount.noteMpcWallet(localKey);
+  return userAccount;
+};
+
+export { certificateToAuthHeader, runKeygenRequest, runSignRequest, runKeyRefreshRequest, mpcLocalKeyToAccount };
