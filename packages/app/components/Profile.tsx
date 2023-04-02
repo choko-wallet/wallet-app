@@ -1,35 +1,37 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ArrowUpIcon } from '@heroicons/react/outline';
-import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import { ArrowUpIcon } from "@heroicons/react/outline";
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 
 // import Mapbox from '@choko-wallet/app/components/Mapbox';
-import { BalanceInfo,
+import {
+  BalanceInfo,
   fadeIn,
   staggerContainer,
   textContainer,
-  textVariant2 } from '@choko-wallet/app-utils';
-import { BalanceRow } from '@choko-wallet/balance-module';
+  textVariant2,
+} from "@choko-wallet/app-utils";
+import { BalanceRow } from "@choko-wallet/balance-module";
 
-import Chart from './Chart';
+import Chart from "./Chart";
 
 interface Props {
   balance: BalanceInfo;
 }
 
-function Profile ({ balance }: Props): JSX.Element {
+function Profile({ balance }: Props): JSX.Element {
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
-  const [balanceTotal, setBalanceTotal] = useState<string>('0');
+  const [balanceTotal, setBalanceTotal] = useState<string>("0");
   const [showDust, _] = useState<boolean>(true);
 
-  console.log('balance-profile', balance);
+  console.log("balance-profile", balance);
 
   useEffect(() => {
     // Filter out Dust balance
     const filtered = Object.entries(balance).filter(([id, item]) => {
-      return showDust ? item.balanceInUSD > 5 || id === 'native' : true; // always display eth .. even it's in dust
+      return showDust ? item.balanceInUSD > 5 || id === "native" : true; // always display eth .. even it's in dust
     });
 
     setFiltedBalance(Object.fromEntries(filtered));
@@ -47,9 +49,9 @@ function Profile ({ balance }: Props): JSX.Element {
   }, [balance]);
 
   return (
-  // <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'></div>
+    // <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'></div>
 
-    <div className=' my-6 lg:my-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto p-2 sm:p-3 md:p-6'>
+    <div className=' mb-6 lg:mb-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto p-2 sm:p-3 md:p-6'>
       <div className='w-full max-w-[1500px] min-h-[750px] bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
         <div className='flex '>
           <div className='flex flex-col w-full  max-w-[950px]'>
@@ -64,16 +66,15 @@ function Profile ({ balance }: Props): JSX.Element {
               {/* <div className=' h-[100px] z-10 relative'> */}
               <motion.div
                 className='h-[100px] z-10 relative px-2'
-                variants={fadeIn('left', 'tween', 0, 0.5)}
+                variants={fadeIn("left", "tween", 0, 0.5)}
               >
                 <motion.p
                   className='text-xl my-1 text-black dark:text-white font-inter font-semibold'
                   variants={textContainer}
                 >
                   {Array.from(`$ ${balanceTotal} USD`).map((letter, index) => (
-                    <motion.span key={index}
-                      variants={textVariant2}>
-                      {letter === ' ' ? '\u00A0' : letter}
+                    <motion.span key={index} variants={textVariant2}>
+                      {letter === " " ? "\u00A0" : letter}
                     </motion.span>
                   ))}
                 </motion.p>

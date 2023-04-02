@@ -63,7 +63,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
             className='flex flex-col items-center justify-center lg:items-start'
             variants={fadeIn("up", "spring", 0.5, 1)}
           >
-            <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  h-10 text-white font-poppins'>
+            <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  h-10 text-white font-poppins font-bold '>
               The{" "}
               <Typed
                 backSpeed={20}
@@ -75,11 +75,12 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
                   "Secure",
                   "Chain Agnostic",
                 ]}
+                className='text-gradient font-extrabold'
                 typeSpeed={100}
               />
             </p>
             <br />
-            <p className=' lg:mt-3 xl:mt-5 text-[22px] sm:text-[26px] mt-3  md:text-[36px] lg:text-[46px] xl:text-[60px] h-10 md:h-16 text-white font-poppins'>
+            <p className=' lg:mt-3 xl:mt-5 text-[22px] sm:text-[26px] mt-3  md:text-[36px] lg:text-[46px] xl:text-[60px] h-10 md:h-16  font-poppins font-bold text-lime-300'>
               Web3 Portal
             </p>
           </motion.div>

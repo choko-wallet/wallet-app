@@ -6,21 +6,29 @@ export interface Ingredient {
 }
 
 export const allIngredients = [
-  { label: 'Profile' },
-  { label: 'Wallet' },
-  { label: 'Podcast' },
-  { label: 'NFTs' },
-  { label: 'DeFi' },
-  { label: 'Game' },
-  { label: 'Curation' },
-  { label: 'All' }
+  { label: "Profile" },
+  { label: "Wallet" },
+  { label: "Defi" },
+  { label: "NFT" },
+  { label: "Curation" },
+  { label: "Podcast" },
+  { label: "Game" },
+  // { label: "All" },
 ];
 
-const [Profile, Wallet, Podcast, NFTs, DeFi, Game, Curation, All] = allIngredients;
+const [Profile, Wallet, DeFi, NFT, Curation, Podcast, Game] = allIngredients;
 
-export const initialTabs = [Profile, Wallet, Podcast, NFTs, DeFi, Game, Curation, All];
+export const initialTabs = [
+  Profile,
+  Wallet,
+  DeFi,
+  NFT,
+  Curation,
+  Podcast,
+  Game,
+];
 
-export function getNextIngredient (
+export function getNextIngredient(
   ingredients: Ingredient[]
 ): Ingredient | undefined {
   const existing = new Set(ingredients);
@@ -28,7 +36,7 @@ export function getNextIngredient (
   return allIngredients.find((ingredient) => !existing.has(ingredient));
 }
 
-export function removeItem<T> ([...arr]: T[], item: T): T[] {
+export function removeItem<T>([...arr]: T[], item: T): T[] {
   const index = arr.indexOf(item);
 
   index > -1 && arr.splice(index, 1);
@@ -36,7 +44,7 @@ export function removeItem<T> ([...arr]: T[], item: T): T[] {
   return arr;
 }
 
-export function closestItem<T> (arr: T[], item: T): T {
+export function closestItem<T>(arr: T[], item: T): T {
   const index = arr.indexOf(item);
 
   if (index === -1) {
