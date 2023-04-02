@@ -50,7 +50,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
       </div>
 
-      <div className='absolute top-0 bottom-0 left-0 right-0 z-10 lg:flex lg:items-center lg:justify-center '>
+      <div className='absolute top-0 bottom-16 left-0 right-0 z-10 lg:flex lg:items-center lg:justify-center '>
         <motion.div
           className='flex flex-col items-center justify-evenly h-full lg:h-fit pt-[60px] pb-10 px-5 lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 xl:ml-20  '
           initial='hidden'
@@ -204,7 +204,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         </div>
       </div>
 
-      <div className='absolute bottom-3 left-0 right-0 h-10 flex items-center justify-center z-50'>
+      <div className='absolute bottom-12 left-0 right-0 h-10 flex items-center justify-center z-50'>
         <a className='' href={"#contact"}>
           <ChevronDownIcon className='h-8 text-gray-400 cursor-pointer animate-pulse ' />
           {/* <ChevronDownIcon className='h-8 text-gray-400 cursor-pointer ' /> */}
