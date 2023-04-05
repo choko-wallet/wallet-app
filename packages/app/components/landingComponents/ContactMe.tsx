@@ -1,21 +1,20 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import Image from 'next/image';
-import React from 'react';
-import { SocialIcon } from 'react-social-icons';
+import Image from "next/image";
+import React from "react";
+import { SocialIcon } from "react-social-icons";
 
-import discIcon2 from '../../images/discord2.svg';
+import discIcon2 from "../../images/discord2.svg";
 /* eslint-disable */
 // @ts-ignore
-import ThreeDStarBg from './ThreeDStarBg';
+import ThreeDStarBg from "./ThreeDStarBg";
 /* eslint-enable */
 // import ThreeDCubeCanvas from './ThreeDCubeCanvas';
 
 const ContactMe = (): JSX.Element => {
   return (
-    <section className='snap-start relative'
-      id='contact'>
+    <section className='snap-start relative' id='contact'>
       <div className='relative h-screen w-full bg-[#050816]'>
         <ThreeDStarBg />
         {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
@@ -74,7 +73,7 @@ const ContactMe = (): JSX.Element => {
 
             <a
               className='cursor-pointer inline-flex relative h-5 w-5 m-2'
-              href={'https://discord.gg/zkp8UEQctM'}
+              href={"https://discord.gg/zkp8UEQctM"}
               rel='noreferrer'
               target='_blank'
             >
@@ -91,7 +90,7 @@ const ContactMe = (): JSX.Element => {
         </div>
       </div>
 
-      <div className='absolute bottom-4 left-0 right-0 h-10 flex items-center justify-center z-50'>
+      <div className='absolute bottom-[60px] left-0 right-0 h-10 flex items-center justify-center z-50'>
         <p className='font-poppins'>© 2023 Choko Wallet</p>
       </div>
     </section>

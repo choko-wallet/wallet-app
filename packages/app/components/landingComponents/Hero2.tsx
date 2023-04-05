@@ -52,7 +52,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
 
       <div className='absolute top-0 bottom-16 left-0 right-0 z-10 lg:flex lg:items-center lg:justify-center '>
         <motion.div
-          className='flex flex-col items-center justify-evenly h-full lg:h-fit pt-[60px] pb-10 px-5 lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 xl:ml-20  '
+          className='flex flex-col items-center justify-evenly h-full lg:h-fit pt-[60px] pb-10 px-5 lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 xl:ml-20   '
           initial='hidden'
           variants={staggerContainer}
           viewport={{ amount: 0.25, once: false }}
@@ -63,7 +63,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
             className='flex flex-col items-center justify-center lg:items-start'
             variants={fadeIn("up", "spring", 0.5, 1)}
           >
-            <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  h-10 text-white font-poppins font-bold '>
+            <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  text-white font-poppins font-bold whitespace-nowrap'>
               The{" "}
               <Typed
                 backSpeed={20}
@@ -75,18 +75,18 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
                   "Secure",
                   "Chain Agnostic",
                 ]}
-                className='text-gradient font-extrabold'
+                className='text-gradient font-extrabold whitespace-nowrap'
                 typeSpeed={100}
               />
             </p>
             <br />
-            <p className=' lg:mt-3 xl:mt-5 text-[22px] sm:text-[26px] mt-3  md:text-[36px] lg:text-[46px] xl:text-[60px] h-10 md:h-16  font-poppins font-bold text-lime-300'>
+            <p className=' lg:mt-3 xl:mt-5 text-[22px] sm:text-[26px]  md:text-[36px] lg:text-[46px] xl:text-[60px] h-10 md:h-16  font-poppins font-bold text-lime-300'>
               Web3 Portal
             </p>
           </motion.div>
 
           <motion.div variants={fadeIn("up", "spring", 0.8, 1)}>
-            <p className='text-[15px] sm:text-[15px] md:text-[15px] xl:text-[20px] lg:px-0 lg:mt-10 pb-2 lg:mx-0 max-w-[450px] md:max-w-[550px] lg:max-w-[600px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
+            <p className='text-[15px] sm:text-[15px] md:text-[15px] xl:text-[20px] lg:px-0 lg:mt-10 lg:mx-0 max-w-[450px] md:max-w-[550px] lg:max-w-[600px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
               Instituion Grade Security + Consumer Grade UX
             </p>
           </motion.div>
@@ -107,12 +107,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
               duration: 1.5,
             }}
           > */}
-          <div className='block  lg:hidden z-40 relative flex-shrink-0 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
-            {/* <img
-                alt=''
-                className='z-40 m-1 object-contain '
-                src={landingGIF.src}
-              /> */}
+          <div className='flex lg:hidden z-40 relative flex-shrink-0 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
             <ThreeDEarth zoom={false} />
           </div>
           {/* </motion.div> */}
@@ -155,35 +150,12 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           </motion.div>
         </motion.div>
 
-        {/* <motion.div
-          animate={{
-            opacity: 1,
-            scale: 1,
-            x: 0,
-          }}
-          className='flex items-center cursor-pointer'
-          initial={{
-            opacity: 0,
-            scale: 0.2,
-            x: 0,
-          }}
-          transition={{
-            duration: 1.5,
-          }}
-        > */}
-        <div className='hidden lg:inline z-40  lg:h-[550px] lg:w-[450px] xl:h-[660px] xl:w-[600px] '>
-          {/* className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]' */}
-          {/* <img
-            alt=''
-            className='z-40 m-12 object-contain w-[400px] h-[400px] xl:w-[400px] xl:h-[400px]'
-            src={landingGIF.src}
-          /> */}
+        <div className='hidden lg:inline-flex z-40  lg:h-[550px] lg:w-[450px] xl:h-[660px] xl:w-[600px] '>
           <ThreeDEarth zoom={true} />
         </div>
-        {/* </motion.div> */}
       </div>
 
-      <div className='hidden lg:inline-flex absolute bottom-20 left-0 right-0 items-center justify-center z-50 '>
+      <div className='hidden lg:inline-flex absolute bottom-24 left-0 right-0 items-center justify-center z-50 '>
         <div className='flex items-center justify-center space-x-5'>
           <IdentificationIcon className='h-10 text-yellow-400 cursor-pointer animate-pulse ' />
           <p className='font-poppins'>Sign Up</p>
@@ -204,7 +176,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         </div>
       </div>
 
-      <div className='absolute bottom-12 left-0 right-0 h-10 flex items-center justify-center z-50'>
+      <div className='absolute bottom-[60px] left-0 right-0 h-10 flex items-center justify-center z-50'>
         <a className='' href={"#contact"}>
           <ChevronDownIcon className='h-8 text-gray-400 cursor-pointer animate-pulse ' />
           {/* <ChevronDownIcon className='h-8 text-gray-400 cursor-pointer ' /> */}
