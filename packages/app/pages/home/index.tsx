@@ -49,6 +49,7 @@ import Loading from "../../components/Loading";
 import logo from "../../images/logo.png";
 import { initialTabs as tabs } from "../../utils/tabs";
 import Wallet from "@choko-wallet/app/components/Wallet";
+import Defi from "@choko-wallet/app/components/Defi";
 
 /**
  * Main dashboard
@@ -118,10 +119,10 @@ export default function Home(): JSX.Element {
       // 1. Fetch AA Wallet Info when needed.
       // if (!currentUserAccount.aaWalletAddress) {
       const populateAAWalletInfo = async () => {
-        const aaAddresses = await fetchAAWalletAddress(userAccount);
+        // const aaAddresses = await fetchAAWalletAddress(userAccount);
 
         // no await for ui
-        // const aaAddresses = ["0x2A721dc0578E21392f1A0F796093D93AD0C29656"];
+        const aaAddresses = ["0x2A721dc0578E21392f1A0F796093D93AD0C29656"];
         dispatch(noteAAWalletAddress(aaAddresses));
       };
 
@@ -132,24 +133,24 @@ export default function Home(): JSX.Element {
       switch (network.networkType) {
         case "polkadot":
           try {
-            const res = await polkadotFetchBalance(
-              network,
-              encodeAddr(network, currentUserAccount)
-            );
+            // const res = await polkadotFetchBalance(
+            //   network,
+            //   encodeAddr(network, currentUserAccount)
+            // );
 
-            setBalanceInfo(res);
+            // setBalanceInfo(res);
 
             // no await for ui
-            // setBalanceInfo({
-            //   native: {
-            //     balance: 0,
-            //     balanceInUSD: 0,
-            //     img: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/dot.png",
-            //     name: "skyekiwi",
-            //     priceInUSD: 0,
-            //     symbol: "SKW",
-            //   },
-            // });
+            setBalanceInfo({
+              native: {
+                balance: 0,
+                balanceInUSD: 0,
+                img: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/dot.png",
+                name: "skyekiwi",
+                priceInUSD: 0,
+                symbol: "SKW",
+              },
+            });
 
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
@@ -162,25 +163,25 @@ export default function Home(): JSX.Element {
           break;
         case "ethereum":
           try {
-            const res = await ethFetchBalance(
-              network,
-              encodeAddr(network, currentUserAccount)
-            );
+            // const res = await ethFetchBalance(
+            //   network,
+            //   encodeAddr(network, currentUserAccount)
+            // );
 
-            setBalanceInfo(res);
+            // setBalanceInfo(res);
 
             // no await for ui
-            // setBalanceInfo({
-            //   native: {
-            //     balance: 0,
-            //     img: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png",
-            //     decimals: 18,
-            //     name: "goerli",
-            //     symbol: "GoerliETH",
-            //     priceInUSD: 0,
-            //     balanceInUSD: 0,
-            //   },
-            // });
+            setBalanceInfo({
+              native: {
+                balance: 0,
+                img: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png",
+                decimals: 18,
+                name: "goerli",
+                symbol: "GoerliETH",
+                priceInUSD: 0,
+                balanceInUSD: 0,
+              },
+            });
 
             dispatch(endLoading());
             // toastSuccess(`Changed to ${network.text}`);
@@ -298,6 +299,8 @@ export default function Home(): JSX.Element {
                   <Profile balance={balanceInfo} />
                 ) : selectedTab.label === "NFT" ? (
                   <NFTs />
+                ) : selectedTab.label === "Defi" ? (
+                  <Defi />
                 ) : null}
               </motion.div>
             </AnimatePresence>
