@@ -50,6 +50,7 @@ import logo from "../../images/logo.png";
 import { initialTabs as tabs } from "../../utils/tabs";
 import Wallet from "@choko-wallet/app/components/Wallet";
 import Defi from "@choko-wallet/app/components/Defi";
+import Wallet2 from "@choko-wallet/app/components/Wallet2";
 
 /**
  * Main dashboard
@@ -238,7 +239,7 @@ export default function Home(): JSX.Element {
             <div className='absolute top-2 left-12 bg-gradient-to-r from-[#DEE8F1] dark:from-[#1A1A1A] to-transparent h-[58px] w-6 md:hidden z-50'></div>
 
             <div className='flex items-center justify-center space-x-3 overflow-x-scroll scrollbar-thin bg-transparent'>
-              <div className='bg-gray-300 dark:bg-[#1A1A1A] flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen  whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
+              <div className='bg-gray-300 dark:bg-[#1A1A1A] overflow-x-scroll scrollbar-thin  flex-1 flex items-center md:justify-evenly md:overflow-hidden space-x-3 w-full md:w-[650px]  md:mx-auto md:rounded-full max-w-screen  whitespace-nowrap relative h-[58px] px-6 sm:px-10 max-w-[660px]'>
                 {tabs.map((item) => (
                   <div
                     className={
@@ -294,7 +295,8 @@ export default function Home(): JSX.Element {
                 transition={{ duration: 0.3 }}
               >
                 {selectedTab.label === "Wallet" ? (
-                  <Wallet balance={balanceInfo} />
+                  // <Wallet balance={balanceInfo} />
+                  <Wallet2 />
                 ) : selectedTab.label === "Profile" ? (
                   <Profile balance={balanceInfo} />
                 ) : selectedTab.label === "NFT" ? (
