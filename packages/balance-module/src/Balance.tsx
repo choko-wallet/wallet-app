@@ -1,26 +1,22 @@
 // Copyright 2021-2022 @choko-wallet/balance-module authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BalanceInfo } from "@choko-wallet/app-utils";
+import type { BalanceInfo } from '@choko-wallet/app-utils';
 
-import {
-  ArrowUpIcon,
+import { ArrowUpIcon,
   DownloadIcon,
   PaperAirplaneIcon,
-  PlusSmIcon,
-} from "@heroicons/react/outline";
-import React, { useEffect, useState } from "react";
+  PlusSmIcon } from '@heroicons/react/outline';
+import React, { useEffect, useState } from 'react';
 
-import { Button, Switch } from "@choko-wallet/app-common";
-import {
-  selectCurrentNetwork,
+import { Button, Switch } from '@choko-wallet/app-common';
+import { selectCurrentNetwork,
   selectKnownNetworks,
   setOpen,
   useDispatch,
-  useSelector,
-} from "@choko-wallet/app-redux";
+  useSelector } from '@choko-wallet/app-redux';
 
-import BalanceRow from "./BalanceRow";
+import BalanceRow from './BalanceRow';
 
 /**
  * The balance display on the right of the home dashboard
@@ -30,16 +26,16 @@ interface Props {
   balance: BalanceInfo;
 }
 
-function Balance({ balance }: Props): JSX.Element {
+function Balance ({ balance }: Props): JSX.Element {
   const dispatch = useDispatch();
   // const ref = useRef(null);
 
   const knownNetworks = useSelector(selectKnownNetworks);
   const currentNetwork = useSelector(selectCurrentNetwork);
 
-  const [balanceTotal, setBalanceTotal] = useState<string>("0");
+  const [balanceTotal, setBalanceTotal] = useState<string>('0');
   const [showDust, setShowDust] = useState<boolean>(true);
-  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>('');
   const [searchInputOpen, setSearchInputOpen] = useState<boolean>(false);
   const [filtedBalance, setFiltedBalance] = useState<BalanceInfo>(balance);
 
@@ -58,7 +54,7 @@ function Balance({ balance }: Props): JSX.Element {
   useEffect(() => {
     // Filter out Dust balance
     const filtered = Object.entries(balance).filter(([id, item]) => {
-      return showDust ? item.balanceInUSD > 5 || id === "native" : true; // always display eth .. even it's in dust
+      return showDust ? item.balanceInUSD > 5 || id === 'native' : true; // always display eth .. even it's in dust
     });
 
     setFiltedBalance(Object.fromEntries(filtered));
@@ -90,10 +86,10 @@ function Balance({ balance }: Props): JSX.Element {
       {/* <div className='absolute top-0 bottom-0 left-0 right-0 bg-[#DADADA] opacity-40 z-10'></div> */}
       <div className='w-full h-[100px] sm:w-[360px] z-10 relative'>
         <p className='text-xl my-1 text-black dark:text-white font-inter font-semibold'>
-          ${balanceTotal} USD{" "}
+          ${balanceTotal} USD{' '}
         </p>
         <p className='text-xs text-black dark:text-white cursor-pointer font-inter'>
-          Your total balance on {knownNetworks[currentNetwork].text}{" "}
+          Your total balance on {knownNetworks[currentNetwork].text}{' '}
         </p>
         <div className='absolute top-2 left-[120px] text-[10px] rounded-full py-[2px] px-[5px] border border-[#2EBE7B] font-roboto text-[#2EBE7B] flex items-center justify-center'>
           <p className='ml-1'>+DEMO%</p>
@@ -104,23 +100,27 @@ function Balance({ balance }: Props): JSX.Element {
       <div className='flex items-center justify-evenly mt-6 lg:mt-8  z-20'>
         <div
           className='flex items-center justify-center '
-          onClick={() => dispatch(setOpen("homeSend"))}
+          onClick={() => dispatch(setOpen('homeSend'))}
         >
-          <Button Icon={PaperAirplaneIcon} rotate={true} title='Send' />
+          <Button Icon={PaperAirplaneIcon}
+            rotate={true}
+            title='Send' />
         </div>
         <div
           className='flex items-center justify-center '
-          onClick={() => dispatch(setOpen("homeReceive"))}
+          onClick={() => dispatch(setOpen('homeReceive'))}
         >
-          <Button Icon={DownloadIcon} title='Receive' />
+          <Button Icon={DownloadIcon}
+            title='Receive' />
         </div>
 
-        {knownNetworks[currentNetwork]?.networkType === "ethereum" ? (
+        {knownNetworks[currentNetwork]?.networkType === 'ethereum' ? (
           <div
             className='flex items-center justify-center '
-            onClick={() => dispatch(setOpen("homeAddToken"))}
+            onClick={() => dispatch(setOpen('homeAddToken'))}
           >
-            <Button Icon={PlusSmIcon} title='Add Token' />
+            <Button Icon={PlusSmIcon}
+              title='Add Token' />
           </div>
         ) : null}
       </div>
@@ -159,7 +159,7 @@ function Balance({ balance }: Props): JSX.Element {
         <div className='flex items-center '>
           <p
             className={`hidden md:inline-flex text-right text-xs ${
-              !showDust ? "text-black dark:text-white" : "text-gray-400"
+              !showDust ? 'text-black dark:text-white' : 'text-gray-400'
             }`}
           >
             Show all assets
@@ -167,20 +167,20 @@ function Balance({ balance }: Props): JSX.Element {
 
           <Switch
             checked={showDust}
-            className={`${showDust ? "bg-[#FDF6E3]" : "bg-[#FDF6E3]"}
+            className={`${showDust ? 'bg-[#FDF6E3]' : 'bg-[#FDF6E3]'}
           relative inline-flex h-[19px] w-[36px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 mx-2`}
             onChange={setShowDust}
           >
             <span className='sr-only'>Use setting</span>
             <span
               aria-hidden='true'
-              className={`${showDust ? "translate-x-4" : "translate-x-0"}
+              className={`${showDust ? 'translate-x-4' : 'translate-x-0'}
             pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-[#0170BF] shadow-lg ring-0 transition duration-200 ease-in-out`}
             />
           </Switch>
           <p
             className={`flex md:hidden text-xs  ${
-              showDust ? "text-black dark:text-white" : "text-gray-400"
+              showDust ? 'text-black dark:text-white' : 'text-gray-400'
             }`}
           >
             Show all
@@ -188,7 +188,7 @@ function Balance({ balance }: Props): JSX.Element {
 
           <p
             className={`hidden md:inline-flex text-xs ${
-              showDust ? "text-black dark:text-white" : "text-gray-400"
+              showDust ? 'text-black dark:text-white' : 'text-gray-400'
             }`}
           >
             Hide smaller assets
@@ -207,7 +207,7 @@ function Balance({ balance }: Props): JSX.Element {
               className=' pl-5 text-xs text-gray-600 placeholder-gray-400 bg-transparent outline-none '
               onBlur={() => {
                 setSearchInputOpen(false);
-                setSearchInput("");
+                setSearchInput('');
               }}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder='Search token'

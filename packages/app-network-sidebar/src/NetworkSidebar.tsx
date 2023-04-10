@@ -1,25 +1,25 @@
 // Copyright 2021-2022 @choko-wallet/network-sidebar-module authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ChevronRightIcon } from "@heroicons/react/outline";
-import React from "react";
+import { ChevronRightIcon } from '@heroicons/react/outline';
+import React from 'react';
 
-import { toggle, useDispatch } from "@choko-wallet/app-redux";
+import { toggle, useDispatch } from '@choko-wallet/app-redux';
 
-import NetworkSelection from "./NetworkSelectionList";
+import NetworkSelection from './NetworkSelectionList';
 
 /**
  * wrapper of the NetworkSelection list for widescreen devices
  */
 
-export default function NetworkSidebar(): JSX.Element {
+export default function NetworkSidebar (): JSX.Element {
   const dispatch = useDispatch();
 
   return (
     <div className='bg-transparent'>
       <button
         className='md:hidden mb-2 w-[110px] h-[30px] flex items-center justify-center active:scale-95 transition duration-150 ease-out py-1   bg-white rounded-[4px] outline-none '
-        onClick={() => dispatch(toggle("homeMobileDrawer"))}
+        onClick={() => dispatch(toggle('homeMobileDrawer'))}
       >
         <p className='ml-1 text-black text-[16px] font-medium font-kanit '>
           NETWORK

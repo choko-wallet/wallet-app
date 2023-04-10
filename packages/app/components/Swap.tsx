@@ -1,23 +1,20 @@
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ChevronDownIcon,
-  CogIcon,
-} from "@heroicons/react/outline";
-import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import { Button, Switch } from "@choko-wallet/app-common";
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
 
-import {
-  BalanceInfo,
-  fadeIn,
-  staggerContainer,
-  textContainer,
-  textVariant2,
-} from "@choko-wallet/app-utils";
-import DropDownSelect from "./DropDownSelect";
+import { ArrowDownIcon, CogIcon } from '@heroicons/react/outline';
+// import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 
-function Swap() {
+import { Switch } from '@choko-wallet/app-common';
+
+// import { BalanceInfo,
+//   fadeIn,
+//   staggerContainer,
+//   textContainer,
+//   textVariant2 } from '@choko-wallet/app-utils';
+import DropDownSelect from './DropDownSelect';
+
+function Swap (): JSX.Element {
   const [showDust, setShowDust] = useState<boolean>(true);
   const [valueInput, setValueInput] = useState<number | null>(null);
   const [valueInput2, setValueInput2] = useState<number | null>(null);
@@ -28,23 +25,23 @@ function Swap() {
   //     { value: "Polkadot", label: "Polkadot" },
   //   ];
 
-  const chainOptions = ["Ethereum", "Polygon", "Polkadot"];
+  const chainOptions = ['Ethereum', 'Polygon', 'Polkadot'];
 
-  const tokenOptions = ["Ethereum", "Polygon", "Polkadot"];
+  const tokenOptions = ['Ethereum', 'Polygon', 'Polkadot'];
 
-  const getTokenImage = (network: string): string => {
-    if (network.indexOf("Ethereum") !== -1) {
-      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png";
-    }
+  // const getTokenImage = (network: string): string => {
+  //   if (network.indexOf("Ethereum") !== -1) {
+  //     return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/eth.png";
+  //   }
 
-    if (network.indexOf("Polygon") !== -1) {
-      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png";
-    }
+  //   if (network.indexOf("Polygon") !== -1) {
+  //     return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/matic.png";
+  //   }
 
-    if (network.indexOf("Polkadot") !== -1) {
-      return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/dot.png";
-    }
-  };
+  //   if (network.indexOf("Polkadot") !== -1) {
+  //     return "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/dot.png";
+  //   }
+  // };
 
   return (
     <div className='text-white w-full max-w-xl bg-[#1A1A1A] border border-gray-700 rounded-lg p-5'>
@@ -55,7 +52,7 @@ function Swap() {
         </p>
         <p
           //     className='font-poppins font-semibold text-gray-100 text-[15px]'
-          className={`${showDust ? "text-gray-100" : "text-gray-600"}
+          className={`${showDust ? 'text-gray-100' : 'text-gray-600'}
         font-poppins font-semibold  text-[15px]`}
         >
           Hide IP
@@ -63,14 +60,14 @@ function Swap() {
 
         <Switch
           checked={showDust}
-          className={`${showDust ? "bg-[#FDF6E3]" : "bg-[#FDF6E3]"}
+          className={`${showDust ? 'bg-[#FDF6E3]' : 'bg-[#FDF6E3]'}
     relative inline-flex h-[19px] w-[36px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75 mx-2`}
           onChange={setShowDust}
         >
           <span className='sr-only'>Use setting</span>
           <span
             aria-hidden='true'
-            className={`${showDust ? "translate-x-4" : "translate-x-0"}
+            className={`${showDust ? 'translate-x-4' : 'translate-x-0'}
       pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-[#0170BF] shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
@@ -90,11 +87,11 @@ function Swap() {
           </p>
           <div className='flex py-10 items-center justify-between pl-4'>
             <input
-              value={valueInput}
-              onChange={(e) => setValueInput(parseFloat(e.target.value))}
               className='w-24 text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[30px] '
+              onChange={(e) => setValueInput(parseFloat(e.target.value))}
+              placeholder={'0'}
               type='number'
-              placeholder={"0"}
+              value={valueInput}
             />
 
             <div className='w-[140px] border border-gray-700 rounded-lg mr-3'>
@@ -115,11 +112,11 @@ function Swap() {
           </p>
           <div className='flex py-10 items-center justify-between pl-4 '>
             <input
-              value={valueInput}
-              onChange={(e) => setValueInput(parseFloat(e.target.value))}
               className='w-24 text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[30px] '
+              onChange={(e) => setValueInput(parseFloat(e.target.value))}
+              placeholder={'0'}
               type='number'
-              placeholder={"0"}
+              value={valueInput}
             />
 
             <div className='w-[140px] border border-gray-700 rounded-lg mr-3'>
@@ -138,11 +135,11 @@ function Swap() {
 
           <div className='bg-black p-1 rounded-md flex px-2'>
             <input
-              value={valueInput2}
-              onChange={(e) => setValueInput2(parseFloat(e.target.value))}
               className='w-full text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[20px] '
+              onChange={(e) => setValueInput2(parseFloat(e.target.value))}
+              placeholder={'0'}
               type='number'
-              placeholder={"0"}
+              value={valueInput2}
             />
             <p>%</p>
           </div>

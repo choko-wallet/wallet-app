@@ -6,13 +6,13 @@ export interface Ingredient {
 }
 
 export const allIngredients = [
-  { label: "Profile" },
-  { label: "Wallet" },
-  { label: "Defi" },
-  { label: "NFT" },
-  { label: "Curation" },
-  { label: "Podcast" },
-  { label: "Game" },
+  { label: 'Profile' },
+  { label: 'Wallet' },
+  { label: 'Defi' },
+  { label: 'NFT' },
+  { label: 'Curation' },
+  { label: 'Podcast' },
+  { label: 'Game' }
   // { label: "All" },
 ];
 
@@ -25,10 +25,10 @@ export const initialTabs = [
   NFT,
   Curation,
   Podcast,
-  Game,
+  Game
 ];
 
-export function getNextIngredient(
+export function getNextIngredient (
   ingredients: Ingredient[]
 ): Ingredient | undefined {
   const existing = new Set(ingredients);
@@ -36,7 +36,7 @@ export function getNextIngredient(
   return allIngredients.find((ingredient) => !existing.has(ingredient));
 }
 
-export function removeItem<T>([...arr]: T[], item: T): T[] {
+export function removeItem<T> ([...arr]: T[], item: T): T[] {
   const index = arr.indexOf(item);
 
   index > -1 && arr.splice(index, 1);
@@ -44,7 +44,7 @@ export function removeItem<T>([...arr]: T[], item: T): T[] {
   return arr;
 }
 
-export function closestItem<T>(arr: T[], item: T): T {
+export function closestItem<T> (arr: T[], item: T): T {
   const index = arr.indexOf(item);
 
   if (index === -1) {

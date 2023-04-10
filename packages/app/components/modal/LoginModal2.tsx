@@ -1,30 +1,30 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from "@headlessui/react";
-import { CheckCircleIcon, XIcon, CheckIcon } from "@heroicons/react/outline";
-import { AnimatePresence, motion } from "framer-motion";
-import { signIn, signOut, useSession } from "next-auth/react";
-import React, { useState } from "react";
+import { Dialog } from '@headlessui/react';
+import { CheckCircleIcon, CheckIcon, XIcon } from '@heroicons/react/outline';
+import { AnimatePresence, motion } from 'framer-motion';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import React, { useState } from 'react';
 
-import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
+import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
-import discordSvg from "../../images/discord.svg";
-import facebookSvg from "../../images/facebook.svg";
-import githubSvg from "../../images/github.svg";
-import googleSvg from "../../images/google.svg";
-import redditSvg from "../../images/reddit.svg";
-import Modal from "../Modal";
+import discordSvg from '../../images/discord.svg';
+import facebookSvg from '../../images/facebook.svg';
+import githubSvg from '../../images/github.svg';
+import googleSvg from '../../images/google.svg';
+import redditSvg from '../../images/reddit.svg';
+import Modal from '../Modal';
 
 const LoginModal2 = (): JSX.Element => {
   const { data: session } = useSession();
 
   const dispatch = useAppThunkDispatch();
   const [step, setStep] = useState<number>(1);
-  const [secondProvider, setSecondProvider] = useState<string>("");
+  const [secondProvider, setSecondProvider] = useState<string>('');
 
   const loginWithSecodeProvider = async () => {
-    if (secondProvider === "") return;
+    if (secondProvider === '') return;
     await signIn(secondProvider);
   };
 
@@ -39,7 +39,7 @@ const LoginModal2 = (): JSX.Element => {
           <div
             onClick={() => {
               setStep(1);
-              dispatch(setClose("landingLogin2"));
+              dispatch(setClose('landingLogin2'));
             }}
           >
             <XIcon className=' text-[#B6B7BC] hover:text-blue-400 h-5 w-5 cursor-pointer md:h-8 md:w-8' />
@@ -101,7 +101,7 @@ const LoginModal2 = (): JSX.Element => {
                       <div className='relative h-[70px] w-10 flex flex-col items-center group'>
                         <button
                           className='h-10 w-10 flex items-center justify-center  active:scale-90 transition duration-150 ease-in-out p-[6px] bg-gray-200 rounded-full shadow-md'
-                          onClick={() => setSecondProvider("github")}
+                          onClick={() => setSecondProvider('github')}
                         >
                           <img
                             // loading='lazy'
@@ -112,7 +112,7 @@ const LoginModal2 = (): JSX.Element => {
                             /* eslint-enable */
                           />
                         </button>
-                        {secondProvider === "github" ? (
+                        {secondProvider === 'github' ? (
                           <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
                         ) : (
                           <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
@@ -123,11 +123,11 @@ const LoginModal2 = (): JSX.Element => {
                         <button
                           className='h-10 w-10 flex items-center justify-center active:scale-90 transition duration-150 ease-in-out p-[6px] bg-gray-200 rounded-full shadow-md'
                           // onClick={loginWithGithub}
-                          onClick={() => setSecondProvider("discord")}
+                          onClick={() => setSecondProvider('discord')}
                         >
                           <a
                             className=''
-                            href={"https://discord.gg/zkp8UEQctM"}
+                            href={'https://discord.gg/zkp8UEQctM'}
                             rel='noreferrer'
                             target='_blank'
                           >
@@ -141,7 +141,7 @@ const LoginModal2 = (): JSX.Element => {
                             />
                           </a>
                         </button>
-                        {secondProvider === "discord" ? (
+                        {secondProvider === 'discord' ? (
                           <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
                         ) : (
                           <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
@@ -152,7 +152,7 @@ const LoginModal2 = (): JSX.Element => {
                         <button
                           className='h-10 w-10 flex items-center justify-center active:scale-90 transition duration-150 ease-in-out p-[6px] bg-gray-200 rounded-full shadow-md'
                           // onClick={loginWithGithub}
-                          onClick={() => setSecondProvider("reddit")}
+                          onClick={() => setSecondProvider('reddit')}
                         >
                           <img
                             // loading='lazy'
@@ -163,7 +163,7 @@ const LoginModal2 = (): JSX.Element => {
                             /* eslint-enable */
                           />
                         </button>
-                        {secondProvider === "reddit" ? (
+                        {secondProvider === 'reddit' ? (
                           <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
                         ) : (
                           <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
@@ -174,7 +174,7 @@ const LoginModal2 = (): JSX.Element => {
                         <button
                           className='h-10 w-10 flex items-center justify-center active:scale-90 transition duration-150 ease-in-out p-[6px] bg-gray-200 rounded-full shadow-md'
                           // onClick={loginWithGithub}
-                          onClick={() => setSecondProvider("facebook")}
+                          onClick={() => setSecondProvider('facebook')}
                         >
                           <img
                             // loading='lazy'
@@ -185,7 +185,7 @@ const LoginModal2 = (): JSX.Element => {
                             /* eslint-enable */
                           />
                         </button>
-                        {secondProvider === "facebook" ? (
+                        {secondProvider === 'facebook' ? (
                           <CheckCircleIcon className=' text-green-600 h-6 w-6 cursor-pointer absolute bottom-0' />
                         ) : (
                           <div className='hidden group-hover:block absolute bottom-0 bg-gray-300/80 w-5 h-5 rounded-full'></div>
@@ -199,11 +199,11 @@ const LoginModal2 = (): JSX.Element => {
 
             <button
               className={` text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-[140px] mx-auto focus:bg-[#0170BF] font-inter  ${
-                secondProvider === ""
-                  ? "bg-gray-500 text-black cursor-not-allowed"
-                  : "text-white bg-blue-400 cursor-pointer transition-colors duration-200"
+                secondProvider === ''
+                  ? 'bg-gray-500 text-black cursor-not-allowed'
+                  : 'text-white bg-blue-400 cursor-pointer transition-colors duration-200'
               }`}
-              disabled={secondProvider === ""}
+              disabled={secondProvider === ''}
               onClick={loginWithSecodeProvider}
             >
               Confirm

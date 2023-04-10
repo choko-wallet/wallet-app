@@ -1,14 +1,14 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { PlusSmIcon } from "@heroicons/react/outline";
-import React from "react";
+import { PlusSmIcon } from '@heroicons/react/outline';
+import React from 'react';
 
-import More from "../images/More.png";
-import NFTCollection from "./NFTCollection";
-import NFTCreator from "./NFTCreator";
+import More from '../images/More.png';
+import NFTCollection from './NFTCollection';
+import NFTCreator from './NFTCreator';
 
-function NFTs(): JSX.Element {
+function NFTs (): JSX.Element {
   return (
     <div className='mb-6 lg:mb-12 w-full  mx-auto p-2 max-w-7xl flex flex-col'>
       {/* <div className="flex flex-col bg-yellow-300 w-full"> */}

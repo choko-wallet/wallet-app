@@ -1,22 +1,22 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Dialog } from "@headlessui/react";
-import { CheckCircleIcon, CheckIcon, XIcon } from "@heroicons/react/outline";
-import { Session } from "next-auth";
-import { signOut, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { Dialog } from '@headlessui/react';
+import { CheckIcon, XIcon } from '@heroicons/react/outline';
+import Image from 'next/image';
+import { Session } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
 
-import { setClose, useAppThunkDispatch } from "@choko-wallet/app-redux";
-import Image from "next/image";
+import { setClose, useAppThunkDispatch } from '@choko-wallet/app-redux';
 
-import appleSvg from "../../images/apple.svg";
-import discordSvg from "../../images/discord.svg";
-import facebookSvg from "../../images/facebook.svg";
-import githubSvg from "../../images/github.svg";
-import googleSvg from "../../images/google.svg";
-import Modal from "../Modal";
-import logo from "../../images/logo.png";
+import appleSvg from '../../images/apple.svg';
+import discordSvg from '../../images/discord.svg';
+import facebookSvg from '../../images/facebook.svg';
+import githubSvg from '../../images/github.svg';
+import googleSvg from '../../images/google.svg';
+import logo from '../../images/logo.png';
+import Modal from '../Modal';
 
 interface Props {
   enterChoko: () => Promise<void>;
@@ -30,7 +30,7 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
 
   useEffect(() => {
     if (!session) return;
-    const primaryProviderString = localStorage.getItem("primarySession");
+    const primaryProviderString = localStorage.getItem('primarySession');
 
     setPrimaryProvider(JSON.parse(primaryProviderString));
   }, [session]);
@@ -63,13 +63,15 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
           className='text-lg font-medium leading-6 flex items-center relative  justify-center'
         >
           <div className='flex relative items-center justify-center  w-[60px] h-[60px] my-auto cursor-pointer'>
-            <Image layout='fill' objectFit='contain' src={logo.src} />
+            <Image layout='fill'
+              objectFit='contain'
+              src={logo.src} />
           </div>
 
           <div
             className='absolute right-0'
             onClick={() => {
-              dispatch(setClose("landingLogin3"));
+              dispatch(setClose('landingLogin3'));
             }}
           >
             <XIcon className=' text-[#B6B7BC] hover:text-blue-400 h-5 w-5 cursor-pointer md:h-8 md:w-8' />
@@ -167,13 +169,13 @@ const LoginModal3 = ({ enterChoko }: Props): JSX.Element => {
           <button
             className={` text-[15px] md:text-[18px] text-white rounded-md hover:shadow-sm p-2 md:p-2 w-[140px] mx-auto focus:bg-[#0170BF] font-inter  ${
               beforeEnterCheck === false
-                ? "bg-gray-500 text-black cursor-not-allowed"
-                : "text-white bg-blue-400 cursor-pointer transition-colors duration-200"
+                ? 'bg-gray-500 text-black cursor-not-allowed'
+                : 'text-white bg-blue-400 cursor-pointer transition-colors duration-200'
             }`}
             disabled={beforeEnterCheck === false}
             onClick={enterChoko}
           >
-            Let's Go
+            Let&apos;s Go
           </button>
 
           <button

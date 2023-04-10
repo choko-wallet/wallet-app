@@ -1,28 +1,26 @@
 // Copyright 2021-2022 @choko-wallet/app-header authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BellIcon, CogIcon, MoonIcon, SunIcon } from "@heroicons/react/outline";
-import { MenuAlt4Icon } from "@heroicons/react/solid";
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
+import { BellIcon, CogIcon, MoonIcon, SunIcon } from '@heroicons/react/outline';
+import { MenuAlt4Icon } from '@heroicons/react/solid';
+import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
 
-import {
-  removeAllAccounts,
+import { removeAllAccounts,
   toggle,
-  useDispatch,
-} from "@choko-wallet/app-redux";
+  useDispatch } from '@choko-wallet/app-redux';
 
-import icon1 from "../img/icon1.png";
-import logo from "../img/logo.png";
-import logo2 from "../img/logo2.png";
-import logout from "../img/logout.png";
-import logout2 from "../img/logout2.png";
-import AccountInHeader from "./AccountInHeader";
+import icon1 from '../img/icon1.png';
+import logo from '../img/logo.png';
+import logo2 from '../img/logo2.png';
+import logout from '../img/logout.png';
+import logout2 from '../img/logout2.png';
+import AccountInHeader from './AccountInHeader';
 
-function Header(): JSX.Element {
+function Header (): JSX.Element {
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -34,8 +32,8 @@ function Header(): JSX.Element {
     setMounted(true);
   }, []);
 
-  if (theme !== "dark" && theme !== "light") {
-    setTheme("light");
+  if (theme !== 'dark' && theme !== 'light') {
+    setTheme('light');
   }
 
   if (!mounted) {
@@ -45,7 +43,7 @@ function Header(): JSX.Element {
 
   const removeAccounts = () => {
     dispatch(removeAllAccounts());
-    void router.push("/");
+    void router.push('/');
   };
 
   return (
@@ -54,12 +52,16 @@ function Header(): JSX.Element {
         <div className='flex items-center justify-center '>
           <div
             className='flex md:m-1 relative items-center w-[42px] h-[42px] my-auto cursor-pointer'
-            onClick={() => router.push("/")}
+            onClick={() => router.push('/')}
           >
-            {theme === "dark" ? (
-              <Image layout='fill' objectFit='contain' src={logo.src} />
+            {theme === 'dark' ? (
+              <Image layout='fill'
+                objectFit='contain'
+                src={logo.src} />
             ) : (
-              <Image layout='fill' objectFit='contain' src={logo2.src} />
+              <Image layout='fill'
+                objectFit='contain'
+                src={logo2.src} />
             )}
           </div>
         </div>
@@ -68,14 +70,16 @@ function Header(): JSX.Element {
           <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
             <div
               className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer transition duration-150 ease-out active:scale-125'
-              onClick={() => router.push("/home")}
+              onClick={() => router.push('/home')}
             >
-              <Image layout='fill' objectFit='contain' src={icon1.src} />
+              <Image layout='fill'
+                objectFit='contain'
+                src={icon1.src} />
             </div>
 
             <div
               className='hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
-              onClick={() => dispatch(toggle("settingsExportUrl"))}
+              onClick={() => dispatch(toggle('settingsExportUrl'))}
             >
               <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
             </div>
@@ -85,15 +89,15 @@ function Header(): JSX.Element {
               <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'></div>
             </div>
 
-            {theme === "light" ? (
+            {theme === 'light' ? (
               <SunIcon
                 className='hidden h-7 transition text-gray-800 duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 '
-                onClick={() => setTheme("dark")}
+                onClick={() => setTheme('dark')}
               />
             ) : (
               <MoonIcon
                 className='hidden h-7  transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500'
-                onClick={() => setTheme("light")}
+                onClick={() => setTheme('light')}
               />
             )}
           </div>
@@ -109,10 +113,14 @@ function Header(): JSX.Element {
             className='mx-5 hidden md:inline-flex relative items-center w-7 h-7 my-auto cursor-pointer'
             onClick={removeAccounts}
           >
-            {theme === "light" ? (
-              <Image layout='fill' objectFit='contain' src={logout2.src} />
+            {theme === 'light' ? (
+              <Image layout='fill'
+                objectFit='contain'
+                src={logout2.src} />
             ) : (
-              <Image layout='fill' objectFit='contain' src={logout.src} />
+              <Image layout='fill'
+                objectFit='contain'
+                src={logout.src} />
             )}
           </div>
         </div>
@@ -130,21 +138,23 @@ function Header(): JSX.Element {
               opacity: 0,
               scale: 0.5,
               transition: { duration: 0.2 },
-              y: -20,
+              y: -20
             }}
             initial={{ opacity: 0, scale: 0.3, y: -20 }}
           >
             <div className='flex items-center space-x-8 text-gray-500 mr-6 '>
               <div
                 className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-                onClick={() => router.push("/home")}
+                onClick={() => router.push('/home')}
               >
-                <Image layout='fill' objectFit='contain' src={icon1.src} />
+                <Image layout='fill'
+                  objectFit='contain'
+                  src={icon1.src} />
               </div>
 
               <div
                 className='flex relative items-center w-7 h-7 my-auto cursor-pointer'
-                onClick={() => router.push("/settings")}
+                onClick={() => router.push('/settings')}
               >
                 <CogIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-gray-500 text-gray-800' />
               </div>
@@ -154,15 +164,15 @@ function Header(): JSX.Element {
                 <div className='absolute flex items-center justify-center w-2 h-2 bg-[#4797B5] dark:bg-white rounded-full right-1 top-0'></div>
               </div>
 
-              {theme === "light" ? (
+              {theme === 'light' ? (
                 <SunIcon
                   className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 text-gray-800'
-                  onClick={() => setTheme("dark")}
+                  onClick={() => setTheme('dark')}
                 />
               ) : (
                 <MoonIcon
                   className='h-7 transition duration-150 ease-out cursor-pointer flex active:scale-125 dark:text-gray-500'
-                  onClick={() => setTheme("light")}
+                  onClick={() => setTheme('light')}
                 />
               )}
             </div>

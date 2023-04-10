@@ -1,14 +1,14 @@
 // Copyright 2021-2022 @choko-wallet/footer-module authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { useTheme } from "next-themes";
-import React from "react";
-import { SocialIcon } from "react-social-icons";
+import { useTheme } from 'next-themes';
+import React from 'react';
+import { SocialIcon } from 'react-social-icons';
 
-import discIcon1 from "../images/discord1.svg";
-import discIcon2 from "../images/discord2.svg";
+import discIcon1 from '../images/discord1.svg';
+import discIcon2 from '../images/discord2.svg';
 
-function Footer(): JSX.Element {
+function Footer (): JSX.Element {
   const { theme } = useTheme();
 
   return (
@@ -18,11 +18,11 @@ function Footer(): JSX.Element {
         © 2023 Choko Wallet
       </p>
 
-      {theme === "light" ? (
+      {theme === 'light' ? (
         <div className='flex items-center justify-center'>
           <a
             className='relative  mx-[6px]'
-            href={"https://discord.gg/zkp8UEQctM"}
+            href={'https://discord.gg/zkp8UEQctM'}
             rel='noreferrer'
             target='_blank'
           >
@@ -76,7 +76,7 @@ function Footer(): JSX.Element {
         <div className='flex items-center justify-center'>
           <a
             className='relative  mx-[6px]'
-            href={"https://discord.gg/zkp8UEQctM"}
+            href={'https://discord.gg/zkp8UEQctM'}
             rel='noreferrer'
             target='_blank'
           >

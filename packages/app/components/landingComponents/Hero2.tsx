@@ -1,28 +1,25 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {
-  ChevronDownIcon,
+import { ChevronDownIcon,
   ChevronRightIcon,
-  DownloadIcon,
-  IdentificationIcon,
   CreditCardIcon,
-  PlayIcon,
-} from "@heroicons/react/outline";
-import { motion } from "framer-motion";
-import { useSession } from "next-auth/react";
+  IdentificationIcon,
+  PlayIcon } from '@heroicons/react/outline';
+import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
 // import { useRouter } from 'next/router';
 // import { signOut } from 'next-auth/react';
-import React from "react";
-import Typed from "react-typed";
+import React from 'react';
+import Typed from 'react-typed';
 
 // import BackgroundCircle from './BackgroundCircle';
-import { setOpen, useDispatch } from "@choko-wallet/app-redux";
-import { fadeIn, staggerContainer } from "@choko-wallet/app-utils";
+import { setOpen, useDispatch } from '@choko-wallet/app-redux';
+import { fadeIn, staggerContainer } from '@choko-wallet/app-utils';
 
-import LoginModal from "../modal/LoginModal";
-import LoginModal2 from "../modal/LoginModal2";
-import LoginModal3 from "../modal/LoginModal3";
+import LoginModal from '../modal/LoginModal';
+import LoginModal2 from '../modal/LoginModal2';
+import LoginModal3 from '../modal/LoginModal3';
 /* eslint-disable */
 // @ts-ignore
 import ThreeDEarth from "./ThreeDEarth";
@@ -40,11 +37,12 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
 
-  console.log("hero-session", session);
+  console.log('hero-session', session);
   if (!currentStep) return null; // unexpected
 
   return (
-    <section className='snap-center relative' id='hero'>
+    <section className='snap-center relative'
+      id='hero'>
       <div className='relative h-screen w-full bg-[#050816]'>
         <ThreeDStarBg />
         {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
@@ -61,21 +59,21 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           {/* <div className='flex flex-col items-center justify-center xl:flex-row lg:items-start'> */}
           <motion.div
             className='flex flex-col items-center justify-center lg:items-start'
-            variants={fadeIn("up", "spring", 0.5, 1)}
+            variants={fadeIn('up', 'spring', 0.5, 1)}
           >
             <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  text-white font-poppins font-bold whitespace-nowrap'>
-              The{" "}
+              The{' '}
               <Typed
                 backSpeed={20}
+                className='text-gradient font-extrabold whitespace-nowrap'
                 loop
                 strings={[
-                  "Easy to use",
-                  "Gasless",
-                  "Seedless",
-                  "Secure",
-                  "Chain Agnostic",
+                  'Easy to use',
+                  'Gasless',
+                  'Seedless',
+                  'Secure',
+                  'Chain Agnostic'
                 ]}
-                className='text-gradient font-extrabold whitespace-nowrap'
                 typeSpeed={100}
               />
             </p>
@@ -85,7 +83,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
             </p>
           </motion.div>
 
-          <motion.div variants={fadeIn("up", "spring", 0.8, 1)}>
+          <motion.div variants={fadeIn('up', 'spring', 0.8, 1)}>
             <p className='text-[15px] sm:text-[15px] md:text-[15px] xl:text-[20px] lg:px-0 lg:mt-10 lg:mx-0 max-w-[450px] md:max-w-[550px] lg:max-w-[600px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
               Instituion Grade Security + Consumer Grade UX
             </p>
@@ -115,7 +113,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           {/* <div className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'> */}
           <motion.div
             className='flex w-full lg:w-fit max-w-[300px] md:max-w-[400px]'
-            variants={fadeIn("up", "spring", 1.1, 1)}
+            variants={fadeIn('up', 'spring', 1.1, 1)}
           >
             <div className='space-y-2 lg:mt-16  w-full lg:w-fit '>
               <button
@@ -128,7 +126,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
               <div className='flex justify-between mx-auto w-full lg:w-[390px] space-x-2 '>
                 <a
                   className='flex-1 '
-                  href={"https://forms.gle/BNSZygZg1UyL1AdT6"}
+                  href={'https://forms.gle/BNSZygZg1UyL1AdT6'}
                   rel='noreferrer'
                   target='_blank'
                 >
@@ -177,7 +175,8 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
       </div>
 
       <div className='absolute bottom-[60px] left-0 right-0 h-10 flex items-center justify-center z-50'>
-        <a className='' href={"#contact"}>
+        <a className=''
+          href={'#contact'}>
           <ChevronDownIcon className='h-8 text-gray-400 cursor-pointer animate-pulse ' />
           {/* <ChevronDownIcon className='h-8 text-gray-400 cursor-pointer ' /> */}
         </a>

@@ -1,51 +1,48 @@
-import React, { useState } from "react";
-import Image from "next/image";
-import blockchain4 from "../images/metaverse2.jpg";
-import nft3 from "../images/nft3.png";
-import nft4 from "../images/nft4.png";
-import nft5 from "../images/nft5.png";
-import nft6 from "../images/nft6.png";
-import nft7 from "../images/nft7.png";
+// Copyright 2021-2022 @choko-wallet/frontend authors & contributors
+// SPDX-License-Identifier: Apache-2.0
 
-// import web31 from "../images/web3-1.jpg";
-// import web32 from "../images/web3-2.jpg";
-// import web33 from "../images/web3-3.jpg";
-// import web34 from "../images/web3-4.jpg";
-// import web35 from "../images/web3-5.jpg";
-
-import {
-  ClockIcon,
+import { ClockIcon,
   CurrencyDollarIcon,
   GlobeAltIcon,
-  PhotographIcon,
-} from "@heroicons/react/outline";
-import discIcon1 from "../images/discord2.svg";
-import tw from "../images/twitter.svg";
+  PhotographIcon } from '@heroicons/react/outline';
+import Image from 'next/image';
+import React, { useState } from 'react';
 
-function Wallet2() {
-  const tabs = ["Gallary", "Tokens", "Activity"];
+import discIcon1 from '../images/discord2.svg';
+import blockchain4 from '../images/metaverse2.jpg';
+import nft3 from '../images/nft3.png';
+import nft4 from '../images/nft4.png';
+import nft5 from '../images/nft5.png';
+import nft6 from '../images/nft6.png';
+import nft7 from '../images/nft7.png';
+import tw from '../images/twitter.svg';
+
+function Wallet2 (): JSX.Element {
+  const tabs = ['Gallary', 'Tokens', 'Activity'];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   return (
     <div className='w-full  bg-gray-900 relative p-4 max-w-[500px] mx-auto'>
       <div className='relative h-48 w-full rounded-2xl overflow-hidden'>
-        <Image layout='fill' objectFit='cover' src={blockchain4.src} />
+        <Image layout='fill'
+          objectFit='cover'
+          src={blockchain4.src} />
       </div>
 
       <div className='w-full flex flex-col items-center justify-center relative bg-gray-900 -mt-10 rounded-2xl '>
         <img
+          alt=''
           className='h-28 w-28 rounded-full  border-gray-900
             border-4 object-cover cursor-pointer hover:scale-110 transition duration-150
             ease-out absolute -top-16'
           src={nft3.src}
-          alt=''
         />
 
         <p className='mt-12 text-[28px] font-poppins font-bold text-gray-300 hover:text-blue-400'>
           Daxender
         </p>
         <p className='text-[15px] font-poppins text-gray-300 hover:text-blue-400'>
-          Keep on keepin'on
+          Keep on keepin&apos; on
         </p>
 
         <div className='w-full flex items-center justify-between my-4 px-5 '>
@@ -64,9 +61,12 @@ function Wallet2() {
             ease-out'
           >
             <img
-              className='h-4 w-4 rounded-full   object-contain cursor-pointer hover:scale-110 transition duration-150 ease-out'
-              src={tw.src}
               alt=''
+              className='h-4 w-4 rounded-full   object-contain cursor-pointer hover:scale-110 transition duration-150 ease-out'
+              /* eslint-disable */
+              // @ts-ignore
+              src={tw.src}
+              /* eslint-enable */
             />
             <p className='text-[12px] font-poppins text-gray-300 '>@dax</p>
           </div>
@@ -76,9 +76,12 @@ function Wallet2() {
             ease-out'
           >
             <img
-              className='h-4 w-4 rounded-full   object-contain cursor-pointer hover:scale-110 transition duration-150 ease-out'
-              src={discIcon1.src}
               alt=''
+              className='h-4 w-4 rounded-full   object-contain cursor-pointer hover:scale-110 transition duration-150 ease-out'
+              /* eslint-disable */
+              // @ts-ignore
+              src={discIcon1.src}
+              /* eslint-enable */
             />
             <p className='text-[12px] font-poppins text-gray-300 '>@Daxender</p>
           </div>
@@ -125,31 +128,31 @@ function Wallet2() {
           <div className='flex flex-col items-center justify-center bg-gray-700 hover:opacity-80 rounded-lg py-3 w-full'>
             <div className='flex items-center justify-center mt-1'>
               <img
+                alt=''
                 className='h-6 w-6 rounded-full   object-cover cursor-pointer hover:scale-110 transition duration-150 ease-out -mr-2'
                 src={nft4.src}
-                alt=''
               />
 
               <img
+                alt=''
                 className='h-6 w-6 rounded-full   object-cover cursor-pointer hover:scale-110 transition duration-150 ease-out -mr-2'
                 src={nft5.src}
-                alt=''
               />
               <img
+                alt=''
                 className='h-6 w-6 rounded-full   object-cover cursor-pointer hover:scale-110 transition duration-150 ease-out -mr-2'
                 src={nft6.src}
-                alt=''
               />
 
               <img
+                alt=''
                 className='h-6 w-6 rounded-full   object-cover cursor-pointer hover:scale-110 transition duration-150 ease-out -mr-2'
                 src={nft7.src}
-                alt=''
               />
               <img
+                alt=''
                 className='h-6 w-6 rounded-full   object-cover cursor-pointer hover:scale-110 transition duration-150 ease-out -mr-2'
                 src={nft3.src}
-                alt=''
               />
             </div>
             <p className='text-[12px] font-poppins text-gray-300'>
@@ -164,15 +167,15 @@ function Wallet2() {
             <div
               className={
                 item === selectedTab
-                  ? " font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out flex items-center justify-center"
-                  : "text-black dark:text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out flex items-center justify-center"
+                  ? ' font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out flex items-center justify-center'
+                  : 'text-black dark:text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out flex items-center justify-center'
               }
               key={item}
               onClick={() => setSelectedTab(item)}
             >
-              {item === "Gallary" ? (
+              {item === 'Gallary' ? (
                 <PhotographIcon className='w-5 h-5  transition duration-150 ease-out cursor-pointer active:scale-125 text-gray-300 mx-1' />
-              ) : item === "Gallary" ? (
+              ) : item === 'Gallary' ? (
                 <CurrencyDollarIcon className='w-5 h-5  transition duration-150 ease-out cursor-pointer active:scale-125 text-gray-300  mx-1' />
               ) : (
                 <ClockIcon className='w-5 h-5  transition duration-150 ease-out cursor-pointer active:scale-125 text-gray-300  mx-1' />

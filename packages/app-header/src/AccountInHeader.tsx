@@ -3,40 +3,35 @@
 
 /* eslint-disable  sort-keys */
 
-import {
-  CogIcon,
-  DotsHorizontalIcon,
-  MoonIcon,
-  PlusCircleIcon,
-  SunIcon,
-  UserCircleIcon,
-} from "@heroicons/react/outline";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { useRouter } from "next/router"; // TODO: get rid of this
-import { signOut } from "next-auth/react";
-import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
+import { DotsHorizontalIcon,
+  // MoonIcon,
+  // PlusCircleIcon,
+  // SunIcon,
+  UserCircleIcon } from '@heroicons/react/outline';
+import { motion } from 'framer-motion';
+// import Image from 'next/image';
+import { useRouter } from 'next/router'; // TODO: get rid of this
+import { signOut } from 'next-auth/react';
+// import { useTheme } from 'next-themes';
+import React, { useEffect, useState } from 'react';
 
-import {
-  removeAllAccounts,
+import { removeAllAccounts,
   selectCurrentNetwork,
   selectCurrentUserAccount,
   selectKnownNetworks,
   selectUserAccount,
   useDispatch,
-  useSelector,
-} from "@choko-wallet/app-redux";
-import { encodeAddr } from "@choko-wallet/app-utils";
+  useSelector } from '@choko-wallet/app-redux';
+import { encodeAddr } from '@choko-wallet/app-utils';
 
-import logout from "../img/logout.png";
-import logout2 from "../img/logout2.png";
-import AccountRow from "./AccountRow";
+// import logout from '../img/logout.png';
+// import logout2 from '../img/logout2.png';
+import AccountRow from './AccountRow';
 
 /**
  * Render currentUserAccount address on Header & a drop down of all UserAccount
  */
-export default function AccountInHeader(): JSX.Element {
+export default function AccountInHeader (): JSX.Element {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   // const { setTheme, theme } = useTheme();
@@ -56,15 +51,15 @@ export default function AccountInHeader(): JSX.Element {
     open: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 24 },
+      transition: { type: 'spring', stiffness: 300, damping: 24 }
     },
-    closed: { opacity: 0, y: 20, transition: { duration: 0.3 } },
+    closed: { opacity: 0, y: 20, transition: { duration: 0.3 } }
   };
 
   const removeAccounts = () => {
     signOut().catch(console.error);
     dispatch(removeAllAccounts());
-    void router.push("/");
+    void router.push('/');
   };
 
   useEffect(() => {
@@ -83,7 +78,7 @@ export default function AccountInHeader(): JSX.Element {
   return (
     <div className=' xl:w-64 text-right md:w-12 '>
       <motion.nav
-        animate={isOpen ? "open" : "closed"}
+        animate={isOpen ? 'open' : 'closed'}
         initial={false}
         // className='bg-red-300 '
       >
@@ -111,10 +106,12 @@ export default function AccountInHeader(): JSX.Element {
             transition={{ duration: 0.2 }}
             variants={{
               open: { rotate: 180 },
-              closed: { rotate: 0 },
+              closed: { rotate: 0 }
             }}
           >
-            <svg height='15' viewBox='0 0 20 20' width='15'>
+            <svg height='15'
+              viewBox='0 0 20 20'
+              width='15'>
               <path d='M0 7 L 20 7 L 10 16' />
             </svg>
           </motion.div>
@@ -122,30 +119,32 @@ export default function AccountInHeader(): JSX.Element {
 
         <motion.ul
           className='z-50 absolute right-3 md:right-3 mt-1 md:mt-3 w-64 rounded-md bg-gray-100 dark:bg-gradient-to-br from-gray-900 to-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-1'
-          style={{ pointerEvents: isOpen ? "auto" : "none" }}
+          style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
           variants={{
             open: {
-              clipPath: "inset(0% 0% 0% 0% round 10px)",
+              clipPath: 'inset(0% 0% 0% 0% round 10px)',
               transition: {
-                type: "spring",
+                type: 'spring',
                 bounce: 0,
                 duration: 0.7,
                 delayChildren: 0.3,
-                staggerChildren: 0.05,
-              },
+                staggerChildren: 0.05
+              }
             },
             closed: {
-              clipPath: "inset(10% 50% 90% 50% round 10px)",
+              clipPath: 'inset(10% 50% 90% 50% round 10px)',
               transition: {
-                type: "spring",
+                type: 'spring',
                 bounce: 0,
-                duration: 0.3,
-              },
-            },
+                duration: 0.3
+              }
+            }
           }}
         >
           {userAccount.map((account, index) => (
-            <motion.li className='' key={index} variants={itemVariants}>
+            <motion.li className=''
+              key={index}
+              variants={itemVariants}>
               <AccountRow
                 account={account}
                 accountIndex={index}
@@ -154,10 +153,11 @@ export default function AccountInHeader(): JSX.Element {
             </motion.li>
           ))}
 
-          <motion.li className='z-50' variants={itemVariants}>
+          <motion.li className='z-50'
+            variants={itemVariants}>
             <button
               className='text-gray-900 group flex w-full h-12 items-center justify-start rounded-md px-2 py-2 text-sm hover:bg-[#F5CBD5] hover:dark:bg-[#0170BF] hover:text-white'
-              onClick={() => router.push("/account")}
+              onClick={() => router.push('/account')}
             >
               {/* <PlusCircleIcon className='h-7 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 dark:text-white text-gray-800 mx-3' /> */}
 
@@ -167,7 +167,8 @@ export default function AccountInHeader(): JSX.Element {
             </button>
           </motion.li>
 
-          <motion.li className='z-50' variants={itemVariants}>
+          <motion.li className='z-50'
+            variants={itemVariants}>
             <button
               // className={`${true ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
               //   } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}
@@ -182,7 +183,8 @@ export default function AccountInHeader(): JSX.Element {
             </button>
           </motion.li>
 
-          <motion.li className='z-50' variants={itemVariants}>
+          <motion.li className='z-50'
+            variants={itemVariants}>
             <button
               // className={`${true ? 'bg-[#F5CBD5] dark:bg-[#0170BF] text-white' : 'text-gray-900'
               //   } group flex w-full h-12 items-center justify-center rounded-md px-2 py-2 text-sm`}

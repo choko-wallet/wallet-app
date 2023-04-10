@@ -136,7 +136,7 @@ const SendTokenModal = ({ balanceInfo }: Props): JSX.Element => {
   return (
     <Modal modalName='homeSend'>
       <div className={theme}>
-        <Dialog.Panel className='w-[360px] md:w-[500px]  transform overflow-hidden rounded-2xl bg-white dark:bg-gray-700 from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#F5CBD5]'>
+        <Dialog.Panel className='w-[360px] md:w-[500px]  transform overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br from-gray-800 to-black p-6 text-left align-middle shadow-xl transition-all border border-[#F5CBD5]'>
           <Dialog.Title
             as='h3'
             className='text-lg  font-medium leading-6 flex items-center mb-6 '

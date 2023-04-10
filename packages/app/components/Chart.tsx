@@ -51,6 +51,8 @@ const data = [
 
 function Chart (): JSX.Element {
   const [showChart, setShowChart] = useState<boolean>(false);
+  const tabs = ['1H', '1D', '1W', '1M', '3M', '1Y', 'ALL'];
+  const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   const handleShowChart = () => {
     setShowChart(false);
@@ -67,23 +69,42 @@ function Chart (): JSX.Element {
 
   return (
     <div>
-      {showChart
-        ? <div className='bg-[#121212] w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] rounded-lg'>
+      {showChart ? (
+        <div className='bg-[#1A1A1A] mt-4 w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] rounded-lg'>
           <ResponsiveContainer debounce={1000}
             height='100%'
             width='100%'>
             <LineChart data={data}
               height={100}
               width={300}>
-              <Line dataKey='pv'
+              <Line
+                dataKey='pv'
                 stroke='#8884d8'
                 strokeWidth={2}
-                type='monotone' />
+                type='monotone'
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
-        : <div className='w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] bg-[#121212] rounded-lg'></div>
-      }
+      ) : (
+        <div className='w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] bg-[#121212] rounded-lg'></div>
+      )}
+
+      <div className='flex w-full items-center justify-between px-2 my-2  rounded-lg p-2'>
+        {tabs.map((item) => (
+          <div
+            className={
+              item === selectedTab
+                ? ' font-inter text-[16x] cursor-pointer px-3 py-1 transition duration-150 rounded-full bg-[#0170BF] font-semibold text-[#F5CBD5] active:scale-90 ease-in-out flex items-center justify-center'
+                : 'text-black dark:text-white font-inter text-[12px] font-normal cursor-pointer px-3 py-1 transition duration-150 rounded-full shadow-md  hover:bg-[#0170BF] hover:font-semibold hover:text-[#F5CBD5] hover:shadow-xl active:scale-90 ease-in-out flex items-center justify-center'
+            }
+            key={item}
+            onClick={() => setSelectedTab(item)}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,13 +1,13 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-// import { SocialIcon } from 'react-social-icons';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
-import logo from "../../images/logo.png";
+// import { SocialIcon } from 'react-social-icons';
+import logo from '../../images/logo.png';
 
 const Header = (): JSX.Element => {
   return (
@@ -16,20 +16,22 @@ const Header = (): JSX.Element => {
         animate={{
           opacity: 1,
           scale: 1,
-          x: 0,
+          x: 0
         }}
         className='flex items-center'
         initial={{
           opacity: 0,
           scale: 0.5,
-          x: -500,
+          x: -500
         }}
         transition={{
-          duration: 1.5,
+          duration: 1.5
         }}
       >
         <div className='hidden md:inline-flex relative items-center justify-center  w-[42px] h-[42px] my-auto cursor-pointer'>
-          <Image layout='fill' objectFit='contain' src={logo.src} />
+          <Image layout='fill'
+            objectFit='contain'
+            src={logo.src} />
         </div>
         <p className='text-[15px] md:text-[20px] text-white font-roboto font-semibold ml-2 cursor-pointer'>
           CHOKO
@@ -56,16 +58,16 @@ const Header = (): JSX.Element => {
             animate={{
               opacity: 1,
               scale: 1,
-              x: 0,
+              x: 0
             }}
             className='flex items-center cursor-pointer'
             initial={{
               opacity: 0,
               scale: 0.5,
-              x: 500,
+              x: 500
             }}
             transition={{
-              duration: 1.5,
+              duration: 1.5
             }}
           >
             <div className='hidden md:inline-flex h-10 w-[160px] rounded-md cursor-pointer hover:scale-105 transition duration-150 ease-out bg-gradient-to-r from-red-400 via-white to-purple-600 p-[2px] items-center justify-center'>
@@ -94,16 +96,16 @@ const Header = (): JSX.Element => {
             animate={{
               opacity: 1,
               scale: 1,
-              x: 0,
+              x: 0
             }}
             className='flex items-center cursor-pointer'
             initial={{
               opacity: 0,
               scale: 0.5,
-              x: 500,
+              x: 500
             }}
             transition={{
-              duration: 1.5,
+              duration: 1.5
             }}
           >
             <div className='hidden md:inline-flex h-10 w-[160px] rounded-md cursor-pointer hover:scale-105 transition duration-150 ease-out bg-gradient-to-r from-red-400 via-white to-purple-600 p-[2px] items-center justify-center'>
