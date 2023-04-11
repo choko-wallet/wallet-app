@@ -58,7 +58,7 @@ function Profile ({ balance }: Props): JSX.Element {
   // <div className='relative flex flex-col bg-transparent dark:bg-[#1A1A1A] w-full rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8'></div>
 
     <div className=' mb-6 lg:mb-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto p-2 sm:p-3 md:p-6 '>
-      <div className='w-full max-w-[950px] min-h-[750px] bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
+      <div className='w-full max-w-[950px] min-h-[750px] bg-transparent dark:bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
         <div className='flex '>
           <div className='flex flex-col w-full  max-w-[950px] mx-auto'>
             {/* <div className='flex space-x-4 w-full  justify-between '> */}
@@ -101,18 +101,18 @@ function Profile ({ balance }: Props): JSX.Element {
             </motion.div>
 
             <div className='flex items-center justify-center space-x-2 mt-3'>
-              <button className='flex flex-col items-center justify-center bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'>
+              <button className='flex flex-col items-center justify-center bg-gray-900 dark:bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'>
                 <SwitchHorizontalIcon className='w-6 h-6 text-gray-300 my-1' />
                 <p className='text-gray-300 text-[12px]'>Swap</p>
               </button>
 
-              <button className='flex flex-col items-center justify-center bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'>
+              <button className='flex flex-col items-center justify-center bg-gray-900 dark:bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'>
                 <CurrencyDollarIcon className='w-6 h-6 text-gray-300 my-1' />
                 <p className='text-gray-300 text-[12px]'>Buy</p>
               </button>
 
               <button
-                className='flex flex-col items-center justify-center bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'
+                className='flex flex-col items-center justify-center bg-gray-900 dark:bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'
                 onClick={() => dispatch(setOpen('homeSend'))}
               >
                 <ArrowUpIcon className='w-6 h-6 text-gray-300 my-1' />
@@ -120,7 +120,7 @@ function Profile ({ balance }: Props): JSX.Element {
               </button>
 
               <button
-                className='flex flex-col items-center justify-center bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'
+                className='flex flex-col items-center justify-center bg-gray-900 dark:bg-gray-700 p-2 w-full rounded-xl hover:opacity-80 active:scale-90 transition duration-150 ease-in-out'
                 onClick={() => dispatch(setOpen('homeReceive'))}
               >
                 <ArrowDownIcon className='w-6 h-6 text-gray-300 my-1' />
@@ -132,9 +132,9 @@ function Profile ({ balance }: Props): JSX.Element {
               <p className='flex text-black font-inter dark:text-[#DADADA]'>
                 Tokens
               </p>
-              <p className='flex text-black font-inter dark:text-[#DADADA] whitespace-nowrap'>
+              <p className='flex text-black font-semibold font-inter dark:text-[#DADADA] whitespace-nowrap'>
                 See All
-                <ChevronRightIcon className='w-6 h-6 text-gray-300 mx-1' />
+                <ChevronRightIcon className='w-6 h-6 text-black dark:text-gray-300 mx-1' />
               </p>
             </div>
 

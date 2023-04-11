@@ -70,7 +70,7 @@ function Chart (): JSX.Element {
   return (
     <div>
       {showChart ? (
-        <div className='bg-[#1A1A1A] mt-4 w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] rounded-lg'>
+        <div className='bg-transparent dark:bg-[#1A1A1A] mt-4 w-full h-[160px] sm:h-[220px] md:w-[560px] md:h-[260px] rounded-lg'>
           <ResponsiveContainer debounce={1000}
             height='100%'
             width='100%'>

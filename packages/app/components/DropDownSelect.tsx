@@ -47,7 +47,7 @@ function DropDownSelect ({ options }: Props): JSX.Element {
         initial={false}
       >
         <motion.button
-          className='flex items-center justify-between rounded-md w-full xl:bg-white dark:bg-black  md:bg-transparent md:px-4 md:py-2 text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 h-10 px-2'
+          className='flex items-center justify-between rounded-md w-full  dark:bg-black bg-white dark:bg-transparent md:px-4 md:py-2 text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 h-10 px-2'
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 1 }}
         >
@@ -57,7 +57,7 @@ function DropDownSelect ({ options }: Props): JSX.Element {
               className='w-5 h-5 mr-1 object-contain'
               src={getTokenImage(option)}
             />
-            <p className=' text-gray-300'>{option}</p>
+            <p className=' text-gray-700 dark:text-gray-300'>{option}</p>
           </motion.div>
 
           <motion.div
@@ -73,13 +73,13 @@ function DropDownSelect ({ options }: Props): JSX.Element {
               viewBox='0 0 20 20'
               width='15'>
               <path d='M0 7 L 20 7 L 10 16'
-                fill='white' />
+                fill='gray' />
             </svg>
           </motion.div>
         </motion.button>
 
         <motion.ul
-          className='z-50 absolute right-0 left-0 w-full bg-red-300 rounded-md dark:bg-gradient-to-br from-gray-900 to-black shadow-lg border border-gray-700 focus:outline-none p-1'
+          className='z-50 absolute right-0 left-0 w-full bg-white rounded-md dark:bg-gradient-to-br from-gray-900 to-black shadow-lg border dark:border-gray-700 focus:outline-none p-1'
           style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
           variants={{
             closed: {

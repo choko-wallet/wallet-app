@@ -65,41 +65,41 @@ function PriceTable (): JSX.Element {
   ];
 
   return (
-    <div className='text-white w-full max-w-xl bg-[#1A1A1A] border border-gray-700 rounded-lg p-5'>
+    <div className='w-full max-w-xl bg-transparent dark:bg-[#1A1A1A] border border-gray-700 dark:border-gray-700 rounded-lg p-5'>
       <div className='flex items-center justify-center space-x-2'>
-        <p className='flex-1 font-poppins font-semibold text-gray-100 text-[15px]'>
+        <p className='flex-1 font-poppins font-semibold text-gray-700 dark:text-gray-100 text-[15px]'>
           Today Cryptocurrency Prices
         </p>
       </div>
 
-      <div className='flex items-center justify-between w-full px-3 py-2 my-1 md:my-3 bg-black rounded-md'>
+      <div className='flex items-center justify-between w-full px-3 py-2 my-1 md:my-3 bg-gray-100 dark:bg-[#1A1A1A] rounded-md'>
         <div className='flex space-x-1'>
-          <p className=' text-[10px] md:text-[14px] font-poppins cursor-pointer hover:text-blue-400'>
+          <p className='text-gray-700 dark:text-white text-[10px] md:text-[14px] font-poppins cursor-pointer hover:text-blue-400'>
             NAME
           </p>
           <div className='flex flex-col items-center justify-center'>
-            <ChevronUpIcon className='text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
-            <ChevronDownIcon className='text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
+            <ChevronUpIcon className='text-gray-700 dark:text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
+            <ChevronDownIcon className='text-gray-700 dark:text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
           </div>
         </div>
 
         <div className='flex space-x-1'>
-          <p className=' text-[10px] md:text-[14px] font-poppins ml-16 hover:text-blue-400'>
+          <p className=' text-[10px] md:text-[14px] font-poppins ml-16 text-gray-700 dark:text-white  hover:text-blue-400'>
             PRICE
           </p>
           <div className='flex flex-col items-center justify-center cursor-pointer '>
-            <ChevronUpIcon className='text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
-            <ChevronDownIcon className='text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
+            <ChevronUpIcon className='text-gray-700 dark:text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
+            <ChevronDownIcon className='text-gray-700 dark:text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
           </div>
         </div>
 
         <div className='flex space-x-1'>
-          <p className=' text-[10px] md:text-[14px] font-poppins whitespace-nowrap cursor-pointer hover:text-blue-400'>
+          <p className=' text-[10px] md:text-[14px] font-poppins whitespace-nowrap cursor-pointer hover:text-blue-400 text-gray-700 dark:text-white'>
             24H CHANGE
           </p>
           <div className='flex flex-col items-center justify-center'>
-            <ChevronUpIcon className='text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
-            <ChevronDownIcon className='text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
+            <ChevronUpIcon className='text-gray-700 dark:text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
+            <ChevronDownIcon className='text-gray-700 dark:text-white h-2 w-2 cursor-pointer hover:text-blue-400' />
           </div>
         </div>
       </div>

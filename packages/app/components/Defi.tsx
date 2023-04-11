@@ -26,7 +26,7 @@ function Defi (): JSX.Element {
 
   return (
     <div className=' mb-6 lg:mb-12 w-full bg-transparent dark:bg-[#0A0A0B] mx-auto p-2 sm:p-3 md:p-6'>
-      <div className='w-full max-w-6xl min-h-[750px] bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
+      <div className='w-full max-w-6xl min-h-[750px] bg-transparent dark:bg-[#1A1A1A] mx-auto rounded-[8px] font-poppins py-5 px-3 my-3 md:my-0 md:px-5 lg:px-16 lg:py-8 relative'>
         <div className='md:flex space-y-4 md:space-y-0 md:space-x-4'>
           <Swap />
 

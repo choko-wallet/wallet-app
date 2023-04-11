@@ -44,15 +44,19 @@ function Swap (): JSX.Element {
   // };
 
   return (
-    <div className='text-white w-full max-w-xl bg-[#1A1A1A] border border-gray-700 rounded-lg p-5'>
+    <div className='text-white w-full max-w-xl bg-transparent dark:bg-[#1A1A1A] border border-gray-700 dark:border-gray-700 rounded-lg p-5'>
       {/* Chain line */}
       <div className='flex items-center justify-center space-x-2'>
-        <p className='flex-1 font-poppins font-semibold text-gray-100 text-[15px]'>
+        <p className='flex-1 font-poppins font-semibold text-gray-700 dark:text-gray-100 text-[15px]'>
           Chain
         </p>
         <p
           //     className='font-poppins font-semibold text-gray-100 text-[15px]'
-          className={`${showDust ? 'text-gray-100' : 'text-gray-600'}
+          className={`${
+            showDust
+              ? 'text-gray-700 dark:text-gray-100'
+              : 'text-gray-400 dark:text-gray-600'
+          }
         font-poppins font-semibold  text-[15px]`}
         >
           Hide IP
@@ -71,7 +75,7 @@ function Swap (): JSX.Element {
       pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-[#0170BF] shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
-        <CogIcon className='h-5 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 text-gray-100 ' />
+        <CogIcon className='h-5 transition duration-150 ease-out cursor-pointer md:inline-flex active:scale-125 text-gray-700 dark:text-gray-100 ' />
       </div>
 
       {/* big Select */}
@@ -81,45 +85,45 @@ function Swap (): JSX.Element {
 
       {/* sell and buy */}
       <div className='flex flex-col items-center justify-center space-y-1'>
-        <div className='w-full bg-black rounded-lg relative'>
-          <p className='absolute top-2 left-2 text-[12px] text-gray-300'>
+        <div className='w-full bg-gray-100 dark:bg-black rounded-lg relative'>
+          <p className='absolute top-2 left-2 text-[12px] text-gray-900 dark:text-gray-300'>
             You sell
           </p>
           <div className='flex py-10 items-center justify-between pl-4'>
             <input
-              className='w-24 text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[30px] '
+              className='w-24 text-gray-700 dark:text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[30px] '
               onChange={(e) => setValueInput(parseFloat(e.target.value))}
               placeholder={'0'}
               type='number'
               value={valueInput}
             />
 
-            <div className='w-[140px] border border-gray-700 rounded-lg mr-3'>
+            <div className='w-[140px] border dark:border-gray-700 rounded-lg mr-3'>
               <DropDownSelect options={tokenOptions} />
             </div>
           </div>
 
           <div className='absolute -bottom-4 left-0 right-0 flex items-center justify-center z-20'>
-            <div className='w-8 h-8 bg-[#1A1A1A] flex items-center justify-center rounded-md'>
-              <ArrowDownIcon className='h-4 text-gray-300 cursor-pointer  ' />
+            <div className='w-8 h-8 bg-white dark:bg-[#1A1A1A] flex items-center justify-center rounded-md'>
+              <ArrowDownIcon className='h-4 text-gray-700 dark:text-gray-300 cursor-pointer  ' />
             </div>
           </div>
         </div>
 
-        <div className='w-full bg-black rounded-lg relative'>
-          <p className='absolute top-2 left-2 text-[12px] text-gray-300'>
+        <div className='w-full bg-gray-100 dark:bg-black rounded-lg relative'>
+          <p className='absolute top-2 left-2 text-[12px] text-gray-900 dark:text-gray-300'>
             You buy
           </p>
           <div className='flex py-10 items-center justify-between pl-4 '>
             <input
-              className='w-24 text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[30px] '
+              className='w-24 text-gray-700 dark:text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[30px] '
               onChange={(e) => setValueInput(parseFloat(e.target.value))}
               placeholder={'0'}
               type='number'
               value={valueInput}
             />
 
-            <div className='w-[140px] border border-gray-700 rounded-lg mr-3'>
+            <div className='w-[140px] border dark:border-gray-700 rounded-lg mr-3'>
               <DropDownSelect options={tokenOptions} />
             </div>
           </div>
@@ -127,21 +131,27 @@ function Swap (): JSX.Element {
       </div>
 
       <div className='py-2'>
-        <p className='text-gray-300'>Swap Slippage:0.5%</p>
+        <p className='text-gray-700 dark:text-gray-300'>Swap Slippage:0.5%</p>
         <div className='flex items-center justify-start  space-x-4'>
-          <p className='p-1 bg-gray-600 rounded-md'>0.1%</p>
-          <p className='p-1 bg-gray-600 rounded-md'>0.5%</p>
-          <p className='p-1 bg-gray-600 rounded-md'>1%</p>
+          <p className='p-1 bg-gray-300 dark:bg-gray-600  text-gray-700 dark:text-gray-300 rounded-md'>
+            0.1%
+          </p>
+          <p className='p-1 bg-gray-300 dark:bg-gray-600  text-gray-700 dark:text-gray-300 rounded-md'>
+            0.5%
+          </p>
+          <p className='p-1 bg-gray-300 dark:bg-gray-600  text-gray-700 dark:text-gray-300 rounded-md'>
+            1%
+          </p>
 
-          <div className='bg-black p-1 rounded-md flex px-2'>
+          <div className='bg-gray-100 dark:bg-black p-1 rounded-md flex px-2'>
             <input
-              className='w-full text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[20px] '
+              className='w-full text-gray-700 dark:text-gray-300 placeholder-gray-400 bg-transparent outline-none text-[20px] '
               onChange={(e) => setValueInput2(parseFloat(e.target.value))}
               placeholder={'0'}
               type='number'
               value={valueInput2}
             />
-            <p>%</p>
+            <p className='text-gray-700 dark:text-gray-300'>%</p>
           </div>
         </div>
       </div>

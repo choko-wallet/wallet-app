@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { PlusSmIcon } from '@heroicons/react/outline';
+import { useTheme } from 'next-themes';
 import React from 'react';
 
 import More from '../images/More.png';
@@ -9,20 +10,28 @@ import NFTCollection from './NFTCollection';
 import NFTCreator from './NFTCreator';
 
 function NFTs (): JSX.Element {
+  const { theme } = useTheme();
+
   return (
     <div className='mb-6 lg:mb-12 w-full  mx-auto p-2 max-w-7xl flex flex-col'>
       {/* <div className="flex flex-col bg-yellow-300 w-full"> */}
       <div className='grid grid-cols-1 mx-auto sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4   '>
-        <div className='col-span-full flex justify-between items-end px-2'>
+        <div className='col-span-full flex justify-between items-center px-2'>
           <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-black dark:text-white m-3'>
             Top Creators
           </p>
           <div className='flex  h-10 w-16 md:h-12 md:w-20 cursor-pointer'>
-            <img
-              alt='nft_image'
-              className='object-contain w-full h-full rounded-lg'
-              src={More.src}
-            />
+            {theme === 'dark' ? (
+              <img
+                alt='nft_image'
+                className='object-contain w-full h-full rounded-lg'
+                src={More.src}
+              />
+            ) : (
+              <p className=' font-inter text-[15px] my-auto text-blue-500'>
+                More
+              </p>
+            )}
           </div>
         </div>
         <NFTCreator />
@@ -32,16 +41,22 @@ function NFTs (): JSX.Element {
       </div>
 
       <div className='grid grid-cols-2 mx-auto sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8   '>
-        <div className='col-span-full flex justify-between items-end px-2'>
+        <div className='col-span-full flex justify-between items-center px-2'>
           <p className=' font-inter text-[16px] md:text-[20px] font-semibold text-black dark:text-white m-3 cursor-pointer'>
             Trending Collections
           </p>
           <div className='flex  h-10 w-16 md:h-12 md:w-20 cursor-pointer'>
-            <img
-              alt='nft_image'
-              className='object-contain w-full h-full rounded-lg'
-              src={More.src}
-            />
+            {theme === 'dark' ? (
+              <img
+                alt='nft_image'
+                className='object-contain w-full h-full rounded-lg'
+                src={More.src}
+              />
+            ) : (
+              <p className=' font-inter text-[15px] my-auto text-blue-500'>
+                More
+              </p>
+            )}
           </div>
         </div>
         <NFTCollection />
