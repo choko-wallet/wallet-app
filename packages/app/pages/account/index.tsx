@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // import { ArrowSmRightIcon, XIcon } from '@heroicons/react/outline';
-import ThreeDStarBg from "@choko-wallet/app/components/landingComponents/ThreeDStarBg";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+
+import ThreeDStarBg from "@choko-wallet/app/components/landingComponents/ThreeDStarBg";
 
 function AccountRouter(): JSX.Element {
   const router = useRouter();

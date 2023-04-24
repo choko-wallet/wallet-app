@@ -1,6 +1,9 @@
 // Copyright 2021-2022 @choko-wallet/frontend authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+// import BackgroundCircle from './BackgroundCircle';
+import { setOpen, useDispatch } from "@choko-wallet/app-redux";
+import { fadeIn, staggerContainer } from "@choko-wallet/app-utils";
 import {
   ChevronDownIcon,
   ChevronRightIcon,
@@ -14,10 +17,6 @@ import { useSession } from "next-auth/react";
 // import { signOut } from 'next-auth/react';
 import React from "react";
 import Typed from "react-typed";
-
-// import BackgroundCircle from './BackgroundCircle';
-import { setOpen, useDispatch } from "@choko-wallet/app-redux";
-import { fadeIn, staggerContainer } from "@choko-wallet/app-utils";
 
 import LoginModal from "../modal/LoginModal";
 import LoginModal2 from "../modal/LoginModal2";
@@ -59,14 +58,14 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         >
           {/* <div className='flex flex-col items-center justify-center xl:flex-row lg:items-start'> */}
           <motion.div
-            className='flex flex-col items-center justify-center lg:items-start'
+            className='flex flex-col items-start justify-center lg:items-start w-[340px] pt-8 '
             variants={fadeIn("up", "spring", 0.5, 1)}
           >
-            <p className='text-[22px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  text-white font-poppins font-bold whitespace-nowrap'>
+            <p className='text-[26px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  text-white font-poppins font-bold whitespace-nowrap'>
               The{" "}
               <Typed
                 backSpeed={20}
-                className='text-gradient font-extrabold whitespace-nowrap'
+                className='text-white font-extrabold whitespace-nowrap'
                 loop
                 strings={[
                   "Easy to use",
@@ -79,7 +78,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
               />
             </p>
             <br />
-            <p className=' lg:mt-3 xl:mt-5 text-[22px] sm:text-[26px]  md:text-[36px] lg:text-[46px] xl:text-[60px] h-10 md:h-16  font-poppins font-bold text-white'>
+            <p className='-mt-5 text-[26px] sm:text-[26px]  md:text-[36px] lg:text-[46px] xl:text-[60px] font-poppins font-bold text-white whitespace-nowrap'>
               Web3 Portal
             </p>
           </motion.div>
@@ -106,7 +105,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
               duration: 1.5,
             }}
           > */}
-          <div className='flex lg:hidden z-40 relative flex-shrink-0 w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
+          <div className='flex lg:hidden z-40 relative flex-shrink-0 w-[180px] h-[180px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
             <ThreeDEarth zoom={false} />
           </div>
           {/* </motion.div> */}
@@ -154,7 +153,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         </div>
       </div>
 
-      <div className='hidden lg:inline-flex absolute bottom-24 left-0 right-0 items-center justify-center z-50 '>
+      {/* <div className='hidden lg:inline-flex absolute bottom-24 left-0 right-0 items-center justify-center z-50 '>
         <div className='flex items-center justify-center space-x-5'>
           <IdentificationIcon className='h-10 text-yellow-400 cursor-pointer animate-pulse ' />
           <p className='font-poppins'>Sign Up</p>
@@ -173,7 +172,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           <PlayIcon className='h-10 text-red-400 cursor-pointer animate-pulse ' />
           <p className='font-poppins'>Play to earn</p>
         </div>
-      </div>
+      </div> */}
 
       <div className='absolute bottom-[60px] left-0 right-0 h-10 flex items-center justify-center z-50'>
         <a className='' href={"#contact"}>
