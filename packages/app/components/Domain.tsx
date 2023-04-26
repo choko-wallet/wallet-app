@@ -27,7 +27,7 @@ function Domain() {
   return (
     <div className='mx-auto bg-transparent  p-4 max-w-[500px]  rounded-lg flex flex-col items-center justify-center  text-center z-30'>
       {/* <div className='flex flex-col items-center justify-center space-y-3 '> */}
-      <p className='text-[40px] font-poppins text-gray-400 dark:text-blue-400 font-semibold'>
+      <p className='text-[40px] font-poppins text-blue-600 dark:text-blue-400 font-semibold'>
         Your web3 username
       </p>
       <p className='text-[14px] lg:text-[18px] font-poppins text-gray-700 dark:text-gray-300 '>
@@ -39,7 +39,7 @@ function Domain() {
         <input
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className='w-full items-center p-3 rounded-lg  pl-6 focus:border focus:border-blue-400  text-gray-300 placeholder-gray-400 bg-gray-900 outline-none font-poppins text-[20px]'
+          className='w-full items-center p-3 rounded-lg  pl-6 focus:border focus:border-blue-400  text-gray-700 dark:text-gray-300 placeholder-gray-400 bg-gray-100 dark:bg-gray-900 outline-none font-poppins text-[20px]'
           type='text'
           placeholder={"Search for a name"}
         />
@@ -55,9 +55,9 @@ function Domain() {
 
         {searchInput && (
           <div className='absolute -bottom-[108px] left-0 right-0 flex flex-col mx-auto rounded-lg overflow-hidden '>
-            <div className='group w-full h-12 flex items-center justify-between p-4 bg-gray-900 hover:bg-gray-800 cursor-pointer'>
+            <div className='group w-full h-12 flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-900 hover:bg-white dark:hover:bg-gray-800 cursor-pointer'>
               <div className='flex items-center justify-center '>
-                <LocationMarkerIcon className='w-5 h-5 text-black dark:text-gray-300 mx-1 ' />
+                <LocationMarkerIcon className='w-5 h-5 text-blue-400 dark:text-gray-300 mx-1 ' />
                 <p className='text-[14px] lg:text-[18px] font-poppins text-gray-700 dark:text-gray-300 '>
                   {searchInput}.choko
                 </p>
@@ -69,17 +69,17 @@ function Domain() {
                 </div>
               ) : (
                 <div className='flex items-center justify-center '>
-                  <p className='text-red-500 bg-gray-700 p-1 px-2 rounded-full text-[12px] lg:text-[14px] font-poppins   '>
+                  <p className='text-red-500 bg-pink-50 dark:bg-gray-700 p-1 px-2 rounded-full text-[12px] lg:text-[14px] font-poppins   '>
                     Registered
                   </p>
-                  <ChevronRightIcon className='w-5 h-5 text-black dark:text-gray-300 mx-1 hidden group-hover:inline-flex ' />
+                  <ChevronRightIcon className='w-3 h-3 text-gray-700 dark:text-gray-300 mx-1 hidden group-hover:inline-flex ' />
                 </div>
               )}
             </div>
 
-            <div className='group w-full h-12 flex items-center justify-between p-4 bg-gray-900 hover:bg-gray-800 cursor-pointer'>
+            <div className='group w-full h-12 flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-900 hover:bg-white dark:hover:bg-gray-800 cursor-pointer'>
               <div className='flex items-center justify-center '>
-                <LocationMarkerIcon className='w-5 h-5 text-black dark:text-gray-300 mx-1 ' />
+                <LocationMarkerIcon className='w-5 h-5 text-pink-400 dark:text-gray-300 mx-1 ' />
                 <p className='text-[14px] lg:text-[18px] font-poppins text-gray-700 dark:text-gray-300 '>
                   {searchInput}.eth
                 </p>
@@ -91,10 +91,10 @@ function Domain() {
                 </div>
               ) : (
                 <div className='flex items-center justify-center '>
-                  <p className='text-green-500 bg-gray-700 p-1 px-2 rounded-full text-[12px] lg:text-[14px] font-poppins   '>
+                  <p className='text-green-500 bg-green-50 dark:bg-gray-700 p-1 px-2 rounded-full text-[12px] lg:text-[14px] font-poppins   '>
                     Avaliable
                   </p>
-                  <ChevronRightIcon className='w-5 h-5 text-black dark:text-gray-300 mx-1 hidden group-hover:inline-flex ' />
+                  <ChevronRightIcon className='w-3 h-3 text-gray-700 dark:text-gray-300 mx-1 hidden group-hover:inline-flex ' />
                 </div>
               )}
             </div>

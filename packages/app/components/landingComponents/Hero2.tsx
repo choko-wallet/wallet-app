@@ -48,9 +48,9 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         {/* <Image className='' layout='fill' objectFit='cover' src={bg} /> */}
       </div>
 
-      <div className='absolute top-0 bottom-16 left-0 right-0 z-10 lg:flex lg:items-center lg:justify-center '>
+      <div className=' absolute top-0 bottom-16 left-0 right-0 z-10 lg:flex lg:items-center lg:justify-between lg:px-10 max-w-[1500px] mx-auto '>
         <motion.div
-          className='flex flex-col items-center justify-evenly h-full lg:h-fit pt-[60px] pb-10 px-5 lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 xl:ml-20   '
+          className='flex flex-col items-center justify-evenly h-full lg:h-fit pt-[60px] pb-10 px-10 lg:items-start lg:w-[500px] xl:w-[700px] lg:pt-6 xl:ml-20 '
           initial='hidden'
           variants={staggerContainer}
           viewport={{ amount: 0.25, once: false }}
@@ -58,91 +58,79 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
         >
           {/* <div className='flex flex-col items-center justify-center xl:flex-row lg:items-start'> */}
           <motion.div
-            className='flex flex-col items-start justify-center lg:items-start w-[340px] pt-8 '
+            className='flex flex-col items-start justify-center lg:items-start w-full max-w-[400px] pt-12 '
             variants={fadeIn("up", "spring", 0.5, 1)}
           >
-            <p className='text-[26px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[60px]  text-white font-poppins font-bold whitespace-nowrap'>
-              The{" "}
+            <p className='text-[35px]  md:text-[36px] lg:text-[50px] xl:text-[60px]  text-white font-vt323 font-bold whitespace-nowrap'>
+              {/* The{" "} */}
               <Typed
                 backSpeed={20}
-                className='text-white font-extrabold whitespace-nowrap'
+                className='text-white font-semibold whitespace-nowrap'
                 loop
                 strings={[
                   "Easy to use",
+                  "Account Abstraction",
                   "Gasless",
-                  "Seedless",
                   "Secure",
-                  "Chain Agnostic",
+                  "Multi Chain",
                 ]}
                 typeSpeed={100}
-              />
+              />{" "}
+              ...
             </p>
             <br />
-            <p className='-mt-5 text-[26px] sm:text-[26px]  md:text-[36px] lg:text-[46px] xl:text-[60px] font-poppins font-bold text-white whitespace-nowrap'>
-              Web3 Portal
+            <p className='-mt-10 lg:-mt-12 text-[35px]  md:text-[36px] lg:text-[50px] xl:text-[60px]  font-semibold text-white whitespace-nowrap font-vt323'>
+              MPC social wallet
             </p>
           </motion.div>
 
-          <motion.div variants={fadeIn("up", "spring", 0.8, 1)}>
-            <p className='text-[15px] sm:text-[15px] md:text-[15px] xl:text-[20px] lg:px-0 lg:mt-10 lg:mx-0 max-w-[450px] md:max-w-[550px] lg:max-w-[600px] xl:max-w-[600px] mx-auto font-inter  text-[#FFFFFE] text-start '>
-              Instituion Grade Security + Consumer Grade UX
+          <motion.div
+            className='space-y-2 lg:space-y-5 '
+            variants={fadeIn("up", "spring", 0.8, 1)}
+          >
+            <p className='text-[10px] lg:text-[15px] xl:text-[20px] lg:px-0 lg:mt-10 lg:mx-0 max-w-[450px] md:max-w-[550px] lg:max-w-[600px] xl:max-w-[600px] mx-auto font-inter  text-white text-start '>
+              Institutional-Grade Security. Consumer-Grade Interaction.
+            </p>
+
+            <p className=' text-[10px] lg:text-[15px] xl:text-[20px] lg:px-0 lg:mt-10 lg:mx-0 max-w-[450px] md:max-w-[550px] lg:max-w-[600px] xl:max-w-[600px] mx-auto font-inter  text-[#8B8C91] text-start '>
+              Trade, curate and interact across blockchains with seamless
+              experience in CHOKO.
             </p>
           </motion.div>
 
-          {/* <motion.div
-            animate={{
-              opacity: 1,
-              scale: 1,
-              x: 0,
-            }}
-            className=''
-            initial={{
-              opacity: 0,
-              scale: 0.2,
-              x: 0,
-            }}
-            transition={{
-              duration: 1.5,
-            }}
-          > */}
-          <div className='flex lg:hidden z-40 relative flex-shrink-0 w-[180px] h-[180px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]'>
+          <div className='flex lg:hidden z-40 relative flex-shrink-0 w-[220px] h-[220px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px]  -m-6'>
             <ThreeDEarth zoom={false} />
           </div>
-          {/* </motion.div> */}
 
-          {/* <div className='flex lg:flex-col lg:mt-20 space-x-10 lg:space-x-0'> */}
           <motion.div
-            className='flex w-full lg:w-fit max-w-[300px] md:max-w-[400px]'
+            className='flex w-full lg:w-fit max-w-[300px] md:max-w-[400px]  lg:mt-12'
             variants={fadeIn("up", "spring", 1.1, 1)}
           >
-            <div className='space-y-2 lg:mt-16  w-full lg:w-fit '>
-              <button
-                className='my-auto text-[10px] text-[#FDF6E3] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-8 lg:h-[32px] w-full md:w-48 md:mb-5 bg-[#FDF6E3]/20 font-inter'
-                // onClick={() => router.push('/test-request')}
-              >
-                Private beta coming soon
-              </button>
+            <div className='space-y-2 lg:mt-16 w-full lg:w-fit '>
+              <div className='flex justify-between   mx-auto w-full lg:w-[390px]  '>
+                <div className='flex-1  flex items-center justify-center'>
+                  <a
+                    className=''
+                    href={"https://forms.gle/BNSZygZg1UyL1AdT6"}
+                    rel='noreferrer'
+                    target='_blank'
+                  >
+                    <button className=' text-[10px] lg:text-[15px]  text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-8 lg:h-[50px] w-32 lg:w-48 bg-white font-semibold font-inter  mx-auto  ease-in-out hover:opacity-90 hover:scale-105 whitespace-nowrap '>
+                      Join Choko Waitlist
+                    </button>
+                  </a>
+                </div>
 
-              <div className='flex justify-between mx-auto w-full lg:w-[390px] space-x-2 '>
-                <a
-                  className='flex-1 '
-                  href={"https://forms.gle/BNSZygZg1UyL1AdT6"}
-                  rel='noreferrer'
-                  target='_blank'
-                >
-                  <button className=' text-[12px] sm:text-[15px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] w-full bg-[#0170BF] font-semibold font-inter'>
-                    Join Waitlist
+                <div className='flex-1 flex items-center justify-center'>
+                  <button
+                    className=' text-[12px] lg:text-[15px]  text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 w-20 lg:w-32 h-8 lg:h-[50px]  border-[1px] border-[#0170BF] font-semibold bg-transparent font-poppins  ease-in-out hover:opacity-90 hover:scale-105  '
+                    onClick={() =>
+                      dispatch(setOpen(`landingLogin${currentStep}`))
+                    }
+                  >
+                    ENTER
                   </button>
-                </a>
-
-                <button
-                  className=' text-[12px] sm:text-[15px] lg:text-xl text-white transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-10 lg:h-[50px] flex-1  border-[1px] border-white font-semibold bg-transparent font-inter'
-                  onClick={() =>
-                    dispatch(setOpen(`landingLogin${currentStep}`))
-                  }
-                >
-                  Enter
-                </button>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -152,27 +140,6 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
           <ThreeDEarth zoom={true} />
         </div>
       </div>
-
-      {/* <div className='hidden lg:inline-flex absolute bottom-24 left-0 right-0 items-center justify-center z-50 '>
-        <div className='flex items-center justify-center space-x-5'>
-          <IdentificationIcon className='h-10 text-yellow-400 cursor-pointer animate-pulse ' />
-          <p className='font-poppins'>Sign Up</p>
-
-          <div className=' px-10'>
-            <ChevronRightIcon className='h-10 text-gray-400 cursor-pointer ' />
-          </div>
-
-          <CreditCardIcon className='h-10 text-blue-400 cursor-pointer animate-pulse ' />
-          <p className='font-poppins'>Transfer and trade</p>
-
-          <div className=' px-10'>
-            <ChevronRightIcon className='h-10 text-gray-400 cursor-pointer ' />
-          </div>
-
-          <PlayIcon className='h-10 text-red-400 cursor-pointer animate-pulse ' />
-          <p className='font-poppins'>Play to earn</p>
-        </div>
-      </div> */}
 
       <div className='absolute bottom-[60px] left-0 right-0 h-10 flex items-center justify-center z-50'>
         <a className='' href={"#contact"}>
