@@ -116,7 +116,7 @@ const Hero = ({ currentStep, enterChoko }: Props): JSX.Element => {
                     target='_blank'
                   >
                     <button className=' text-[10px] lg:text-[15px]  text-[#0170BF] transition duration-150 rounded-md hover:shadow-sm active:scale-90 h-8 lg:h-[50px] w-32 lg:w-48 bg-white font-semibold font-inter  mx-auto  ease-in-out hover:opacity-90 hover:scale-105 whitespace-nowrap '>
-                      Join Choko Waitlist
+                      Join Beta Waitlist
                     </button>
                   </a>
                 </div>
